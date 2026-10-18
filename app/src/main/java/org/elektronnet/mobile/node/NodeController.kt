@@ -4,6 +4,7 @@ import org.elektronnet.mobile.policy.PolicyDecision
 
 class NodeController(
     private val baseConfig: NodeConfig,
+    private val stopTimeoutMs: Long = 60_000,
     private val supervisorFactory: (NodeConfig) -> NodeSupervisor = { NodeSupervisor(it) },
 ) {
     private var supervisor: NodeSupervisor? = null
@@ -15,7 +16,7 @@ class NodeController(
     @Synchronized
     fun apply(decision: PolicyDecision) {
         if (!decision.run) {
-            supervisor?.stop()
+            supervisor?.stop(stopTimeoutMs)
             appliedNetworkActive = null
             return
         }
@@ -30,11 +31,17 @@ class NodeController(
             active == null || active.state == NodeState.Stopped -> launch(wanted)
             active.state is NodeState.Crashed -> return
             needsRestart -> {
-                active.stop()
+                active.stop(stopTimeoutMs)
                 launch(wanted)
             }
         }
         applyNetworkActive(decision.networkActive)
+    }
+
+    @Synchronized
+    fun shutdown() {
+        supervisor?.stop(stopTimeoutMs)
+        appliedNetworkActive = null
     }
 
     @Synchronized

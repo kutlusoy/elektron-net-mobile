@@ -6,9 +6,12 @@ import java.time.ZoneId
 
 class MonthlyDataBudget(
     private val zone: ZoneId = ZoneId.systemDefault(),
-    private var month: YearMonth? = null,
+    month: YearMonth? = null,
     used: Long = 0,
 ) {
+    var month: YearMonth? = month
+        private set
+
     var usedBytes: Long = used
         private set
 
