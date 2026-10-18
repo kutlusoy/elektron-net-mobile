@@ -62,6 +62,10 @@ grep -q "COMPILER_TARGET=\$(host)${ANDROID_API}" "$SRC/depends/funcs.mk" \
     || sed -i -E "s/(-DCMAKE_(C|CXX)_COMPILER_TARGET=\\\$\(host\))/\\1${ANDROID_API}/" "$SRC/depends/funcs.mk"
 grep -c "COMPILER_TARGET=\$(host)${ANDROID_API}" "$SRC/depends/funcs.mk" | grep -qx 2 || { echo "funcs.mk was not patched" >&2; exit 1; }
 grep -n "COMPILER_TARGET" "$SRC/depends/funcs.mk"
+# Bionic has no pthread_cancel, so CMake's FindThreads probe fails although pthreads live in libc
+grep -q "CMAKE_HAVE_LIBC_PTHREAD" "$SRC/depends/funcs.mk" \
+    || sed -i "/-DCMAKE_CXX_COMPILER_TARGET=\$(host)${ANDROID_API}/a \$(1)_cmake += -DCMAKE_HAVE_LIBC_PTHREAD=ON" "$SRC/depends/funcs.mk"
+grep -n "PTHREAD" "$SRC/depends/funcs.mk"
 
 make -C "$SRC/depends" -j"$JOBS" \
     HOST="$TRIPLE" NO_QT=1 NO_QR=1 NO_ZMQ=1 NO_USDT=1 NO_IPC=1 \
@@ -79,6 +83,7 @@ TOOLCHAIN
 
 cmake -S "$SRC" -B "$BUILD/tree" -G Ninja \
     -DCMAKE_TOOLCHAIN_FILE="$BUILD/android-toolchain.cmake" \
+    -DCMAKE_HAVE_LIBC_PTHREAD=ON \
     "${CMAKE_OPTIONS[@]}" \
     -DCMAKE_EXE_LINKER_FLAGS="$PAGE_FLAGS -static-libstdc++"
 
