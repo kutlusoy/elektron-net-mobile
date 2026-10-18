@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Expert Mode and Node Console Guideline
 
-- **Version:** 0.2 (draft)
+- **Version:** 0.3 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, security reviewers, translators of the app
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/rpc/` and `src/wallet/rpc/` (RPC surface), `src/init.cpp` (RPC arguments), treat the node's `help` output as ground truth for command names and arguments
@@ -29,6 +29,11 @@ The same console is also the tool the developers use to inspect the node on a de
 | Availability | The console is part of all builds, there is no separate expert flavor |
 | File commands | `backupwallet`, `restorewallet` and `dumptxoutset` are supported. Only wallets that are protected by a passphrase are backed up (§7) |
 | Classification | As proposed in §5, derived from the node's `help` list, kept in `native-build/contract/console-tiers.json` |
+| Danger confirmation | A typed confirmation token switches the Danger tier on, every Danger command shows a dialog with a delayed run button (§3) |
+| Session timeout | 30 minutes of inactivity (§3) |
+| Restore of an unencrypted backup | The restore runs, then a passphrase is required before the wallet can be used (§7) |
+| Housekeeping in `exports/` | Dumps made by hand with `dumptxoutset` are deleted after 7 days. Wallet backups are kept until the user deletes them. The automatic checkpoint snapshots of the node are not touched (§7) |
+| `createwallet` | Forbidden without a passphrase (§7) |
 
 ## 2. Findings From the Node
 
@@ -48,7 +53,7 @@ Checked against a host build of `elektron-net@main` (`447c069`, October 18, 2026
 ## 3. Access and Session Rules
 
 - **MUST:** off by default. Enabling it needs an explicit confirmation screen, shown in the user's language, that explains the risks in plain words: commands can spend funds and reveal keys, nobody legitimate asks for commands to be pasted, a pasted command from a stranger is a scam.
-- **MUST:** device authentication (biometric or device credential) once per Expert session. The session starts with that authentication and ends when the app process ends, after an inactivity timeout (default 30 minutes, **open**, see §10), or when the user ends it. Moving the app to the background does not end the session, but it relocks wallets (below).
+- **MUST:** device authentication (biometric or device credential) once per Expert session. The session starts with that authentication and ends when the app process ends, after 30 minutes of inactivity, or when the user ends it. Moving the app to the background does not end the session, but it relocks wallets (below).
 - **MUST:** the **Danger tier is a second, separate switch** ("Allow commands that move funds or reveal keys"). Switching it on requires the user to confirm that they know what they are doing, by typing a fixed confirmation token in a dialog that states the consequences. It is off at the start of every session. In addition, every Danger command shows its full text in a confirmation dialog before it runs, and the run button becomes active after a short delay.
 - **SHOULD:** a visible "Expert" indicator on every screen while the console is unlocked, and a stronger indicator while the Danger tier is on.
 - **MUST:** the console screen sets `FLAG_SECURE` (no screenshots, no recent-apps preview). The Node section's other screens keep their own rules.
@@ -74,11 +79,11 @@ Every command belongs to exactly one tier. The classification lives in [`native-
 | Tier | Behavior | Commands (initial classification, 94 Open, 37 Confirm, 18 Danger, 2 Blocked among the listed commands) |
 |---|---|---|
 | **Open** | Runs immediately | Read-only commands, for example `getblockchaininfo`, `getnetworkinfo`, `getpeerinfo`, `getmempoolinfo`, `getmininginfo`, `getblock`, `getblockheader`, `getrawtransaction`, `gettxout`, `gettxoutsetinfo`, `getchaintips`, `getmemoryinfo`, `getrpcinfo`, `uptime`, `getbalances`, `listunspent`, `listtransactions`, `gettransaction`, `getaddressinfo`, `validateaddress`, `decodepsbt`, `decoderawtransaction`, `estimatesmartfee`, `walletcreatefundedpsbt`, `help` |
-| **Confirm** | Shows the exact command and requires one confirmation tap | State-changing commands that do not move funds or reveal keys: `addnode`, `setban`, `clearbanned`, `disconnectnode`, `setnetworkactive`, `logging`, `savemempool`, `getblockfrompeer`, `pruneblockchain`, `preciousblock`, `rescanblockchain`, `abortrescan`, `setlabel`, `keypoolrefill`, `lockunspent`, `abandontransaction`, `bumpfee`, `psbtbumpfee`, `createwallet`, `loadwallet`, `unloadwallet`, `backupwallet`, `importdescriptors`, `fundrawtransaction`, `ping` |
+| **Confirm** | Shows the exact command and requires one confirmation tap | State-changing commands that do not move funds or reveal keys: `addnode`, `setban`, `clearbanned`, `disconnectnode`, `setnetworkactive`, `logging`, `savemempool`, `getblockfrompeer`, `pruneblockchain`, `preciousblock`, `rescanblockchain`, `abortrescan`, `setlabel`, `keypoolrefill`, `lockunspent`, `abandontransaction`, `bumpfee`, `psbtbumpfee`, `createwallet`, `loadwallet`, `unloadwallet`, `backupwallet`, `importdescriptors`, `fundrawtransaction`, `ping`. `createwallet` is Confirm and refused without a non-empty passphrase (§7) |
 | **Danger** | Needs the Danger switch of §3, shows the command in a confirmation dialog with a delayed run button | Commands that move funds: `sendtoaddress`, `send`, `sendmany`, `sendall`, `sendrawtransaction`, `submitpackage`. Commands that reveal or handle keys: `listdescriptors` and `gethdkeys` with private output, `walletpassphrase`, `walletpassphrasechange`, `encryptwallet`, `signrawtransactionwithwallet`, `signrawtransactionwithkey`, `descriptorprocesspsbt`, `walletprocesspsbt` (unless `sign` is false), `signmessage`, `signmessagewithprivkey`. Commands that can damage chain state or the wallet, or write large files: `invalidateblock`, `reconsiderblock`, `dumptxoutset`, `migratewallet`, `restorewallet` |
 | **Blocked** | Refused with an explanation | `stop` (use the Node controls so the supervisor knows), `loadtxoutset` (snapshots are managed by the node's own automatic mechanism, manual loading bypasses its checks), `dumptxoutset` with `type=rollback`, and the test-only commands (`generate*`, `setmocktime`, `mockscheduler`, `echo*`, `addconnection`, `addpeeraddress`, `sendmsgtopeer`, `syncwithvalidationinterfacequeue`) |
 
-- **File format of the classification:** each command has a `tier`, optional `heavy`, optional `rules` that change the tier depending on an argument (`when: {arg, equals}`, with dotted paths for nested options), optional `path_args` (arguments that are file paths, §7) and guard flags (`require_encrypted_wallet`). `hidden_commands` lists commands the `help` list does not show. `default_tier` is `confirm`.
+- **File format of the classification:** each command has a `tier`, optional `heavy`, optional `rules` that change the tier depending on an argument (`when: {arg, equals}`, with dotted paths for nested options), optional `path_args` (arguments that are file paths, §7), guard flags (`require_encrypted_wallet`, `require_encrypted_wallet_after`, `require_nonempty_args`) and `auto_delete_days` for files written by a command. The contract check verifies that these guards are still present (`console_guards` in `contract.json`). `hidden_commands` lists commands the `help` list does not show. `default_tier` is `confirm`.
 - **Moving funds from the console** bypasses the app's PSBT review (plan §8.4). The confirmation dialog therefore shows the raw command in full and recommends the normal Send screen.
 - **New Core versions:** the contract check (plan §11.2) compares the classification with the `help` list of the node that the build contains. Unclassified commands are reported as a warning in dev and nightly builds and fail release builds. Independent of that, it enforces invariants (for example `sendtoaddress` stays Danger or stricter, `stop` stays Blocked), so the classification cannot be weakened by accident.
 
@@ -102,9 +107,10 @@ These three commands are supported. The node does not confine their paths, so th
 - **No overwriting:** the console refuses a destination that already exists. `backupwallet` overwrites silently if the console does not check (verified), `dumptxoutset` refuses by itself.
 - **Backups only for passphrase-protected wallets:** before `backupwallet` runs, the console reads `getwalletinfo` for the target wallet. If `unlocked_until` is missing, the wallet has no passphrase, and the console refuses with an explanation and a pointer to encrypting the wallet first. Wallets created by the app always have a passphrase. The check also covers the case that a wallet was created without one through the console.
 - **After a backup:** the console offers "Save to..." through the Android Storage Access Framework and "Share", and lists the files in `exports/` with a delete action. The backup file stays encrypted, because the wallet is.
-- **Restore:** `restorewallet` reads from `exports/` or from an `imports/` staging directory that the user filled through the Storage Access Framework. After the restore, the console checks `unlocked_until` again. If the restored wallet is not passphrase-protected, the console warns and offers to set a passphrase right away. A restored backup of an encrypted wallet stays encrypted and shows the same balance (verified).
+- **Restore:** `restorewallet` reads from `exports/` or from an `imports/` staging directory that the user filled through the Storage Access Framework. After the restore, the console checks `unlocked_until` again. If the restored wallet is not passphrase-protected, the restore still runs, and the console then requires a passphrase before the wallet can be used: a dialog asks for it immediately, the wallet stays unavailable in the Wallet section and backups stay refused until it is set, and cancelling unloads the wallet. A restored backup of an encrypted wallet stays encrypted and shows the same balance (verified).
 - **UTXO snapshot dump:** `dumptxoutset` is allowed with `type=latest` only. `type=rollback` is Blocked because it temporarily rewinds the chain, which is unsafe on a pruned phone node. The console checks free space against the storage floor first, runs the command as a long-running job with progress, and offers "Save to..." afterwards. The file contains public chain data only.
-- **Housekeeping:** files in `exports/` are listed with their age. Snapshot dumps are deleted automatically after 7 days (**open**, see §10). Wallet backups are never deleted automatically, the user decides.
+- **Housekeeping:** files in `exports/` are listed with their age. UTXO snapshot dumps that the user created by hand with `dumptxoutset` are deleted automatically after 7 days (`auto_delete_days` in the classification). Wallet backups are never deleted automatically, the user decides. The automatic checkpoint snapshots of the node (every 197,280 blocks, in the node's own `snapshots/` directory) are not part of `exports/` and are never touched by this housekeeping, they stay until the node replaces them at the next checkpoint.
+- **`createwallet` requires a passphrase:** the console refuses `createwallet` unless the `passphrase` argument is present and not empty, so that no unprotected wallet can exist that could not be backed up. This also refuses watch-only wallets (`disable_private_keys`), because a wallet without private keys cannot carry a passphrase. A user who needs a watch-only wallet imports the descriptors into an encrypted wallet instead.
 - All file commands are Danger tier (`restorewallet`, `dumptxoutset`) or Confirm tier with a guard (`backupwallet`).
 
 ## 8. Interaction With the Supervisor and the Wallet UI
@@ -121,18 +127,14 @@ These three commands are supported. The node does not confine their paths, so th
 
 ## 10. Open Questions
 
-1. Wording and friction of the Danger confirmation: a typed token to switch it on and a delayed run button per command are proposed here, the exact texts and delays need a usability and security review.
-2. Default inactivity timeout of an Expert session (30 minutes proposed).
-3. A backup file of a restored wallet that turns out to be unencrypted: refuse the restore, or restore and then require a passphrase (proposed)?
-4. Retention of files in `exports/`: 7 days for snapshot dumps and manual deletion for wallet backups are proposed.
-5. Should `createwallet` through the console refuse to create a wallet without a passphrase, since such a wallet cannot be backed up?
+None. The questions of the first draft are decided (§1.1). The exact texts and delays of the Danger dialog still go through a usability and security review before release (§12).
 
 ## 11. Test Strategy
 
 - **Parser:** quoting, JSON arrays and objects, named arguments, invalid input, very long lines.
 - **Classification:** `native-build/contract-check.py` already verifies the classification file against the node's `help` list, enforces the invariants and checks argument rules (`listdescriptors` with `private`, `gethdkeys` with `options.private`, `dumptxoutset` with `rollback`). The app additionally tests that unknown and hidden commands resolve to Confirm.
 - **Gating:** Blocked commands cannot be sent through any code path of the console, Danger commands need the Danger switch and the per-command dialog.
-- **File commands:** path validation (outside `exports/`, `..`, symlinks, existing files), the passphrase guard for `backupwallet` (refused for an unencrypted wallet, allowed for an encrypted one), restore round trip with balance check, `dumptxoutset` with `rollback` refused, free-space check.
+- **File commands:** path validation (outside `exports/`, `..`, symlinks, existing files), the passphrase guard for `backupwallet` (refused for an unencrypted wallet, allowed for an encrypted one), restore round trip with balance check, restore of an unencrypted backup forces a passphrase, `dumptxoutset` with `rollback` refused, free-space check, `createwallet` without a passphrase refused, manual dumps deleted after 7 days while the node's automatic snapshots are untouched.
 - **History:** secrets masked, key-revealing results not stored, encryption at rest, rotation removes entries older than the retention period, delete action, not part of Android backup.
 - **Secrets:** no sensitive text in logs and crash reports, `FLAG_SECURE` on the console screen, relock of every console-unlocked wallet when leaving the console or backgrounding the app.
 - **Robustness:** a very large result does not exhaust memory, cancel works for `rescanblockchain`, a console command does not delay the supervisor's polling.
@@ -145,7 +147,7 @@ These three commands are supported. The node does not confine their paths, so th
 - Phase 4: external security review of the console and native speaker review of its texts.
 
 - [x] Classification file derived from the `help` list, with argument rules and invariants
-- [x] Contract check reports unclassified commands (warning in dev, failure in release) and enforces invariants
+- [x] Contract check reports unclassified commands (warning in dev, failure in release), enforces invariants and verifies the guards (`createwallet` passphrase, encrypted-only backups, path arguments, auto delete)
 - [ ] Expert mode gating (confirmation, device authentication once per session, session timeout)
 - [ ] Danger switch and per-command confirmation dialog
 - [ ] Console UI with autocomplete, help viewer, wallet selector, paging, cancel
