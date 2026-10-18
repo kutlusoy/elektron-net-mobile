@@ -1,10 +1,10 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.2 (draft)
+- **Version:** 0.3 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
-- **Reference implementation:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) `electrum/gui/qml/components/` (Electrum's Android screens: `WalletMainView`, `History`, `ReceiveDialog`, `SendDialog`, `ConfirmTxDialog`, `TxDetails`, `Addresses`, `Preferences`, `NetworkOverview`, `wizard/`), this repository `app/src/main/java/org/elektronnet/mobile/ui/`
-- **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (flows, address safety wording, strings)
+- **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
+- **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (the project's light wallet; only its address safety wording is kept consistent, no code or screens are taken)
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) (§3.3, §3.4, §8), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md), [`guideline-expert-console.md`](./guideline-expert-console.md)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet
 
@@ -14,7 +14,7 @@ Requirement levels follow common practice: **MUST** = mandatory for correct/safe
 
 ## 1. Goal and Decisions
 
-The app must be intuitive and simple for everyday wallet users. The layout may follow the Electrum wallet, whose Android screens already exist in the project's own fork (decided October 18, 2026). No third-party commercial wallet is used as a reference, and no third-party screens, assets or texts are copied. The node is the product's strength, but a user who only wants to receive and send never has to understand it.
+The app must be intuitive and simple for everyday wallet users. The layout follows the common conventions of mobile wallets on the market (decided October 18, 2026). Only the general UX pattern is used as inspiration. No code, screens, icons, assets or texts of any specific product are taken, neither from commercial nor from open source wallets, and no product is named as a template. The node is the product's strength, but a user who only wants to receive and send never has to understand it.
 
 | Topic | Decision |
 |---|---|
@@ -26,11 +26,20 @@ The app must be intuitive and simple for everyday wallet users. The layout may f
 
 ## 2. Reference Patterns
 
-| Source | What we take | What we leave |
-|---|---|---|
-| Electrum Android (reviewed in `elektron-net-electrum`) | Main view with balance and history, Receive and Send as the two primary buttons, address and QR dialog with amount and label, confirm dialog with fee choice, transaction details, new-wallet wizard (seed, confirmation, password) | Expert screens as first-level menu items (addresses and coins, channels, sweep, sign message), server configuration, multi-wallet management |
+The inspiration is the shared vocabulary that everyday users already know from mobile wallets in general:
 
-The goal is familiarity with common wallet conventions (balance on top, Receive and Send as the main actions, a transaction list), not a copy of any product. Screens, icons and texts are written for this project. Visual style comes from the design system guideline.
+| Convention | How it is used here |
+|---|---|
+| One balance card at the top of the home screen | §6.1 |
+| Receive and Send as the two primary actions, large and side by side | §6.1 |
+| Transaction list below, grouped by day, with in and out icons | §6.1 |
+| Receive screen with a large QR code, copy and share | §6.2 |
+| Send as a short guided flow ending in a review screen | §6.3 |
+| Recovery phrase shown once, confirmed with a short quiz | §5 |
+| Settings as a short grouped list with toggles | §6.6 |
+| Small connection indicator on the home screen | §4 |
+
+The goal is familiarity with these conventions, not a copy of any product. Screens, icons, texts and flows are written for this project and for its own node model. Visual style comes from the design system guideline.
 
 ## 3. Principles
 
