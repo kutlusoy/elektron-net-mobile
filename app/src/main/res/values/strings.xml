@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_title">Wallet</string>
+    <string name="home_node_section">Node</string>
+    <string name="home_placeholder">The node and wallet screens are not built yet.</string>
+    <string name="testnet_bar">TESTNET, coins have no value</string>
+    <string name="chain_label">Chain: %1$s</string>
+</resources>
