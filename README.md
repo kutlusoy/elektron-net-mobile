@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.16 (draft)
+- **Version:** 0.17 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -104,7 +104,7 @@ Do not clear app data if you want to keep the synchronized node and wallet datab
 
 ### Releases
 
-Signed APKs are published under Releases as "Elektron Mobile v<version>", built by `.github/workflows/release.yml` from a pushed tag or a manual run, with the node built fresh from `elektron-net` (see [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) §6.1). Each release has the mainnet APK, the testnet APK and `SHA256SUMS.txt`.
+Signed APKs are published under Releases as "Elektron Mobile v<version>", built by `.github/workflows/release.yml` from a pushed tag or a manual run, with the node built fresh from `elektron-net` (see [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) §6.1). Each release has the mainnet APK, the testnet APK and `SHA256SUMS.txt`. Versions look like `v4.0.4-m0.1.0`: the Elektron Net node version, then `m` and the wallet version, so the wallet can be updated without a new node (distribution guideline §8.1).
 
 ## 7. Repository structure (planned)
 

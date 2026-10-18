@@ -18,6 +18,8 @@ jobs:
         run: python3 -I tools/check-locales.py .
       - name: Randomness sources
         run: python3 -I tools/check-rng.py
+      - name: Version scheme
+        run: python3 -I tools/version.py --selftest
       - name: Build script tests
         run: bash native-build/tests/test-fetch-core.sh
 

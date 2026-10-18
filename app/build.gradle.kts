@@ -10,6 +10,7 @@ plugins {
 
 val shippedLocales = file("shipped-locales.txt").readLines().map { it.trim() }.filter { it.isNotEmpty() && !it.startsWith("#") }
 val designDir = rootProject.file("design")
+val mobileVersion = file("mobile-version.txt").readText().trim()
 
 abstract class GenThemeTask @Inject constructor(private val execOps: ExecOperations) : DefaultTask() {
     @get:InputFile
@@ -37,7 +38,9 @@ android {
         minSdk = 28
         targetSdk = 36
         versionCode = (findProperty("appVersionCode") as String?)?.toInt() ?: 1
-        versionName = (findProperty("appVersionName") as String?) ?: "0.1.0"
+        versionName = (findProperty("appVersionName") as String?) ?: "0.0.0-m$mobileVersion-dev"
+        buildConfigField("String", "MOBILE_VERSION", "\"$mobileVersion\"")
+        buildConfigField("String", "NODE_VERSION", "\"${(findProperty("appNodeVersion") as String?) ?: "dev"}\"")
         ndk { abiFilters += listOf("arm64-v8a", "x86_64") }
     }
 
