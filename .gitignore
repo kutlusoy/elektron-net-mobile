@@ -1,0 +1,4 @@
+native-build/build-cache/
+native-build/out/
+app/src/main/jniLibs/
+app/src/main/assets/core-manifest/
