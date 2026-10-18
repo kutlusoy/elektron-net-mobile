@@ -85,7 +85,7 @@ class PaymentUri(private val scheme: String, private val addresses: AddressCheck
     }
 
     private fun clean(value: String, max: Int): String =
-        value.filter { !it.isISOControl() && it.code !in BIDI_CONTROLS && it != '​' && it != '﻿' }.take(max)
+        value.filter { !it.isISOControl() && it.code !in BIDI_CONTROLS && it != '\u200B' && it != '\uFEFF' }.take(max)
 
     private companion object {
         const val MAX_LABEL = 64
