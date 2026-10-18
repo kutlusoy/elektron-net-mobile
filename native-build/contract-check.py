@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verifies that an elektrond binary still provides the interface the app depends on.
 
-Usage: contract-check.py <path to elektrond> [--contract contract/contract.json]
+Usage: contract-check.py <path to elektrond> [--contract contract/contract.json] [--tiers contract/console-tiers.json] [--strict-tiers]
 
 The binary must run on this machine (the host build, not the Android one).
 Exit status is 1 if any check fails.
@@ -167,7 +167,45 @@ def check_rpc_surface(node, contract):
             print(f"WARN optional rpc {method} not present")
 
 
-def check_mainnet(daemon, contract):
+TIER_ORDER = ["open", "confirm", "danger", "blocked"]
+
+
+def resolve_tier(entry, args):
+    tier = entry["tier"]
+    for rule in entry.get("rules", []):
+        value = args
+        for part in rule["when"]["arg"].split("."):
+            value = value.get(part) if isinstance(value, dict) else None
+        if value == rule["when"]["equals"]:
+            tier = rule["tier"]
+    return tier
+
+
+def listed_commands(node):
+    return [line.split()[0] for line in node.rpc("help").splitlines() if line.strip() and not line.startswith("==")]
+
+
+def check_console_tiers(node, contract, tiers, strict):
+    known = dict(tiers["commands"], **tiers["hidden_commands"])
+    record(all(e["tier"] in TIER_ORDER for e in known.values()), "console tiers use known tier names")
+    listed = listed_commands(node)
+    unclassified = [c for c in listed if c not in known]
+    if strict:
+        record(not unclassified, "every listed command has a console tier", ", ".join(unclassified))
+    elif unclassified:
+        print("WARN unclassified commands (treated as confirm): " + ", ".join(unclassified))
+    stale = [c for c in tiers["commands"] if c not in listed]
+    if stale:
+        print("INFO console tiers list commands the node no longer shows: " + ", ".join(stale))
+    for inv in contract["console_invariants"]:
+        entry = known.get(inv["command"])
+        tier = resolve_tier(entry, inv.get("args", {})) if entry else tiers["default_tier"]
+        ok = TIER_ORDER.index(tier) >= TIER_ORDER.index(inv["at_least"]) if inv["at_least"] != "open" \
+            else tier == "open"
+        record(ok, f"console tier of {inv['command']} {inv.get('args', '')}".strip(), f"{tier}, need {inv['at_least']}")
+
+
+def check_mainnet(daemon, contract, tiers, strict):
     node = Node(daemon, "main")
     try:
         node.start()
@@ -184,6 +222,7 @@ def check_mainnet(daemon, contract):
         for field in contract["networkinfo_fields"]:
             record(field in net, f"getnetworkinfo.{field}", "missing")
         check_rpc_surface(node, contract)
+        check_console_tiers(node, contract, tiers, strict)
     finally:
         node.cleanup()
 
@@ -246,6 +285,39 @@ def check_recovery(node, contract):
     record(restored == expected, "rescanutxoset restores the full balance", f"restored {restored}, expected {expected}")
 
 
+def check_backup_and_dump(node):
+    exports = os.path.join(node.datadir, "exports")
+    os.makedirs(exports)
+
+    node.rpc("createwallet", wallet_name="plain")
+    record("unlocked_until" not in node.rpc("getwalletinfo", wallet="plain"),
+           "an unencrypted wallet has no unlocked_until")
+    record("unlocked_until" in node.rpc("getwalletinfo", wallet="app"), "an encrypted wallet reports unlocked_until")
+
+    backup = os.path.join(exports, "app.bak")
+    node.rpc("backupwallet", wallet="app", destination=backup)
+    node.rpc("restorewallet", wallet_name="app_restored", backup_file=backup)
+    restored = node.rpc("getwalletinfo", wallet="app_restored")
+    record("unlocked_until" in restored, "a restored backup is still encrypted")
+    record(node.rpc("getbalances", wallet="app_restored")["mine"]["trusted"]
+           == node.rpc("getbalances", wallet="app")["mine"]["trusted"], "a restored backup shows the same balance")
+    try:
+        node.rpc("backupwallet", wallet="app", destination=backup)
+        print("INFO backupwallet overwrites an existing file, the app must refuse existing paths")
+    except RpcError:
+        print("INFO backupwallet refuses to overwrite an existing file")
+
+    dump = os.path.join(exports, "utxo.dat")
+    result = node.rpc("dumptxoutset", path=dump, type="latest")
+    record(result["coins_written"] > 0 and os.path.getsize(dump) > 0, "dumptxoutset type latest writes a snapshot",
+           str(result))
+    try:
+        node.rpc("dumptxoutset", path=dump, type="latest")
+        print("INFO dumptxoutset overwrites an existing file")
+    except RpcError:
+        print("INFO dumptxoutset refuses to overwrite an existing file")
+
+
 def block_files(node):
     return sorted(os.path.basename(f) for f in glob.glob(os.path.join(node.datadir, node.chain, "blocks", "blk*.dat")))
 
@@ -301,6 +373,7 @@ def check_regtest(daemon, contract):
         record(balance > 0, "wallet reports a balance", str(balance))
 
         check_recovery(node, contract)
+        check_backup_and_dump(node)
 
         node.stop()
         node.start(extra_args=["-natpmp=0"])
@@ -315,12 +388,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("daemon")
     parser.add_argument("--contract", default=os.path.join(HERE, "contract", "contract.json"))
+    parser.add_argument("--tiers", default=os.path.join(HERE, "contract", "console-tiers.json"))
+    parser.add_argument("--strict-tiers", action="store_true", help="fail on commands without a console tier")
     args = parser.parse_args()
     with open(args.contract) as f:
         contract = json.load(f)
+    with open(args.tiers) as f:
+        tiers = json.load(f)
 
     check_cli_args(args.daemon, contract)
-    check_mainnet(args.daemon, contract)
+    check_mainnet(args.daemon, contract, tiers, args.strict_tiers)
     check_regtest(args.daemon, contract)
 
     failed = [r for r in RESULTS if not r[0]]

@@ -8,9 +8,8 @@
   "networkinfo_fields": ["connections", "connections_in", "connections_out", "localservices", "localservicesnames", "networkactive", "protocolversion", "subversion", "relayfee"],
   "node_args": [
     "-datadir", "-chain", "-server", "-rpcauth", "-rpcbind", "-rpcallowip", "-rpcport", "-rpccookiefile",
-    "-printtoconsole", "-dbcache", "-maxconnections", "-maxmempool", "-listen", "-blocksonly",
-    "-maxuploadtarget", "-fallbackfee", "-natpmp", "-networkactive", "-fastprune",
-    "-connect", "-dnsseed", "-fixedseeds", "-discover", "-port"
+    "-printtoconsole", "-dbcache", "-maxconnections", "-maxmempool", "-listen", "-blocksonly", "-maxuploadtarget", "-fallbackfee",
+    "-natpmp", "-networkactive", "-fastprune", "-connect", "-dnsseed", "-fixedseeds", "-discover", "-port"
   ],
   "rpc": {
     "getblockchaininfo": {},
@@ -53,7 +52,33 @@
     "getwalletinfo": {},
     "gettransaction": {"args": ["txid"]},
     "listtransactions": {"args": ["count", "skip"]},
-    "backupwallet": {"args": ["destination"]}
+    "backupwallet": {"args": ["destination"]},
+    "dumptxoutset": {"args": ["path", "type"]},
+    "restorewallet": {"args": ["wallet_name", "backup_file"]},
+    "gethdkeys": {"args": ["options"]}
   },
-  "optional_rpc": ["rescanutxoset"]
+  "optional_rpc": ["rescanutxoset"],
+  "console_invariants": [
+    {"command": "stop", "at_least": "blocked"},
+    {"command": "loadtxoutset", "at_least": "blocked"},
+    {"command": "sendtoaddress", "at_least": "danger"},
+    {"command": "send", "at_least": "danger"},
+    {"command": "sendmany", "at_least": "danger"},
+    {"command": "sendall", "at_least": "danger"},
+    {"command": "sendrawtransaction", "at_least": "danger"},
+    {"command": "walletpassphrase", "at_least": "danger"},
+    {"command": "walletpassphrasechange", "at_least": "danger"},
+    {"command": "encryptwallet", "at_least": "danger"},
+    {"command": "signrawtransactionwithwallet", "at_least": "danger"},
+    {"command": "signmessage", "at_least": "danger"},
+    {"command": "dumptxoutset", "at_least": "danger"},
+    {"command": "restorewallet", "at_least": "danger"},
+    {"command": "migratewallet", "at_least": "danger"},
+    {"command": "invalidateblock", "at_least": "danger"},
+    {"command": "reconsiderblock", "at_least": "danger"},
+    {"command": "getblockchaininfo", "at_least": "open"},
+    {"command": "listdescriptors", "args": {"private": true}, "at_least": "danger"},
+    {"command": "gethdkeys", "args": {"options": {"private": true}}, "at_least": "danger"},
+    {"command": "dumptxoutset", "args": {"type": "rollback"}, "at_least": "blocked"}
+  ]
 }

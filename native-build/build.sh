@@ -97,10 +97,12 @@ run_contract_check() {
         return
     fi
     rm -f "$out/contract.ok"
+    local strict_tiers=()
+    [[ $BUILD_TYPE == release ]] && strict_tiers=(--strict-tiers)
     echo "build: running contract check"
     docker run --rm "${container_user[@]}" \
         -v "$out:/host:ro" -v "$SCRIPT_DIR:/native-build:ro" \
-        "$IMAGE" python3 -I /native-build/contract-check.py /host/elektrond \
+        "$IMAGE" python3 -I /native-build/contract-check.py /host/elektrond "${strict_tiers[@]}" \
         || die "contract check failed, the Android build is not started"
     echo "$stamp" > "$out/contract.ok"
 }
