@@ -104,6 +104,9 @@
     <string name="fr_gen_phone">Generate with my phone</string>
     <string name="fr_gen_dice">Use my own dice (advanced)</string>
     <string name="fr_entropy_error">The random number generator of this device failed its safety check. No words were created. Try again or use dice.</string>
+    <string name="fr_gen_touch">Add my own randomness by drawing</string>
+    <string name="fr_touch_title">Draw on the screen</string>
+    <string name="fr_touch_body">Move your finger around the box in an irregular way until the bar is full. Your movements are mixed into the random numbers of the phone as extra protection. Straight lines, tiny movements and repeated patterns do not count.</string>
     <string name="fr_dice_title">Roll your own dice</string>
     <string name="fr_dice_body">Roll a normal six-sided die at least %1$d times and type each result, digits 1 to 6. Use a real die and shake it well. Do not make up numbers.</string>
     <string name="fr_dice_label">Dice rolls</string>

@@ -2,7 +2,7 @@ package org.elektronnet.mobile.wallet
 
 enum class FirstRunStep {
     Welcome, HowItWorks, Network, Notifications,
-    PhraseIntro, PhraseDice, PhraseShow, PhraseQuiz, PassphraseNew, Creating,
+    PhraseIntro, PhraseDice, PhraseTouch, PhraseShow, PhraseQuiz, PassphraseNew, Creating,
     RestoreEnter, PassphraseRestore, Restoring, Done,
 }
 
@@ -19,7 +19,7 @@ object FirstRunFlow {
         FirstRunStep.HowItWorks -> state.copy(step = FirstRunStep.Welcome)
         FirstRunStep.Network -> state.copy(step = FirstRunStep.Notifications)
         FirstRunStep.Notifications -> state.copy(step = if (state.restore) FirstRunStep.RestoreEnter else FirstRunStep.PhraseIntro)
-        FirstRunStep.PhraseIntro, FirstRunStep.PhraseDice -> state.copy(step = FirstRunStep.PhraseShow)
+        FirstRunStep.PhraseIntro, FirstRunStep.PhraseDice, FirstRunStep.PhraseTouch -> state.copy(step = FirstRunStep.PhraseShow)
         FirstRunStep.PhraseShow -> state.copy(step = FirstRunStep.PhraseQuiz)
         FirstRunStep.PhraseQuiz -> state.copy(step = FirstRunStep.PassphraseNew)
         FirstRunStep.PassphraseNew -> state.copy(step = FirstRunStep.Creating, failure = null)
@@ -36,7 +36,7 @@ object FirstRunFlow {
         FirstRunStep.Network -> state.copy(step = FirstRunStep.Welcome, restore = false)
         FirstRunStep.Notifications -> state.copy(step = FirstRunStep.Network)
         FirstRunStep.PhraseIntro -> state.copy(step = FirstRunStep.Notifications)
-        FirstRunStep.PhraseDice -> state.copy(step = FirstRunStep.PhraseIntro)
+        FirstRunStep.PhraseDice, FirstRunStep.PhraseTouch -> state.copy(step = FirstRunStep.PhraseIntro)
         FirstRunStep.PhraseShow -> state.copy(step = FirstRunStep.PhraseIntro, phrase = emptyList())
         FirstRunStep.PhraseQuiz -> state.copy(step = FirstRunStep.PhraseShow)
         FirstRunStep.PassphraseNew -> state.copy(step = FirstRunStep.PhraseQuiz)

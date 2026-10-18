@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Entropy and Randomness
 
-- **Version:** 0.1 (draft)
+- **Version:** 0.2 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, security reviewers, auditors, users who want to verify their own wallet creation
 - **Reference implementation:** `app/src/main/java/org/elektronnet/mobile/wallet/Entropy.kt`, `Bip39.kt`, `Bip32.kt`, `WalletBootstrap.kt`, `app/src/test/java/org/elektronnet/mobile/wallet/EntropyTest.kt` and `tools/check-rng.py` in this repository
@@ -22,6 +22,7 @@ A wallet is only as strong as the randomness behind its recovery phrase. Weak ra
 | Optional strength | 24 words (256 bits). |
 | Sources | The operating system generator plus a second, independent read of `/dev/urandom`, both health checked and mixed. |
 | User dice | Supported from the first release. The user rolls a normal six-sided die. |
+| Touch drawing | Optional extra input, mixed into the system generator. It never counts toward the 128 bit floor (§4). |
 | Failure behavior | If the generator fails a check, no phrase is created. There is no fallback to a weaker source. |
 | Time, counters, device ids, sensors | Never used as entropy. |
 
@@ -76,7 +77,18 @@ On rejection the user keeps rolling or re-rolls. The text explains in plain word
 - Do not photograph the dice or the screen. The dice rolls are as secret as the recovery phrase.
 - The input screen blocks screenshots (`FLAG_SECURE`) like all phrase screens.
 
-## 4. From Entropy to Wallet
+## 4. Touch Drawing (extra input)
+
+The user can move a finger around a box on the screen until a bar is full. The movements are hashed into the phone generator output. This is an additional safeguard, not a replacement.
+
+- **MUST:** the 128 bit floor always comes from the system generator (§2). The touch data is only added to it with `SHA-512("elektron-touch-mix-v1" || system draw || touch digest)`. A weak or predictable touch input therefore cannot lower the strength, and a failed system health check still stops creation (unit test `touchDataOnlyAddsToTheSystemFloor`).
+- **Why it cannot be the only source:** finger movements are slow, correlated and partly predictable (smooth curves, screen edges, habits). An honest estimate per sample is a fraction of a bit, and nothing can measure true entropy from a sample. A bar that claimed "128 bits reached" would be a false promise. The app says plainly that the drawing is extra protection on top of the phone generator.
+- **Per sample data:** position, time in nanoseconds and pressure of every touch event are hashed. Raw data is not stored and the pool is cleared when the step ends.
+- **Progress bar (heuristic):** each accepted sample is credited with 0.5 bit, the bar is full at 256 credited bits (about 512 accepted samples, a few seconds of drawing). This is deliberately conservative: even if the touch data were worth a quarter of that, the combined result stays at least as strong as the system generator alone.
+- **What does not count:** a sample counts only if it moved at least 4 pixels and at least 4 ms passed since the last counted sample. Repeating an identical step, drawing a perfectly straight line for more than 12 steps, holding still or tiny jitter earn nothing, and a scripted burst of events earns at most one sample.
+- The step is optional. "Generate with my phone" without drawing is equally safe, because the floor does not depend on the drawing.
+
+## 5. From Entropy to Wallet
 
 ```text
 entropy (16 or 32 bytes) -> BIP-39 words (checksum) -> seed (PBKDF2-HMAC-SHA512, 2048 rounds)
@@ -88,14 +100,15 @@ entropy (16 or 32 bytes) -> BIP-39 words (checksum) -> seed (PBKDF2-HMAC-SHA512,
 - The master key is checked to be in range (not zero, below the curve order). The extremely unlikely failure stops creation instead of continuing.
 - The recovery phrase is never shown again after the backup quiz (plan §8.1). The quiz positions are not secret and use a normal secure generator.
 
-## 5. Tests
+## 6. Tests
 
 - **Unit tests (CI, every change):** health check rejects zero, constant and repeating sources; a failing optional source is ignored; a failing required source stops creation; dice-only output equals the independent SHA-256 vector; mixed output changes with either input; the minimum rolls reach the target bits and one roll fewer does not; every dice rule fires on a crafted input; the false reject rate of honest dice stays below 1 percent over 4,000 trials.
+- **Touch tests:** human-like motion fills the bar, standing still, a straight line and a scripted burst earn almost nothing, the output depends on every input (position, time), and a broken system generator still stops creation even with full touch data.
 - **Distribution test:** thousands of phrases from the real generator are all distinct and the bit balance stays within one percent of one half. This is a smoke test, not proof of randomness.
 - **Static check:** `tools/check-rng.py` in CI and as a Gradle `preBuild` dependency.
 - **Release gate:** an independent review of `Entropy.kt` and the creation flow before the public beta (plan §13, Phase 5). A device test confirms that `SecureRandom` and `/dev/urandom` are readable on the supported Android versions and ABIs.
 
-## 6. Risks
+## 7. Risks
 
 | Risk | Impact | Mitigation |
 |---|---|---|
@@ -104,19 +117,20 @@ entropy (16 or 32 bytes) -> BIP-39 words (checksum) -> seed (PBKDF2-HMAC-SHA512,
 | Screenshot or clipboard leak of dice or words | Fund loss | `FLAG_SECURE`, no clipboard writes of secrets |
 | Compromised device while creating the wallet | Fund loss | Cannot be fully solved on a phone, documented in the security summary, advise a clean device and hardware wallets for large amounts |
 
-## 7. Open Questions
+## 8. Open Questions
 
 | # | Question | Recommendation |
 |---|---|---|
 | R1 | Offer physical coin flips or card shuffles as other manual sources? | No in v1. Dice are well understood and checkable. |
 | R2 | Hold the phrase in a `CharArray` or `ByteArray` instead of strings to allow zeroing? | Yes in Phase 4 hardening, as far as the Compose text layer allows. |
-| R3 | Add a camera or sensor based source as a third mixed input? | No. More sources add code and review cost without raising the guaranteed floor. |
+| R3 | Add a camera or sensor based source as another mixed input? | Touch drawing is included (§4) because users expect it. Camera and motion sensors stay out: they add permissions and code without raising the guaranteed floor. |
 
-## 8. Checklist
+## 9. Checklist
 
 - [x] System entropy with two sources, health checks, no weak fallback
 - [x] Dice mode with 50 or 100 rolls, mixed and dice-only derivation
 - [x] Input quality checks for dice
+- [x] Touch drawing as extra mixed input, never counted toward the floor
 - [x] Static check against weak randomness APIs in CI and Gradle
 - [x] BIP-39 and BIP-32 test vectors
 - [ ] Independent review of the entropy module

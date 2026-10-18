@@ -8,7 +8,16 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,6 +64,7 @@ import org.elektronnet.mobile.wallet.DiceCheck
 import org.elektronnet.mobile.wallet.DiceIssue
 import org.elektronnet.mobile.wallet.EntropyGenerator
 import org.elektronnet.mobile.wallet.PhraseStrength
+import org.elektronnet.mobile.wallet.TouchEntropy
 import org.elektronnet.mobile.wallet.BootstrapFailure
 import org.elektronnet.mobile.wallet.BootstrapResult
 import org.elektronnet.mobile.wallet.FirstRunFlow
@@ -77,7 +87,7 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
         Bip39(context.assets.open("bip39/english.txt").bufferedReader().readLines().filter { it.isNotBlank() })
     }
     val secureStep = state.step in setOf(
-        FirstRunStep.PhraseDice, FirstRunStep.PhraseShow, FirstRunStep.PhraseQuiz, FirstRunStep.PassphraseNew,
+        FirstRunStep.PhraseDice, FirstRunStep.PhraseTouch, FirstRunStep.PhraseShow, FirstRunStep.PhraseQuiz, FirstRunStep.PassphraseNew,
         FirstRunStep.RestoreEnter, FirstRunStep.PassphraseRestore, FirstRunStep.Restoring,
     )
     DisposableEffect(secureStep) {
@@ -209,9 +219,66 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.fr_gen_phone)) }
                 OutlinedButton(
+                    onClick = { state = state.copy(step = FirstRunStep.PhraseTouch) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.fr_gen_touch)) }
+                OutlinedButton(
                     onClick = { state = state.copy(step = FirstRunStep.PhraseDice) },
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.fr_gen_dice)) }
+            }
+            FirstRunStep.PhraseTouch -> {
+                val touch = remember { TouchEntropy() }
+                var progress by remember { mutableStateOf(0f) }
+                var trail by remember { mutableStateOf(listOf<Offset>()) }
+                val lineColor = MaterialTheme.colorScheme.primary
+                Text(stringResource(R.string.fr_touch_title), style = MaterialTheme.typography.headlineMedium)
+                Text(stringResource(R.string.fr_touch_body))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(320.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .pointerInput(Unit) {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    event.changes.forEach { change ->
+                                        if (change.pressed) {
+                                            touch.add(change.position.x, change.position.y, System.nanoTime(), change.pressure)
+                                            progress = touch.progress
+                                            trail = (trail + change.position).takeLast(160)
+                                            change.consume()
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                ) {
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        trail.zipWithNext { a, b -> drawLine(lineColor, a, b, strokeWidth = 4f) }
+                    }
+                }
+                LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
+                if (entropyError) Text(stringResource(R.string.fr_entropy_error), color = MaterialTheme.colorScheme.error)
+                Button(
+                    onClick = {
+                        entropyError = false
+                        val extra = touch.finish()
+                        val entropy = runCatching { entropyGenerator.fromSystem(strength, extra) }.getOrNull()
+                        extra.fill(0)
+                        if (entropy == null) {
+                            entropyError = true
+                        } else {
+                            val words = bip39.fromEntropy(entropy)
+                            entropy.fill(0)
+                            state = FirstRunFlow.next(state.copy(phrase = words))
+                        }
+                    },
+                    enabled = progress >= 1f,
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.fr_dice_create)) }
             }
             FirstRunStep.PhraseDice -> {
                 var rolls by remember { mutableStateOf("") }

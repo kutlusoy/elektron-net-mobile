@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.12 (draft)
+- **Version:** 0.13 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -19,7 +19,7 @@
 - Full validating node (`elektrond`) bundled in the app: header and block validation, per-block UTXO attestation checks, mempool, transaction relay, mandatory pruning.
 - Automatic checkpoint snapshots and P2P snapshot bootstrap, as implemented by the Elektron Net node itself.
 - Background operation as a foreground service with resource profiles, battery, network and storage limits. The user can pause or stop the node at any time.
-- True entropy for the recovery phrase: at least 128 bits, health-checked system generators, no weak fallback, and an optional mode where you roll your own dice (50 rolls for 12 words).
+- True entropy for the recovery phrase: at least 128 bits, health-checked system generators, no weak fallback, an optional step where you draw on the screen for extra randomness, and a mode where you roll your own dice (50 rolls for 12 words).
 - Non-custodial wallet on the node's own descriptor wallet: native SegWit (`be1q...`) addresses, BIP-39 recovery phrase, SLIP-44 coin type 1370 plus legacy path recovery.
 - Review-before-sign transaction flow (PSBT), fee policy re-check before signing, coin control, QR receive and scan.
 - Node dashboard: sync phase, height, peers, disk usage, prune height, snapshot state.

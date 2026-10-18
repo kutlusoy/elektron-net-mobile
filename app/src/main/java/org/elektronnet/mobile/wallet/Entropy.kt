@@ -61,10 +61,16 @@ class SystemEntropy(
 }
 
 class EntropyGenerator(private val system: SystemEntropy = SystemEntropy()) {
-    fun fromSystem(strength: PhraseStrength): ByteArray {
+    fun fromSystem(strength: PhraseStrength, extra: ByteArray? = null): ByteArray {
         val draw = system.draw(strength.bytes)
         check(draw.size == strength.bytes)
-        return draw
+        if (extra == null) return draw
+        val sha = MessageDigest.getInstance("SHA-512")
+        sha.update(TOUCH_DOMAIN)
+        sha.update(draw)
+        sha.update(extra)
+        draw.fill(0)
+        return sha.digest().copyOf(strength.bytes)
     }
 
     fun fromDice(strength: PhraseStrength, rolls: String, mixSystem: Boolean): ByteArray {
@@ -82,6 +88,7 @@ class EntropyGenerator(private val system: SystemEntropy = SystemEntropy()) {
 
     private companion object {
         val MIX_DOMAIN = "elektron-dice-mix-v1".toByteArray()
+        val TOUCH_DOMAIN = "elektron-touch-mix-v1".toByteArray()
     }
 }
 

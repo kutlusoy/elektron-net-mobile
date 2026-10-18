@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.5 (draft)
+- **Version:** 0.6 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -71,14 +71,14 @@ Bottom bar with three items, always visible except during Send and the onboardin
 
 ```text
 Welcome  ->  Create new wallet  /  Restore wallet
-Create:  explain recovery phrase  ->  generate (phone or own dice)  ->  show 12 or 24 words  ->  quiz (3 words)  ->  choose passphrase  ->  optional biometric  ->  Home
+Create:  explain recovery phrase  ->  generate (phone, drawing or own dice)  ->  show 12 or 24 words  ->  quiz (3 words)  ->  choose passphrase  ->  optional biometric  ->  Home
 Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when your node has caught up"  ->  Home with progress
 ```
 
 - **Welcome:** one sentence on what the app is ("Your own wallet with your own copy of the network. No account, no server.") and the two buttons. A short link "How does this work?" opens a one-screen explainer about the node (what it does, that it syncs in the background, that it uses data and battery, that the user controls it).
 - **Network question, once:** "Sync only on Wi-Fi? (recommended)" with a short note about mobile data. This sets `allowMetered`. The default is Wi-Fi only.
 - **Notification permission:** an explainer screen before the system dialog: "The node runs in the background and shows its status in a notification. You can pause or stop it there."
-- **Randomness:** the default is the phone generator with health checks. An advanced option lets the user roll their own dice (50 rolls for 12 words, 100 for 24), either mixed with the phone generator or dice only. A failed generator check creates no phrase and says so. Full rules: [`guideline-entropy-and-randomness.md`](./guideline-entropy-and-randomness.md).
+- **Randomness:** the default is the phone generator with health checks. An optional step lets the user draw on the screen until a bar is full, which adds extra randomness on top of the phone generator. An advanced option lets the user roll their own dice (50 rolls for 12 words, 100 for 24), either mixed with the phone generator or dice only. A failed generator check creates no phrase and says so. Full rules: [`guideline-entropy-and-randomness.md`](./guideline-entropy-and-randomness.md).
 - **Recovery phrase:** shown on a screen with screenshots blocked (`FLAG_SECURE`). Wording: "Write these words down on paper. Anyone with them can take your coins. We cannot recover them for you." The quiz asks for three random positions and does not allow skipping in v1. The phrase is never shown again after the quiz (plan §8.1). Settings, Security has a "Check my backup" action that repeats the quiz.
 - **Passphrase:** the user chooses a wallet passphrase that is needed to send. The text explains that this is not the recovery phrase. A strength hint is shown, no composition rules beyond a minimum length. Biometric unlock is offered afterwards as an opt-in switch with the trade-off sentence from plan §8.1.
 - **Restore while the node is syncing:** restore needs a synchronized node (plan §8.3). The screen says so plainly and shows the same progress card as the home screen. The app keeps the entered phrase only until the restore finishes if the user chooses "Restore automatically when ready", otherwise the user returns later and enters it again. Decision to confirm (§12, U3).
