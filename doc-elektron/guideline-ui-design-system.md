@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UI Design System
 
-- **Version:** 0.2 (draft)
+- **Version:** 0.3 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, security reviewers
 - **Reference implementation:** [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) `osclass/osclasselektron/css/style.css` (palette source, commit `37aae603`), `design/palettes.json` and `design/check-contrast.py` in this repository (machine readable palettes and the legibility gate)
@@ -104,7 +104,7 @@ Further rules:
 
 Mainnet and testnet are separate builds with separate application IDs (see [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md)).
 
-- **MUST:** the testnet build shows a permanent, non-dismissable "TESTNET, coins have no value" bar in a fixed warning color on every screen, and uses a different launcher icon color and app name ("Elektron Testnet").
+- **MUST:** the testnet build shows a permanent, non-dismissable "TESTNET, coins have no value" bar in a fixed warning color on every screen, and uses a different launcher icon color and app name ("Elektron (T)", the mainnet app is called "Elektron").
 - **MUST:** the testnet build uses its own default theme (Hacker Red or Synthwave is suggested) so it cannot be mistaken for the mainnet app in screenshots.
 - The launcher icon is the official logo as an adaptive icon, drawn as vector drawables (no raster files), scaled into the safe zone. The mainnet icon keeps the logo colors (blue gradient, white mark) on the dark theme background. The testnet icon uses the same shape in dark grey on a light grey background, so the two apps are told apart at a glance on the home screen and in the app switcher. A monochrome layer for themed icons and the notification icon are derived from the same coin shape.
 - `design/gen-logo.py` regenerates all three drawables from the SVG. Changing the logo means replacing the SVG and running the script, no hand editing.
