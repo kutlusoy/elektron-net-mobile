@@ -474,7 +474,7 @@ elektron-net-mobile/
     src/main/jniLibs/{arm64-v8a,x86_64}/libelektrond.so
     src/main/res/                       strings (English default, plus the shipped locales, §3.5)
     shipped-locales.txt                 shipped locale list, English first
-    src/mainnet/, src/testnet/          flavor overrides (ID, name, chain, scheme, icon)
+    src/mainnet/, src/tnet/             flavor overrides (ID, name, chain, scheme, icon)
   native-build/                         reproducible NDK build of elektrond
     core-source.env                     Core repository URL, ref to track, NDK version
     fetch-core.sh                       resolves and fetches the current elektron-net source

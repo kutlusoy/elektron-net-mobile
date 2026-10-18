@@ -91,11 +91,11 @@ The storage saver default is set by `NODE_FASTPRUNE_DEFAULT` (default `1`). Prer
 
 # 2. Build the app: every build produces both flavors, mainnet and testnet
 gradle wrapper --gradle-version 8.14.3   # once, creates ./gradlew
-./gradlew assembleDebug                  # or only assembleMainnetDebug / assembleTestnetDebug
+./gradlew assembleDebug                  # or only assembleMainnetDebug / assembleTnetDebug
 
 # 3. Install without wiping node data
 adb install -r app/build/outputs/apk/mainnet/debug/app-mainnet-debug.apk
-adb install -r app/build/outputs/apk/testnet/debug/app-testnet-debug.apk   # optional, installs next to mainnet
+adb install -r app/build/outputs/apk/tnet/debug/app-tnet-debug.apk   # optional, installs next to mainnet
 ```
 
 The native node is built once per ABI and serves both flavors, so the testnet build adds almost no build time. CI builds and tests both flavors on every change.

@@ -27,7 +27,10 @@ data class Review(
     val totalLep: Long,
     val feeRate: BigDecimal,
     val inputs: Int,
-)
+) {
+    fun sameAs(other: Review): Boolean = address == other.address && amountLep == other.amountLep && feeLep == other.feeLep &&
+        changeLep == other.changeLep && totalLep == other.totalLep && inputs == other.inputs
+}
 
 class SignedSend(val psbt: String, val complete: Boolean)
 
@@ -121,7 +124,7 @@ class SendEngine(
 
     fun sign(prepared: PreparedSend, passphrase: String): SignedSend {
         val before = validate(prepared)
-        if (before != prepared.review) throw SendException(SendFailure.PsbtMismatch)
+        if (!before.sameAs(prepared.review)) throw SendException(SendFailure.PsbtMismatch)
         val floor = guard { FeeSource(rpc).floor() }
         if (floor > prepared.request.feeRate) throw SendException(SendFailure.PolicyChanged)
         var unlocked = false
@@ -138,7 +141,7 @@ class SendEngine(
             lockQuietly()
             unlocked = false
             val signed = processed["psbt"].toString()
-            if (validate(PreparedSend(signed, prepared.request, prepared.review, prepared.policyFloor, prepared.grossLep)) != prepared.review) {
+            if (!validate(PreparedSend(signed, prepared.request, prepared.review, prepared.policyFloor, prepared.grossLep)).sameAs(prepared.review)) {
                 throw SendException(SendFailure.PsbtMismatch)
             }
             val finalized = guard { rpc.call("finalizepsbt", listOf(signed, false), null) as Map<*, *> }

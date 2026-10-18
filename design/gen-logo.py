@@ -3,7 +3,7 @@
 
 Usage: gen-logo.py <app/src dir>
 Writes ic_launcher_foreground.xml and ic_launcher_monochrome.xml for the mainnet colors under main/res/drawable,
-ic_stat_node.xml (notification icon) under main/res/drawable, and a dark grey ic_launcher_foreground.xml under testnet/res/drawable.
+ic_stat_node.xml (notification icon) under main/res/drawable, and a dark grey ic_launcher_foreground.xml under tnet/res/drawable.
 """
 import math
 import os
@@ -174,7 +174,7 @@ def main():
     write(os.path.join(root, "main", "res", "drawable", "ic_launcher_foreground.xml"), foreground("main"))
     write(os.path.join(root, "main", "res", "drawable", "ic_launcher_monochrome.xml"), monochrome())
     write(os.path.join(root, "main", "res", "drawable", "ic_stat_node.xml"), status_icon())
-    write(os.path.join(root, "testnet", "res", "drawable", "ic_launcher_foreground.xml"), foreground("testnet"))
+    write(os.path.join(root, "tnet", "res", "drawable", "ic_launcher_foreground.xml"), foreground("testnet"))
 
 
 if __name__ == "__main__":
