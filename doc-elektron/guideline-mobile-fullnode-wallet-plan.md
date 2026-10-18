@@ -1,10 +1,10 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.1 (draft)
+- **Version:** 0.2 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
-- **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (light wallet, source of branding, address safety UX and strings), [`elektron-net-mempool`](https://github.com/kutlusoy/elektron-net-mempool) (explorer, deep links only), [`elektron-net-electrs`](https://github.com/kutlusoy/elektron-net-electrs) (not required by this app)
+- **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (light wallet, source of branding, address safety UX and strings), [`elektron-net-mempool`](https://github.com/kutlusoy/elektron-net-mempool) (explorer, deep links only)
 - **See also:** [`guideline-wallet-integration.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/guideline-wallet-integration.md), [`AUDIT_PRUNING_SNAPSHOT.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/AUDIT_PRUNING_SNAPSHOT.md), [`BITCOIN_CORE_DIFF.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/BITCOIN_CORE_DIFF.md), [`CHANGELOG-slip44-coin-type.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/CHANGELOG-slip44-coin-type.md), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet
 
@@ -25,11 +25,11 @@ Requirement levels follow common practice: **MUST** = mandatory for correct/safe
 
 **Out of scope for v1 (tracked in §17):** Lightning, hardware signer support, iOS, Tor/I2P, multi-wallet UI, fiat prices.
 
-**Why a full node instead of an Electrum-style client:** the light-client path requires `elektron-net-electrs` and a per-header SPV difficulty implementation including the Stoic Awakening rules (see `guideline-spv-header-difficulty-verification.md`). A full node validates everything itself, removes the server trust assumption, and makes both of those dependencies unnecessary for this app. The cost is storage, battery and bandwidth, which this plan budgets explicitly (§6, §7).
+**Why a full node instead of an Electrum-style client:** the light-client path requires an external Electrum-protocol server and a per-header SPV difficulty implementation including the Stoic Awakening rules (see `guideline-spv-header-difficulty-verification.md`). The app's own full node validates everything itself, removes the server trust assumption, and needs neither. No server infrastructure of any kind is required to run the app. The cost is storage, battery and bandwidth, which this plan budgets explicitly (§6, §7).
 
 ## 2. Findings From Source Review
 
-Verified against `kutlusoy/elektron-net@main` documentation and the reviewed concept document (an existing alpha Android implementation based on Core v4.0.5). Items marked **verify** MUST be confirmed against source before implementation starts.
+Verified against `kutlusoy/elektron-net@main` documentation and the reviewed concept document (an existing alpha Android implementation based on Core v4.0.5; this plan does not pin that version, see §11.1). Items marked **verify** MUST be confirmed against source before implementation starts.
 
 ### 2.1 Chain properties that shape the mobile design
 
@@ -89,7 +89,7 @@ Profiles map to `elektrond` startup arguments. The numbers below are starting hy
 
 - `-blocksonly` in the Foreground profile reduces bandwidth but also stops mempool-based unconfirmed-incoming display. The UI MUST say so.
 - All profiles use `-listen=1` only when on unmetered networks. Inbound connections behind carrier NAT will be rare, so no effort is spent on port mapping in v1.
-- Every argument above is a standard Core option inherited by the fork. **Verify** each one against `src/init.cpp` of the pinned tag.
+- Every argument above is a standard Core option inherited by the fork. **Verify** each one against `src/init.cpp` of the Core revision resolved at build time (§11.1).
 
 ## 4. Architecture
 
@@ -138,7 +138,7 @@ Any app on the device can attempt TCP connections to `127.0.0.1`. Therefore:
 
 - RPC MUST require authentication (`-rpcauth` or cookie), bound to `127.0.0.1`, `-rpcallowip=127.0.0.1`.
 - Wallet RPCs that move funds MUST additionally require the wallet passphrase to be unlocked. The app never leaves the wallet unlocked outside the signing window.
-- **Hardening option for Phase 3:** evaluate a Unix domain socket for RPC if the pinned Core base supports it (**verify**), which would remove the TCP surface entirely.
+- **Hardening option for Phase 3:** evaluate a Unix domain socket for RPC if the Core revision resolved at build time supports it (**verify**), which would remove the TCP surface entirely.
 - P2P port is not exposed on cellular by default (§3.2).
 
 ## 5. Node Lifecycle and Sync
@@ -285,7 +285,7 @@ Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4
 | S4 | Unlock window at most 10 s, `walletlock` in a `finally` path | MUST |
 | S5 | PSBT re-validation immediately before unlock | MUST |
 | S6 | No mnemonic or passphrase in logs, notifications, clipboard (or auto-clear clipboard after a short timeout for addresses) | MUST |
-| S7 | Native binary integrity: pinned Core tag, SHA-256 of `libelektrond.so` recorded in a build manifest and verified by the app at startup | MUST |
+| S7 | Native binary integrity: Core commit SHA resolved at build time and SHA-256 of `libelektrond.so` recorded in a build manifest, verified by the app at startup | MUST |
 | S8 | Touch-filtering against overlay attacks on confirmation buttons (`filterTouchesWhenObscured`) | SHOULD |
 | S9 | Rooted/instrumented device detection as a warning only | SHOULD |
 | S10 | Reproducible builds and signed releases with published hashes | SHOULD |
@@ -306,7 +306,8 @@ elektron-net-mobile/
     src/main/jniLibs/{arm64-v8a,x86_64}/libelektrond.so
     src/main/res/                       strings (en, de, es, fr, it)
   native-build/                         reproducible NDK build of elektrond
-    pins.env                            Core tag, NDK version, SHA-256 pins
+    core-source.env                     Core repository URL, ref to track, NDK version
+    fetch-core.sh                       resolves and fetches the current elektron-net source
     build.sh, install-core.sh, patches/
   doc-elektron/                         guidelines and reports (this file)
   .github/workflows/                    CI
@@ -318,12 +319,27 @@ elektron-net-mobile/
 
 ## 11. Native Build Plan
 
-- `elektron-net/depends/hosts` currently contains `darwin`, `freebsd`, `linux`, `mingw32`, `netbsd`, `openbsd` and no Android host. An NDK cross-build therefore needs its own toolchain file and dependency handling (Boost, libevent, sqlite or the wallet DB backend in use, zeromq disabled, no Qt, no GUI). First spike: build `elektrond` only, wallet enabled, `-DBUILD_GUI=OFF`, for `aarch64-linux-android` API 28 and `x86_64`. **Verify** the CMake options on the pinned tag.
+- `elektron-net/depends/hosts` currently contains `darwin`, `freebsd`, `linux`, `mingw32`, `netbsd`, `openbsd` and no Android host. An NDK cross-build therefore needs its own toolchain file and dependency handling (Boost, libevent, sqlite or the wallet DB backend in use, zeromq disabled, no Qt, no GUI). First spike: build `elektrond` only, wallet enabled, `-DBUILD_GUI=OFF`, for `aarch64-linux-android` API 28 and `x86_64`. **Verify** the CMake options on the fetched Core revision.
 - Output MUST be linked with 16 KB page-size compatibility (`-Wl,-z,max-page-size=16384`) to satisfy current Android and store requirements for native code.
 - Build is containerized and rootless. The output ownership problem seen with root-owned Docker output in the concept is avoided by running the container as the invoking user.
-- `pins.env` pins Core tag (start: `v4.0.5` or the current release at project start), NDK version, and the SHA-256 of every downloaded dependency. CI fails if a pin changes without an explicit commit touching it.
+- The Core source is not pinned to a fixed tag. See §11.1.
 - Patches: only what cannot be upstreamed yet (currently the `rescanutxoset` bridge, cross-repo item X1). The patch set and its SHA-256 are part of the build manifest so a stale binary is never reused.
-- Test the unmodified Core unit tests that matter for a mobile build where feasible (snapshot, prune, wallet recovery functional tests listed in `BITCOIN_CORE_DIFF.md` §5.7) on the host build of the same tag, and run a regtest integration suite against the x86_64 binary on an emulator.
+- Test the unmodified Core unit tests that matter for a mobile build where feasible (snapshot, prune, wallet recovery functional tests listed in `BITCOIN_CORE_DIFF.md` §5.7) on the host build of the same fetched Core revision, and run a regtest integration suite against the x86_64 binary on an emulator.
+
+### 11.1 Core source: always current, resolved on every build
+
+Requirement: the app always ships the node from the canonical repository [`kutlusoy/elektron-net`](https://github.com/kutlusoy/elektron-net). No copy of Core is vendored in this repository, and no old checkout is reused.
+
+- `native-build/fetch-core.sh` runs at the start of every build (local and CI). It resolves the tracked ref (`CORE_REF` in `core-source.env`, default `main`) to a commit SHA with `git ls-remote`, then clones or fetches that exact commit into a build cache and checks it out clean. A cached tree that does not match the freshly resolved SHA is discarded.
+- The native build checks the manifest of the previous output (`Core SHA`, patch set SHA-256, NDK version). The binary is rebuilt whenever any of them differs, so a stale `libelektrond.so` can never be reused (this keeps the safety property of the reviewed concept).
+- `CORE_REF` MAY be overridden (branch, tag or SHA) for debugging and for reproducing an older release. The default is always the current upstream state.
+- The build manifest records: Core repository URL, resolved commit SHA, commit date, patch set SHA-256, NDK version, builder image digest, SHA-256 of each produced `libelektrond.so`. The manifest is embedded in the APK and shown in the app's About/Node screen. This is what keeps "always current" auditable and reproducible after the fact.
+- Third-party dependencies of Core (Boost, libevent and so on) are taken from the fetched Core's own `depends` definitions and their hashes, not re-specified here.
+- **Contract check (build gate):** after building, a script runs the produced binary (x86_64 in CI, host build locally) in `-regtest` and verifies the interface the app depends on: required RPCs exist (`help <name>`), protocol version and network magic match what the app expects, wallet RPC argument shapes used by the app are unchanged, and checkpoint/snapshot behavior on regtest still works. A failing contract fails the build with a message naming the missing or changed item. This turns upstream changes into immediate build errors instead of runtime surprises.
+- **Chain-generation guard:** the contract check also reads the genesis hash from the binary. If it differs from the one recorded in the app's datadir marker schema, the build still succeeds but the app's datadir versioning (§5.4) will trigger the controlled reset flow on first start.
+- **Patch drift:** because the base moves on every build, a patch that no longer applies cleanly MUST fail the build loudly. It is never skipped or force-applied. Landing X1 upstream removes the only planned patch.
+- Nightly CI builds against Core `main` so breaking upstream changes are visible before a release is cut.
+- Consequence to accept explicitly: a release contains whatever upstream `main` was at build time. Upstream consensus changes therefore flow into the app automatically. Release builds MUST be cut only from a green contract check, and the resolved SHA is part of the release notes.
 
 ## 12. Cross-Repo Impact
 
@@ -336,9 +352,8 @@ elektron-net-mobile/
 | X5 | `elektron-net` | Wallet integration guideline: add the mobile full-node variant as a documented integration option and link this plan | MAY |
 | X6 | `elektron-net-electrum` | Share address-safety wording, string translations and the dual coin type recovery behavior so both wallets stay consistent | SHOULD |
 | X7 | `elektron-net-mempool` | Deep links from tx/address screens to the public explorer (opt-in, privacy warning, because it leaks the address to the explorer) | MAY |
-| X8 | `elektron-net-electrs` | None required. The app does not use an Electrum server | n/a |
-| X9 | DNS seeder | Phone nodes will mostly be non-reachable. No change, but crawler statistics will show a larger share of unreachable peers | n/a |
-| X10 | Pools/miners | None. Phone nodes do not mine in v1 | n/a |
+| X8 | DNS seeder | Phone nodes will mostly be non-reachable. No change, but crawler statistics will show a larger share of unreachable peers | n/a |
+| X9 | Pools/miners | None. Phone nodes do not mine in v1 | n/a |
 
 ## 13. Phased Roadmap
 
@@ -350,7 +365,8 @@ elektron-net-mobile/
 - [ ] Measure retained-window size, chainstate size, snapshot size against the live chain
 - [ ] First-sync benchmark (IBD path and snapshot path, depending on current chain height vs 197,280) on three reference devices (low, mid, high RAM)
 - [ ] Power and data baseline per profile (§7)
-- [ ] Verify every Core argument and RPC listed in this plan against the pinned tag
+- [ ] Verify every Core argument and RPC listed in this plan against the Core revision resolved at build time
+- [ ] Implement `fetch-core.sh` and the contract check (§11.1)
 - [ ] Decide `rescanutxoset` strategy (X1) and BIP-39 library approach (§2.2 #7)
 
 **Exit:** go/no-go memo, updated profile table, updated storage numbers.
@@ -397,7 +413,7 @@ elektron-net-mobile/
 ### 14.1 Layers
 
 1. **Unit:** argument builder, policy engine, fee derivation, PSBT validation, address validation (including `bc1`/Base58 rejection and warnings), descriptor construction against known vectors.
-2. **Native:** Core's own unit/functional tests for snapshot, pruning and wallet recovery on the host build of the pinned tag.
+2. **Native:** Core's own unit/functional tests for snapshot, pruning and wallet recovery on the host build of the same fetched Core revision.
 3. **Emulator integration (CI):** x86_64 `elektrond` in `-regtest` (checkpoint depth 100 on regtest, so snapshot cycles are observable), wallet create/send/recover flows driven through the app's wallet layer.
 4. **Device lab (manual, release gate):** real arm64 phones, soak tests, interruption tests.
 
@@ -426,7 +442,7 @@ elektron-net-mobile/
 | Android kills the native child process in background | Node unreliable | Phase 0 spike, fallback to `:node` service process, honest "best effort in background" UX |
 | Battery drain perceived as unacceptable | Users uninstall | Profiles, charging-first default, measured budgets, easy Stop |
 | Storage pressure on low-end devices | Node stalls | Storage floor, clear errors, size measurements published |
-| NDK build breaks on Core updates | Release delays | Pinned toolchain, upstream Android target (X4), CI on each Core tag |
+| Always-current Core breaks the build or the RPC contract | Failed builds, broken app | Contract check in the build (§11.1), upstream Android target (X4), nightly CI against Core `main`, failed contract blocks release |
 | Private patches diverge from Core | Audit burden | Upstream X1, keep patch SHA in manifest |
 | Seed handling bugs in Kotlin bootstrap | Fund loss | Minimal audited BIP-39 code, test vectors, external review (S11) |
 | Missed legacy coin type on recovery | Apparent fund loss | Dual scan as MUST, matrix test (§14.2) |
@@ -439,7 +455,8 @@ elektron-net-mobile/
 
 - [ ] Phase 0 spikes completed and documented
 - [ ] Open questions in §17 answered
-- [ ] Native build reproducible with pinned inputs and recorded manifest
+- [ ] Native build fetches current Core on every build and records commit SHA and binary hash in the manifest
+- [ ] Core contract check (§11.1) enforced in CI
 - [ ] Node supervisor with graceful stop, drain and health classification
 - [ ] Both bootstrap paths (IBD in window, snapshot) verified
 - [ ] Wallet create/recover with dual coin type verified against real seeds
@@ -460,4 +477,5 @@ elektron-net-mobile/
 5. Distribution channels for v1: direct APK, F-Droid, Google Play, or a staged combination?
 6. Is Lightning in scope after v1? Per `guideline-wallet-integration.md` it needs routing/trampoline infrastructure that does not exist yet and a different wallet stack than the Core descriptor wallet.
 7. URI scheme for payment requests (BIP21-style `elektron:` or similar): not yet defined in the network documentation.
-8. Is a testnet build flavor (separate app ID, `tb`-style HRP handling) wanted from day one for safer public testing?
+8. Should release builds track Core `main` (current default in §11.1) or the latest tagged release of `elektron-net`? Dev and nightly builds track `main` either way.
+9. Is a testnet build flavor (separate app ID, `tb`-style HRP handling) wanted from day one for safer public testing?
