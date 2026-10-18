@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UI Design System
 
-- **Version:** 0.5 (draft)
+- **Version:** 0.6 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, security reviewers
 - **Reference implementation:** [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) `osclass/osclasselektron/css/style.css` (palette source, commit `37aae603`), `design/palettes.json` and `design/check-contrast.py` in this repository (machine readable palettes and the legibility gate)
@@ -20,7 +20,7 @@ The app looks cyberpunk, but calm: dark surfaces, neon accents, controlled glow.
 |---|---|
 | Artwork | None. The app ships no illustrations, mascots or background images. The look comes from color, type, shape and light only. The one exception is the official Elektron Net logo (below), which is the project's own mark. This also removes any third-party artwork question. |
 | Logo | The official Elektron Net logo, `src/qt/res/src/bitcoin-elektron.svg` in `elektron-net`, copied unchanged to `design/logo/bitcoin-elektron.svg` and converted to Android vector drawables by `design/gen-logo.py`. |
-| Color themes | The ten themes developed for the Osclass theme, taken from `elektron-net-wp` (§2). |
+| Color themes | The ten themes developed for the Osclass theme, taken from `elektron-net-wp`, plus Elektron Teal (§2). |
 | Style | Cyberpunk without overload: neon accent, glow on a few key elements, flat dark surfaces. |
 | Legibility | Hard rule. Effects never reduce contrast of text, and a CI gate checks every theme (§4). |
 | Ticker | ELEK only. No other ticker is shown anywhere in the UI, in store listings or in strings. |
@@ -31,7 +31,8 @@ The themes are stored once, in `design/palettes.json`, with the tokens `accent`,
 
 | Key | Name | Accent | Second accent | Character |
 |---|---|---|---|---|
-| `blue` | Elektron Blue | `#2da4fa` | `#22d3ee` | default, brand color |
+| `teal` | Elektron Teal | `#20d9f1` | `#b9f3ff` | default, deep teal surfaces |
+| `blue` | Elektron Blue | `#2da4fa` | `#22d3ee` | brand blue |
 | `neon` | Neon Grid | `#00f0ff` | `#ff2a6d` | cyan and magenta |
 | `synthwave` | Synthwave | `#ff3cac` | `#ffb347` | pink and amber |
 | `matrix` | Matrix | `#00ff88` | `#b6ff00` | green on near black |
@@ -42,8 +43,8 @@ The themes are stored once, in `design/palettes.json`, with the tokens `accent`,
 | `frost` | Frost | `#9be7ff` | `#d5f3ff` | icy, light accents |
 | `terminal` | Terminal | `#5af78e` | `#ffb86c` | green terminal |
 
-- **MUST:** the default theme is Elektron Blue in dark mode. Light mode exists for every theme and follows the system setting unless the user chooses a mode.
-- **MUST:** the theme picker (Settings, Appearance) lists all ten themes with a four color swatch, a live preview card with balance, a button, a warning and a link, a mode choice (system, light, dark) and an effect choice (Off, Subtle, Full). Changes apply at once and are stored in app preferences. The first start uses Elektron Blue, dark, Subtle.
+- **MUST:** the default theme is Elektron Teal in dark mode. Light mode exists for every theme and is used when the user chooses it.
+- **MUST:** the theme picker (Settings, Appearance) lists all eleven themes with a four color swatch, a live preview card with balance, a button, a warning and a link, a mode choice (system, light, dark) and an effect choice (Off, Subtle, Full). Changes apply at once and are stored in app preferences. The first start uses Elektron Teal, dark, Subtle.
 - **MUST:** the red status color for errors is fixed per mode and independent from the theme. In the `red` theme the accent is red, so destructive and error states additionally use an icon and a text label, never color alone.
 - Status colors (success, danger, warning) are shared by all themes (see `palettes.json`, key `status`).
 - The Material 3 dynamic color (wallpaper based) is not used, to keep the brand and the legibility gate deterministic.
@@ -90,7 +91,7 @@ Contrast is measured with the WCAG relative luminance formula. `design/check-con
 | `on-accent` on `accent` (dark) or `link` (light), label on a filled button | 4.5 | 4.5 |
 | status colors on `bg`, `surface`, `surface-2` | 4.5 | 4.5 |
 
-Current result: 350 of 350 checks pass for the ten themes. Any new or changed theme MUST pass before it is merged.
+Current result: 385 of 385 checks pass for the eleven themes. Any new or changed theme MUST pass before it is merged.
 
 Further rules:
 
