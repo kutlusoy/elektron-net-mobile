@@ -1,10 +1,10 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.4 (draft)
+- **Version:** 0.5 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
-- **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
+- **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md), [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 
 ---
 
@@ -21,9 +21,14 @@
 - Background operation as a foreground service with resource profiles, battery, network and storage limits. The user can pause or stop the node at any time.
 - Non-custodial wallet on the node's own descriptor wallet: native SegWit (`be1q...`) addresses, BIP-39 recovery phrase, SLIP-44 coin type 1370 plus legacy path recovery.
 - Review-before-sign transaction flow (PSBT), fee policy re-check before signing, coin control, QR receive and scan.
-- Two sections, Wallet and Node. The Node section shows what the node is doing: sync phase, peers, telemetry, pruning and snapshots, and an optional live log.
-- Multi-language UI with an in-app language switch (English, German, Spanish, French, Italian at launch).
-- Optional "Storage saver" (`-fastprune`) for finer block file pruning on the phone.
+- Node dashboard: sync phase, height, peers, disk usage, prune height, snapshot state.
+- Two sections, Wallet and Node, plus an opt-in Expert mode with a console to the node.
+- Storage saver (`-fastprune`) on by default with an opt-out; phone nodes serve snapshots only on Wi-Fi while charging.
+- Optional biometric unlock, `elek:` payment links, QR scan and receive.
+- Many languages from the start: English, German, Spanish, French, Italian, then Chinese, Arabic, Japanese, Korean, Hindi, Portuguese, Russian, Turkish, Indonesian, Vietnamese after native review.
+- Cyberpunk design with neon and glow, ten color themes from the Osclass theme, no artwork, readability first. The ticker is ELEK.
+- Separate testnet build (`org.elektronnet.mobiletestnet`) next to the mainnet app (`org.elektronnet.mobile`).
+- Lightning is not part of v1, but the wallet layer keeps a pluggable path for it.
 - Local-only operation: no analytics, no remote geolocation, no remote QR services.
 
 ## 3. How it works
@@ -44,7 +49,7 @@ Elektron Net prunes every node to the last 197,280 blocks (about 137 days) by de
 
 ## 4. Node source: always current
 
-The node is not stored in this repository. On every build, the build scripts fetch the current source from the canonical repository [`kutlusoy/elektron-net`](https://github.com/kutlusoy/elektron-net), build `elektrond` for the target ABI, and run a contract check against a host build of the same revision before any Android build starts (plan section 11.2). The resolved commit SHA and the SHA-256 of the produced binary are written to a build manifest that ships inside the app and is shown on the node screen.
+The node is not stored in this repository. On every build, the build scripts fetch the current source from the canonical repository [`kutlusoy/elektron-net`](https://github.com/kutlusoy/elektron-net), build `elektrond` for the target ABI, and run a contract check against the result. The resolved commit SHA and the SHA-256 of the produced binary are written to a build manifest that ships inside the app and is shown on the node screen.
 
 Which ref is fetched depends on the build type:
 
@@ -56,8 +61,8 @@ Which ref is fetched depends on the build type:
 The ref can be overridden for debugging or for reproducing an older build:
 
 ```bash
-BUILD_TYPE=release bash native-build/build.sh all
-CORE_REF=<branch|tag|sha> bash native-build/build.sh all
+BUILD_TYPE=release ./native-build/build.sh all
+CORE_REF=<branch|tag|sha> ./native-build/build.sh all
 ```
 
 Full specification: plan section 11.1.
@@ -73,18 +78,13 @@ Full specification: plan section 11.1.
 
 32-bit ARM is not supported.
 
-## 6. Building
+## 6. Building (planned flow)
 
-The native node build (steps 0 and 1) and the contract check are implemented. The Gradle project (steps 2 and 3) is planned.
-
-Prerequisites: `git`, `docker` (rootless), `sha256sum`, and Android Studio or a Gradle/JDK setup. The Android NDK is downloaded inside the build container; its version and checksum are set in `native-build/core-source.env`.
+The storage saver default is set by `NODE_FASTPRUNE_DEFAULT` (default `1`). Prerequisites: `git`, `docker` (rootless), `python3`, `sha256sum`, Android Studio or a Gradle/JDK setup, Android NDK as defined in `native-build/core-source.env`.
 
 ```bash
-# 0. Once: print the NDK checksum, verify it against Google's published value, set NDK_SHA256 in native-build/core-source.env
-bash native-build/pin-ndk.sh
-
 # 1. Fetch the current elektron-net source and build the native node (emulator + phone)
-bash native-build/build.sh all
+./native-build/build.sh all
 
 # 2. Build the app
 ./gradlew assembleDebug
@@ -92,8 +92,6 @@ bash native-build/build.sh all
 # 3. Install without wiping node data
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
-
-`build.sh all` builds a host binary first and runs `native-build/contract-check.py` against it. Android builds start only if it passes. `CONTRACT_CHECK=0` skips it for debugging (not allowed for release builds). `NODE_FASTPRUNE_DEFAULT=1` makes `-fastprune` the app default and is recorded in the build manifest.
 
 Do not clear app data if you want to keep the synchronized node and wallet database. Clearing data forces a full resync. Funds remain recoverable from the recovery phrase.
 
@@ -107,8 +105,8 @@ app/                       Android application
     security/              keystore and secure window helpers
     ui/                    Compose screens
   src/main/jniLibs/        built libelektrond.so per ABI (generated)
-native-build/              fetch-core.sh, build.sh, contract-check.py, contract/, docker/ (builder), patches/, tests/
-                           (build-cache/ and out/ are generated, not committed)
+native-build/              fetch and build of elektrond (generated output not committed)
+design/                    palettes.json and check-contrast.py
 doc-elektron/              guidelines and reports
 .github/workflows/         CI
 ```
@@ -129,6 +127,9 @@ The full requirement list is in plan section 9.
 | Document | Content |
 |---|---|
 | [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md) | Architecture, roadmap, security, build and test plan |
+| [`doc-elektron/guideline-expert-console.md`](./doc-elektron/guideline-expert-console.md) | Expert mode and node console |
+| [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md) | Themes, effects, legibility rules, typography |
+| [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) | Flavors, channels, signing, F-Droid, Play |
 | [`elektron-net` docs](https://github.com/kutlusoy/elektron-net/tree/main/doc-elektron) | Node behavior, pruning and snapshot audit, wallet integration |
 
 ## 10. Links
@@ -140,4 +141,4 @@ The full requirement list is in plan section 9.
 
 ## 11. License
 
-This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries. Review the upstream licenses before redistribution. The license of this repository is not yet decided (see the plan, section 17).
+This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries. Review the upstream licenses before redistribution. The license of this repository is not yet decided (see the plan, section 17, Q2).
