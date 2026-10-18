@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.2 (draft)
+- **Version:** 0.3 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -42,7 +42,7 @@ Elektron Net prunes every node to the last 197,280 blocks (about 137 days) by de
 
 ## 4. Node source: always current
 
-The node is not stored in this repository. On every build, the build scripts fetch the current source from the canonical repository [`kutlusoy/elektron-net`](https://github.com/kutlusoy/elektron-net), build `elektrond` for the target ABI, and run a contract check against the result. The resolved commit SHA and the SHA-256 of the produced binary are written to a build manifest that ships inside the app and is shown on the node screen.
+The node is not stored in this repository. On every build, the build scripts fetch the current source from the canonical repository [`kutlusoy/elektron-net`](https://github.com/kutlusoy/elektron-net), build `elektrond` for the target ABI, and (once implemented, plan section 11.1) run a contract check against the result. The resolved commit SHA and the SHA-256 of the produced binary are written to a build manifest that ships inside the app and is shown on the node screen.
 
 Which ref is fetched depends on the build type:
 
@@ -54,8 +54,8 @@ Which ref is fetched depends on the build type:
 The ref can be overridden for debugging or for reproducing an older build:
 
 ```bash
-BUILD_TYPE=release ./native-build/build.sh all
-CORE_REF=<branch|tag|sha> ./native-build/build.sh all
+BUILD_TYPE=release bash native-build/build.sh all
+CORE_REF=<branch|tag|sha> bash native-build/build.sh all
 ```
 
 Full specification: plan section 11.1.
@@ -71,13 +71,18 @@ Full specification: plan section 11.1.
 
 32-bit ARM is not supported.
 
-## 6. Building (planned flow)
+## 6. Building
 
-Prerequisites: `git`, `docker` (rootless), `python3`, `sha256sum`, Android Studio or a Gradle/JDK setup, Android NDK as defined in `native-build/core-source.env`.
+The native node build (steps 0 and 1) is implemented. The Gradle project (steps 2 and 3) is planned.
+
+Prerequisites: `git`, `docker` (rootless), `sha256sum`, and Android Studio or a Gradle/JDK setup. The Android NDK is downloaded inside the build container; its version and checksum are set in `native-build/core-source.env`.
 
 ```bash
+# 0. Once: print the NDK checksum, verify it against Google's published value, set NDK_SHA256 in native-build/core-source.env
+bash native-build/pin-ndk.sh
+
 # 1. Fetch the current elektron-net source and build the native node (emulator + phone)
-./native-build/build.sh all
+bash native-build/build.sh all
 
 # 2. Build the app
 ./gradlew assembleDebug
@@ -98,7 +103,8 @@ app/                       Android application
     security/              keystore and secure window helpers
     ui/                    Compose screens
   src/main/jniLibs/        built libelektrond.so per ABI (generated)
-native-build/              fetch and build of elektrond (generated output not committed)
+native-build/              fetch-core.sh, build.sh, docker/ (NDK builder), patches/, tests/
+                           (build-cache/ and out/ are generated, not committed)
 doc-elektron/              guidelines and reports
 .github/workflows/         CI
 ```
