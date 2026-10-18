@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.10 (draft)
+- **Version:** 0.11 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
@@ -196,8 +196,20 @@ Expert mode gives advanced users a console to the node, comparable to the debug 
 3. Health: poll `getblockchaininfo`, `getnetworkinfo`, `getpeerinfo`, `getmempoolinfo` at an adaptive interval (fast in foreground, slow in background).
 4. Detect and classify failure: crashed, killed, corrupted chainstate, disk full, incompatible datadir. Each has a defined recovery action (restart, `-reindex-chainstate` offer, snapshot re-bootstrap, reset with wallet re-import).
 5. Enforce policy: network type, battery, charging state, storage cap, user pause.
-6. Persist `RPC` credentials encrypted with Android Keystore (AES-256-GCM, non-exportable key).
+6. Authenticate RPC with the node's cookie file (`-rpccookiefile` in the app-private datadir, recreated by the node at every start, deleted by the supervisor before a start). No RPC password exists, so nothing needs to be stored or wrapped by the Keystore.
 7. Own the config file. On first launch the node writes a default `bitcoin.conf` into the datadir with the mainnet seed and `addnode` list (observed with `elektron-net@main`). That is fine for the mainnet flavor and keeps the maintained peer list. Every other chain fails on the next start (`-addnode` only applied on regtest when in a `[regtest]` section), and passing `-conf=` elsewhere does not stop the file from being generated, which then fails with "contains a bitcoin.conf which is ignored" unless `-allowignoredconf=1` is set. Therefore any non-mainnet flavor and every test pre-creates its own `bitcoin.conf` in the datadir before the first start, and the supervisor checks that the file matches the chain before launching.
+
+#### Supervisor implementation notes
+
+The supervisor core is plain Kotlin without Android dependencies (`app/src/main/java/org/elektronnet/mobile/node/`), so it runs in JVM unit tests and in an integration test against a real `elektrond`.
+
+- **Arguments** come from one function (`NodeConfig.arguments()`): datadir, `-server=1`, loopback `-rpcbind`/`-rpcallowip`, `-rpcport`, `-rpccookiefile`, `-port`, `-printtoconsole=1`, `-natpmp=0`, `-listen`, the chain argument (`-testnet`, none for mainnet), the profile arguments of §3.2 and `-fastprune`. All of them are in the contract file.
+- **States:** Stopped, Starting, Running, Stopping, Crashed(exit code, failure class). The node is Running when `getblockchaininfo` answers. Error `-28` (RPC in warm-up) and connection errors keep the state at Starting, any other RPC error also counts as ready.
+- **Stop:** RPC `stop`, wait up to a bounded timeout (default 60 s, long enough for a snapshot write), then SIGTERM, then SIGKILL as the last step. An exit that the app requested, or exit code 0, is Stopped, anything else is Crashed.
+- **Output:** stdout and stderr are drained on their own thread into a bounded ring buffer, so a full pipe never blocks the node.
+- **Failure classes** are taken from node messages found in the source: "Disk space is too low", "Corrupted block database"/"Error opening block database", "Cannot obtain a lock on directory". Everything else is Unknown. The recovery action per class (§4.2 item 4) is wired in with the UI.
+- **Config file:** for non-mainnet chains the supervisor writes a managed `bitcoin.conf` and, if it finds settings outside the chain's own section (for example the generated mainnet `addnode` lines), replaces it and keeps a `bitcoin.conf.bak` (§4.2 item 7).
+- **Verified:** 30 JVM unit tests (JSON, arguments, config file, failure classes, ring buffer, RPC client against a local HTTP server, supervisor against fake node scripts) and one integration test that starts the host `elektrond` in regtest, waits for Running, reads `getblockchaininfo` and stops it gracefully. Not yet verified: the same on Android (bionic, process limits, phantom process killer), which stays a Phase 0 item.
 
 ### 4.3 Foreground service and background execution
 
@@ -396,7 +408,7 @@ Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4
 
 | # | Requirement | Level |
 |---|---|---|
-| S1 | RPC bound to loopback with authentication, credentials encrypted via Keystore | MUST |
+| S1 | RPC bound to loopback (`-rpcbind=127.0.0.1`, `-rpcallowip=127.0.0.1`) with cookie authentication, the cookie file lives in the app-private datadir. No `-rpcuser` or `-rpcpassword` arguments | MUST |
 | S2 | `android:allowBackup="false"` and no data extraction rules that include the datadir | MUST |
 | S3 | `FLAG_SECURE` on seed, passphrase, send-review and signing screens | MUST |
 | S4 | Unlock window at most 10 s, `walletlock` in a `finally` path. The recovery rescan is the only exception (§8.3) | MUST |
@@ -453,6 +465,7 @@ elektron-net-mobile/
 - Output MUST be linked with 16 KB page-size compatibility (`-Wl,-z,max-page-size=16384`) to satisfy current Android and store requirements for native code.
 - Build is containerized and rootless. The output ownership problem seen with root-owned Docker output in the concept is avoided by running the container as the invoking user.
 - The Core source is not pinned to a fixed tag. See §11.1.
+- One native build serves both app flavors. Every app build, local and CI, produces the mainnet and the testnet APK (distribution guideline §4).
 - Patches: only what cannot be upstreamed yet (currently the `rescanutxoset` bridge, cross-repo item X1). The patch set and its SHA-256 are part of the build manifest so a stale binary is never reused.
 - Test the unmodified Core unit tests that matter for a mobile build where feasible (snapshot, prune, wallet recovery functional tests listed in `BITCOIN_CORE_DIFF.md` §5.7) on the host build of the same fetched Core revision, and run a regtest integration suite against the x86_64 binary on an emulator.
 
@@ -525,8 +538,8 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 
 - [x] Gradle project skeleton: flavors, theme generator, contrast and locale gates, CI workflow. Not yet built against the Android toolchain
 - [ ] First green Gradle build, release signing in the release pipeline
-- [ ] Node supervisor (start/stop/drain/health/graceful stop)
-- [ ] Keystore-wrapped RPC credentials, `-rpcauth` or cookie
+- [x] Node supervisor core (start/stop/drain/readiness/graceful stop/failure classes), verified against the host node in regtest. Still open: Android foreground service around it, polling and policy
+- [x] RPC with cookie authentication (no stored credentials)
 - [ ] Sync dashboard with all phases from §5.1
 - [ ] Datadir versioning (§5.4)
 - [ ] Localization scaffolding from the first screen on: string resources only, per-app language, lint gate, tier A locales (§3.5)
