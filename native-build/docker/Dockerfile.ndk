@@ -7,6 +7,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         build-essential cmake ninja-build pkg-config patch python3 \
         git curl ca-certificates unzip xz-utils bison \
+        libboost-dev libevent-dev libsqlite3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN test -n "$NDK_SHA256" || { echo "NDK_SHA256 is empty, run native-build/pin-ndk.sh and set it in core-source.env" >&2; exit 1; } \
