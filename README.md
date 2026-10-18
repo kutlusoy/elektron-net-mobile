@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.15 (draft)
+- **Version:** 0.16 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -26,7 +26,7 @@
 - Node dashboard: sync phase, height, peers, disk usage, prune height, snapshot state.
 - Simple everyday wallet following common mobile wallet conventions (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node.
 - Storage saver (`-fastprune`) on by default with an opt-out; phone nodes serve snapshots only on Wi-Fi while charging.
-- Optional biometric unlock, `elek:` payment links, QR scan and receive.
+- Optional biometric unlock, `elek:` payment links, QR scan (CameraX and ZXing, no Google services) and receive.
 - Many languages from the start: English, German, Spanish, French, Italian, then Chinese, Arabic, Japanese, Korean, Hindi, Portuguese, Russian, Turkish, Indonesian, Vietnamese after native review.
 - Cyberpunk design with neon and glow, ten color themes from the Osclass theme, no artwork, readability first. The ticker is ELEK.
 - Separate testnet build (`org.elektronnet.mobiletestnet`, chain `testnet`) next to the mainnet app (`org.elektronnet.mobile`).

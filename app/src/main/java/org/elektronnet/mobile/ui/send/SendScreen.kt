@@ -49,6 +49,7 @@ import org.elektronnet.mobile.R
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.SecureWindow
+import org.elektronnet.mobile.ui.scan.QrScannerScreen
 import org.elektronnet.mobile.ui.model.AmountState
 import org.elektronnet.mobile.ui.model.FeeInput
 import org.elektronnet.mobile.ui.model.RecipientState
@@ -86,6 +87,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var txid by remember { mutableStateOf<String?>(null) }
     var noteFromLink by remember { mutableStateOf<String?>(null) }
     var exportedPsbt by remember { mutableStateOf<String?>(null) }
+    var scanning by remember { mutableStateOf(false) }
     val walletName = escrow?.walletName ?: org.elektronnet.mobile.wallet.WalletBootstrap.DEFAULT_WALLET
 
     val resolved = SendInput.recipient(recipientText, NodeHost.paymentUri, org.elektronnet.mobile.wallet.AddressCheck(ChainConfig.isTestnet), ChainConfig.uriScheme)
@@ -158,6 +160,13 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
         }
     }
 
+    if (scanning) {
+        QrScannerScreen(
+            onResult = { recipientText = it; legacyOk = false; scanning = false },
+            onClose = { scanning = false },
+        )
+        return
+    }
     if (NodeHost.latest?.headline !is Headline.Synchronized && step != Step.Working && step != Step.Done) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(stringResource(R.string.send_needs_sync))
@@ -192,7 +201,10 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     isError = resolved.state is RecipientState.Foreign || resolved.state == RecipientState.Invalid,
                     modifier = Modifier.fillMaxWidth(),
                 )
-                OutlinedButton(onClick = { recipientText = clipboardText(context) }) { Text(stringResource(R.string.send_paste)) }
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    OutlinedButton(onClick = { recipientText = clipboardText(context) }) { Text(stringResource(R.string.send_paste)) }
+                    OutlinedButton(onClick = { scanning = true }) { Text(stringResource(R.string.scan_button)) }
+                }
                 RecipientMessage(resolved.state, resolved.address, legacyOk) { legacyOk = it }
                 Button(
                     onClick = { step = Step.Amount },
@@ -341,6 +353,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     Text(stringResource(R.string.escrow_proposal_title), style = MaterialTheme.typography.headlineSmall)
                     Text(stringResource(R.string.escrow_proposal_body, escrow?.required ?: 2))
                     Text(psbt, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall, maxLines = 8)
+                    if (psbt.length <= org.elektronnet.mobile.ui.tools.PSBT_QR_LIMIT) org.elektronnet.mobile.ui.receive.QrView(psbt)
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OutlinedButton(onClick = { copyPlain(context, psbt) }) { Text(stringResource(R.string.action_copy)) }
                         Button(onClick = { sharePlain(context, psbt) }) { Text(stringResource(R.string.action_share)) }

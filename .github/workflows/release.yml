@@ -140,7 +140,7 @@ jobs:
           gradle --no-daemon -PappVersionName="$VERSION" -PappVersionCode="$VERSION_CODE" \
             ":app:assembleMainnet$variant" ":app:assembleTnet$variant"
           mkdir -p dist
-          cp "app/build/outputs/apk/mainnet/$dir/app-mainnet-$dir.apk" "dist/Elektron-Mobile-$VERSION-mainnet.apk"
+          cp "app/build/outputs/apk/mainnet/$dir/app-mainnet-$dir.apk" "dist/Elektron-Mobile-$VERSION.apk"
           cp "app/build/outputs/apk/tnet/$dir/app-tnet-$dir.apk" "dist/Elektron-Mobile-$VERSION-testnet.apk"
           (cd dist && sha256sum ./*.apk > SHA256SUMS.txt)
       - name: Release notes
@@ -164,7 +164,7 @@ jobs:
             echo
             echo "Files:"
             echo
-            echo "- \`Elektron-Mobile-$VERSION-mainnet.apk\`: the Elektron app (mainnet, real coins)"
+            echo "- \`Elektron-Mobile-$VERSION.apk\`: the Elektron app (mainnet, real coins)"
             echo "- \`Elektron-Mobile-$VERSION-testnet.apk\`: the Elektron (T) app (testnet, coins have no value), installs next to the mainnet app"
             echo "- \`SHA256SUMS.txt\`: checksums of both files"
             echo

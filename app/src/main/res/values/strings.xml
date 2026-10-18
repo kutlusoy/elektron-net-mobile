@@ -248,6 +248,11 @@
     <string name="msg_bad_format">The signature has the wrong format for this address.</string>
     <string name="msg_unsupported">This address type is not supported for messages.</string>
     <string name="msg_err_not_ours">This address does not belong to this wallet.</string>
+    <string name="scan_title">Scan a QR code</string>
+    <string name="scan_hint">Hold the code inside the picture. Nothing is saved or sent.</string>
+    <string name="scan_denied">The camera is needed to scan. Allow it to continue, or paste the text instead.</string>
+    <string name="scan_button">Scan</string>
+    <string name="scan_psbt_hint">Only small payment files fit into one QR code. For larger ones use Copy or Share.</string>
     <string name="action_back">Back</string>
     <string name="action_retry">Try again</string>
     <string name="action_copy">Copy</string>

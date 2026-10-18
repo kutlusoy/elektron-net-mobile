@@ -173,6 +173,11 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.icons.core)
     implementation(libs.zxing.core)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.camerax.core)
+    implementation(libs.camerax.camera2)
+    implementation(libs.camerax.lifecycle)
+    implementation(libs.camerax.view)
     debugImplementation(libs.compose.ui.tooling)
     testImplementation(libs.junit)
 }

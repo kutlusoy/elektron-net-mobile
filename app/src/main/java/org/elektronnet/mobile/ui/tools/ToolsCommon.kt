@@ -21,6 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.elektronnet.mobile.R
 
+const val PSBT_QR_LIMIT = 1800
+
 @Composable
 fun ToolPage(title: String, onBack: () -> Unit, content: @Composable () -> Unit) {
     Column(

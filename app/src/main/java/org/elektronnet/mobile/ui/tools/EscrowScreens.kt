@@ -36,6 +36,7 @@ import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.SecureWindow
 import org.elektronnet.mobile.ui.model.HistoryModel
 import org.elektronnet.mobile.ui.receive.QrView
+import org.elektronnet.mobile.ui.scan.QrScannerScreen
 import org.elektronnet.mobile.wallet.Amount
 import org.elektronnet.mobile.wallet.Balances
 import org.elektronnet.mobile.wallet.Cosigner
@@ -183,6 +184,7 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
     var error by remember { mutableStateOf<Int?>(null) }
     var busy by remember { mutableStateOf(false) }
     var confirmRemove by remember { mutableStateOf(false) }
+    var scanning by remember { mutableStateOf(false) }
 
     LaunchedEffect(id, reload) {
         withContext(Dispatchers.IO) {
@@ -199,6 +201,13 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
         }
     }
     SecureWindow()
+    if (scanning) {
+        QrScannerScreen(
+            onResult = { keysText = (keysText.trim() + "\n" + it).trim(); scanning = false },
+            onClose = { scanning = false },
+        )
+        return
+    }
     val r = record
     ToolPage(r?.name ?: stringResource(R.string.escrow_title), onBack) {
         if (r == null) {
@@ -225,7 +234,10 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
                 minLines = 4,
                 modifier = Modifier.fillMaxWidth(),
             )
-            OutlinedButton(onClick = { keysText = pasteText(context) }) { Text(stringResource(R.string.send_paste)) }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(onClick = { keysText = pasteText(context) }) { Text(stringResource(R.string.send_paste)) }
+                OutlinedButton(onClick = { scanning = true }) { Text(stringResource(R.string.scan_button)) }
+            }
             val cosigners = parseCosigners(keysText)
             val total = cosigners.size + 1
             Text(stringResource(R.string.escrow_keys_found, cosigners.size))
