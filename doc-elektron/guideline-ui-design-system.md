@@ -3,7 +3,7 @@
 - **Version:** 0.1 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, security reviewers
-- **Reference implementation:** [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) `osclass/osclasselektron/css/style.css` (palette source, commit `37aae603`), `mobile/design/palettes.json` and `mobile/design/check-contrast.py` in this repository (machine readable palettes and the legibility gate)
+- **Reference implementation:** [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) `osclass/osclasselektron/css/style.css` (palette source, commit `37aae603`), `design/palettes.json` and `design/check-contrast.py` in this repository (machine readable palettes and the legibility gate)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (branding), [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) (color themes)
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) (sections §3.3, §3.5), [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md) (testnet flavor)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet
@@ -26,7 +26,7 @@ The app looks cyberpunk, but calm: dark surfaces, neon accents, controlled glow.
 
 ## 2. Color Themes
 
-The themes are stored once, in `mobile/design/palettes.json`, with the tokens `accent`, `hover`, `accent-2`, `on-accent`, `bg`, `surface`, `surface-2`, `border`, `text`, `muted`, `link`, in a dark and a light variant. The app generates its Compose color schemes from this file at build time, so the website and the app stay in sync.
+The themes are stored once, in `design/palettes.json`, with the tokens `accent`, `hover`, `accent-2`, `on-accent`, `bg`, `surface`, `surface-2`, `border`, `text`, `muted`, `link`, in a dark and a light variant. The app generates its Compose color schemes from this file at build time, so the website and the app stay in sync.
 
 | Key | Name | Accent | Second accent | Character |
 |---|---|---|---|---|
@@ -69,7 +69,7 @@ Rules:
 
 ## 4. Legibility Rules and CI Gate
 
-Contrast is measured with the WCAG relative luminance formula. `mobile/design/check-contrast.py` checks every theme in both modes and fails the build if a pair is below its minimum.
+Contrast is measured with the WCAG relative luminance formula. `design/check-contrast.py` checks every theme in both modes and fails the build if a pair is below its minimum.
 
 | Pair | Minimum ratio (dark) | Minimum ratio (light) |
 |---|---|---|
