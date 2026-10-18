@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Escrow, PSBT, Key Sweep and Message Tools
 
-- **Version:** 0.1 (draft)
+- **Version:** 0.2 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, security reviewers, release engineers, support staff who help users with shared wallets
 - **Reference implementation:** `app/src/main/java/org/elektronnet/mobile/wallet/EscrowManager.kt`, `PsbtTools.kt`, `SweepEngine.kt`, `MessageTools.kt`, `SendEngine.kt` and `app/src/test/java/org/elektronnet/mobile/wallet/ToolsIntegrationTest.kt` in this repository. Node behavior: [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/rpc/` (`gethdkeys`, `importdescriptors`, `walletprocesspsbt`, `signmessage`), `src/rpc/rawtransaction.cpp` (`decodepsbt`, `analyzepsbt`, `combinepsbt`, `finalizepsbt`, `signrawtransactionwithkey`), `src/rpc/blockchain.cpp` (`scantxoutset`) and `src/common/signmessage.cpp`
@@ -84,7 +84,7 @@ Anyone:    Combine the signed copies -> status "Ready to send" -> Send to the ne
 
 ## 3. PSBT Tools
 
-- **Input:** base64 text (starts with `cHNidP8`). Whitespace is ignored. Anything else is rejected before it reaches the node. QR transfer of large files, animated QR and file import are planned (§7).
+- **Input:** base64 text (starts with `cHNidP8`). Whitespace is ignored. Anything else is rejected before it reaches the node. A QR scanner reads single-code files and escrow key lines. A file shown below 1,800 characters also appears as a QR code. Animated multi-part QR codes and file import are planned (§8).
 - **Check view:** inputs and who owns them (main wallet or an escrow), recipients with amounts, fee and fee rate, signature count against the required count, status (needs signatures, ready to send, complete), and the net effect on each of the user's wallets.
 - **Warnings:** unusually high fee (rate above 1000 lep/vB or a fee above 5 percent of the amount and above 0.001 ELEK), amounts missing from the file, no wallet of the user can sign.
 - **Sign:** only with a wallet that owns an unsigned input, with the passphrase, an unlock of at most 10 seconds and `walletlock` in a `finally` path.
@@ -135,7 +135,7 @@ All tests run against a real `elektrond` on regtest (`ELEKTROND_BIN`), with up t
 | # | Question | Recommendation |
 |---|---|---|
 | E1 | Offer a time-locked refund path (miniscript) so that funds return to the buyer after a deadline? | Phase 4. The node supports miniscript descriptors, but the signing flow and the explanation need their own design. |
-| E2 | Transfer PSBTs by animated QR and files | Phase 4, with the QR scanner. Text copy and share work in v1. |
+| E2 | Transfer large PSBTs by animated QR and files | Phase 4. Single QR codes (up to about 1,800 characters), text copy and share work in v1. |
 | E3 | Hardware wallet or air-gapped signers as participants | Phase 5, after the QR transfer exists. |
 | E4 | A multisig participant without this app (Electrum, Bitcoin Core) | Test in Phase 4. The descriptors follow BIP-48 and standard `sortedmulti`, so it should work. |
 | E5 | Sign messages with escrow addresses | Not planned for v1. |
@@ -148,6 +148,7 @@ All tests run against a real `elektrond` on regtest (`ELEKTROND_BIN`), with up t
 - [x] Message sign and verify with SegWit and legacy addresses
 - [x] Integration tests against a real node
 - [ ] Interoperability test with Electrum and Bitcoin Core
-- [ ] QR transfer and file import of PSBTs
+- [x] Single-code QR scan and display
+- [ ] Animated QR transfer and file import of PSBTs
 - [ ] Time-locked refund option (E1)
 - [ ] Independent review of the escrow setup and the sweep

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version without the leading v, for example 4.0.4"
+        description: "Version without the leading v: node version, then -m and the wallet version, for example 4.0.4-m0.1.0"
         required: true
       build_type:
         description: "release uses the latest elektron-net tag, nightly uses its main branch"
@@ -30,29 +30,25 @@ jobs:
     outputs:
       version: ${{ steps.v.outputs.version }}
       tag: ${{ steps.v.outputs.tag }}
-      build_type: ${{ steps.v.outputs.build_type }}
+      node_version: ${{ steps.v.outputs.node_version }}
+      mobile_version: ${{ steps.v.outputs.mobile_version }}
       version_code: ${{ steps.v.outputs.version_code }}
+      prerelease: ${{ steps.v.outputs.prerelease }}
+      build_type: ${{ steps.t.outputs.build_type }}
     steps:
+      - uses: actions/checkout@v4
+      - id: t
+        env:
+          INPUT_TYPE: ${{ inputs.build_type }}
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then echo "build_type=release" >> "$GITHUB_OUTPUT"; else echo "build_type=${INPUT_TYPE:-release}" >> "$GITHUB_OUTPUT"; fi
       - id: v
         env:
           INPUT_VERSION: ${{ inputs.version }}
-          INPUT_TYPE: ${{ inputs.build_type }}
         run: |
-          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
-            version=${GITHUB_REF_NAME#v}
-            build_type=release
-          else
-            version=${INPUT_VERSION#v}
-            build_type=${INPUT_TYPE:-release}
-          fi
-          [[ $version =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(-[0-9A-Za-z.]+)?$ ]] || { echo "invalid version '$version'" >&2; exit 1; }
-          code=$(( (BASH_REMATCH[1] * 10000 + BASH_REMATCH[2] * 100 + BASH_REMATCH[3]) * 1000 + GITHUB_RUN_NUMBER % 1000 ))
-          {
-            echo "version=$version"
-            echo "tag=v$version"
-            echo "build_type=$build_type"
-            echo "version_code=$code"
-          } >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then version=$GITHUB_REF_NAME; else version=$INPUT_VERSION; fi
+          python3 -I tools/version.py "$version" --mobile-file app/mobile-version.txt > "$RUNNER_TEMP/version.out"
+          cat "$RUNNER_TEMP/version.out" | tee -a "$GITHUB_OUTPUT"
 
   native:
     needs: prepare
@@ -60,7 +56,7 @@ jobs:
     timeout-minutes: 360
     env:
       BUILD_TYPE: ${{ needs.prepare.outputs.build_type }}
-      CORE_REF: ${{ inputs.core_ref }}
+      CORE_REF: ${{ needs.prepare.outputs.build_type == 'release' && format('v{0}', needs.prepare.outputs.node_version) || inputs.core_ref }}
     steps:
       - uses: actions/checkout@v4
       - name: Pin the NDK checksum
@@ -93,6 +89,8 @@ jobs:
     env:
       VERSION: ${{ needs.prepare.outputs.version }}
       VERSION_CODE: ${{ needs.prepare.outputs.version_code }}
+      NODE_VERSION: ${{ needs.prepare.outputs.node_version }}
+      MOBILE_VERSION: ${{ needs.prepare.outputs.mobile_version }}
       BUILD_TYPE: ${{ needs.prepare.outputs.build_type }}
     outputs:
       signed: ${{ steps.sign.outputs.signed }}
@@ -137,10 +135,10 @@ jobs:
           else
             variant=Nightly; dir=nightly
           fi
-          gradle --no-daemon -PappVersionName="$VERSION" -PappVersionCode="$VERSION_CODE" \
+          gradle --no-daemon -PappVersionName="$VERSION" -PappVersionCode="$VERSION_CODE" -PappNodeVersion="$NODE_VERSION" \
             ":app:assembleMainnet$variant" ":app:assembleTnet$variant"
           mkdir -p dist
-          cp "app/build/outputs/apk/mainnet/$dir/app-mainnet-$dir.apk" "dist/Elektron-Mobile-$VERSION-mainnet.apk"
+          cp "app/build/outputs/apk/mainnet/$dir/app-mainnet-$dir.apk" "dist/Elektron-Mobile-$VERSION.apk"
           cp "app/build/outputs/apk/tnet/$dir/app-tnet-$dir.apk" "dist/Elektron-Mobile-$VERSION-testnet.apk"
           (cd dist && sha256sum ./*.apk > SHA256SUMS.txt)
       - name: Release notes
@@ -148,13 +146,14 @@ jobs:
           manifest=app/src/main/assets/core-manifest/arm64-v8a.env
           get() { grep "^$1=" "$manifest" | cut -d= -f2-; }
           {
-            echo "Elektron Mobile $VERSION"
+            echo "Elektron Mobile v$VERSION"
             echo
-            echo "Android wallet with its own Elektron Net full node."
+            echo "Android wallet with its own Elektron Net full node. The version has two parts: the Elektron Net node version ($NODE_VERSION) and the wallet version (m$MOBILE_VERSION). A wallet update without a new node only changes the second part."
             echo
             echo "| Item | Value |"
             echo "|---|---|"
-            echo "| App version | $VERSION |"
+            echo "| Node version | $NODE_VERSION |"
+            echo "| Wallet version | $MOBILE_VERSION |"
             echo "| Build type | $BUILD_TYPE |"
             echo "| Node source | $(get CORE_REPO_URL) |"
             echo "| Node ref | $(get CORE_REF_NAME) |"
@@ -164,7 +163,7 @@ jobs:
             echo
             echo "Files:"
             echo
-            echo "- \`Elektron-Mobile-$VERSION-mainnet.apk\`: the Elektron app (mainnet, real coins)"
+            echo "- \`Elektron-Mobile-$VERSION.apk\`: the Elektron app (mainnet, real coins)"
             echo "- \`Elektron-Mobile-$VERSION-testnet.apk\`: the Elektron (T) app (testnet, coins have no value), installs next to the mainnet app"
             echo "- \`SHA256SUMS.txt\`: checksums of both files"
             echo
@@ -186,6 +185,7 @@ jobs:
       VERSION: ${{ needs.prepare.outputs.version }}
       BUILD_TYPE: ${{ needs.prepare.outputs.build_type }}
       SIGNED: ${{ needs.apk.outputs.signed }}
+      PRERELEASE: ${{ needs.prepare.outputs.prerelease }}
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -197,7 +197,7 @@ jobs:
           TARGET: ${{ github.sha }}
         run: |
           flags=()
-          if [[ $BUILD_TYPE != release || $SIGNED != true || $VERSION == *-* ]]; then
+          if [[ $BUILD_TYPE != release || $SIGNED != true || $PRERELEASE == true ]]; then
             flags+=(--prerelease)
           fi
           if gh release view "$TAG" >/dev/null 2>&1; then

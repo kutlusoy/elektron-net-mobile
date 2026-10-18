@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.10 (draft)
+- **Version:** 0.11 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -114,6 +114,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 ```
 
 - **Recipient:** one field with Paste and Scan buttons. Accepts a plain address or an `elek:` link. Inline validation as the user types: valid (check mark with the shortened address), foreign network (specific message, plan §8.5), Bitcoin-style legacy address (collision warning with "Use anyway" requiring a tap), unknown format (what is wrong in plain words).
+- **QR scanner:** the Scan button opens a camera view that reads QR codes with CameraX and ZXing, both open source, so the build stays free of Google Play Services and F-Droid compatible. It asks for the camera permission only when the user taps Scan, shows a plain explanation if it is denied, reads one code and closes. Nothing is saved or sent. The same scanner is used for payment links in Send, payment files (PSBT) and escrow key lines in the Tools, and private keys in Sweep. A single QR code holds about 2,000 characters, so only small payment files fit. Larger files use Copy or Share. Animated multi-part codes are planned.
 - **Amount:** big numeric keypad, unit ELEK, a Max button, remaining balance shown. Over-balance is explained ("You have x ELEK available").
 - **Fee:** three choices with a time estimate each ("Slow, about 30 minutes", "Normal, about 5 minutes", "Fast, next block"), derived from `estimatesmartfee` (plan §2.2 #5). "Custom fee" and coin selection are behind "More options".
 - **Review:** recipient (shortened with emphasized ends), amount, network fee, total. Everything the PSBT contains is checked before this screen is shown (plan §8.4). A single primary button "Send".

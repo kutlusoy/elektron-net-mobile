@@ -30,6 +30,7 @@ import org.elektronnet.mobile.R
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.SecureWindow
+import org.elektronnet.mobile.ui.scan.QrScannerScreen
 import org.elektronnet.mobile.wallet.Amount
 import org.elektronnet.mobile.wallet.SweepEngine
 import org.elektronnet.mobile.wallet.SweepException
@@ -50,10 +51,19 @@ fun SweepScreen(onBack: () -> Unit) {
     var error by remember { mutableStateOf<Int?>(null) }
     var txid by remember { mutableStateOf<String?>(null) }
     val synced = NodeHost.latest?.headline is Headline.Synchronized
+    var scanning by remember { mutableStateOf(false) }
     SecureWindow()
 
     fun fail(t: Throwable) {
         error = sweepErrorText((t as? SweepException)?.failure ?: SweepFailure.Unknown)
+    }
+
+    if (scanning) {
+        QrScannerScreen(
+            onResult = { keysText = (keysText.trim() + "\n" + it).trim(); scanning = false },
+            onClose = { scanning = false },
+        )
+        return
     }
 
     ToolPage(stringResource(R.string.sweep_title), onBack) {
@@ -74,6 +84,7 @@ fun SweepScreen(onBack: () -> Unit) {
                 Hint(stringResource(R.string.sweep_collision))
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = { keysText = pasteText(context) }) { Text(stringResource(R.string.send_paste)) }
+                    OutlinedButton(onClick = { scanning = true }) { Text(stringResource(R.string.scan_button)) }
                     Button(
                         enabled = keysText.isNotBlank() && synced,
                         onClick = {

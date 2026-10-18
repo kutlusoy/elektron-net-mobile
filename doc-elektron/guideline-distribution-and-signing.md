@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Distribution, Signing and Flavors
 
-- **Version:** 0.5 (draft)
+- **Version:** 0.6 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Release engineers, Android developers, maintainers who operate store accounts and signing keys
 - **Reference implementation:** `app/build.gradle.kts` product flavors and `native-build/` in this repository (to be created), [F-Droid Build Metadata Reference](https://f-droid.org/docs/Build_Metadata_Reference/), [Reproducible Builds](https://f-droid.org/docs/Reproducible_Builds/)
@@ -88,7 +88,7 @@ Two product flavors from one code base. The testnet flavor is named `tnet` becau
 1. **Start:** push a tag such as `v4.0.4`, or run the workflow manually ("Run workflow" with the version, the build type and an optional node ref).
 2. **Native build:** `native-build/build.sh all` fetches the node source (release builds use the latest release tag of `elektron-net`, nightly builds use `main`), builds `elektrond` for the host, runs the contract check, and builds `libelektrond.so` for `arm64-v8a` and `x86_64` in the pinned NDK container.
 3. **APKs:** both flavors are built from the same commit with the version name and a derived version code, and the node manifest is embedded.
-4. **Release:** the release is created with the title `Elektron Mobile v<version>`, the two APKs (`Elektron-Mobile-<version>-mainnet.apk`, `Elektron-Mobile-<version>-testnet.apk`), `SHA256SUMS.txt` and notes with the node tag, node commit and library hash. A release is marked as pre-release when it is a nightly build, when it is not signed with the release key, or when the version has a suffix such as `-rc1`.
+4. **Release:** the release is created with the title `Elektron Mobile v<version>`, the two APKs (`Elektron-Mobile-<version>.apk`, `Elektron-Mobile-<version>-testnet.apk`), `SHA256SUMS.txt` and notes with the node tag, node commit and library hash. A release is marked as pre-release when it is a nightly build, when it is not signed with the release key, or when the version has a suffix such as `-rc1`.
 
 Signing: the workflow uses the repository secrets `ELEKTRON_KEYSTORE_BASE64` (the keystore file, base64 encoded), `ELEKTRON_KEYSTORE_PASSWORD`, `ELEKTRON_KEY_ALIAS` and `ELEKTRON_KEY_PASSWORD` (optional, defaults to the keystore password). Without them the workflow still runs and signs with a temporary test key under the application ID suffix `.nightly`. Such a build is labeled as not for distribution, and every run uses a new key, so an update over an earlier install is refused by Android until the app is uninstalled. Create the real release key offline first (§5) and add the secrets before the first public release.
 
@@ -132,6 +132,23 @@ Google has announced that apps installed on certified Android devices must come 
 - The About screen shows the app version, Core tag and commit, manifest hash and signing fingerprint.
 - **SHOULD:** an opt-in "check for new release" action that opens the GitHub releases page in the browser, no background check.
 - Datadir versioning and migration on update: plan §5.4.
+
+## 8.1 Versioning
+
+A release version has two parts, the Elektron Net node version and the wallet version, because the wallet can be updated without a new node.
+
+```text
+v<node major>.<node minor>.<node patch>-m<wallet major>.<wallet minor>.<wallet patch>
+example: v4.0.4-m0.1.0
+```
+
+- **Node part:** the exact tag of `elektron-net` that is built into the app. A release build fetches that tag, not the latest one, so a tag is reproducible. The node source is never taken from `main` for a release.
+- **Wallet part:** the version of this app, kept in `app/mobile-version.txt` and shown in Settings, About as "Wallet 0.1.0" next to the full version and the node tag with its commit (read from the manifest that is built into the app). A change of wallet code only bumps the wallet part (`v4.0.4-m0.1.1`). The wallet part counts on across node releases and is not reset, so after `v4.0.4-m0.1.1` a new node gives `v4.0.5-m0.1.1` (same wallet code, new node) or `v4.0.5-m0.1.2` (new node and new wallet code).
+- **Suffix:** an optional suffix such as `-rc1` marks a pre-release (`v4.0.4-m0.1.0-rc1`).
+- **Check:** the release workflow fails when the wallet part of the tag differs from `app/mobile-version.txt`, so the file must be updated in the same commit as the code change that gets the new version.
+- **Version code (Android update order):** `node major * 100,000,000 + node minor * 1,000,000 + node patch * 10,000 + wallet major * 1,000 + wallet minor * 100 + wallet patch`. For `4.0.4-m0.1.0` this is 400,040,100. It rises with every legal version pair, stays below the Android limit of 2.1 billion, and is computed by `tools/version.py`, which also checks the limits (node major up to 9, minor and patch up to 99, wallet major and minor up to 9, wallet patch up to 99) and has a self-test in CI.
+- **Why this shape:** the hyphen suffix follows the usual packaging convention of upstream version plus revision. The `m` makes the wallet part recognizable. Android ignores the text and uses the version code, so the order is never ambiguous.
+- Builds without a tag are named `0.0.0-m<wallet version>-dev` and use version code 1.
 
 ## 9. Open Questions
 

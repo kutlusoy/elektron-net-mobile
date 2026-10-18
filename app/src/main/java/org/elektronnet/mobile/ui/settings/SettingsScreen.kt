@@ -11,6 +11,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import org.elektronnet.mobile.service.CoreManifestLoader
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,7 +42,11 @@ fun SettingsScreen(
         ToggleRow(R.string.settings_charging_only, R.string.settings_charging_only_hint, settings.chargingOnly, onChargingOnly)
         ToggleRow(R.string.settings_background, R.string.settings_background_hint, settings.backgroundEnabled, onBackground)
         Text(stringResource(R.string.settings_about), style = MaterialTheme.typography.titleMedium)
+        val context = LocalContext.current
+        val node = remember { CoreManifestLoader.load(context)?.label() ?: BuildConfig.NODE_VERSION }
         Text(stringResource(R.string.settings_version, BuildConfig.VERSION_NAME), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.settings_wallet_version, BuildConfig.MOBILE_VERSION), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.settings_node_version, node), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(stringResource(R.string.settings_copyright), color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

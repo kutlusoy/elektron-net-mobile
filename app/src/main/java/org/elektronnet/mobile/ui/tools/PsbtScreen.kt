@@ -32,6 +32,8 @@ import kotlinx.coroutines.withContext
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.SecureWindow
+import org.elektronnet.mobile.ui.receive.QrView
+import org.elektronnet.mobile.ui.scan.QrScannerScreen
 import org.elektronnet.mobile.ui.model.HistoryModel
 import org.elektronnet.mobile.wallet.Amount
 import org.elektronnet.mobile.wallet.PsbtStatus
@@ -53,6 +55,7 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
     var signWith by remember { mutableStateOf<String?>(null) }
     var txid by remember { mutableStateOf<String?>(null) }
     var confirmBroadcast by remember { mutableStateOf(false) }
+    var scanTarget by remember { mutableStateOf(0) }
     SecureWindow()
 
     fun run(block: () -> PsbtView?) {
@@ -71,6 +74,17 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
         tools.inspect(psbt)
     }
 
+    if (scanTarget != 0) {
+        QrScannerScreen(
+            onResult = {
+                if (scanTarget == 1) { text = it; view = null; txid = null } else other = it
+                scanTarget = 0
+            },
+            onClose = { scanTarget = 0 },
+        )
+        return
+    }
+
     ToolPage(stringResource(R.string.psbt_title), onBack) {
         Hint(stringResource(R.string.psbt_intro))
         OutlinedTextField(
@@ -83,6 +97,7 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(onClick = { text = pasteText(context); view = null }) { Text(stringResource(R.string.send_paste)) }
+            OutlinedButton(onClick = { scanTarget = 1 }) { Text(stringResource(R.string.scan_button)) }
             Button(onClick = { inspect() }, enabled = text.isNotBlank() && !busy) { Text(stringResource(R.string.psbt_check)) }
         }
         if (busy) CircularProgressIndicator()
@@ -111,6 +126,7 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = { other = pasteText(context) }) { Text(stringResource(R.string.send_paste)) }
+                    OutlinedButton(onClick = { scanTarget = 2 }) { Text(stringResource(R.string.scan_button)) }
                     OutlinedButton(
                         onClick = {
                             val second = other
@@ -135,6 +151,7 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
                 OutlinedButton(onClick = { copyText(context, "psbt", v.psbt) }) { Text(stringResource(R.string.action_copy)) }
                 OutlinedButton(onClick = { shareText(context, v.psbt) }) { Text(stringResource(R.string.action_share)) }
             }
+            if (v.psbt.length <= PSBT_QR_LIMIT) QrView(v.psbt) else Hint(stringResource(R.string.scan_psbt_hint))
         }
     }
 
