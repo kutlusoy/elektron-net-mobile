@@ -30,5 +30,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.14.3"
-      - name: Unit tests and lint
+      - name: Build both flavors
+        run: gradle --no-daemon :app:assembleMainnetDebug :app:assembleTestnetDebug
+      - name: Unit tests and lint for both flavors
         run: gradle --no-daemon :app:testMainnetDebugUnitTest :app:testTestnetDebugUnitTest :app:lintMainnetDebug :app:lintTestnetDebug
