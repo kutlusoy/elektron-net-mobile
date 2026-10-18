@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push:
+    branches: [mobilenode, main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Contrast gate
+        run: python3 -I design/check-contrast.py
+      - name: Theme generator
+        run: python3 -I design/gen-theme.py --out "$RUNNER_TEMP/theme"
+      - name: Locales
+        run: python3 -I tools/check-locales.py .
+      - name: Build script tests
+        run: bash native-build/tests/test-fetch-core.sh
+
+  app:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+      - name: Build both flavors
+        run: gradle --no-daemon :app:assembleMainnetDebug :app:assembleTestnetDebug
+      - name: Unit tests and lint for both flavors
+        run: gradle --no-daemon :app:testMainnetDebugUnitTest :app:testTestnetDebugUnitTest :app:lintMainnetDebug :app:lintTestnetDebug

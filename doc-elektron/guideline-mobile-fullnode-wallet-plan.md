@@ -1,11 +1,11 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.3 (draft)
+- **Version:** 0.11 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (light wallet, source of branding, address safety UX and strings), [`elektron-net-mempool`](https://github.com/kutlusoy/elektron-net-mempool) (explorer, deep links only)
-- **See also:** [`guideline-wallet-integration.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/guideline-wallet-integration.md), [`AUDIT_PRUNING_SNAPSHOT.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/AUDIT_PRUNING_SNAPSHOT.md), [`BITCOIN_CORE_DIFF.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/BITCOIN_CORE_DIFF.md), [`CHANGELOG-slip44-coin-type.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/CHANGELOG-slip44-coin-type.md), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
+- **See also:** [`guideline-expert-console.md`](./guideline-expert-console.md), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md), [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md), [`guideline-wallet-integration.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/guideline-wallet-integration.md), [`AUDIT_PRUNING_SNAPSHOT.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/AUDIT_PRUNING_SNAPSHOT.md), [`BITCOIN_CORE_DIFF.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/BITCOIN_CORE_DIFF.md), [`CHANGELOG-slip44-coin-type.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/CHANGELOG-slip44-coin-type.md), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet
 
 Requirement levels follow common practice: **MUST** = mandatory for correct/safe operation, **SHOULD** = strongly recommended, **MAY** = optional.
@@ -37,7 +37,7 @@ Verified against `kutlusoy/elektron-net@main` documentation and the reviewed con
 |---|---|---|
 | Block time | 60 s, about 1,440 blocks per day | Constant validation work; steady-state load is higher than a 10-minute chain |
 | Mandatory pruning | `MANDATORY_PRUNE_DEPTH` = 197,280 blocks (about 137 days), no archival mode | Storage is bounded by design. Phone nodes are first-class citizens, not degraded nodes |
-| Planning estimate for the retained window | `ELEKTRON_MANDATORY_PRUNE_WINDOW_GB` = 10 (`src/qt/guiconstants.h`) | Treat as an upper planning bound, measure real numbers in Phase 0 |
+| Planning estimate for the retained window | `ELEKTRON_MANDATORY_PRUNE_WINDOW_GB` = 10 (`src/qt/guiconstants.h`) | Treat as an upper planning bound, measure real numbers in Phase 0. A team test build on an emulator (October 16, 2026, tip 269,354, pruning from block 197,281) showed 29.6 MiB of blockchain data. Whether chainstate and snapshot files are included in that figure is not confirmed |
 | UTXO attestation | Every block at height > 0 carries `OP_RETURN <height> <hash>`; MuHash incremental from height 137,000 | Validation cost per block is bounded by coins touched, which is what makes mobile validation feasible |
 | Automatic snapshots | `.dat` + `.hash` in `datadir/snapshots/` at each checkpoint (mainnet 197,280) | Matches the requested "automatic snapshots" feature natively. The app supervises, it does not reimplement |
 | Snapshot bootstrap | `MaybeRequestSnapshot()` triggers when `header_height - tip_height > 197280`, otherwise normal IBD inside the window | First-run UX has two paths and the app MUST support both (§5.1) |
@@ -55,7 +55,7 @@ The concept document is a good proof that the architecture works. These are the 
 | # | Concept behavior | Plan decision | Reason |
 |---|---|---|---|
 | 1 | Derives only `m/84'/1370'/0'` | MUST also import the legacy `m/84'/0'/0'` descriptors (and scan them) | `guideline-wallet-integration.md` §3.1 makes the dual scan a MUST. A seed from a pre-4.0.4 wallet would otherwise show a silent zero balance |
-| 2 | Custom native patch adding `rescanutxoset` RPC, applied by a Python patcher at build time | Propose the RPC upstream in `elektron-net` (small wrapper over `CWallet::ScanUTXOSet()`), keep the patcher only as a bridge | A permanently patched Core drifts from the reference node and hurts auditability. Cross-repo item X1 (§12) |
+| 2 | Custom native patch adding `rescanutxoset` RPC, applied by a Python patcher at build time | Propose the RPC upstream in `elektron-net` (small wrapper over `CWallet::ScanUTXOSet()`), keep the patcher only as a bridge. The RPC does not exist in `elektron-net@main`, see §8.3 | A permanently patched Core drifts from the reference node and hurts auditability. Cross-repo item X1 (§12) |
 | 3 | Fixed descriptor range `0..999` per branch | Use a ranged descriptor with a tracked next index and automatic range top-up | A fixed window silently loses funds beyond index 999 and over-derives for everyone else |
 | 4 | RPC credentials via `-rpcuser/-rpcpassword` style arguments | Prefer `-rpcauth` (salted hash) or the cookie file inside the private data dir | Avoids plaintext secrets in the process argument list |
 | 5 | Fee presets Economy 0.1, Normal 2, Priority 5 lep/vB hard-coded | Derive presets from `estimatesmartfee` and the node's `mempoolminfee`/`minrelaytxfee`, keep manual override with policy re-check before signing | Hard-coded values go stale as the fee market develops. The re-check-before-sign behavior of the concept is kept |
@@ -75,6 +75,8 @@ The concept document is a good proof that the architecture works. These are the 
 5. Node controls: Start/Stop, resource profile, network policy (Wi-Fi only, charging only, data cap), storage cap, snapshot options.
 6. Backup/restore: seed (primary), encrypted wallet file export via Storage Access Framework (secondary), descriptor export (watch-only).
 7. Diagnostics: bounded in-app log window, export of sanitized log.
+8. Two sections, **Wallet** and **Node**, with a live view of what the node is doing (§3.3, §3.4), fully localized with an in-app language switch (§3.5).
+9. Expert mode with a console to the node of the phone (§3.6).
 
 ### 3.2 Resource profiles
 
@@ -90,6 +92,78 @@ Profiles map to `elektrond` startup arguments. The numbers below are starting hy
 - `-blocksonly` in the Foreground profile reduces bandwidth but also stops mempool-based unconfirmed-incoming display. The UI MUST say so.
 - All profiles use `-listen=1` only when on unmetered networks. Inbound connections behind carrier NAT will be rare, so no effort is spent on port mapping in v1.
 - Every argument above is a standard Core option inherited by the fork. **Verify** each one against `src/init.cpp` of the Core revision resolved at build time (§11.1).
+- All profiles disable port mapping with `-natpmp=0` (the option exists in `elektron-net@main` and defaults to on, there is no `-upnp` option any more). A team test build logged repeated `pcp: Could not connect to gateway` warnings, which is noise and a pointless network probe on a phone.
+
+**Storage saver (`-fastprune`).** `-fastprune` is a debug-category option of the node (listed by `-help-debug`, hidden from `-help`). In `src/node/blockstorage.cpp` it caps a `blk` file at 64 KiB instead of 128 MiB and shrinks the preallocation chunk to 16 KiB. Pruning deletes whole `blk`/`rev` files only, so the retention window is enforced with a granularity of one file: with default files, a node keeps up to one extra 128 MiB file beyond the 137-day window, and on a young low-traffic chain the oldest file can stay in place for a very long time. With `-fastprune` the retained data follows the window closely. It does not change consensus or chain parameters, it only changes block file sizes (verified in `elektron-net@main`, `447c069`).
+
+- Costs to measure in Phase 0: far more files (block data size divided by 64 KiB, plus one `rev` file each), more open/close and finalize/truncate work, longer directory scans at startup, more inodes on the device.
+- Upstream risk: a debug-only option can change or disappear while the app always tracks current Core (§11.1). The contract check (§11.2) verifies that the option is accepted and that it still makes pruning observable. The supervisor passes it only when the build manifest says it is supported.
+- Control: `NODE_FASTPRUNE_DEFAULT` in `core-source.env` (default `1`, decided October 18, 2026) is recorded in the build manifest and sets the app default. The user can opt out with the setting "Storage saver", which overrides the default at runtime. Emulator and CI regtest runs always use `-fastprune`.
+- Switching it on or off on an existing datadir is expected to be safe because block file sizes are tracked per file. The contract check restarts a regtest node with the option toggled to confirm this.
+- **Decided:** the Storage saver is on by default in all builds, with an opt-out in settings. The Phase 0 measurements still run: if the costs listed above turn out to be unacceptable on real devices, the default is revisited, but the opt-out stays.
+
+### 3.3 Sections and navigation
+
+The app has two sections. Both are one tap away from each other at all times.
+
+| Section | Screens |
+|---|---|
+| **Wallet** | Home (balance, UTXO count, addresses with balance, Receive/Send with QR scan), Receive and address list, Send, History, Security and backup |
+| **Node** | Status, Network telemetry, Pruning and snapshots, Peers, Live log, Controls, Recovery tools, Expert console (opt-in, §3.6) |
+
+- A compact node status chip (sync state, peer count) sits in the Wallet header and opens the Node section. While the node is not synchronized, the Wallet shows a banner that balances and history may be incomplete, instead of a bare zero.
+- Primary navigation is a bottom bar. The reviewed team screenshots use four tabs (Wallet, Network, History, Debug). The final grouping into the two sections above is a design decision for Phase 1, the requirement is only that every Node screen is reachable without digging through settings.
+- Visual direction: cyberpunk but calm, dark theme with neon accent and controlled glow, rounded cards, one hero card per screen. The app ships no artwork. The colors come from the ten Osclass themes of `elektron-net-wp`, and effects never impair readability. The full specification is [`guideline-ui-design-system.md`](./guideline-ui-design-system.md). The helmet artwork in the reviewed screenshots MUST NOT be copied into this repository.
+
+### 3.4 Node transparency
+
+The user can see what the node is doing whenever they want. Everything in the Node section is read from the local node and shown only while visible.
+
+| Element | Source |
+|---|---|
+| Sync hero card (phase, "Synchronized", validated blocks, known headers, progress) | `getblockchaininfo` (`blocks`, `headers`, `verificationprogress`, `initialblockdownload`), snapshot phase from the supervisor (§5.1) |
+| Peers (in/out counts, P2P listen state) | `getnetworkinfo` (`connections_in`, `connections_out`, `localservices`, `networkactive`) |
+| Peer list (address, direction, user agent, ping, height, country) | `getpeerinfo`, country from the local MMDB (§8.6) |
+| Chain telemetry (chain, difficulty, hashrate, mempool, disk) | `getmininginfo`, `getnetworkhashps`, `getmempoolinfo`, `getblockchaininfo` (`size_on_disk`) |
+| Pruning and checkpoint (retained window, retained from height, last snapshot, snapshot serving) | `getblockchaininfo` (`pruned`, `pruneheight`), tip height, `snapshots/` directory listing, `NODE_SNAPSHOT` in `localservices` |
+| Transaction history | wallet RPCs, with an explorer link as an opt-in setting (X7) |
+| Live log | node stdout through the bounded ring buffer (§4.2) |
+| Recovery tools (UTXO set scan card with status) | wallet RPCs, `rescanutxoset` once available (X1) |
+
+- **Live log:** off by default, switched on by the user, with a visible indicator that it is active. It shows a bounded window of recent lines (new tip, new block header, peer events, snapshot events, warnings). When it is off, nothing from the UI side is captured, but the supervisor still drains the node output.
+- **Log hygiene:** the node log can contain addresses and transaction ids. Copy and export default to a sanitized form with addresses and txids masked, and the user must confirm to export the raw log. Log lines themselves stay in English (technical text, not translated).
+- **Polling cost:** the Node section polls fast while visible. When hidden, only the minimum needed for the notification and policy engine runs (§4.2, §7).
+- The Node section also hosts the controls from §3.1 item 5, so a user who sees a problem can act on it in the same place.
+
+### 3.5 Internationalization
+
+Multi-language support is a core requirement, not a late polish item.
+
+- **MUST:** no user-visible text in code. All text lives in Android string resources, with plurals, positional format arguments and no concatenated sentences. A CI lint gate turns missing translations and hard-coded strings into errors for the supported locales.
+- **English is the default language** (decided October 18, 2026): `values/strings.xml` is English, every other locale is an overlay, and the app falls back to English whenever the system language is not shipped or a string is missing. The shipped locale list lives in `app/shipped-locales.txt` and always starts with `en`. `tools/check-locales.py` fails the build if English is not first, if `locales_config.xml` differs from the list, or if a shipped locale lacks keys.
+- **Locales:** English (source) plus the most widespread languages, in two tiers. Tier A at launch: German, Spanish, French, Italian (the four already used by the reviewed concept). Tier B: Simplified Chinese (`zh-Hans`), Traditional Chinese (`zh-Hant`), Arabic (`ar`, right-to-left), Japanese, Korean, Hindi, Brazilian Portuguese, Russian, Turkish, Indonesian, Vietnamese. A language ships only after a native speaker has reviewed the security texts (below). Until then it stays out of the release, so a partial or machine-only translation never carries a seed warning.
+- **Scripts:** amounts, block heights and addresses always use Latin digits and the node's address alphabet in every language. Addresses, hashes and console text are isolated as left-to-right runs inside right-to-left text. Non-Latin scripts use the system fonts (details in the design system guideline, §5).
+- **Translation workflow:** plain pull requests with string resource files, plus an optional self-hosted tool later. The `.tx` directory of the node repository is Core's Transifex setup and is not reused.
+- **In-app language switch** independent of the system language, using Android per-app language preferences (`LocaleManager` on Android 13 and later, AndroidX `AppCompatDelegate.setApplicationLocales` on older versions), declared with a `localeConfig` resource. Default follows the system locale.
+- **Formatting:** amounts, dates, times and numbers use the active locale (the Spanish screenshot shows a decimal comma). The unit labels (ELEK/lep) are never translated or reformatted in a way that changes the value. Layouts MUST survive text expansion (German and French are typically 30 percent longer) and system font scaling, and MUST support right-to-left locales (Arabic is in tier B).
+- **Errors:** RPC and node errors are mapped by error code to localized messages for the cases the app knows (wallet locked, insufficient funds, fee too low, node not synced, and so on). The raw node message is available as a secondary details line, in English.
+- **Terminology:** a per-language glossary fixes how terms such as UTXO, mempool, peer, pruning, checkpoint and snapshot are translated or kept in English, so the Node section reads consistently.
+- **Review:** the seed backup warnings, the trust model text (§9) and the Base58 collision warning (§8.5) MUST be reviewed by a native speaker for every shipped language before a release. Machine translation is acceptable only as a first draft.
+- **Tests:** pseudo-localization build to catch clipped or hard-coded text, screenshot tests for the longest locale, and a check that every string key exists in every shipped locale.
+- Translation files are the one place in this repository that is not English (they hold the target languages by design).
+
+### 3.6 Expert mode and node console
+
+Expert mode gives advanced users a console to the node, comparable to the debug console of the desktop wallet. The full specification is in [`guideline-expert-console.md`](./guideline-expert-console.md). The essentials:
+
+- Part of all builds, off by default. Enabling it needs a localized risk confirmation and device authentication once per session, and the session ends with the app process or after inactivity.
+- The console sends JSON-RPC to the local node through its own low-priority lane of the app's RPC client. The mobile build ships no `elektron-cli`, and none is needed.
+- Every command belongs to a tier: **Open** (read-only, runs immediately), **Confirm** (state-changing, one confirmation), **Danger** (moves funds or reveals keys, ships in the first release behind a second switch that the user turns on with a typed confirmation, plus a confirmation dialog per command) and **Blocked** (`stop`, `loadtxoutset`, test commands). The classification is derived from the node's `help` list (151 commands on `elektron-net@main`) plus the known hidden commands and lives in `native-build/contract/console-tiers.json`. The app tracks the current Core, so any command that is not classified defaults to Confirm, and the contract check reports unclassified commands.
+- The console screen uses `FLAG_SECURE`, passphrase arguments are masked and never persisted, and every wallet unlocked through the console is relocked when the user leaves the console or the app goes to the background.
+- Command history is persistent, encrypted at rest, with secrets masked, a retention of 90 days by default (off, 7, 30 or 90 days selectable) and a delete action.
+- `backupwallet`, `restorewallet` and `dumptxoutset` are supported. File arguments are confined to the app's private `exports/` directory, existing files are never overwritten, and only wallets protected by a passphrase are backed up. `dumptxoutset` with `type=rollback` is blocked. Dumps made by hand are deleted after 7 days, the automatic checkpoint snapshots of the node are never touched. `createwallet` is refused without a passphrase.
+- Command names, arguments and node output stay in English. All console chrome, the risk texts and the error hints are localized (§3.5).
+- Phase 1 ships a read-only developer console in debug builds for the team. User-facing Expert mode comes in Phase 3.
 
 ## 4. Architecture
 
@@ -122,7 +196,20 @@ Profiles map to `elektrond` startup arguments. The numbers below are starting hy
 3. Health: poll `getblockchaininfo`, `getnetworkinfo`, `getpeerinfo`, `getmempoolinfo` at an adaptive interval (fast in foreground, slow in background).
 4. Detect and classify failure: crashed, killed, corrupted chainstate, disk full, incompatible datadir. Each has a defined recovery action (restart, `-reindex-chainstate` offer, snapshot re-bootstrap, reset with wallet re-import).
 5. Enforce policy: network type, battery, charging state, storage cap, user pause.
-6. Persist `RPC` credentials encrypted with Android Keystore (AES-256-GCM, non-exportable key).
+6. Authenticate RPC with the node's cookie file (`-rpccookiefile` in the app-private datadir, recreated by the node at every start, deleted by the supervisor before a start). No RPC password exists, so nothing needs to be stored or wrapped by the Keystore.
+7. Own the config file. On first launch the node writes a default `bitcoin.conf` into the datadir with the mainnet seed and `addnode` list (observed with `elektron-net@main`). That is fine for the mainnet flavor and keeps the maintained peer list. Every other chain fails on the next start (`-addnode` only applied on regtest when in a `[regtest]` section), and passing `-conf=` elsewhere does not stop the file from being generated, which then fails with "contains a bitcoin.conf which is ignored" unless `-allowignoredconf=1` is set. Therefore any non-mainnet flavor and every test pre-creates its own `bitcoin.conf` in the datadir before the first start, and the supervisor checks that the file matches the chain before launching.
+
+#### Supervisor implementation notes
+
+The supervisor core is plain Kotlin without Android dependencies (`app/src/main/java/org/elektronnet/mobile/node/`), so it runs in JVM unit tests and in an integration test against a real `elektrond`.
+
+- **Arguments** come from one function (`NodeConfig.arguments()`): datadir, `-server=1`, loopback `-rpcbind`/`-rpcallowip`, `-rpcport`, `-rpccookiefile`, `-port`, `-printtoconsole=1`, `-natpmp=0`, `-listen`, the chain argument (`-testnet`, none for mainnet), the profile arguments of §3.2 and `-fastprune`. All of them are in the contract file.
+- **States:** Stopped, Starting, Running, Stopping, Crashed(exit code, failure class). The node is Running when `getblockchaininfo` answers. Error `-28` (RPC in warm-up) and connection errors keep the state at Starting, any other RPC error also counts as ready.
+- **Stop:** RPC `stop`, wait up to a bounded timeout (default 60 s, long enough for a snapshot write), then SIGTERM, then SIGKILL as the last step. An exit that the app requested, or exit code 0, is Stopped, anything else is Crashed.
+- **Output:** stdout and stderr are drained on their own thread into a bounded ring buffer, so a full pipe never blocks the node.
+- **Failure classes** are taken from node messages found in the source: "Disk space is too low", "Corrupted block database"/"Error opening block database", "Cannot obtain a lock on directory". Everything else is Unknown. The recovery action per class (§4.2 item 4) is wired in with the UI.
+- **Config file:** for non-mainnet chains the supervisor writes a managed `bitcoin.conf` and, if it finds settings outside the chain's own section (for example the generated mainnet `addnode` lines), replaces it and keeps a `bitcoin.conf.bak` (§4.2 item 7).
+- **Verified:** 30 JVM unit tests (JSON, arguments, config file, failure classes, ring buffer, RPC client against a local HTTP server, supervisor against fake node scripts) and one integration test that starts the host `elektrond` in regtest, waits for Running, reads `getblockchaininfo` and stops it gracefully. Not yet verified: the same on Android (bionic, process limits, phantom process killer), which stays a Phase 0 item.
 
 ### 4.3 Foreground service and background execution
 
@@ -162,12 +249,16 @@ Fetch headers (peers via DNS seed)
 
 The UI MUST show distinct phases (this is already a strength of the concept): node startup, peer discovery, header sync, snapshot download (with bytes and ETA), snapshot verification/activation, block validation, synchronized. The headline progress value MUST NOT show a misleading 0% during header sync.
 
+**Current chain state (from a team test build, October 16, 2026):** the tip was at 269,354, which is beyond the first checkpoint at 197,280. By the documented trigger (`header_height - tip_height > 197280`), a fresh install is therefore already on the snapshot path, and the plain IBD path only applies to returning nodes that fell behind by less than the retention depth. Phase 1 test priority goes to the snapshot bootstrap.
+
 ### 5.2 Snapshot handling on a phone
 
 - Snapshots are produced and cleaned up by Core (`WriteAutomaticSnapshot()` keeps only the current checkpoint's files). The app does not copy, move or edit them.
 - Snapshot writing is an I/O and `cs_main` heavy moment. The supervisor SHOULD show a transient "checkpoint snapshot in progress" state and MUST NOT kill the node during it. A graceful stop request during that window waits for completion up to a bounded timeout.
 - Snapshot download resume: audit §4.8 documents that chunk tracking is lost on restart and bandwidth is wasted. On mobile data this matters. The default policy is to run the snapshot download only on unmetered networks and to ask once before using cellular. A Core-side improvement (persistent received-range tracking) is proposed as cross-repo item X3.
-- Serving snapshots: a node holding `.dat` + `.hash` advertises `NODE_SNAPSHOT` automatically and uploads chunks to peers. On a phone this is a bandwidth cost. The app MUST expose a setting for it (default: on only for unmetered + charging). Whether Core can switch this off cleanly without a source change is **to verify**. If not, see X2.
+- Serving snapshots: a node holding `.dat` + `.hash` advertises `NODE_SNAPSHOT` automatically and uploads chunks to peers. On a phone this is a bandwidth cost. Decided October 18, 2026: phone nodes serve snapshots **only on Wi-Fi (unmetered) and while charging**, and never otherwise. The app MUST enforce this and expose a setting to turn serving off entirely.
+  - Clean solution: a Core option or RPC to stop advertising `NODE_SNAPSHOT` at runtime (X2, now MUST).
+  - Interim workaround, **to verify in Phase 0**: while the condition is not met the supervisor moves the `<height>-<hash>.dat` and `.dat.hash` pair from `snapshots/` to a hold directory in the datadir, and moves it back when Wi-Fi and charging apply again. Core's `UpdateLocalSnapshotServices()` has to be checked to confirm that the service bit follows the directory content, that a missing file pair does not trigger a rewrite loop and that the move cannot race with `WriteAutomaticSnapshot()`. The move is done only with the pair complete and hash-verified afterwards, and never during a snapshot write.
 - Disk guard: before a snapshot write or download the supervisor checks free space against the current snapshot size plus margin and refuses with a clear message instead of failing mid-write.
 
 ### 5.3 Reaching "fully synced" and staying there
@@ -207,8 +298,14 @@ The UI MUST show distinct phases (this is already a strength of the concept): no
 
 - The node's descriptor wallet holds and uses the private keys. Kotlin touches key material only during creation/recovery bootstrap.
 - Mnemonic and seed are never written to preferences, files, logs or crash reports. Use `ByteArray`/`CharArray` and explicit zeroing, accept that the JVM cannot guarantee full erasure, and keep the exposure window to the creation screen.
-- Wallet passphrase is chosen by the user, handled only by Core (`encryptwallet`/`walletpassphrase`). It is not stored by the app.
-- **Open decision (§17, Q3):** an opt-in biometric unlock that stores the passphrase wrapped by a Keystore key requiring user authentication. This is a convenience/security trade-off and stays off by default.
+- Wallet passphrase is chosen by the user, handled only by Core (`encryptwallet`/`walletpassphrase`). By default the app does not store it.
+- **Biometric unlock (decided October 18, 2026: possible, opt-in, off by default).** The user can enable unlock by fingerprint or face in the security settings.
+  - Enabling requires the passphrase once. The app wraps it with an AES-GCM key in the Android Keystore (hardware backed where available, StrongBox if present) that requires user authentication for every use (`setUserAuthenticationRequired(true)`, per-use validity, `BIOMETRIC_STRONG` only, no device credential fallback for the wrapped key).
+  - Unlock uses `BiometricPrompt` with a `CryptoObject`, so the key is released only after a successful biometric check. The decrypted passphrase lives in a `CharArray`, is used for one `walletpassphrase` call (at most 10 s, S4) and is zeroed immediately.
+  - The key is invalidated when a new fingerprint or face is enrolled (`setInvalidatedByBiometricEnrollment(true)`). The app then falls back to the passphrase and offers to re-enable.
+  - The passphrase always works. Biometrics are a convenience, never the only way in. Disabling the feature deletes the Keystore key and the wrapped blob.
+  - The wrapped blob is in app-private storage, excluded from backup (S2). Sending still goes through the PSBT review screen, the biometric check replaces only typing the passphrase.
+  - Trade-off to state in the UI: anyone who can make the device accept their biometric can spend. Large balances should keep the feature off. Requirement S16.
 
 ### 8.2 Descriptors
 
@@ -233,14 +330,18 @@ Create:
 
 Recover:
   gate: node synchronized to tip (or snapshot active and tail synced)
-  1. help rescanutxoset (or equivalent) - abort BEFORE wallet creation if unsupported
-  2. createwallet + importdescriptors (current + legacy)
-  3. rescanblockchain <pruneheight>            (retained blocks: history inside the window)
-  4. UTXO set scan (CWallet::ScanUTXOSet)      (all currently unspent coins)
-  5. verify: balance, address look-ahead reached an unused tail
+  1. help rescanutxoset - abort BEFORE wallet creation if unsupported
+  2. createwallet(blank, passphrase) + walletpassphrase (long enough for steps 3 and 4)
+  3. importdescriptors (current + legacy) with timestamp "now"
+  4. rescanblockchain <pruneheight>            (retained blocks: history inside the window)
+  5. rescanutxoset                             (CWallet::ScanUTXOSet, all currently unspent coins)
+  6. walletlock (in a finally path), verify balance and that the address look-ahead reached an unused tail
 ```
 
 - Recovery MUST be re-runnable from the UI without touching chainstate or restarting sync.
+- Findings from the contract check on `elektron-net@main` (`447c069`, regtest with `-fastprune`): `importdescriptors` with `timestamp: 0` fails per descriptor on a pruned node (error -1, "Rescan failed ... pruning"), although the wallet is left with a partial balance. Use `"now"` and the explicit rescan. `rescanblockchain` fails with -13 while the wallet is locked, so the wallet must stay unlocked for the whole scan, and the scan can run for minutes on a phone. A reload (`unloadwallet` then `loadwallet`) does not restore coins from pruned blocks: the restored test wallet showed 114.6 of 1,400.9. `rescanutxoset` does not exist in `elektron-net@main`, so X1 is a hard prerequisite for recovery.
+- Use the `checksum` field of `getdescriptorinfo` and append it as `#checksum`. The `descriptor` field it returns has the private keys stripped and cannot be imported.
+- The recovery unlock is the one exception to the 10 second rule (S4). It is bounded to the scan, requires the app in the foreground with the screen kept on, shows progress, and `walletlock` runs in a `finally` path.
 - Honest UX text: balances are restored fully. Transaction history older than the retention window (about 137 days) does not exist anywhere on the network.
 - Wallet loaded mid-IBD can show a transient zero balance until snapshot activation triggers `MaybeRescanUTXOSetAfterSnapshot()`. The UI MUST show "waiting for sync" instead of "0".
 
@@ -260,13 +361,41 @@ walletcreatefundedpsbt -> decodepsbt -> validate (destination, amount, fee, chan
 - Coin control by address, UTXO list with labels, RBF on by default, CPFP/bump fee screen in Phase 4.
 - Because the node is local, broadcast reaches the P2P network directly and is not routed through a server. Nothing is leaked to an indexer.
 
+### 8.4.1 Payment URI (`elek:`)
+
+Decided October 18, 2026: the scheme is `elek:`. Testnet uses `elektest:` (see the distribution guideline).
+
+```text
+elek:<address>[?amount=<decimal ELEK>][&label=<text>][&message=<text>]
+```
+
+- BIP21-style. `amount` is a decimal in ELEK with at most 8 decimals, no exponent, no sign, never in lep. Invalid amounts reject the whole URI.
+- Parameters starting with `req-` that the app does not know make the URI invalid. Other unknown parameters are ignored.
+- `label` and `message` are untrusted display text. They are length limited, percent-decoded once, stripped of control characters and Unicode bidirectional controls, and shown as plain text.
+- The address must pass the same checks as a manually entered one (§8.5): Bech32 `be1...` is accepted, a Base58 address triggers the collision warning.
+- A URI never sends anything by itself. It only fills the Send screen, which goes through the full PSBT review (§8.4). QR codes in uppercase (alphanumeric mode) are accepted. The QR scanner and the intent filter feed the same parser.
+- The parameter name `lightning` is reserved for a future invoice fallback (§8.4.2) and is ignored today.
+- The parser lives in one pure Kotlin class with unit tests and a fuzz test, and its test vectors are shared with `elektron-net-electrum` (X10).
+
+### 8.4.2 Lightning readiness
+
+Lightning is not in v1 and no routing infrastructure exists yet. Decided: keep the path open and design as if the infrastructure existed, so that anyone in the community can build it.
+
+- The wallet layer talks to a `PaymentBackend` interface with an on-chain implementation (Core descriptor wallet). A Lightning backend can be added without touching screens. A feature flag keeps it disabled and absent from the UI.
+- Reserve in the UI model: a channel and balance concept next to the on-chain balance, an invoice input in the Send screen, and the `lightning` URI parameter.
+- Reserve the Bech32 invoice prefix `lnbe` for Elektron Net invoices (to be confirmed against the lightning deployment guidelines in `elektron-net`).
+- Funding and closing use PSBTs from the Core wallet, so channel funds also pass the review-before-sign flow.
+- Lightning keys are separate from the on-chain keys. Because the app does not keep the recovery phrase after setup, a Lightning backend needs its own seed backup flow or a derivation that is shown once. This is a design item for the Lightning phase, not for v1.
+- The node must not rely on anything that blocks this path: no hard-coded single-address assumptions in the wallet layer, and an app-level extension point for a Lightning daemon as a second child process under the same supervisor.
+- Reference: the Lightning deployment guidelines in [`elektron-net`](https://github.com/kutlusoy/elektron-net/tree/main/doc-elektron).
+
 ### 8.5 Address safety (MUST)
 
 Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4). Therefore:
 
 - Only Bech32 `be1...` receive addresses are generated and shown by default.
 - Pasting or scanning a legacy Base58 address or importing a WIF key shows an explicit warning that the same string is valid on Bitcoin mainnet.
-- Addresses with HRP `bc`/`tb`/`bcrt` are rejected with a specific message.
+- Addresses with a foreign HRP are rejected with a specific message. The mainnet flavor rejects `bc`, `tb` and `bcrt`. The testnet flavor (HRP `tb`) rejects `bc`, `be` and `bcrt`.
 - The `elektron-net-electrum` implementation of this UX is the reference for wording and behavior to keep both wallets consistent.
 
 ### 8.6 Local data, labels and privacy
@@ -279,10 +408,10 @@ Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4
 
 | # | Requirement | Level |
 |---|---|---|
-| S1 | RPC bound to loopback with authentication, credentials encrypted via Keystore | MUST |
+| S1 | RPC bound to loopback (`-rpcbind=127.0.0.1`, `-rpcallowip=127.0.0.1`) with cookie authentication, the cookie file lives in the app-private datadir. No `-rpcuser` or `-rpcpassword` arguments | MUST |
 | S2 | `android:allowBackup="false"` and no data extraction rules that include the datadir | MUST |
 | S3 | `FLAG_SECURE` on seed, passphrase, send-review and signing screens | MUST |
-| S4 | Unlock window at most 10 s, `walletlock` in a `finally` path | MUST |
+| S4 | Unlock window at most 10 s, `walletlock` in a `finally` path. The recovery rescan is the only exception (§8.3) | MUST |
 | S5 | PSBT re-validation immediately before unlock | MUST |
 | S6 | No mnemonic or passphrase in logs, notifications, clipboard (or auto-clear clipboard after a short timeout for addresses) | MUST |
 | S7 | Native binary integrity: Core commit SHA resolved at build time and SHA-256 of `libelektrond.so` recorded in a build manifest, verified by the app at startup | MUST |
@@ -290,6 +419,11 @@ Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4
 | S9 | Rooted/instrumented device detection as a warning only | SHOULD |
 | S10 | Reproducible builds and signed releases with published hashes | SHOULD |
 | S11 | Independent security review before any mainnet release with a "stable" label | MUST |
+| S12 | Expert mode is opt-in per session with a risk confirmation and device authentication. The console screen uses `FLAG_SECURE`, passphrase arguments are masked, and every wallet unlocked through the console is relocked when leaving it (`guideline-expert-console.md` §3, §6) | MUST |
+| S13 | Console commands are classified (Open, Confirm, Danger, Blocked) and unclassified or hidden commands default to Confirm (`guideline-expert-console.md` §5) | MUST |
+| S14 | Console file commands only use the app's private `exports/` directory, never overwrite an existing file, and wallet backups are made only for passphrase-protected wallets (`guideline-expert-console.md` §7) | MUST |
+| S15 | Console history is encrypted at rest, masks secrets, never stores results of key-revealing commands, rotates after the retention period and can be deleted (`guideline-expert-console.md` §6) | MUST |
+| S16 | Biometric unlock is opt-in, uses a Keystore AES-GCM key with per-use `BIOMETRIC_STRONG` authentication and `CryptoObject`, is invalidated on new biometric enrollment, never replaces the passphrase and is removable (§8.1). No other form of passphrase storage exists | MUST |
 
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 
@@ -304,17 +438,25 @@ elektron-net-mobile/
       security/    keystore, secure window helpers
       ui/          Compose screens
     src/main/jniLibs/{arm64-v8a,x86_64}/libelektrond.so
-    src/main/res/                       strings (en, de, es, fr, it)
+    src/main/res/                       strings (English default, plus the shipped locales, §3.5)
+    shipped-locales.txt                 shipped locale list, English first
+    src/mainnet/, src/testnet/          flavor overrides (ID, name, chain, scheme, icon)
   native-build/                         reproducible NDK build of elektrond
     core-source.env                     Core repository URL, ref to track, NDK version
     fetch-core.sh                       resolves and fetches the current elektron-net source
-    build.sh, install-core.sh, patches/
+    build.sh, install-core.sh, pin-ndk.sh, patches/
+    contract-check.py, contract/        interface check against the built node (§11.2)
+    docker/                             builder image and in-container build script
+    tests/                              tests of the build scripts
+  design/                               palettes.json (Osclass themes), check-contrast.py, gen-theme.py
+  tools/                                check-locales.py
+  build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml
   doc-elektron/                         guidelines and reports (this file)
   .github/workflows/                    CI
 ```
 
-- Application ID: `org.elektronnet.mobile` (as used by the concept; **confirm** in §17, Q1).
-- Language of code, comments and docs: English. UI strings: English plus translations for the existing five locales.
+- Application IDs (decided): `org.elektronnet.mobile` (mainnet) and `org.elektronnet.mobiletestnet` (testnet flavor), see [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md).
+- Language of code, comments and docs: English. UI strings: English plus the shipped translations (§3.5).
 - Code comments follow the repo conventions: minimal, only for non-obvious reasoning.
 
 ## 11. Native Build Plan
@@ -323,6 +465,7 @@ elektron-net-mobile/
 - Output MUST be linked with 16 KB page-size compatibility (`-Wl,-z,max-page-size=16384`) to satisfy current Android and store requirements for native code.
 - Build is containerized and rootless. The output ownership problem seen with root-owned Docker output in the concept is avoided by running the container as the invoking user.
 - The Core source is not pinned to a fixed tag. See §11.1.
+- One native build serves both app flavors. Every app build, local and CI, produces the mainnet and the testnet APK (distribution guideline §4).
 - Patches: only what cannot be upstreamed yet (currently the `rescanutxoset` bridge, cross-repo item X1). The patch set and its SHA-256 are part of the build manifest so a stale binary is never reused.
 - Test the unmodified Core unit tests that matter for a mobile build where feasible (snapshot, prune, wallet recovery functional tests listed in `BITCOIN_CORE_DIFF.md` §5.7) on the host build of the same fetched Core revision, and run a regtest integration suite against the x86_64 binary on an emulator.
 
@@ -339,18 +482,30 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
   - `CORE_REF` (branch, tag or SHA) overrides the policy for debugging and for reproducing an older build. A release build with an override is allowed only when the override is an existing release tag, so a published release always corresponds to a real upstream release.
 - The build manifest records: Core repository URL, resolved commit SHA, commit date, patch set SHA-256, NDK version, builder image digest, SHA-256 of each produced `libelektrond.so`. The manifest is embedded in the APK and shown in the app's About/Node screen. This is what keeps "always current" auditable and reproducible after the fact.
 - Third-party dependencies of Core (Boost, libevent and so on) are taken from the fetched Core's own `depends` definitions and their hashes, not re-specified here.
-- **Contract check (build gate):** after building, a script runs the produced binary (x86_64 in CI, host build locally) in `-regtest` and verifies the interface the app depends on: required RPCs exist (`help <name>`), protocol version and network magic match what the app expects, wallet RPC argument shapes used by the app are unchanged, and checkpoint/snapshot behavior on regtest still works. A failing contract fails the build with a message naming the missing or changed item. This turns upstream changes into immediate build errors instead of runtime surprises.
-- **Chain-generation guard:** the contract check also reads the genesis hash from the binary. If it differs from the one recorded in the app's datadir marker schema, the build still succeeds but the app's datadir versioning (§5.4) will trigger the controlled reset flow on first start.
+- **Contract check (build gate):** every build runs the contract check of §11.2 against a host build of the same revision. A failing contract fails the build with a message naming the missing or changed item, which turns upstream changes into immediate build errors instead of runtime surprises.
+- **Chain-generation guard:** the contract check also reads the mainnet genesis hash from the binary and compares it with the expected one. If it differs from the one recorded in the app's datadir marker schema, the build still succeeds but the app's datadir versioning (§5.4) will trigger the controlled reset flow on first start.
 - **Patch drift:** because the base moves on every build, a patch that no longer applies cleanly MUST fail the build loudly. It is never skipped or force-applied. Landing X1 upstream removes the only planned patch.
 - Nightly CI builds against Core `main` and additionally against the latest release tag, so breaking upstream changes are visible before a release is cut.
 - Consequence: a release contains the node of the latest upstream release at build time, never unreleased `main` code. A new upstream release flows into the next app release build automatically, so release builds MUST be cut only from a green contract check, and the tag name and resolved SHA are part of the release notes.
+
+### 11.2 Contract check
+
+`native-build/contract-check.py` verifies that an `elektrond` binary still offers what the app depends on. The expectations live in `native-build/contract/contract.json`. Whenever the app starts using another RPC or startup argument, it is added there in the same change.
+
+- **Host build:** the Android binary cannot run on the build machine. `build.sh host` therefore builds a native `elektrond` of the same Core revision and patch set in the builder image, and the check runs against it inside the container. The RPC surface is identical because the source is identical. What it cannot cover is the Android runtime (bionic, process limits), which stays an emulator item in Phase 0.
+- **Gate:** `build.sh` builds the host binary and runs the check before any Android ABI. A pass is cached by a stamp of Core commit, patches, builder files and contract files. `CONTRACT_CHECK=0` skips it for debugging, and release builds refuse that.
+- **A. Startup arguments:** every argument in `node_args` is listed by `-help-debug`.
+- **B. Mainnet, offline** (`-connect=0`, no DNS seed, no listening): chain `main`, genesis hash `00000006b054...9dad`, protocol version at least 70017, user agent contains `Elektron`, `pruned` true, required fields in `getblockchaininfo` and `getnetworkinfo`, and for every RPC in `rpc` that `help` knows it and lists the argument names the app passes. An unknown command is detected explicitly, because `help` answers with plain text instead of an error. RPCs in `optional_rpc` only warn.
+- **C. Regtest, functional** (with `-fastprune -natpmp=0`): a wallet is built from a fixed test master key with both coin types (`1370h` active, legacy `0h` imported inactive). The check verifies `bcrt1q` addresses on coin type 1370 and a locked wallet after import, then mines 700 blocks and verifies that block files roll over and the oldest is deleted, `pruneheight` advances, and exactly one checkpoint snapshot `<height>-<hash>.dat` with a `.dat.hash` sidecar exists for the latest multiple of the regtest checkpoint interval (100). It runs the full send flow (`walletcreatefundedpsbt`, `decodepsbt`, `walletpassphrase`, `walletprocesspsbt`, `finalizepsbt`, `sendrawtransaction`, `walletlock`, confirmation). It runs the recovery flow of §8.3 and verifies that the rescan from `pruneheight` restores only the retained part. If `rescanutxoset` exists it must restore the full balance, otherwise the check warns. Finally it restarts the node without `-fastprune` and mines on, which verifies that toggling the option on an existing datadir is safe.
+- Test nodes pre-create an empty `bitcoin.conf` (§4.2, item 7).
+- **Result on `elektron-net@main` (`447c069`, October 18, 2026):** 143 checks passed in about 8 seconds, one warning (`rescanutxoset` not present). The check also covers the commands the console needs and the console classification (`native-build/contract/console-tiers.json`, see `guideline-expert-console.md` §5): every command of the node's `help` list is classified (a warning in dev and nightly builds, a failure in release builds with `--strict-tiers`), argument rules and safety invariants are enforced (for example `sendtoaddress` is at least Danger, `stop` and `loadtxoutset` are Blocked), the console guards are verified (`createwallet` needs a passphrase, backups only for encrypted wallets, file paths, auto delete), and the file commands are exercised (`getwalletinfo.unlocked_until` identifies passphrase-protected wallets, `backupwallet` and `restorewallet` round trip keeps encryption and balance, `dumptxoutset` with `type=latest` writes a snapshot).
 
 ## 12. Cross-Repo Impact
 
 | ID | Repo | Item | Required? |
 |---|---|---|---|
-| X1 | `elektron-net` | Upstream a `rescanutxoset` wallet RPC wrapping `CWallet::ScanUTXOSet()`; remove the mobile-only patch afterwards. Also doc it in `BITCOIN_CORE_DIFF.md` | SHOULD, before beta |
-| X2 | `elektron-net` | If no clean switch exists: an option to stop advertising/serving `NODE_SNAPSHOT` (for example a `-snapshotserve=0` style flag, **verify existing args first**) | SHOULD |
+| X1 | `elektron-net` | Upstream a `rescanutxoset` wallet RPC wrapping `CWallet::ScanUTXOSet()`; remove the mobile-only patch afterwards. Also doc it in `BITCOIN_CORE_DIFF.md` | MUST, without it a restored wallet cannot see coins from pruned blocks (verified by the contract check) |
+| X2 | `elektron-net` | A clean runtime switch to stop advertising and serving `NODE_SNAPSHOT` (for example a `-snapshotserve=0` flag or an RPC, **verify existing args first**), needed because phones serve only on Wi-Fi while charging | MUST (the hold-directory workaround in §5.2 is the interim) |
 | X3 | `elektron-net` | Persist snapshot download progress across restarts (audit §4.8, currently "accepted") so cellular and unstable mobile links do not re-download | MAY, strongly useful |
 | X4 | `elektron-net` | Add an Android/NDK target (toolchain file and docs) so the mobile build does not carry a private fork of the build system | SHOULD |
 | X5 | `elektron-net` | Wallet integration guideline: add the mobile full-node variant as a documented integration option and link this plan | MAY |
@@ -358,6 +513,8 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 | X7 | `elektron-net-mempool` | Deep links from tx/address screens to the public explorer (opt-in, privacy warning, because it leaks the address to the explorer) | MAY |
 | X8 | DNS seeder | Phone nodes will mostly be non-reachable. No change, but crawler statistics will show a larger share of unreachable peers | n/a |
 | X9 | Pools/miners | None. Phone nodes do not mine in v1 | n/a |
+| X10 | `elektron-net-electrum` | Adopt the `elek:` payment URI scheme (§8.4.1) so both wallets read and write the same links | SHOULD |
+| X11 | `elektron-net` | Document `elek:` and the testnet scheme in the wallet integration guideline | MAY |
 
 ## 13. Phased Roadmap
 
@@ -370,18 +527,24 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [ ] First-sync benchmark (IBD path and snapshot path, depending on current chain height vs 197,280) on three reference devices (low, mid, high RAM)
 - [ ] Power and data baseline per profile (§7)
 - [ ] Verify every Core argument and RPC listed in this plan against the Core revision resolved at build time
-- [ ] Implement `fetch-core.sh` and the contract check (§11.1)
+- [x] Implement `fetch-core.sh` (§11.1)
+- [x] Implement the contract check on a host build (§11.2). Still open: the same smoke test on an Android x86_64 emulator
+- [ ] Measure `-fastprune` cost and benefit on a real device (§3.2) and confirm that the default-on decision holds (§17, Q10)
 - [ ] Decide `rescanutxoset` strategy (X1) and BIP-39 library approach (§2.2 #7)
 
 **Exit:** go/no-go memo, updated profile table, updated storage numbers.
 
 ### Phase 1: Node host MVP
 
-- [ ] Gradle project, signing config, CI
-- [ ] Node supervisor (start/stop/drain/health/graceful stop)
-- [ ] Keystore-wrapped RPC credentials, `-rpcauth` or cookie
+- [x] Gradle project skeleton: flavors, theme generator, contrast and locale gates, CI workflow. Not yet built against the Android toolchain
+- [ ] First green Gradle build, release signing in the release pipeline
+- [x] Node supervisor core (start/stop/drain/readiness/graceful stop/failure classes), verified against the host node in regtest. Still open: Android foreground service around it, polling and policy
+- [x] RPC with cookie authentication (no stored credentials)
 - [ ] Sync dashboard with all phases from §5.1
 - [ ] Datadir versioning (§5.4)
+- [ ] Localization scaffolding from the first screen on: string resources only, per-app language, lint gate, tier A locales (§3.5)
+- [ ] Wallet and Node sections with the node transparency elements of §3.4
+- [ ] Developer console in debug builds, Open tier only (§3.6)
 - [ ] Snapshot bootstrap verified end to end on testnet
 
 ### Phase 2: Wallet core
@@ -399,13 +562,15 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [ ] Snapshot serving settings (X2) and disk guard
 - [ ] Optional boot start, guided battery-optimization flow
 - [ ] Evaluate RPC over Unix socket (§4.4)
+- [ ] Expert mode with console, all four tiers including Danger, persistent history and file commands (§3.6, `guideline-expert-console.md`)
 
 ### Phase 4: Hardening and polish
 
 - [ ] Bump fee / CPFP, address book, descriptor export, encrypted wallet file export
 - [ ] Localization completion, accessibility
 - [ ] Reproducible build, signed release pipeline, hash publication
-- [ ] External security review and fixes
+- [ ] Native speaker review of the security and trust model texts in every shipped language (§3.5)
+- [ ] External security review and fixes, including the Expert console and its Danger tier
 
 ### Phase 5: Public beta on mainnet with funds warning, then release candidate
 
@@ -418,8 +583,10 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 
 1. **Unit:** argument builder, policy engine, fee derivation, PSBT validation, address validation (including `bc1`/Base58 rejection and warnings), descriptor construction against known vectors.
 2. **Native:** Core's own unit/functional tests for snapshot, pruning and wallet recovery on the host build of the same fetched Core revision.
-3. **Emulator integration (CI):** x86_64 `elektrond` in `-regtest` (checkpoint depth 100 on regtest, so snapshot cycles are observable), wallet create/send/recover flows driven through the app's wallet layer.
-4. **Device lab (manual, release gate):** real arm64 phones, soak tests, interruption tests.
+3. **Contract check (every build, §11.2) and emulator integration (CI):** x86_64 `elektrond` in `-regtest` with `-fastprune` (checkpoint depth 100 on regtest, so snapshot cycles are observable), wallet create/send/recover flows driven through the app's wallet layer.
+4. **Localization:** pseudo-locale run, longest-locale screenshots, string key parity across locales (§3.5).
+5. **Device lab (manual, release gate):** real arm64 phones, soak tests, interruption tests.
+6. **Expert console:** parser, classification completeness, gating of Blocked and Danger commands, secrets masking, relock behavior (`guideline-expert-console.md` §11).
 
 ### 14.2 Recovery matrix (MUST pass before beta)
 
@@ -446,8 +613,12 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 | Android kills the native child process in background | Node unreliable | Phase 0 spike, fallback to `:node` service process, honest "best effort in background" UX |
 | Battery drain perceived as unacceptable | Users uninstall | Profiles, charging-first default, measured budgets, easy Stop |
 | Storage pressure on low-end devices | Node stalls | Storage floor, clear errors, size measurements published |
-| Always-current Core breaks the build or the RPC contract | Failed builds, broken app | Contract check in the build (§11.1), upstream Android target (X4), nightly CI against Core `main`, failed contract blocks release |
+| Always-current Core breaks the build or the RPC contract | Failed builds, broken app | Contract check in the build (§11.2), upstream Android target (X4), nightly CI against Core `main`, failed contract blocks release |
 | Private patches diverge from Core | Audit burden | Upstream X1, keep patch SHA in manifest |
+| Translation errors in security texts | Users misread backup or fee warnings | Native speaker review gate (§3.5), machine translation only as draft |
+| Third-party artwork in the UI (helmet in the reviewed screenshots) | Legal | No artwork at all, design only (§3.3, design system guideline) |
+| `-fastprune` is debug-only upstream | Option breaks or disappears | Contract check, supervisor passes it only when supported (§3.2) |
+| Expert console used for scams or typed by mistake | Fund loss, key exposure | Opt-in per session, risk confirmation, command tiers, Danger tier behind a second switch with typed confirmation and a dialog per command, external security review (§3.6) |
 | Seed handling bugs in Kotlin bootstrap | Fund loss | Minimal audited BIP-39 code, test vectors, external review (S11) |
 | Missed legacy coin type on recovery | Apparent fund loss | Dual scan as MUST, matrix test (§14.2) |
 | Misdirected funds from Base58 collision with Bitcoin | Fund loss | Bech32-only default, warnings (§8.5) |
@@ -458,28 +629,44 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 ## 16. Checklist
 
 - [ ] Phase 0 spikes completed and documented
-- [ ] Open questions in §17 answered
+- [ ] Open items D2 to D5 of the distribution guideline answered
 - [ ] Native build fetches current Core on every build and records commit SHA and binary hash in the manifest
-- [ ] Core contract check (§11.1) enforced in CI
+- [ ] Core contract check (§11.2) enforced in CI
 - [ ] Node supervisor with graceful stop, drain and health classification
 - [ ] Both bootstrap paths (IBD in window, snapshot) verified
 - [ ] Wallet create/recover with dual coin type verified against real seeds
 - [ ] PSBT review and fee re-check verified
 - [ ] Bech32-only defaults and Base58 warnings implemented
 - [ ] Background service with policy engine and user-visible stop
-- [ ] Security requirements S1 to S11 verified
+- [ ] Security requirements S1 to S16 verified
+- [ ] All user-visible text localized in the shipped locales (tier A at launch, tier B after native review), lint gate green
+- [ ] Wallet and Node sections implemented, live log with sanitized export
+- [ ] Expert console implemented per `guideline-expert-console.md`, security reviewed
 - [ ] Recovery matrix and resilience tests passed
 - [ ] Upstream items X1 to X4 filed or resolved in `elektron-net`
 - [ ] Release pipeline with signed artifacts and published hashes
+- [ ] Contrast gate (`design/check-contrast.py`) green in CI
+- [ ] Mainnet and testnet flavors build side by side
 
-## 17. Open Questions
+## 17. Open Questions and Decisions
 
-1. Final application ID and package namespace: keep `org.elektronnet.mobile` or use a project-owned domain such as `org.elektron-net`-derived naming?
-2. Origin and license of the reviewed concept implementation: may its code be reused in this repository, and under which attribution? If only the architecture is reused, the code is written fresh.
-3. Biometric unlock: allow an opt-in Keystore-wrapped passphrase, or keep "passphrase never stored" as an absolute rule?
-4. Should phone nodes serve snapshots by default (network health, `NODE_SNAPSHOT` supply) or only when charging and unmetered?
-5. Distribution channels for v1: direct APK, F-Droid, Google Play, or a staged combination?
-6. Is Lightning in scope after v1? Per `guideline-wallet-integration.md` it needs routing/trampoline infrastructure that does not exist yet and a different wallet stack than the Core descriptor wallet.
-7. URI scheme for payment requests (BIP21-style `elektron:` or similar): not yet defined in the network documentation.
-8. ~~Should release builds track Core `main` or the latest tagged release?~~ **Resolved in v0.3:** release builds use the latest tagged release, dev and nightly builds track `main` (§11.1).
-9. Is a testnet build flavor (separate app ID, `tb`-style HRP handling) wanted from day one for safer public testing?
+All questions of the first drafts are answered. Decisions of October 18, 2026 are listed with where they are applied.
+
+| # | Topic | Decision | Applied in |
+|---|---|---|---|
+| Q1 | Application ID | `org.elektronnet.mobile`, testnet `org.elektronnet.mobiletestnet` | §10, distribution guideline |
+| Q2 | Origin and license of the reviewed concept code | Open. Nothing is copied until the license and attribution are clear, code is written fresh | §15 |
+| Q3 | Biometric unlock | Possible, opt-in, off by default | §8.1, S16 |
+| Q4 | Phone nodes serve snapshots | Yes, only on Wi-Fi and while charging | §5.2, X2 |
+| Q5 | Distribution in v1 | Repository, direct APK, F-Droid, Google Play and any other channel. A new Google developer account is opened, signed APKs are required | distribution guideline |
+| Q6 | Lightning | Open path, integrated as if the infrastructure existed, disabled in v1 | §8.4.2 |
+| Q7 | URI scheme | `elek:` (testnet `elektest:`) | §8.4.1, X10 |
+| Q8 | Release Core ref | Latest tagged release, dev and nightly track `main` | §11.1 |
+| Q9 | Testnet flavor | Separate build with its own ID `org.elektronnet.mobiletestnet`. Chain is `testnet` (testnet3) with `-testnet`, P2P 18333, RPC 18332, HRP `tb`; upstream calls testnet3 deprecated, see the distribution guideline | distribution guideline |
+| Q10 | `-fastprune` default | On by default, opt-out in settings | §3.2, `core-source.env` |
+| Q11 | Ticker | ELEK only | all texts |
+| Q12 | Languages | English plus the most widespread languages in two tiers (Chinese, Arabic, Japanese, Korean and more) | §3.5 |
+| Q13 | Artwork | None, design only, Osclass color themes, cyberpunk with glow and neon that never impairs reading | §3.3, design system guideline |
+| Q14 | Expert console | Danger tier in the first release, device authentication once per session, persistent history with 90 days retention, console in all builds, file commands with passphrase-protected wallets only, manual dumps deleted after 7 days, `createwallet` forbidden without a passphrase | `guideline-expert-console.md` §1.1 |
+
+Remaining open items live in the distribution guideline (§9, D2 to D5): the Play account type, the Play signing key choice, F-Droid native build and the foreground service type. D1 (testnet chain) is resolved: `testnet`.

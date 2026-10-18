@@ -1,10 +1,10 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.2 (draft)
+- **Version:** 0.7 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
-- **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
+- **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md), [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 
 ---
 
@@ -22,6 +22,14 @@
 - Non-custodial wallet on the node's own descriptor wallet: native SegWit (`be1q...`) addresses, BIP-39 recovery phrase, SLIP-44 coin type 1370 plus legacy path recovery.
 - Review-before-sign transaction flow (PSBT), fee policy re-check before signing, coin control, QR receive and scan.
 - Node dashboard: sync phase, height, peers, disk usage, prune height, snapshot state.
+- Two sections, Wallet and Node, plus an opt-in Expert mode with a console to the node.
+- Storage saver (`-fastprune`) on by default with an opt-out; phone nodes serve snapshots only on Wi-Fi while charging.
+- Optional biometric unlock, `elek:` payment links, QR scan and receive.
+- Many languages from the start: English, German, Spanish, French, Italian, then Chinese, Arabic, Japanese, Korean, Hindi, Portuguese, Russian, Turkish, Indonesian, Vietnamese after native review.
+- Cyberpunk design with neon and glow, ten color themes from the Osclass theme, no artwork, readability first. The ticker is ELEK.
+- Separate testnet build (`org.elektronnet.mobiletestnet`, chain `testnet`) next to the mainnet app (`org.elektronnet.mobile`).
+- English is the default language; the in-app language switch lists only reviewed translations.
+- Lightning is not part of v1, but the wallet layer keeps a pluggable path for it.
 - Local-only operation: no analytics, no remote geolocation, no remote QR services.
 
 ## 3. How it works
@@ -73,24 +81,29 @@ Full specification: plan section 11.1.
 
 ## 6. Building (planned flow)
 
-Prerequisites: `git`, `docker` (rootless), `python3`, `sha256sum`, Android Studio or a Gradle/JDK setup, Android NDK as defined in `native-build/core-source.env`.
+The storage saver default is set by `NODE_FASTPRUNE_DEFAULT` (default `1`). Prerequisites: `git`, `docker` (rootless), `python3`, `sha256sum`, Android Studio or a Gradle/JDK setup, Android NDK as defined in `native-build/core-source.env`.
 
 ```bash
 # 1. Fetch the current elektron-net source and build the native node (emulator + phone)
 ./native-build/build.sh all
 
-# 2. Build the app
-./gradlew assembleDebug
+# 2. Build the app: every build produces both flavors, mainnet and testnet
+gradle wrapper --gradle-version 8.14.3   # once, creates ./gradlew
+./gradlew assembleDebug                  # or only assembleMainnetDebug / assembleTestnetDebug
 
 # 3. Install without wiping node data
-adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/mainnet/debug/app-mainnet-debug.apk
+adb install -r app/build/outputs/apk/testnet/debug/app-testnet-debug.apk   # optional, installs next to mainnet
 ```
+
+The native node is built once per ABI and serves both flavors, so the testnet build adds almost no build time. CI builds and tests both flavors on every change.
 
 Do not clear app data if you want to keep the synchronized node and wallet database. Clearing data forces a full resync. Funds remain recoverable from the recovery phrase.
 
 ## 7. Repository structure (planned)
 
 ```text
+build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml   Gradle project
 app/                       Android application
   src/main/java/org/elektronnet/mobile/
     node/                  node supervisor, RPC client, policy engine
@@ -99,13 +112,15 @@ app/                       Android application
     ui/                    Compose screens
   src/main/jniLibs/        built libelektrond.so per ABI (generated)
 native-build/              fetch and build of elektrond (generated output not committed)
+design/                    palettes.json, check-contrast.py, gen-theme.py
+tools/                     check-locales.py
 doc-elektron/              guidelines and reports
 .github/workflows/         CI
 ```
 
 ## 8. Security summary
 
-- Node RPC is bound to loopback and authenticated; credentials are protected with the Android Keystore.
+- Node RPC is bound to loopback and authenticated with a cookie file in the app-private data directory that the node recreates at every start; no password is stored anywhere.
 - Wallet unlock is short-lived and always followed by a lock.
 - Sensitive screens block screenshots and recent-app previews.
 - Android backup of app data is disabled.
@@ -119,6 +134,9 @@ The full requirement list is in plan section 9.
 | Document | Content |
 |---|---|
 | [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md) | Architecture, roadmap, security, build and test plan |
+| [`doc-elektron/guideline-expert-console.md`](./doc-elektron/guideline-expert-console.md) | Expert mode and node console |
+| [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md) | Themes, effects, legibility rules, typography |
+| [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) | Flavors, channels, signing, F-Droid, Play |
 | [`elektron-net` docs](https://github.com/kutlusoy/elektron-net/tree/main/doc-elektron) | Node behavior, pruning and snapshot audit, wallet integration |
 
 ## 10. Links
@@ -130,4 +148,4 @@ The full requirement list is in plan section 9.
 
 ## 11. License
 
-This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries. Review the upstream licenses before redistribution. The license of this repository is not yet decided (see the plan, section 17).
+This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries. Review the upstream licenses before redistribution. The license of this repository is not yet decided (see the plan, section 17, Q2).

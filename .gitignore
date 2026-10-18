@@ -1,0 +1,11 @@
+native-build/build-cache/
+native-build/out/
+app/src/main/jniLibs/
+app/src/main/assets/core-manifest/
+.gradle/
+build/
+local.properties
+*.jks
+*.keystore
+.idea/
+*.iml
