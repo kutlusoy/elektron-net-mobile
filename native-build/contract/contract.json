@@ -58,6 +58,15 @@
     "gethdkeys": {"args": ["options"]}
   },
   "optional_rpc": ["rescanutxoset"],
+  "console_guards": [
+    {"command": "createwallet", "flag": "require_nonempty_args", "contains": "passphrase"},
+    {"command": "backupwallet", "flag": "require_encrypted_wallet"},
+    {"command": "restorewallet", "flag": "require_encrypted_wallet_after"},
+    {"command": "backupwallet", "flag": "path_args", "contains": "destination"},
+    {"command": "restorewallet", "flag": "path_args", "contains": "backup_file"},
+    {"command": "dumptxoutset", "flag": "path_args", "contains": "path"},
+    {"command": "dumptxoutset", "flag": "auto_delete_days"}
+  ],
   "console_invariants": [
     {"command": "stop", "at_least": "blocked"},
     {"command": "loadtxoutset", "at_least": "blocked"},

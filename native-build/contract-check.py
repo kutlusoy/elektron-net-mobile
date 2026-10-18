@@ -205,6 +205,14 @@ def check_console_tiers(node, contract, tiers, strict):
         record(ok, f"console tier of {inv['command']} {inv.get('args', '')}".strip(), f"{tier}, need {inv['at_least']}")
 
 
+def check_console_guards(contract, tiers):
+    known = dict(tiers["commands"], **tiers["hidden_commands"])
+    for guard in contract["console_guards"]:
+        value = known.get(guard["command"], {}).get(guard["flag"])
+        ok = bool(value) and ("contains" not in guard or guard["contains"] in value)
+        record(ok, f"console guard {guard['flag']} on {guard['command']}", f"found {value!r}")
+
+
 def check_mainnet(daemon, contract, tiers, strict):
     node = Node(daemon, "main")
     try:
@@ -223,6 +231,7 @@ def check_mainnet(daemon, contract, tiers, strict):
             record(field in net, f"getnetworkinfo.{field}", "missing")
         check_rpc_surface(node, contract)
         check_console_tiers(node, contract, tiers, strict)
+        check_console_guards(contract, tiers)
     finally:
         node.cleanup()
 
