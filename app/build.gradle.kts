@@ -172,6 +172,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.compose.icons.core)
+    implementation(libs.zxing.core)
     debugImplementation(libs.compose.ui.tooling)
     testImplementation(libs.junit)
 }

@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.6 (draft)
+- **Version:** 0.7 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -102,6 +102,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - Optional "Request an amount" and "Add a note" fields, collapsed. They update the QR.
 - A fresh address is shown for every visit once the previous one has received a payment. The user never has to think about address reuse.
 - Always native SegWit `be1...`. No address type switch in the everyday flow (Settings, Advanced).
+- **Implementation notes (v0.7):** the address comes from `getnewaddress` with type `bech32`. The current address is kept and shown again until `getreceivedbyaddress` (0 confirmations, so unconfirmed payments count) is above zero, then a new one is created. The URI builder and parser (`PaymentUri`), amount handling (decimal ELEK, at most 8 decimals, comma accepted only in the input field) and address classification (`AddressCheck`, Bech32 and Bech32m with checksum, Base58 with checksum, foreign network detection) are pure Kotlin with test vectors from BIP-173 and a fuzz test. The QR text is uppercased (alphanumeric mode, a smaller code) only when no note is present. The QR is drawn from a ZXing core matrix as black on white regardless of theme. Copy puts only the address on the clipboard and clears it after 60 seconds if unchanged. The note is sent as the URI `message` parameter and is not stored.
 - Works while syncing. A short note: "Payments to this address will appear when your node has caught up."
 
 ### 6.3 Send
@@ -215,7 +216,7 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 - [ ] Navigation shell with Wallet, Node and Settings tabs and the node status chip
 - [ ] Wallet home with balance card, sync states, list and empty state
 - [x] First-run flow with explainer, backup quiz and passphrase (logic and screens in place, biometric step still open, restore waits for X1)
-- [ ] Receive with `elek:` QR, fresh address per visit, optional amount and note
+- [x] Receive with `elek:` QR, fresh address per visit, optional amount and note (screen unbuilt on device, logic tested)
 - [ ] Send flow with inline validation, fee choices, review, authentication, done
 - [ ] Transaction details
 - [ ] Node tab in plain language with details collapsed

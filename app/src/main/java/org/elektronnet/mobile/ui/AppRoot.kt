@@ -31,6 +31,7 @@ import org.elektronnet.mobile.ui.firstrun.FirstRunScreen
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.node.NodeScreen
+import org.elektronnet.mobile.ui.receive.ReceiveScreen
 import org.elektronnet.mobile.ui.settings.SettingsScreen
 import org.elektronnet.mobile.ui.wallet.WalletScreen
 
@@ -44,6 +45,7 @@ private enum class Tab(val label: Int, val icon: ImageVector) {
 fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit) {
     var tab by rememberSaveable { mutableStateOf(Tab.Wallet.ordinal) }
     var showSoon by remember { mutableStateOf(false) }
+    var showReceive by rememberSaveable { mutableStateOf(false) }
     val store = NodeHost.store
     var settings by remember { mutableStateOf(store?.load() ?: PolicySettings()) }
     val snapshot = NodeHost.latest
@@ -79,12 +81,16 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
                 return@Box
             }
+            if (showReceive) {
+                ReceiveScreen(onClose = { showReceive = false })
+                return@Box
+            }
             when (Tab.entries[tab]) {
                 Tab.Wallet -> WalletScreen(
                     model = HomeUiModel.from(snapshot?.headline),
                     balance = null,
                     onOpenNode = { tab = Tab.Node.ordinal },
-                    onReceive = { showSoon = true },
+                    onReceive = { showReceive = true },
                     onSend = { showSoon = true },
                 )
                 Tab.Node -> NodeScreen(

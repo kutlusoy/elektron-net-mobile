@@ -13,7 +13,11 @@ import org.elektronnet.mobile.node.NodeState
 import org.elektronnet.mobile.policy.PolicyEngine
 import org.elektronnet.mobile.runtime.NodeRuntime
 import org.elektronnet.mobile.runtime.RuntimeSnapshot
+import org.elektronnet.mobile.wallet.AddressCheck
+import org.elektronnet.mobile.wallet.AddressStore
 import org.elektronnet.mobile.wallet.Bip39
+import org.elektronnet.mobile.wallet.PaymentUri
+import org.elektronnet.mobile.wallet.ReceiveWallet
 import org.elektronnet.mobile.wallet.WalletBootstrap
 import org.elektronnet.mobile.wallet.asWalletRpc
 
@@ -81,6 +85,23 @@ object NodeHost {
             removeWalletFiles = { name -> File(root, "${chain.subdir}/wallets/$name").deleteRecursively() },
         )
     }
+
+    fun receiveWallet(): ReceiveWallet? {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
+        val store = settings ?: return null
+        return ReceiveWallet(
+            rpc = supervisor.rpc.asWalletRpc(),
+            store = object : AddressStore {
+                override var current: String?
+                    get() = store.receiveAddress
+                    set(value) {
+                        store.receiveAddress = value
+                    }
+            },
+        )
+    }
+
+    val paymentUri: PaymentUri = PaymentUri(ChainConfig.uriScheme, AddressCheck(ChainConfig.isTestnet))
 
     fun stopNow() {
         controller?.shutdown()

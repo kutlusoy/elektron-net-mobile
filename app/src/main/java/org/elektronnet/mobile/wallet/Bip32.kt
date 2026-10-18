@@ -47,4 +47,22 @@ object Base58 {
         }
         return out.reverse().toString()
     }
+
+    fun decodeChecked(text: String): ByteArray? {
+        var value = BigInteger.ZERO
+        val base = BigInteger.valueOf(58)
+        for (c in text) {
+            val digit = ALPHABET.indexOf(c)
+            if (digit < 0) return null
+            value = value.multiply(base).add(BigInteger.valueOf(digit.toLong()))
+        }
+        val raw = value.toByteArray().dropWhile { it.toInt() == 0 }.toByteArray()
+        val zeros = text.takeWhile { it == ALPHABET[0] }.length
+        val data = ByteArray(zeros) + raw
+        if (data.size < 5) return null
+        val payload = data.copyOfRange(0, data.size - 4)
+        val sha = MessageDigest.getInstance("SHA-256")
+        val expected = sha.digest(sha.digest(payload)).copyOfRange(0, 4)
+        return if (expected.contentEquals(data.copyOfRange(data.size - 4, data.size))) payload else null
+    }
 }
