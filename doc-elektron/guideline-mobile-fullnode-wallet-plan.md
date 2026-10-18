@@ -1,11 +1,11 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.5 (draft)
+- **Version:** 0.6 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (light wallet, source of branding, address safety UX and strings), [`elektron-net-mempool`](https://github.com/kutlusoy/elektron-net-mempool) (explorer, deep links only)
-- **See also:** [`guideline-wallet-integration.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/guideline-wallet-integration.md), [`AUDIT_PRUNING_SNAPSHOT.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/AUDIT_PRUNING_SNAPSHOT.md), [`BITCOIN_CORE_DIFF.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/BITCOIN_CORE_DIFF.md), [`CHANGELOG-slip44-coin-type.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/CHANGELOG-slip44-coin-type.md), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
+- **See also:** [`guideline-expert-console.md`](./guideline-expert-console.md), [`guideline-wallet-integration.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/guideline-wallet-integration.md), [`AUDIT_PRUNING_SNAPSHOT.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/AUDIT_PRUNING_SNAPSHOT.md), [`BITCOIN_CORE_DIFF.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/BITCOIN_CORE_DIFF.md), [`CHANGELOG-slip44-coin-type.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/CHANGELOG-slip44-coin-type.md), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet
 
 Requirement levels follow common practice: **MUST** = mandatory for correct/safe operation, **SHOULD** = strongly recommended, **MAY** = optional.
@@ -76,6 +76,7 @@ The concept document is a good proof that the architecture works. These are the 
 6. Backup/restore: seed (primary), encrypted wallet file export via Storage Access Framework (secondary), descriptor export (watch-only).
 7. Diagnostics: bounded in-app log window, export of sanitized log.
 8. Two sections, **Wallet** and **Node**, with a live view of what the node is doing (§3.3, §3.4), fully localized with an in-app language switch (§3.5).
+9. Expert mode with a console to the node of the phone (§3.6).
 
 ### 3.2 Resource profiles
 
@@ -108,7 +109,7 @@ The app has two sections. Both are one tap away from each other at all times.
 | Section | Screens |
 |---|---|
 | **Wallet** | Home (balance, UTXO count, addresses with balance, Receive/Send with QR scan), Receive and address list, Send, History, Security and backup |
-| **Node** | Status, Network telemetry, Pruning and snapshots, Peers, Live log, Controls, Recovery tools |
+| **Node** | Status, Network telemetry, Pruning and snapshots, Peers, Live log, Controls, Recovery tools, Expert console (opt-in, §3.6) |
 
 - A compact node status chip (sync state, peer count) sits in the Wallet header and opens the Node section. While the node is not synchronized, the Wallet shows a banner that balances and history may be incomplete, instead of a bare zero.
 - Primary navigation is a bottom bar. The reviewed team screenshots use four tabs (Wallet, Network, History, Debug). The final grouping into the two sections above is a design decision for Phase 1, the requirement is only that every Node screen is reachable without digging through settings.
@@ -147,6 +148,17 @@ Multi-language support is a core requirement, not a late polish item.
 - **Review:** the seed backup warnings, the trust model text (§9) and the Base58 collision warning (§8.5) MUST be reviewed by a native speaker for every shipped language before a release. Machine translation is acceptable only as a first draft.
 - **Tests:** pseudo-localization build to catch clipped or hard-coded text, screenshot tests for the longest locale, and a check that every string key exists in every shipped locale.
 - Translation files are the one place in this repository that is not English (they hold the target languages by design).
+
+### 3.6 Expert mode and node console
+
+Expert mode gives advanced users a console to the node, comparable to the debug console of the desktop wallet. The full specification is in [`guideline-expert-console.md`](./guideline-expert-console.md). The essentials:
+
+- Off by default. Enabling it needs a localized risk confirmation and device authentication, and the session ends with the app process or after inactivity.
+- The console sends JSON-RPC to the local node through its own low-priority lane of the app's RPC client. The mobile build ships no `elektron-cli`, and none is needed.
+- Every command belongs to a tier: **Open** (read-only, runs immediately), **Confirm** (state-changing, one confirmation), **Danger** (moves funds or reveals keys, typed confirmation and device authentication, behind a second switch) and **Blocked** (`stop`, `loadtxoutset`, test commands). The node reports 151 listed RPC commands on `elektron-net@main` and some hidden ones, and the app tracks the current Core, so any command that is not classified defaults to Confirm.
+- The console screen uses `FLAG_SECURE`, passphrase arguments are masked and never persisted, and every wallet unlocked through the console is relocked when the user leaves the console or the app goes to the background.
+- Command names, arguments and node output stay in English. All console chrome, the risk texts and the error hints are localized (§3.5).
+- Phase 1 ships a read-only developer console in debug builds for the team. User-facing Expert mode comes in Phase 3.
 
 ## 4. Architecture
 
@@ -354,6 +366,8 @@ Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4
 | S9 | Rooted/instrumented device detection as a warning only | SHOULD |
 | S10 | Reproducible builds and signed releases with published hashes | SHOULD |
 | S11 | Independent security review before any mainnet release with a "stable" label | MUST |
+| S12 | Expert mode is opt-in per session with a risk confirmation and device authentication. The console screen uses `FLAG_SECURE`, passphrase arguments are masked, and every wallet unlocked through the console is relocked when leaving it (`guideline-expert-console.md` §3, §6) | MUST |
+| S13 | Console commands are classified (Open, Confirm, Danger, Blocked) and unclassified or hidden commands default to Confirm (`guideline-expert-console.md` §5) | MUST |
 
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 
@@ -422,7 +436,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - **B. Mainnet, offline** (`-connect=0`, no DNS seed, no listening): chain `main`, genesis hash `00000006b054...9dad`, protocol version at least 70017, user agent contains `Elektron`, `pruned` true, required fields in `getblockchaininfo` and `getnetworkinfo`, and for every RPC in `rpc` that `help` knows it and lists the argument names the app passes. An unknown command is detected explicitly, because `help` answers with plain text instead of an error. RPCs in `optional_rpc` only warn.
 - **C. Regtest, functional** (with `-fastprune -natpmp=0`): a wallet is built from a fixed test master key with both coin types (`1370h` active, legacy `0h` imported inactive). The check verifies `bcrt1q` addresses on coin type 1370 and a locked wallet after import, then mines 700 blocks and verifies that block files roll over and the oldest is deleted, `pruneheight` advances, and exactly one checkpoint snapshot `<height>-<hash>.dat` with a `.dat.hash` sidecar exists for the latest multiple of the regtest checkpoint interval (100). It runs the full send flow (`walletcreatefundedpsbt`, `decodepsbt`, `walletpassphrase`, `walletprocesspsbt`, `finalizepsbt`, `sendrawtransaction`, `walletlock`, confirmation). It runs the recovery flow of §8.3 and verifies that the rescan from `pruneheight` restores only the retained part. If `rescanutxoset` exists it must restore the full balance, otherwise the check warns. Finally it restarts the node without `-fastprune` and mines on, which verifies that toggling the option on an existing datadir is safe.
 - Test nodes pre-create an empty `bitcoin.conf` (§4.2, item 7).
-- **Result on `elektron-net@main` (`447c069`, October 18, 2026):** 101 checks passed in about 6 seconds, one warning (`rescanutxoset` not present).
+- **Result on `elektron-net@main` (`447c069`, October 18, 2026):** 106 checks passed in about 6 seconds, one warning (`rescanutxoset` not present). The check also covers the commands the console needs (`help`, `getrpcinfo`, `uptime`, `logging`, `abortrescan`). Reporting commands that the Expert console has not classified yet is planned together with the classification file.
 
 ## 12. Cross-Repo Impact
 
@@ -465,6 +479,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [ ] Datadir versioning (§5.4)
 - [ ] Localization scaffolding from the first screen on: string resources only, per-app language, lint gate, five locales (§3.5)
 - [ ] Wallet and Node sections with the node transparency elements of §3.4
+- [ ] Developer console in debug builds, Open tier only (§3.6)
 - [ ] Snapshot bootstrap verified end to end on testnet
 
 ### Phase 2: Wallet core
@@ -482,6 +497,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [ ] Snapshot serving settings (X2) and disk guard
 - [ ] Optional boot start, guided battery-optimization flow
 - [ ] Evaluate RPC over Unix socket (§4.4)
+- [ ] Expert mode with console, tiers and session rules (§3.6, `guideline-expert-console.md`)
 
 ### Phase 4: Hardening and polish
 
@@ -489,7 +505,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [ ] Localization completion, accessibility
 - [ ] Reproducible build, signed release pipeline, hash publication
 - [ ] Native speaker review of the security and trust model texts in every shipped language (§3.5)
-- [ ] External security review and fixes
+- [ ] External security review and fixes, including the Expert console and the decision on its Danger tier
 
 ### Phase 5: Public beta on mainnet with funds warning, then release candidate
 
@@ -505,6 +521,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 3. **Contract check (every build, §11.2) and emulator integration (CI):** x86_64 `elektrond` in `-regtest` with `-fastprune` (checkpoint depth 100 on regtest, so snapshot cycles are observable), wallet create/send/recover flows driven through the app's wallet layer.
 4. **Localization:** pseudo-locale run, longest-locale screenshots, string key parity across locales (§3.5).
 5. **Device lab (manual, release gate):** real arm64 phones, soak tests, interruption tests.
+6. **Expert console:** parser, classification completeness, gating of Blocked and Danger commands, secrets masking, relock behavior (`guideline-expert-console.md` §10).
 
 ### 14.2 Recovery matrix (MUST pass before beta)
 
@@ -536,6 +553,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 | Translation errors in security texts | Users misread backup or fee warnings | Native speaker review gate (§3.5), machine translation only as draft |
 | Third-party artwork in the UI (helmet in the reviewed screenshots) | Legal | Own or licensed artwork only (§17, Q13) |
 | `-fastprune` is debug-only upstream | Option breaks or disappears | Contract check, supervisor passes it only when supported (§3.2) |
+| Expert console used for scams or typed by mistake | Fund loss, key exposure | Opt-in per session, risk confirmation, command tiers, Danger tier behind a second switch (§3.6) |
 | Seed handling bugs in Kotlin bootstrap | Fund loss | Minimal audited BIP-39 code, test vectors, external review (S11) |
 | Missed legacy coin type on recovery | Apparent fund loss | Dual scan as MUST, matrix test (§14.2) |
 | Misdirected funds from Base58 collision with Bitcoin | Fund loss | Bech32-only default, warnings (§8.5) |
@@ -555,9 +573,10 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [ ] PSBT review and fee re-check verified
 - [ ] Bech32-only defaults and Base58 warnings implemented
 - [ ] Background service with policy engine and user-visible stop
-- [ ] Security requirements S1 to S11 verified
+- [ ] Security requirements S1 to S13 verified
 - [ ] All user-visible text localized in the five launch locales, lint gate green
 - [ ] Wallet and Node sections implemented, live log with sanitized export
+- [ ] Expert console implemented per `guideline-expert-console.md`, security reviewed
 - [ ] Recovery matrix and resilience tests passed
 - [ ] Upstream items X1 to X4 filed or resolved in `elektron-net`
 - [ ] Release pipeline with signed artifacts and published hashes
@@ -577,3 +596,4 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 11. Ticker spelling: the node and SLIP-44 registration use ELEK (`CURRENCY_UNIT` in the node), the reviewed screenshots show ELK. Which one does the app display?
 12. Which languages beyond the five launch locales, and which translation workflow (the node repository contains a `.tx` directory from Core's Transifex setup, an alternative is a self-hosted tool or plain pull requests)?
 13. Which artwork and branding assets may be used in the UI (the helmet artwork in the reviewed screenshots appears to be third-party material)?
+14. Expert console decisions: Danger tier in the first release or later, device authentication on every open or once per session, persistent history or in-memory only, all builds or an expert flavor only (`guideline-expert-console.md` §9).
