@@ -96,6 +96,17 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         }
     }
 
+    var peers by remember { mutableStateOf<List<NodeHost.PeerRow>>(emptyList()) }
+    LaunchedEffect(tab, walletReady) {
+        while (walletReady && tab == Tab.Node.ordinal) {
+            if (NodeHost.appVisible) {
+                val fresh = withContext(Dispatchers.IO) { NodeHost.peers() }
+                if (fresh != null) peers = fresh
+            }
+            delay(5_000)
+        }
+    }
+
     BrandBackground {
     Scaffold(
         containerColor = androidx.compose.ui.graphics.Color.Transparent,
@@ -190,6 +201,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 }
                 Tab.Node -> NodeScreen(
                     model = NodeTabModel.from(snapshot, settings.userPaused),
+                    peers = peers,
+                    showGeoCredit = NodeHost.geoAvailable,
                     onPause = {
                         onPause()
                         settings = settings.copy(userPaused = true)

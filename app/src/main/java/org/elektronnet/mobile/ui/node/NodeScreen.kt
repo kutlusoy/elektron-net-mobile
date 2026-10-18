@@ -18,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.elektronnet.mobile.R
+import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.service.NodeNotification
+import org.elektronnet.mobile.ui.GlassCard
 import org.elektronnet.mobile.ui.HeroCard
 import org.elektronnet.mobile.ui.NodeChipRow
 import org.elektronnet.mobile.ui.StatTile
@@ -31,6 +33,8 @@ import org.elektronnet.mobile.ui.model.NodeTabState
 @Composable
 fun NodeScreen(
     model: NodeTabModel,
+    peers: List<NodeHost.PeerRow> = emptyList(),
+    showGeoCredit: Boolean = false,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onStop: () -> Unit,
@@ -69,6 +73,41 @@ fun NodeScreen(
         }
         Text(stringResource(R.string.node_explainer), color = MaterialTheme.colorScheme.onSurfaceVariant)
         model.details?.let { StatGrid(it) }
+        if (model.details != null) PeerSection(peers, showGeoCredit)
+    }
+}
+
+@Composable
+private fun PeerSection(peers: List<NodeHost.PeerRow>, showGeoCredit: Boolean) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(stringResource(R.string.peers_title, peers.size), style = MaterialTheme.typography.titleLarge)
+        if (peers.isEmpty()) Text(stringResource(R.string.peers_none), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        peers.forEach { PeerCard(it) }
+        if (showGeoCredit) Text(stringResource(R.string.peers_geo_credit), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun PeerCard(row: NodeHost.PeerRow) {
+    val peer = row.peer
+    GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(peer.address, fontFamily = org.elektronnet.mobile.ui.theme.ElektronMono, modifier = Modifier.weight(1f))
+                Text(
+                    stringResource(if (peer.inbound) R.string.peer_inbound else R.string.peer_outbound),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.padding(start = 8.dp),
+                )
+            }
+            if (peer.subversion.isNotEmpty()) Text(peer.subversion, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            row.country?.let { Text("${it.flag} ${it.name}", color = MaterialTheme.colorScheme.primary) }
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                peer.pingMs?.let { Text(stringResource(R.string.peer_ping, it.toInt()), style = MaterialTheme.typography.bodySmall) }
+                peer.startingHeight?.takeIf { it >= 0 }?.let { Text(stringResource(R.string.peer_height, it), style = MaterialTheme.typography.bodySmall) }
+            }
+        }
     }
 }
 

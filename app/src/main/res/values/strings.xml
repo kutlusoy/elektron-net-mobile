@@ -39,6 +39,13 @@
     <string name="node_hint_paused">Reason: %1$s.</string>
     <string name="node_hint_stopped">Start it to receive payments and to see your balance.</string>
     <string name="node_explainer">Your node is your own copy of the network. It checks every payment itself, so you do not have to trust a server.</string>
+    <string name="peers_title">Connected peers (%1$d)</string>
+    <string name="peers_none">No peers connected yet.</string>
+    <string name="peer_outbound">Outgoing</string>
+    <string name="peer_inbound">Incoming</string>
+    <string name="peer_ping">Ping: %1$d ms</string>
+    <string name="peer_height">Height: %1$d</string>
+    <string name="peers_geo_credit">IP geolocation by DB-IP.com, Country Lite (CC BY 4.0). Lookups happen on the phone, addresses are never sent anywhere.</string>
     <string name="tile_blocks">Validated blocks</string>
     <string name="tile_headers">Known headers</string>
     <string name="tile_peers">Peers</string>

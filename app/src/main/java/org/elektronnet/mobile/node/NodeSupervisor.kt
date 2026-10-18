@@ -92,6 +92,8 @@ class NodeSupervisor(
         )
     }
 
+    fun peers(): List<PeerInfo> = PeerInfo.parse(rpc.call("getpeerinfo", timeoutMs = 5_000))
+
     private fun drain(started: Process) {
         started.inputStream.bufferedReader().useLines { lines -> lines.forEach { output.add(it) } }
     }
