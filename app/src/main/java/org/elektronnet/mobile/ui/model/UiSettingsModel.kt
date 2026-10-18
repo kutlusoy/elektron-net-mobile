@@ -4,7 +4,7 @@ enum class ThemeMode {
     System, Dark, Light;
 
     companion object {
-        fun parse(value: String?): ThemeMode = entries.firstOrNull { it.name == value } ?: System
+        fun parse(value: String?): ThemeMode = entries.firstOrNull { it.name == value } ?: Dark
     }
 }
 
@@ -18,7 +18,7 @@ enum class EffectSetting {
 
 data class UiSettings(
     val themeKey: String? = null,
-    val mode: ThemeMode = ThemeMode.System,
+    val mode: ThemeMode = ThemeMode.Dark,
     val effects: EffectSetting = EffectSetting.Subtle,
 ) {
     companion object {

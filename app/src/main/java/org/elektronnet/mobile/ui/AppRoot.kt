@@ -108,6 +108,11 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         onClick = { tab = entry.ordinal },
                         icon = { Icon(entry.icon, contentDescription = null) },
                         label = { Text(stringResource(entry.label)) },
+                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                        ),
                     )
                 }
             }
@@ -155,6 +160,9 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 ReceiveScreen(onClose = { showReceive = false })
                 return@Box
             }
+            Column {
+            BrandHeader(compact = true, showTagline = true)
+            Box(modifier = Modifier.weight(1f)) {
             when (Tab.entries[tab]) {
                 Tab.Wallet -> Column {
                     SetupBanner(
@@ -212,6 +220,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         settings = settings.copy(backgroundEnabled = it)
                     },
                 )
+            }
+            }
             }
         }
     }

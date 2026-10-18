@@ -74,13 +74,13 @@ fun BrandBackground(modifier: Modifier = Modifier, content: @Composable () -> Un
 @Composable
 fun GlassCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val tokens = LocalTokens.current
-    val shape = RoundedCornerShape(20.dp)
+    val shape = RoundedCornerShape(28.dp)
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
             .background(tokens.surface.copy(alpha = GLASS_ALPHA))
-            .border(1.dp, Brush.linearGradient(listOf(tokens.accent.copy(alpha = 0.55f), tokens.border.copy(alpha = 0.35f), tokens.accent2.copy(alpha = 0.35f))), shape)
+            .border(1.dp, Brush.linearGradient(listOf(tokens.accent.copy(alpha = 0.8f), tokens.accent.copy(alpha = 0.35f), tokens.accent2.copy(alpha = 0.5f))), shape)
             .padding(20.dp),
     ) { content() }
 }
@@ -100,16 +100,19 @@ fun ElektronLogo(size: Dp, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun BrandHeader(compact: Boolean) {
+fun BrandHeader(compact: Boolean, showTagline: Boolean = false) {
     val name = stringResource(R.string.app_name).uppercase()
     if (compact) {
         androidx.compose.foundation.layout.Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         ) {
-            ElektronLogo(36.dp)
-            Text(name, fontFamily = ElektronDisplay, fontWeight = FontWeight.Bold, fontSize = 18.sp, letterSpacing = 3.sp, color = MaterialTheme.colorScheme.onBackground)
+            ElektronLogo(if (showTagline) 52.dp else 36.dp)
+            Column {
+                Text(name, fontFamily = ElektronDisplay, fontWeight = FontWeight.Bold, fontSize = if (showTagline) 22.sp else 18.sp, letterSpacing = 3.sp, color = MaterialTheme.colorScheme.onBackground)
+                if (showTagline) Text(stringResource(R.string.brand_tagline), color = LocalTokens.current.accent, style = MaterialTheme.typography.bodyMedium)
+            }
         }
     } else {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 4.dp)) {
@@ -132,4 +135,4 @@ fun BrandHeader(compact: Boolean) {
     }
 }
 
-private const val GLASS_ALPHA = 0.72f
+private const val GLASS_ALPHA = 0.82f
