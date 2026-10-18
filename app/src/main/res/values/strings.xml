@@ -2,7 +2,30 @@
 <resources>
     <string name="home_title">Wallet</string>
     <string name="home_node_section">Node</string>
-    <string name="home_placeholder">The node and wallet screens are not built yet.</string>
     <string name="testnet_bar">TESTNET, coins have no value</string>
     <string name="chain_label">Chain: %1$s</string>
+    <string name="notification_channel">Node status</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_start">Start</string>
+    <string name="action_stop">Stop</string>
+    <string name="headline_stopped">Node stopped</string>
+    <string name="headline_starting">Node starting</string>
+    <string name="headline_stopping">Node stopping</string>
+    <string name="headline_connecting">Node running, waiting for peers</string>
+    <string name="headline_paused">Node paused: %1$s</string>
+    <string name="headline_syncing">Syncing: block %1$d of %2$d, %3$d peers</string>
+    <string name="headline_synchronized">Synchronized at block %1$d, %2$d peers</string>
+    <string name="headline_crashed">Node stopped unexpectedly</string>
+    <string name="reason_user_paused">paused by you</string>
+    <string name="reason_no_network">no network</string>
+    <string name="reason_metered">mobile data is not allowed</string>
+    <string name="reason_roaming">roaming is not allowed</string>
+    <string name="reason_data_saver">data saver is on</string>
+    <string name="reason_data_cap">monthly data limit reached</string>
+    <string name="reason_needs_charging">waiting for the charger</string>
+    <string name="reason_battery">battery is low</string>
+    <string name="reason_thermal">device is too warm</string>
+    <string name="reason_schedule">outside the allowed hours</string>
+    <string name="reason_unknown">paused</string>
 </resources>

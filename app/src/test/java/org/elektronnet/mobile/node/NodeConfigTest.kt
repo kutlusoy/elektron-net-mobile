@@ -50,6 +50,13 @@ class NodeConfigTest {
     }
 
     @Test
+    fun networkActiveIsPassedExplicitly() {
+        val base = config(Chain.Main)
+        assertTrue(base.arguments().contains("-networkactive=1"))
+        assertTrue(base.copy(networkActive = false).arguments().contains("-networkactive=0"))
+    }
+
+    @Test
     fun chainFromBuildName() {
         assertEquals(Chain.Main, Chain.fromBuildName("main"))
         assertEquals(Chain.Testnet, Chain.fromBuildName("testnet"))

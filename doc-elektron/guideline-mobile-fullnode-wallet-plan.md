@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.11 (draft)
+- **Version:** 0.12 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
@@ -209,9 +209,21 @@ The supervisor core is plain Kotlin without Android dependencies (`app/src/main/
 - **Output:** stdout and stderr are drained on their own thread into a bounded ring buffer, so a full pipe never blocks the node.
 - **Failure classes** are taken from node messages found in the source: "Disk space is too low", "Corrupted block database"/"Error opening block database", "Cannot obtain a lock on directory". Everything else is Unknown. The recovery action per class (§4.2 item 4) is wired in with the UI.
 - **Config file:** for non-mainnet chains the supervisor writes a managed `bitcoin.conf` and, if it finds settings outside the chain's own section (for example the generated mainnet `addnode` lines), replaces it and keeps a `bitcoin.conf.bak` (§4.2 item 7).
-- **Verified:** 30 JVM unit tests (JSON, arguments, config file, failure classes, ring buffer, RPC client against a local HTTP server, supervisor against fake node scripts) and one integration test that starts the host `elektrond` in regtest, waits for Running, reads `getblockchaininfo` and stops it gracefully. Not yet verified: the same on Android (bionic, process limits, phantom process killer), which stays a Phase 0 item.
+- **Verified:** 61 JVM tests in total (see also §7 and §4.3): JSON, arguments, config file, failure classes, ring buffer, RPC client against a local HTTP server, supervisor against fake node scripts, the policy engine, and three integration tests against the host `elektrond` in regtest (supervisor start, query and graceful stop; controller applying policy decisions including a profile restart; runtime tick loop). Not yet verified: the same on Android (bionic, process limits, phantom process killer), which stays a Phase 0 item.
 
 ### 4.3 Foreground service and background execution
+
+#### Foreground service implementation notes
+
+The Android layer is thin and sits on the tested core: `NodeService` (foreground service), `NodeNotification`, `NodeHost` (process singleton holding controller, policy engine and runtime), `AndroidDeviceState` (battery, thermal status, network type, data saver, free storage) and `SettingsStore` (policy settings, data budget). **Written but not yet compiled or run on a device**: the sandbox has no Android toolchain, so the first Gradle build and a device test are open (Phase 0 and Phase 1 items).
+
+- **Type:** `specialUse` with the required property text in the manifest, because `dataSync` has runtime limits on recent Android versions. Whether Play accepts it for a node is open question D5.
+- **Loop:** one scheduled worker runs `NodeHost.tick()` (policy decision, node control, status poll) and reschedules itself: 1 s while the node starts or stops, 2 s with the app visible, 30 s in the background, 60 s once synchronized. An exception in a tick is retried after 30 s and does not end the service.
+- **Notification:** low importance, ongoing, hidden on the lock screen, with the headline (stopped, starting, syncing with block and peer counts, synchronized, paused with the first reason, crashed) and the actions Pause or Resume and Stop. All texts are string resources.
+- **Stop:** the Stop action sets `userStopped`, runs one tick (the policy then stops the node gracefully, §4.1), removes the notification and ends the service. Opening the app does not restart a node that the user stopped, the Start button does. When the system destroys the service, the node is shut down on a separate thread so the main thread is never blocked.
+- **Permissions:** `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SPECIAL_USE`, `POST_NOTIFICATIONS` (requested before the first start on Android 13 and later), `ACCESS_NETWORK_STATE`. No boot receiver, boot start stays opt-in and unimplemented.
+
+#### Requirements
 
 - Background operation MUST use a foreground service with a persistent notification showing sync state and a Stop action.
 - Service type: Android 14+ requires a declared `foregroundServiceType`. `dataSync` has runtime limits on recent Android versions, so a long-running node needs a type that allows continuous operation (for example `specialUse` with the required property declaration). **Verify** current platform rules and store policy before choosing. Direct APK and F-Droid distribution have fewer constraints than Play.
@@ -290,6 +302,14 @@ The UI MUST show distinct phases (this is already a strength of the concept): no
 - Policy inputs: charging state, battery percentage, thermal status, network type (unmetered/metered/roaming), data saver, user schedule.
 - Defaults: node runs fully when charging on Wi-Fi; runs in reduced mode on battery above 30%; pauses block download below 15% or on thermal throttling; never uses cellular for snapshot/IBD without explicit consent.
 - A monthly cellular data cap setting is enforced by the supervisor using `getnettotals` deltas plus Android traffic stats, and by `-maxuploadtarget` (**verify**) for upload.
+- **Policy engine** (`org.elektronnet.mobile.policy`, plain Kotlin, 19 unit tests): `PolicyEngine.evaluate(settings, device state, time)` returns one decision with `run`, `networkActive`, `profile`, `listen`, `serveSnapshots` and the reasons that explain it for the UI.
+  - **Run** is false for a user stop, for free storage below the floor (default 2 GiB, resumes 256 MiB above it) and for disabled background operation while the app is hidden. A stopped node uses no network.
+  - **Network active** (applied with `-networkactive` at start and `setnetworkactive` afterwards, both in the contract) is false for a user pause, no network, metered or roaming networks without consent, data saver, a reached monthly cellular cap, charging-only mode on battery, a low battery, severe thermal state and times outside the schedule. Pausing the network keeps the process and the chainstate warm and avoids restarts.
+  - **Battery:** below 30 percent on battery the reduced profile (the Foreground arguments) is used, below 15 percent networking pauses. Resume at 20 and full profile at 35 percent (hysteresis). Charging clears both. **Thermal:** moderate switches to the reduced profile, severe pauses, light or better recovers.
+  - **Listening** is on only on unmetered networks (and when inbound connections are allowed). **Snapshot serving** is allowed only on an unmetered network while charging with the network active, as decided in §5.2. The decision flag is produced and tested here, the enforcement (X2 or the hold-directory workaround) is still open.
+  - **Restart control:** a change of profile or listen mode restarts the node, so such changes are held back for at least 10 minutes while the node runs.
+  - **Cellular budget:** `getnettotals` deltas are counted per calendar month only while the active network is metered or roaming, and persisted across restarts. This is an approximation (the counter is per node, not per interface), which is enough for a user-set cap.
+  - **Not yet in the engine:** an idle-stop timer for long pauses, the initial sync boost profile, and a snapshot-in-progress guard that delays a stop.
 - Phase 0 benchmark metrics: mAh per day in each profile, MB per day down/up, sustained CPU, peak RSS, time to first sync on three reference devices. Profiles in §3.2 are adjusted from this data, not from guesses.
 
 ## 8. Wallet Design
@@ -433,7 +453,10 @@ Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4
 elektron-net-mobile/
   app/                                  Android application module
     src/main/java/org/elektronnet/mobile/
-      node/        supervisor, argument builder, RPC client, policy engine
+      node/        supervisor, controller, argument builder, RPC client
+      policy/      policy engine (network, battery, thermal, storage)
+      runtime/     tick loop and status headline
+      service/     foreground service, notification, device state
       wallet/      bootstrap, send flow, recovery, descriptors
       security/    keystore, secure window helpers
       ui/          Compose screens
@@ -498,7 +521,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - **B. Mainnet, offline** (`-connect=0`, no DNS seed, no listening): chain `main`, genesis hash `00000006b054...9dad`, protocol version at least 70017, user agent contains `Elektron`, `pruned` true, required fields in `getblockchaininfo` and `getnetworkinfo`, and for every RPC in `rpc` that `help` knows it and lists the argument names the app passes. An unknown command is detected explicitly, because `help` answers with plain text instead of an error. RPCs in `optional_rpc` only warn.
 - **C. Regtest, functional** (with `-fastprune -natpmp=0`): a wallet is built from a fixed test master key with both coin types (`1370h` active, legacy `0h` imported inactive). The check verifies `bcrt1q` addresses on coin type 1370 and a locked wallet after import, then mines 700 blocks and verifies that block files roll over and the oldest is deleted, `pruneheight` advances, and exactly one checkpoint snapshot `<height>-<hash>.dat` with a `.dat.hash` sidecar exists for the latest multiple of the regtest checkpoint interval (100). It runs the full send flow (`walletcreatefundedpsbt`, `decodepsbt`, `walletpassphrase`, `walletprocesspsbt`, `finalizepsbt`, `sendrawtransaction`, `walletlock`, confirmation). It runs the recovery flow of §8.3 and verifies that the rescan from `pruneheight` restores only the retained part. If `rescanutxoset` exists it must restore the full balance, otherwise the check warns. Finally it restarts the node without `-fastprune` and mines on, which verifies that toggling the option on an existing datadir is safe.
 - Test nodes pre-create an empty `bitcoin.conf` (§4.2, item 7).
-- **Result on `elektron-net@main` (`447c069`, October 18, 2026):** 143 checks passed in about 8 seconds, one warning (`rescanutxoset` not present). The check also covers the commands the console needs and the console classification (`native-build/contract/console-tiers.json`, see `guideline-expert-console.md` §5): every command of the node's `help` list is classified (a warning in dev and nightly builds, a failure in release builds with `--strict-tiers`), argument rules and safety invariants are enforced (for example `sendtoaddress` is at least Danger, `stop` and `loadtxoutset` are Blocked), the console guards are verified (`createwallet` needs a passphrase, backups only for encrypted wallets, file paths, auto delete), and the file commands are exercised (`getwalletinfo.unlocked_until` identifies passphrase-protected wallets, `backupwallet` and `restorewallet` round trip keeps encryption and balance, `dumptxoutset` with `type=latest` writes a snapshot).
+- **Result on `elektron-net@main` (`447c069`, October 18, 2026):** 144 checks passed in about 8 seconds, one warning (`rescanutxoset` not present). The check also covers the commands the console needs and the console classification (`native-build/contract/console-tiers.json`, see `guideline-expert-console.md` §5): every command of the node's `help` list is classified (a warning in dev and nightly builds, a failure in release builds with `--strict-tiers`), argument rules and safety invariants are enforced (for example `sendtoaddress` is at least Danger, `stop` and `loadtxoutset` are Blocked), the console guards are verified (`createwallet` needs a passphrase, backups only for encrypted wallets, file paths, auto delete), and the file commands are exercised (`getwalletinfo.unlocked_until` identifies passphrase-protected wallets, `backupwallet` and `restorewallet` round trip keeps encryption and balance, `dumptxoutset` with `type=latest` writes a snapshot).
 
 ## 12. Cross-Repo Impact
 
@@ -538,7 +561,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 
 - [x] Gradle project skeleton: flavors, theme generator, contrast and locale gates, CI workflow. Not yet built against the Android toolchain
 - [ ] First green Gradle build, release signing in the release pipeline
-- [x] Node supervisor core (start/stop/drain/readiness/graceful stop/failure classes), verified against the host node in regtest. Still open: Android foreground service around it, polling and policy
+- [x] Node supervisor core (start/stop/drain/readiness/graceful stop/failure classes), verified against the host node in regtest
 - [x] RPC with cookie authentication (no stored credentials)
 - [ ] Sync dashboard with all phases from §5.1
 - [ ] Datadir versioning (§5.4)
@@ -556,8 +579,8 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 
 ### Phase 3: Background operation and policy
 
-- [ ] Foreground service, notification, Stop action
-- [ ] Policy engine (network, battery, thermal, storage, schedule)
+- [x] Foreground service, notification, Stop action: written, not yet built or run on Android
+- [x] Policy engine (network, battery, thermal, storage, schedule): core done and tested, settings screen open
 - [ ] Profiles and benchmark-driven tuning
 - [ ] Snapshot serving settings (X2) and disk guard
 - [ ] Optional boot start, guided battery-optimization flow

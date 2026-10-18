@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.7 (draft)
+- **Version:** 0.9 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -22,7 +22,7 @@
 - Non-custodial wallet on the node's own descriptor wallet: native SegWit (`be1q...`) addresses, BIP-39 recovery phrase, SLIP-44 coin type 1370 plus legacy path recovery.
 - Review-before-sign transaction flow (PSBT), fee policy re-check before signing, coin control, QR receive and scan.
 - Node dashboard: sync phase, height, peers, disk usage, prune height, snapshot state.
-- Two sections, Wallet and Node, plus an opt-in Expert mode with a console to the node.
+- Simple everyday wallet following common mobile wallet conventions (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node.
 - Storage saver (`-fastprune`) on by default with an opt-out; phone nodes serve snapshots only on Wi-Fi while charging.
 - Optional biometric unlock, `elek:` payment links, QR scan and receive.
 - Many languages from the start: English, German, Spanish, French, Italian, then Chinese, Arabic, Japanese, Korean, Hindi, Portuguese, Russian, Turkish, Indonesian, Vietnamese after native review.
@@ -106,7 +106,10 @@ Do not clear app data if you want to keep the synchronized node and wallet datab
 build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml   Gradle project
 app/                       Android application
   src/main/java/org/elektronnet/mobile/
-    node/                  node supervisor, RPC client, policy engine
+    node/                  node supervisor, controller, RPC client
+    policy/                policy engine (network, battery, thermal, storage)
+    runtime/               tick loop and status headline
+    service/               foreground service, notification, device state
     wallet/                bootstrap, send flow, recovery, descriptors
     security/              keystore and secure window helpers
     ui/                    Compose screens
@@ -135,6 +138,7 @@ The full requirement list is in plan section 9.
 |---|---|
 | [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md) | Architecture, roadmap, security, build and test plan |
 | [`doc-elektron/guideline-expert-console.md`](./doc-elektron/guideline-expert-console.md) | Expert mode and node console |
+| [`doc-elektron/guideline-ux-and-screens.md`](./doc-elektron/guideline-ux-and-screens.md) | Everyday user flows, navigation, screens, wording, usability tests |
 | [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md) | Themes, effects, legibility rules, typography |
 | [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) | Flavors, channels, signing, F-Droid, Play |
 | [`elektron-net` docs](https://github.com/kutlusoy/elektron-net/tree/main/doc-elektron) | Node behavior, pruning and snapshot audit, wallet integration |
