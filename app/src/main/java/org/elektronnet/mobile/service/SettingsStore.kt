@@ -2,7 +2,10 @@ package org.elektronnet.mobile.service
 
 import android.content.Context
 import java.time.YearMonth
+import org.elektronnet.mobile.node.Json
 import org.elektronnet.mobile.node.NodeProfile
+import org.elektronnet.mobile.wallet.EscrowRecord
+import org.elektronnet.mobile.wallet.EscrowStore
 import org.elektronnet.mobile.policy.MonthlyDataBudget
 import org.elektronnet.mobile.policy.PolicySettings
 import org.elektronnet.mobile.policy.ScheduleWindow
@@ -38,6 +41,17 @@ class SettingsStore(context: Context) {
     var receiveAddress: String?
         get() = prefs.getString(RECEIVE_ADDRESS, null)
         set(value) = prefs.edit().putString(RECEIVE_ADDRESS, value).apply()
+
+    fun escrowStore(): EscrowStore = object : EscrowStore {
+        override fun load(): List<EscrowRecord> {
+            val text = prefs.getString(ESCROWS, null) ?: return emptyList()
+            return runCatching { (Json.parse(text) as List<*>).map { EscrowRecord.fromMap(it as Map<*, *>) } }.getOrDefault(emptyList())
+        }
+
+        override fun save(records: List<EscrowRecord>) {
+            prefs.edit().putString(ESCROWS, Json.stringify(records.map { it.toMap() })).apply()
+        }
+    }
 
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
 
@@ -76,6 +90,7 @@ class SettingsStore(context: Context) {
         const val SCHEDULE_END = "schedule_end"
         const val FASTPRUNE = "fastprune"
         const val WALLET_READY = "wallet_ready"
+        const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"
         const val BUDGET_MONTH = "budget_month"
         const val BUDGET_USED = "budget_used"

@@ -36,6 +36,7 @@ fun WalletScreen(
     balance: BalanceUi?,
     days: List<HistoryDay>,
     onOpenTx: (String) -> Unit,
+    onOpenTools: () -> Unit,
     onOpenNode: () -> Unit,
     onReceive: () -> Unit,
     onSend: () -> Unit,
@@ -77,6 +78,7 @@ fun WalletScreen(
                 Text(stringResource(R.string.action_send), modifier = Modifier.padding(start = 8.dp))
             }
         }
+        androidx.compose.material3.TextButton(onClick = onOpenTools) { Text(stringResource(R.string.tools_open)) }
         if (!model.canSend) {
             Text(
                 stringResource(R.string.send_needs_sync),

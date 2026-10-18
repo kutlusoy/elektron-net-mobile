@@ -35,7 +35,7 @@ private val stopped = snapshot(Headline.Stopped, NodeState.Stopped, withStatus =
 @Composable
 private fun Wallet(snapshot: RuntimeSnapshot?, balance: org.elektronnet.mobile.ui.model.BalanceUi? = null) {
     ElektronTheme {
-        WalletScreen(HomeUiModel.from(snapshot?.headline), balance, emptyList(), onOpenTx = {}, onOpenNode = {}, onReceive = {}, onSend = {})
+        WalletScreen(HomeUiModel.from(snapshot?.headline), balance, emptyList(), onOpenTx = {}, onOpenTools = {}, onOpenNode = {}, onReceive = {}, onSend = {})
     }
 }
 

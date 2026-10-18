@@ -18,12 +18,18 @@ import org.elektronnet.mobile.wallet.AddressStore
 import org.elektronnet.mobile.wallet.Bip39
 import org.elektronnet.mobile.wallet.PaymentUri
 import org.elektronnet.mobile.wallet.ReceiveWallet
+import org.elektronnet.mobile.wallet.EscrowManager
+import org.elektronnet.mobile.wallet.MessageTools
+import org.elektronnet.mobile.wallet.PsbtTools
 import org.elektronnet.mobile.wallet.SendEngine
+import org.elektronnet.mobile.wallet.SweepEngine
 import org.elektronnet.mobile.wallet.WalletReader
 import org.elektronnet.mobile.wallet.WalletBootstrap
 import org.elektronnet.mobile.wallet.asWalletRpc
 
 object NodeHost {
+    private const val SCAN_TIMEOUT_MS = 900_000
+
     @Volatile
     var appVisible: Boolean = false
 
@@ -110,14 +116,43 @@ object NodeHost {
 
     var incomingUri: String? by mutableStateOf(null)
 
-    fun sendEngine(): SendEngine? {
-        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
-        return SendEngine(supervisor.rpc.asWalletRpc(), AddressCheck(ChainConfig.isTestnet))
+    private fun runningSupervisor() = controller?.current?.takeIf { it.state == NodeState.Running }
+
+    private val addressCheck: AddressCheck get() = AddressCheck(ChainConfig.isTestnet)
+
+    fun sendEngine(wallet: String = WalletBootstrap.DEFAULT_WALLET): SendEngine? =
+        runningSupervisor()?.let { SendEngine(it.rpc.asWalletRpc(), addressCheck, wallet) }
+
+    fun escrowManager(): EscrowManager? {
+        val supervisor = runningSupervisor() ?: return null
+        val store = settings ?: return null
+        val root = datadir ?: return null
+        val chain = Chain.fromBuildName(ChainConfig.chain)
+        return EscrowManager(
+            rpc = supervisor.rpc.asWalletRpc(),
+            store = store.escrowStore(),
+            testnet = ChainConfig.isTestnet,
+            removeWalletFiles = { name -> File(root, "${chain.subdir}/wallets/$name").deleteRecursively() },
+        )
     }
 
+    fun psbtTools(): PsbtTools? {
+        val supervisor = runningSupervisor() ?: return null
+        val store = settings ?: return null
+        return PsbtTools(supervisor.rpc.asWalletRpc()) {
+            listOf(WalletBootstrap.DEFAULT_WALLET) + store.escrowStore().load().filter { it.phase == org.elektronnet.mobile.wallet.EscrowPhase.Active }.map { it.walletName }
+        }
+    }
+
+    fun sweepEngine(): SweepEngine? =
+        runningSupervisor()?.let { SweepEngine(it.rpc.asWalletRpc(timeoutMs = SCAN_TIMEOUT_MS), ChainConfig.isTestnet, addressCheck) }
+
+    fun messageTools(): MessageTools? = runningSupervisor()?.let { MessageTools(it.rpc.asWalletRpc(), addressCheck) }
+
     fun lockWallet() {
-        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return
-        Thread { runCatching { supervisor.rpc.call("walletlock", emptyList<Any?>(), wallet = WalletBootstrap.DEFAULT_WALLET) } }.start()
+        val supervisor = runningSupervisor() ?: return
+        val names = listOf(WalletBootstrap.DEFAULT_WALLET) + (settings?.escrowStore()?.load().orEmpty()).map { it.walletName }
+        Thread { names.forEach { runCatching { supervisor.rpc.call("walletlock", emptyList<Any?>(), wallet = it) } } }.start()
     }
 
     val paymentUri: PaymentUri = PaymentUri(ChainConfig.uriScheme, AddressCheck(ChainConfig.isTestnet))

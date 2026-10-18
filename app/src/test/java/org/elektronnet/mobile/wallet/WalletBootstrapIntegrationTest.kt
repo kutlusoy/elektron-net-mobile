@@ -46,7 +46,7 @@ class WalletBootstrapIntegrationTest {
         assertEquals(0L, info["unlocked_until"])
         val listed = rpc.call("listdescriptors", emptyList<Any?>(), "elektron") as Map<*, *>
         val descriptors = listed["descriptors"] as List<*>
-        assertEquals(4, descriptors.size)
+        assertEquals(5, descriptors.size)
         assertEquals(2, descriptors.count { (it as Map<*, *>)["active"] == true })
         val address = rpc.call("getnewaddress", emptyList<Any?>(), "elektron").toString()
         val again = bootstrap(rpc, dir).let { rpc.call("listwallets", emptyList<Any?>(), null) as List<*> }

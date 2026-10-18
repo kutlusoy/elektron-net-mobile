@@ -1,11 +1,11 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.13 (draft)
+- **Version:** 0.14 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (light wallet, source of branding, address safety UX and strings), [`elektron-net-mempool`](https://github.com/kutlusoy/elektron-net-mempool) (explorer, deep links only)
-- **See also:** [`guideline-entropy-and-randomness.md`](./guideline-entropy-and-randomness.md), [`guideline-expert-console.md`](./guideline-expert-console.md), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md), [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md), [`guideline-wallet-integration.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/guideline-wallet-integration.md), [`AUDIT_PRUNING_SNAPSHOT.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/AUDIT_PRUNING_SNAPSHOT.md), [`BITCOIN_CORE_DIFF.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/BITCOIN_CORE_DIFF.md), [`CHANGELOG-slip44-coin-type.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/CHANGELOG-slip44-coin-type.md), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
+- **See also:** [`guideline-escrow-psbt-and-tools.md`](./guideline-escrow-psbt-and-tools.md), [`guideline-entropy-and-randomness.md`](./guideline-entropy-and-randomness.md), [`guideline-expert-console.md`](./guideline-expert-console.md), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md), [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md), [`guideline-wallet-integration.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/guideline-wallet-integration.md), [`AUDIT_PRUNING_SNAPSHOT.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/AUDIT_PRUNING_SNAPSHOT.md), [`BITCOIN_CORE_DIFF.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/BITCOIN_CORE_DIFF.md), [`CHANGELOG-slip44-coin-type.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/CHANGELOG-slip44-coin-type.md), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet
 
 Requirement levels follow common practice: **MUST** = mandatory for correct/safe operation, **SHOULD** = strongly recommended, **MAY** = optional.
@@ -419,6 +419,10 @@ Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4
 - Addresses with a foreign HRP are rejected with a specific message. The mainnet flavor rejects `bc`, `tb` and `bcrt`. The testnet flavor (HRP `tb`) rejects `bc`, `be` and `bcrt`.
 - The `elektron-net-electrum` implementation of this UX is the reference for wording and behavior to keep both wallets consistent.
 
+### 8.5.1 Advanced tools
+
+Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, combine, broadcast), key sweep and message signing are specified in [`guideline-escrow-psbt-and-tools.md`](./guideline-escrow-psbt-and-tools.md). They build on standard node features and add requirements S18 to S22. Imported single private keys are deliberately not supported, because they are not covered by the recovery phrase.
+
 ### 8.6 Local data, labels and privacy
 
 - Labels and address book live in the app database (encrypted at rest with a Keystore-wrapped key), never sent anywhere.
@@ -446,6 +450,11 @@ Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4
 | S15 | Console history is encrypted at rest, masks secrets, never stores results of key-revealing commands, rotates after the retention period and can be deleted (`guideline-expert-console.md` §6) | MUST |
 | S16 | Biometric unlock is opt-in, uses a Keystore AES-GCM key with per-use `BIOMETRIC_STRONG` authentication and `CryptoObject`, is invalidated on new biometric enrollment, never replaces the passphrase and is removable (§8.1). No other form of passphrase storage exists | MUST |
 | S17 | Recovery phrases carry at least 128 bits of true entropy. Sources are the health-checked system generators or the user's dice (50 or more rolls for 12 words, 100 or more for 24), mixed with SHA-2. A failed health check creates no phrase, there is no fallback to a weaker source, and no weak randomness API appears in app code (`tools/check-rng.py`) | MUST |
+| S18 | Escrow and PSBT screens block screenshots and overlay touches, use one unlock of at most 10 s per signature and always relock (`guideline-escrow-psbt-and-tools.md` §6) | MUST |
+| S19 | Every signature of an imported or shared PSBT is preceded by a check view of the exact file with own change and external outputs marked and unusual fees warned | MUST |
+| S20 | Escrow setup shows a check code and the first deposit address and tells all participants to compare them before any deposit | MUST |
+| S21 | Sweep keys are never stored, logged or shown again, and the destination is always an own new address | MUST |
+| S22 | Single imported private keys are not added to the wallet | MUST |
 
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 
@@ -465,7 +474,7 @@ elektron-net-mobile/
     src/main/jniLibs/{arm64-v8a,x86_64}/libelektrond.so
     src/main/res/                       strings (English default, plus the shipped locales, §3.5)
     shipped-locales.txt                 shipped locale list, English first
-    src/mainnet/, src/testnet/          flavor overrides (ID, name, chain, scheme, icon)
+    src/mainnet/, src/tnet/             flavor overrides (ID, name, chain, scheme, icon)
   native-build/                         reproducible NDK build of elektrond
     core-source.env                     Core repository URL, ref to track, NDK version
     fetch-core.sh                       resolves and fetches the current elektron-net source

@@ -27,9 +27,9 @@ Requirement levels follow common practice: **MUST** = mandatory for correct/safe
 
 ## 2. Flavors
 
-Two product flavors from one code base. The flavor changes identity and chain only, never the security behavior.
+Two product flavors from one code base. The testnet flavor is named `tnet` because Android Gradle does not allow flavor names that start with "test". The flavor changes identity and chain only, never the security behavior.
 
-| Item | `mainnet` | `testnet` |
+| Item | `mainnet` | `tnet` (testnet) |
 |---|---|---|
 | `applicationId` | `org.elektronnet.mobile` | `org.elektronnet.mobiletestnet` |
 | App name (launcher label and notification title) | Elektron | Elektron (T) |
@@ -78,7 +78,7 @@ Two product flavors from one code base. The flavor changes identity and chain on
 
 ### 6.1 GitHub repository and releases (primary source)
 
-- Tagged releases carry the signed APK of both flavors (`mainnet` and `testnet`), checksums, signature, the build manifest and release notes.
+- Tagged releases carry the signed APK of both flavors (`mainnet` and `tnet`), checksums, signature, the build manifest and release notes.
 - Nightly builds (`main` Core) are published separately as pre-releases, never as the latest release.
 
 ### 6.2 Direct APK
@@ -132,7 +132,7 @@ Google has announced that apps installed on certified Android devices must come 
 
 ## 10. Checklist
 
-- [ ] Flavors `mainnet` and `testnet` with separate IDs, datadirs, schemes
+- [ ] Flavors `mainnet` and `tnet` with separate IDs, datadirs, schemes
 - [ ] Release key generated offline, fingerprint published
 - [ ] Reproducible build check in CI
 - [ ] Signed APKs, checksums and detached signatures in each release

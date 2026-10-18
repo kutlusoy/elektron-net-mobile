@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.9 (draft)
+- **Version:** 0.10 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -95,6 +95,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - **Transaction list:** grouped by day, one row per transaction: icon (arrow in or out), label or short address, amount with sign, status word for unconfirmed. Pull to refresh does nothing visible except a state check. Empty state: "No payments yet. Tap Receive to get your first address."
 - **History limit:** below the list a quiet line: "Older payments than about 137 days are not stored on the network." with a "Why?" link (plan §8.3).
 - **Implementation notes (v0.8):** balance and history come from the wallet RPC (`getbalances`, `listtransactions`), refreshed every 8 seconds while synchronized and every 15 seconds otherwise, and only while the app is visible. `listtransactions` returns one entry per output, so entries are grouped per transaction: the net amount includes the network fee once, a transaction whose sent and received parts cancel out is shown as "Moved within your wallet", and generation entries are "Mining reward". Amounts are converted from the node's decimals without floating point. Confirmation words: 0 is "Waiting for confirmation", 1 to 5 shows "n of 6", 6 and more shows nothing. A balance of zero while the node is not yet synchronized and no history exists shows "Waiting for your node to catch up" instead of 0 (plan §8.3). Unconfirmed incoming and outgoing amounts show as "Pending". The list shows the latest 100 transactions grouped by day.
+- **Tools entry:** a quiet text button under Receive and Send opens the Tools page (escrow, payment files, sweep, messages). These functions are for experienced users and are described in [`guideline-escrow-psbt-and-tools.md`](./guideline-escrow-psbt-and-tools.md).
 - **Not on this screen:** block height, peer count, fee rates, UTXO count, addresses with balance. Those are under Node and Settings.
 
 ### 6.2 Receive

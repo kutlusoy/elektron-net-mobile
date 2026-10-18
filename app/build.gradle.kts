@@ -66,7 +66,7 @@ android {
             buildConfigField("String", "DEFAULT_THEME", "\"blue\"")
             buildConfigField("boolean", "IS_TESTNET", "false")
         }
-        create("testnet") {
+        create("tnet") {
             dimension = "chain"
             applicationId = "org.elektronnet.mobiletestnet"
             resValue("string", "app_name", "Elektron (T)")
