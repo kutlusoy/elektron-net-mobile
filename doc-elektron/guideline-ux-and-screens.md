@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.3 (draft)
+- **Version:** 0.4 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -81,6 +81,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - **Recovery phrase:** shown on a screen with screenshots blocked (`FLAG_SECURE`). Wording: "Write these words down on paper. Anyone with them can take your coins. We cannot recover them for you." The quiz asks for three random positions and does not allow skipping in v1. The phrase is never shown again after the quiz (plan §8.1). Settings, Security has a "Check my backup" action that repeats the quiz.
 - **Passphrase:** the user chooses a wallet passphrase that is needed to send. The text explains that this is not the recovery phrase. A strength hint is shown, no composition rules beyond a minimum length. Biometric unlock is offered afterwards as an opt-in switch with the trade-off sentence from plan §8.1.
 - **Restore while the node is syncing:** restore needs a synchronized node (plan §8.3). The screen says so plainly and shows the same progress card as the home screen. The app keeps the entered phrase only until the restore finishes if the user chooses "Restore automatically when ready", otherwise the user returns later and enters it again. Decision to confirm (§12, U3).
+- **Implementation notes (v0.4):** the flow logic is pure Kotlin (`wallet/FirstRunModel.kt`) and tested on the JVM; the wallet is created through `WalletBootstrap` (plan §8.3) with BIP-39 words checked against the official word list, the master key derived from the seed (PBKDF2 and HMAC-SHA512 from the JDK, no third-party crypto) and the descriptors imported by the node, so no private key handling exists beyond the master extended key in memory during creation. Restore refuses to start before wallet creation when the node lacks `rescanutxoset` (X1), and shows a plain message. The optional biometric step is not built yet. The recovery phrase screens set `FLAG_SECURE`; the phrase is held in memory only while the flow runs and is dropped when it ends or the app is recreated.
 - **A new wallet is usable immediately** for receiving, even while the node syncs. A first-time user sees a working Receive screen in under a minute.
 
 ## 6. Screens
@@ -212,7 +213,7 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 
 - [ ] Navigation shell with Wallet, Node and Settings tabs and the node status chip
 - [ ] Wallet home with balance card, sync states, list and empty state
-- [ ] First-run flow with explainer, backup quiz and passphrase
+- [x] First-run flow with explainer, backup quiz and passphrase (logic and screens in place, biometric step still open, restore waits for X1)
 - [ ] Receive with `elek:` QR, fresh address per visit, optional amount and note
 - [ ] Send flow with inline validation, fee choices, review, authentication, done
 - [ ] Transaction details
