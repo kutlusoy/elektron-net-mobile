@@ -9,9 +9,13 @@ import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.node.Chain
 import org.elektronnet.mobile.node.NodeConfig
 import org.elektronnet.mobile.node.NodeController
+import org.elektronnet.mobile.node.NodeState
 import org.elektronnet.mobile.policy.PolicyEngine
 import org.elektronnet.mobile.runtime.NodeRuntime
 import org.elektronnet.mobile.runtime.RuntimeSnapshot
+import org.elektronnet.mobile.wallet.Bip39
+import org.elektronnet.mobile.wallet.WalletBootstrap
+import org.elektronnet.mobile.wallet.asWalletRpc
 
 object NodeHost {
     @Volatile
@@ -25,6 +29,7 @@ object NodeHost {
     val store: SettingsStore? get() = settings
     private var runtime: NodeRuntime? = null
     private var controller: NodeController? = null
+    private var datadir: File? = null
 
     @Synchronized
     fun init(context: Context): SettingsStore {
@@ -33,6 +38,7 @@ object NodeHost {
         val store = SettingsStore(app)
         val datadir = File(app.filesDir, ChainConfig.datadirName)
         datadir.mkdirs()
+        this.datadir = datadir
         val config = NodeConfig(
             binary = File(app.applicationInfo.nativeLibraryDir, "libelektrond.so"),
             datadir = datadir,
@@ -61,6 +67,19 @@ object NodeHost {
         settings?.saveBudget(current.budget)
         latest = snapshot
         return snapshot
+    }
+
+    fun bootstrap(context: Context): WalletBootstrap? {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
+        val root = datadir ?: return null
+        val chain = Chain.fromBuildName(ChainConfig.chain)
+        val words = context.applicationContext.assets.open("bip39/english.txt").bufferedReader().readLines().filter { it.isNotBlank() }
+        return WalletBootstrap(
+            rpc = supervisor.rpc.asWalletRpc(),
+            bip39 = Bip39(words),
+            testnet = ChainConfig.isTestnet,
+            removeWalletFiles = { name -> File(root, "${chain.subdir}/wallets/$name").deleteRecursively() },
+        )
     }
 
     fun stopNow() {

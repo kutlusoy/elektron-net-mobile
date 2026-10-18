@@ -27,6 +27,7 @@ import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.policy.PolicySettings
 import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.ui.firstrun.FirstRunScreen
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.node.NodeScreen
@@ -46,12 +47,13 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     val store = NodeHost.store
     var settings by remember { mutableStateOf(store?.load() ?: PolicySettings()) }
     val snapshot = NodeHost.latest
+    var walletReady by remember { mutableStateOf(store?.walletReady() ?: false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = { if (ChainConfig.isTestnet) TestnetBar() },
         bottomBar = {
-            NavigationBar {
+            if (walletReady) NavigationBar {
                 Tab.entries.forEach { entry ->
                     NavigationBarItem(
                         selected = tab == entry.ordinal,
@@ -64,6 +66,19 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         },
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
+            if (!walletReady) {
+                FirstRunScreen(
+                    onAllowMetered = {
+                        store?.setAllowMetered(it)
+                        settings = settings.copy(allowMetered = it)
+                    },
+                    onFinished = {
+                        store?.setWalletReady(true)
+                        walletReady = true
+                    },
+                )
+                return@Box
+            }
             when (Tab.entries[tab]) {
                 Tab.Wallet -> WalletScreen(
                     model = HomeUiModel.from(snapshot?.headline),

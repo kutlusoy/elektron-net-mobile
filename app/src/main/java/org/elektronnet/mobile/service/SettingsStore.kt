@@ -31,6 +31,10 @@ class SettingsStore(context: Context) {
         )
     }
 
+    fun walletReady(): Boolean = prefs.getBoolean(WALLET_READY, false)
+
+    fun setWalletReady(value: Boolean) = prefs.edit().putBoolean(WALLET_READY, value).apply()
+
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
 
     fun setUserStopped(value: Boolean) = prefs.edit().putBoolean(USER_STOPPED, value).apply()
@@ -67,6 +71,7 @@ class SettingsStore(context: Context) {
         const val SCHEDULE_START = "schedule_start"
         const val SCHEDULE_END = "schedule_end"
         const val FASTPRUNE = "fastprune"
+        const val WALLET_READY = "wallet_ready"
         const val BUDGET_MONTH = "budget_month"
         const val BUDGET_USED = "budget_used"
     }
