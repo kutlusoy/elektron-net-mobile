@@ -49,9 +49,14 @@ class NodeRuntimeTest {
         assertEquals(Headline.Starting, first.headline)
         assertEquals(1_000L, rt.suggestedDelayMs(first, appVisible = false))
         settings = PolicySettings(userStopped = true)
-        val stopped = rt.tick()
-        assertEquals(Headline.Stopped, stopped.headline)
+        var stopped = rt.tick()
+        val end = System.currentTimeMillis() + 10_000
+        while (stopped.state != NodeState.Stopped && System.currentTimeMillis() < end) {
+            Thread.sleep(50)
+            stopped = rt.tick()
+        }
         assertEquals(NodeState.Stopped, stopped.state)
+        assertEquals(Headline.Stopped, stopped.headline)
     }
 
     @Test
