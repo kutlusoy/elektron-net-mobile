@@ -1,0 +1,132 @@
+package org.elektronnet.mobile.node
+
+import java.io.IOException
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.TimeUnit
+
+class NodeSupervisor(
+    private val config: NodeConfig,
+    val output: OutputBuffer = OutputBuffer(),
+    private val pollIntervalMs: Long = 300,
+) {
+    val rpc = RpcClient(config.rpcPort, config.cookieFile)
+
+    private val lock = Any()
+    private val listeners = CopyOnWriteArrayList<(NodeState) -> Unit>()
+    private var process: Process? = null
+    private var stopRequested = false
+
+    @Volatile
+    var state: NodeState = NodeState.Stopped
+        private set
+
+    fun addListener(listener: (NodeState) -> Unit) {
+        listeners.add(listener)
+    }
+
+    fun start() {
+        synchronized(lock) {
+            if (state == NodeState.Starting || state == NodeState.Running || state == NodeState.Stopping) return
+            check(config.binary.canExecute()) { "node binary is not executable: ${config.binary}" }
+            NodeConfigFile.ensure(config)
+            config.cookieFile.delete()
+            stopRequested = false
+            val started = ProcessBuilder(listOf(config.binary.absolutePath) + config.arguments())
+                .redirectErrorStream(true)
+                .start()
+            process = started
+            setState(NodeState.Starting)
+            thread("node-output") { drain(started) }
+            thread("node-exit") { awaitExit(started) }
+            thread("node-ready") { awaitReady(started) }
+        }
+    }
+
+    fun stop(timeoutMs: Long = 60_000): Boolean {
+        val target: Process
+        synchronized(lock) {
+            target = process ?: return true
+            if (!target.isAlive) return true
+            stopRequested = true
+            setState(NodeState.Stopping)
+        }
+        try {
+            rpc.call("stop", timeoutMs = 10_000)
+        } catch (e: IOException) {
+        } catch (e: RpcException) {
+        }
+        if (!target.waitFor(timeoutMs, TimeUnit.MILLISECONDS)) {
+            target.destroy()
+            if (!target.waitFor(10_000, TimeUnit.MILLISECONDS)) {
+                target.destroyForcibly()
+                target.waitFor(10_000, TimeUnit.MILLISECONDS)
+            }
+        }
+        return !target.isAlive
+    }
+
+    fun status(): NodeStatus {
+        val chain = rpc.call("getblockchaininfo") as Map<*, *>
+        val network = rpc.call("getnetworkinfo") as Map<*, *>
+        return NodeStatus(
+            chain = chain["chain"] as String,
+            blocks = chain["blocks"] as Long,
+            headers = chain["headers"] as Long,
+            verificationProgress = (chain["verificationprogress"] as Number).toDouble(),
+            initialBlockDownload = chain["initialblockdownload"] as Boolean,
+            pruned = chain["pruned"] as Boolean,
+            pruneHeight = chain["pruneheight"] as? Long,
+            connections = network["connections"] as Long,
+            subversion = network["subversion"] as String,
+        )
+    }
+
+    private fun drain(started: Process) {
+        started.inputStream.bufferedReader().useLines { lines -> lines.forEach { output.add(it) } }
+    }
+
+    private fun awaitExit(started: Process) {
+        val code = started.waitFor()
+        synchronized(lock) {
+            if (process !== started) return
+            process = null
+            if (stopRequested || code == 0) {
+                setState(NodeState.Stopped)
+            } else {
+                setState(NodeState.Crashed(code, FailureClassifier.classify(output.tail(100))))
+            }
+        }
+    }
+
+    private fun awaitReady(started: Process) {
+        while (started.isAlive) {
+            try {
+                rpc.call("getblockchaininfo", timeoutMs = 5_000)
+                markRunning(started)
+                return
+            } catch (e: RpcException) {
+                if (!e.inWarmup) {
+                    markRunning(started)
+                    return
+                }
+            } catch (e: IOException) {
+            }
+            Thread.sleep(pollIntervalMs)
+        }
+    }
+
+    private fun markRunning(started: Process) {
+        synchronized(lock) {
+            if (process === started && state == NodeState.Starting) setState(NodeState.Running)
+        }
+    }
+
+    private fun setState(next: NodeState) {
+        state = next
+        listeners.forEach { it(next) }
+    }
+
+    private fun thread(name: String, body: () -> Unit) {
+        Thread(body, name).apply { isDaemon = true }.start()
+    }
+}
