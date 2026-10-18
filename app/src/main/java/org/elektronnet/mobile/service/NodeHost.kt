@@ -21,6 +21,8 @@ object NodeHost {
         private set
 
     private var settings: SettingsStore? = null
+
+    val store: SettingsStore? get() = settings
     private var runtime: NodeRuntime? = null
     private var controller: NodeController? = null
 

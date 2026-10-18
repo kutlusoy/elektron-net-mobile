@@ -37,6 +37,12 @@ class SettingsStore(context: Context) {
 
     fun setUserPaused(value: Boolean) = prefs.edit().putBoolean(USER_PAUSED, value).apply()
 
+    fun setAllowMetered(value: Boolean) = prefs.edit().putBoolean(ALLOW_METERED, value).apply()
+
+    fun setChargingOnly(value: Boolean) = prefs.edit().putBoolean(CHARGING_ONLY, value).apply()
+
+    fun setBackgroundEnabled(value: Boolean) = prefs.edit().putBoolean(BACKGROUND, value).apply()
+
     fun loadBudget(): MonthlyDataBudget {
         val month = prefs.getString(BUDGET_MONTH, null)?.let { runCatching { YearMonth.parse(it) }.getOrNull() }
         return MonthlyDataBudget(month = month, used = prefs.getLong(BUDGET_USED, 0))
