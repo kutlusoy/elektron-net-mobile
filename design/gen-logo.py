@@ -2,8 +2,8 @@
 """Converts design/logo/bitcoin-elektron.svg into Android vector drawables.
 
 Usage: gen-logo.py <app/src dir>
-Writes ic_launcher_foreground.xml and ic_launcher_monochrome.xml for the mainnet colors under main/res/drawable,
-ic_stat_node.xml (notification icon) under main/res/drawable, and a dark grey ic_launcher_foreground.xml under tnet/res/drawable.
+Writes ic_launcher_foreground.xml, ic_launcher_monochrome.xml and the full-size logo_mark.xml for the mainnet colors under main/res/drawable,
+ic_stat_node.xml (notification icon) under main/res/drawable, and dark grey versions of ic_launcher_foreground.xml and logo_mark.xml under tnet/res/drawable.
 """
 import math
 import os
@@ -103,7 +103,7 @@ def circle_path():
     )
 
 
-def foreground(variant):
+def foreground(variant, scale=SAFE_ZONE_SCALE):
     small1, small2, coin = read_paths()
     colors = STOPS[variant]
     return (
@@ -114,7 +114,7 @@ def foreground(variant):
         '    android:height="108dp"\n'
         '    android:viewportWidth="1024"\n'
         '    android:viewportHeight="1024">\n'
-        f'    <group android:pivotX="512" android:pivotY="512" android:scaleX="{SAFE_ZONE_SCALE}" android:scaleY="{SAFE_ZONE_SCALE}">\n'
+        f'    <group android:pivotX="512" android:pivotY="512" android:scaleX="{scale}" android:scaleY="{scale}">\n'
         f'    <path android:fillColor="#FFFFFFFF" android:pathData="{circle_path()}" />\n'
         f'    <path android:pathData="{small1}">\n'
         + gradient(277.4905, 196.4412, 34.3969, colors)
@@ -174,7 +174,9 @@ def main():
     write(os.path.join(root, "main", "res", "drawable", "ic_launcher_foreground.xml"), foreground("main"))
     write(os.path.join(root, "main", "res", "drawable", "ic_launcher_monochrome.xml"), monochrome())
     write(os.path.join(root, "main", "res", "drawable", "ic_stat_node.xml"), status_icon())
+    write(os.path.join(root, "main", "res", "drawable", "logo_mark.xml"), foreground("main", 1.0))
     write(os.path.join(root, "tnet", "res", "drawable", "ic_launcher_foreground.xml"), foreground("testnet"))
+    write(os.path.join(root, "tnet", "res", "drawable", "logo_mark.xml"), foreground("testnet", 1.0))
 
 
 if __name__ == "__main__":

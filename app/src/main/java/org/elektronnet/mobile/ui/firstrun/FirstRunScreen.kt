@@ -54,6 +54,9 @@ import kotlinx.coroutines.withContext
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.ui.BrandBackground
+import org.elektronnet.mobile.ui.BrandHeader
+import org.elektronnet.mobile.ui.GlassCard
 import org.elektronnet.mobile.ui.HeroCard
 import org.elektronnet.mobile.ui.SecureWindow
 import org.elektronnet.mobile.wallet.BackupQuiz
@@ -71,6 +74,7 @@ import org.elektronnet.mobile.wallet.FirstRunState
 import org.elektronnet.mobile.wallet.FirstRunStep
 import org.elektronnet.mobile.wallet.PassphraseCheck
 import org.elektronnet.mobile.wallet.PassphraseStrength
+import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
 fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
@@ -100,13 +104,17 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
         onFinished()
     }
 
+    BrandBackground {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
+        BrandHeader(compact = state.step != FirstRunStep.Welcome)
+        GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         when (state.step) {
             FirstRunStep.Welcome -> {
                 Text(stringResource(R.string.fr_welcome_title), style = MaterialTheme.typography.headlineMedium)
@@ -320,7 +328,7 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
                             pair.forEachIndexed { col, word ->
                                 Text(
                                     "${row * 2 + col + 1}. $word",
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = ElektronMono,
                                     modifier = Modifier.weight(1f),
                                 )
                             }
@@ -402,6 +410,9 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
             }
             FirstRunStep.Done -> Unit
         }
+        }
+        }
+    }
     }
 }
 

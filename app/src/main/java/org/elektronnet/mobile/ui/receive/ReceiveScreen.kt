@@ -53,6 +53,7 @@ import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.model.ReceiveUiModel
 import org.elektronnet.mobile.wallet.QrCode
+import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
 fun ReceiveScreen(onClose: () -> Unit) {
@@ -99,7 +100,7 @@ fun ReceiveScreen(onClose: () -> Unit) {
                     withStyle(style) { append(run.text) }
                 }
             },
-            fontFamily = FontFamily.Monospace,
+            fontFamily = ElektronMono,
             style = MaterialTheme.typography.titleMedium,
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {

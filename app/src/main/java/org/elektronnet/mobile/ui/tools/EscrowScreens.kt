@@ -46,6 +46,7 @@ import org.elektronnet.mobile.wallet.EscrowManager
 import org.elektronnet.mobile.wallet.EscrowPhase
 import org.elektronnet.mobile.wallet.EscrowRecord
 import org.elektronnet.mobile.wallet.TxItem
+import org.elektronnet.mobile.ui.theme.ElektronMono
 
 private val KEY_TOKEN = Regex("""(\[[0-9a-fA-F]{8}(?:/\d+['h])*])?[xt]pub[1-9A-HJ-NP-Za-km-z]{100,115}""")
 
@@ -219,7 +220,7 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
             Text(stringResource(R.string.escrow_step_share), style = MaterialTheme.typography.titleMedium)
             Hint(stringResource(R.string.escrow_share_hint))
             val shareLine = r.myLabel + ": " + r.myKey
-            Text(shareLine, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
+            Text(shareLine, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
             QrView(shareLine)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedButton(onClick = { copyText(context, "escrow key", shareLine) }) { Text(stringResource(R.string.action_copy)) }
@@ -280,7 +281,7 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
             Text(r.myLabel + " (" + stringResource(R.string.escrow_you) + ")")
             r.cosigners.forEach { Text(it.label.ifEmpty { "-" }) }
             val checksum = r.descriptor?.substringAfter('#').orEmpty()
-            Text(stringResource(R.string.escrow_code, checksum), fontFamily = FontFamily.Monospace)
+            Text(stringResource(R.string.escrow_code, checksum), fontFamily = ElektronMono)
             Hint(stringResource(R.string.escrow_code_hint))
             balances?.let {
                 Text(Amount.format(it.trustedLep) + " " + stringResource(R.string.balance_unit), style = MaterialTheme.typography.headlineMedium)
@@ -290,7 +291,7 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
             address?.let { a ->
                 Text(stringResource(R.string.escrow_deposit), style = MaterialTheme.typography.labelLarge)
                 QrView(a.uppercase())
-                Text(org.elektronnet.mobile.wallet.AddressFormat.grouped(a), fontFamily = FontFamily.Monospace)
+                Text(org.elektronnet.mobile.wallet.AddressFormat.grouped(a), fontFamily = ElektronMono)
                 Hint(stringResource(R.string.escrow_address_hint))
                 OutlinedButton(onClick = { copyText(context, "address", a) }) { Text(stringResource(R.string.action_copy)) }
             }
@@ -299,8 +300,8 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
             items.forEach { tx ->
                 val row = HistoryModel.row(tx)
                 Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(HistoryModel.shorten(tx.txid), fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
-                    Text(row.amountText + " " + stringResource(R.string.balance_unit), fontFamily = FontFamily.Monospace)
+                    Text(HistoryModel.shorten(tx.txid), fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
+                    Text(row.amountText + " " + stringResource(R.string.balance_unit), fontFamily = ElektronMono)
                 }
             }
             OutlinedButton(onClick = {

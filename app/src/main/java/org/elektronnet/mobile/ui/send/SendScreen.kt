@@ -63,6 +63,7 @@ import org.elektronnet.mobile.wallet.PreparedSend
 import org.elektronnet.mobile.wallet.SendException
 import org.elektronnet.mobile.wallet.SendFailure
 import org.elektronnet.mobile.wallet.SendRequest
+import org.elektronnet.mobile.ui.theme.ElektronMono
 
 private enum class Step { Recipient, Amount, Fee, Review, Confirm, Working, Done }
 
@@ -316,7 +317,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                                     withStyle(style) { append(run.text) }
                                 }
                             },
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = ElektronMono,
                         )
                     }
                     ReviewLine(stringResource(R.string.send_review_amount)) { Text(elek(review.amountLep), style = MaterialTheme.typography.titleLarge) }
@@ -352,7 +353,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                 if (psbt != null) {
                     Text(stringResource(R.string.escrow_proposal_title), style = MaterialTheme.typography.headlineSmall)
                     Text(stringResource(R.string.escrow_proposal_body, escrow?.required ?: 2))
-                    Text(psbt, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall, maxLines = 8)
+                    Text(psbt, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall, maxLines = 8)
                     if (psbt.length <= org.elektronnet.mobile.ui.tools.PSBT_QR_LIMIT) org.elektronnet.mobile.ui.receive.QrView(psbt)
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OutlinedButton(onClick = { copyPlain(context, psbt) }) { Text(stringResource(R.string.action_copy)) }

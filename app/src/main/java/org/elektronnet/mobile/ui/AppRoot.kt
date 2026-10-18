@@ -95,11 +95,12 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         }
     }
 
+    BrandBackground {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
         topBar = { if (ChainConfig.isTestnet) TestnetBar() },
         bottomBar = {
-            if (walletReady) NavigationBar {
+            if (walletReady) NavigationBar(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)) {
                 Tab.entries.forEach { entry ->
                     NavigationBarItem(
                         selected = tab == entry.ordinal,
@@ -207,6 +208,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
             }
         }
+    }
     }
 
     if (showSoon) {

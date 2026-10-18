@@ -41,6 +41,7 @@ import org.elektronnet.mobile.wallet.PsbtView
 import org.elektronnet.mobile.wallet.PsbtWarning
 import org.elektronnet.mobile.wallet.SendException
 import org.elektronnet.mobile.wallet.SendFailure
+import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
 fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: String = "") {
@@ -104,7 +105,7 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
         error?.let { ErrorText(stringResource(it)) }
         txid?.let {
             Text(stringResource(R.string.psbt_sent), style = MaterialTheme.typography.titleMedium)
-            Text(it, fontFamily = FontFamily.Monospace)
+            Text(it, fontFamily = ElektronMono)
             OutlinedButton(onClick = { copyText(context, "txid", it) }) { Text(stringResource(R.string.action_copy)) }
         }
         view?.let { v ->
@@ -249,7 +250,7 @@ private fun PsbtDetails(v: PsbtView, labels: Map<String, String>) {
     v.outputs.forEach { out ->
         val owner = out.owner?.let { labels[it] ?: it }
         Column {
-            Text(out.address?.let(HistoryModel::shorten) ?: stringResource(R.string.psbt_unknown_output), fontFamily = FontFamily.Monospace)
+            Text(out.address?.let(HistoryModel::shorten) ?: stringResource(R.string.psbt_unknown_output), fontFamily = ElektronMono)
             Text(
                 Amount.format(out.amountLep) + " " + stringResource(R.string.balance_unit) + (owner?.let { "  " + stringResource(R.string.psbt_output_own, it) } ?: ""),
                 style = MaterialTheme.typography.bodySmall,

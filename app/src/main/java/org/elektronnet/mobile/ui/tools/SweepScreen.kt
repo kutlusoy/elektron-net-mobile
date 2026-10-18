@@ -37,6 +37,7 @@ import org.elektronnet.mobile.wallet.SweepException
 import org.elektronnet.mobile.wallet.SweepFailure
 import org.elektronnet.mobile.wallet.SweepPlan
 import org.elektronnet.mobile.wallet.SweepScan
+import org.elektronnet.mobile.ui.theme.ElektronMono
 
 private enum class Phase { Input, Scanning, Found, Review, Working, Done }
 
@@ -140,7 +141,7 @@ fun SweepScreen(onBack: () -> Unit) {
                 val p = plan
                 if (p != null) {
                     Text(stringResource(R.string.send_review_title), style = MaterialTheme.typography.titleMedium)
-                    Text(stringResource(R.string.sweep_to_wallet), fontFamily = FontFamily.Monospace)
+                    Text(stringResource(R.string.sweep_to_wallet), fontFamily = ElektronMono)
                     Text(stringResource(R.string.send_review_amount) + ": " + Amount.format(p.amountLep) + " " + stringResource(R.string.balance_unit))
                     Text(stringResource(R.string.tx_fee) + ": " + Amount.format(p.feeLep) + " " + stringResource(R.string.balance_unit) + "  (" + stringResource(R.string.send_fee_rate, p.feeRate.toPlainString()) + ")")
                     Button(
@@ -166,7 +167,7 @@ fun SweepScreen(onBack: () -> Unit) {
             }
             Phase.Done -> {
                 Text(stringResource(R.string.sweep_done), style = MaterialTheme.typography.titleMedium)
-                txid?.let { Text(it, fontFamily = FontFamily.Monospace) }
+                txid?.let { Text(it, fontFamily = ElektronMono) }
                 Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_done_close)) }
             }
         }
