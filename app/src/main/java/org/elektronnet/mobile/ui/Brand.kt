@@ -81,7 +81,9 @@ fun BrandBackground(modifier: Modifier = Modifier, content: @Composable () -> Un
             modifier = Modifier.align(Alignment.Center).fillMaxWidth(0.92f).alpha(0.07f),
         )
         Box(modifier = Modifier.fillMaxSize().drawBehind { drawRect(ShaderBrush(ImageShader(grainTile, TileMode.Repeated)), alpha = 0.5f) })
-        content()
+        androidx.compose.runtime.CompositionLocalProvider(
+            androidx.compose.material3.LocalContentColor provides MaterialTheme.colorScheme.onBackground,
+        ) { content() }
     }
 }
 

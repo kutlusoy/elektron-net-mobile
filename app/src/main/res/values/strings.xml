@@ -39,6 +39,11 @@
     <string name="node_hint_paused">Reason: %1$s.</string>
     <string name="node_hint_stopped">Start it to receive payments and to see your balance.</string>
     <string name="node_explainer">Your node is your own copy of the network. It checks every payment itself, so you do not have to trust a server.</string>
+    <string name="tile_blocks">Validated blocks</string>
+    <string name="tile_headers">Known headers</string>
+    <string name="tile_peers">Peers</string>
+    <string name="tile_progress">Blocks / headers</string>
+    <string name="wallet_title">Wallet</string>
     <string name="node_details">Details</string>
     <string name="node_details_hide">Hide details</string>
     <string name="detail_chain">Network</string>

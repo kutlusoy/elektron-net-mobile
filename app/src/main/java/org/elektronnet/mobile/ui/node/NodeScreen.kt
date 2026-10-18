@@ -8,17 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,6 +21,7 @@ import org.elektronnet.mobile.R
 import org.elektronnet.mobile.service.NodeNotification
 import org.elektronnet.mobile.ui.HeroCard
 import org.elektronnet.mobile.ui.NodeChipRow
+import org.elektronnet.mobile.ui.StatTile
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeChip
 import org.elektronnet.mobile.ui.model.NodeDetails
@@ -42,7 +37,6 @@ fun NodeScreen(
     onStart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showDetails by rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -74,29 +68,35 @@ fun NodeScreen(
             }
         }
         Text(stringResource(R.string.node_explainer), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        model.details?.let { details ->
-            TextButton(onClick = { showDetails = !showDetails }) {
-                Text(stringResource(if (showDetails) R.string.node_details_hide else R.string.node_details))
-            }
-            if (showDetails) DetailsList(details)
-        }
+        model.details?.let { StatGrid(it) }
     }
 }
 
 @Composable
-private fun DetailsList(details: NodeDetails) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        DetailRow(stringResource(R.string.detail_chain), details.chain)
-        HorizontalDivider()
-        DetailRow(stringResource(R.string.detail_blocks), stringResource(R.string.detail_blocks_value, details.blocks, details.headers))
-        HorizontalDivider()
-        DetailRow(stringResource(R.string.detail_peers), details.peers.toString())
-        details.pruneHeight?.let {
-            HorizontalDivider()
-            DetailRow(stringResource(R.string.detail_pruned), it.toString())
-        }
-        HorizontalDivider()
-        DetailRow(stringResource(R.string.detail_version), details.version)
+private fun StatGrid(details: NodeDetails) {
+    val percent = if (details.headers > 0) "%.1f %%".format(details.blocks * 100.0 / details.headers) else "-"
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        TileRow(
+            stringResource(R.string.tile_blocks) to details.blocks.toString(),
+            stringResource(R.string.tile_headers) to details.headers.toString(),
+        )
+        TileRow(
+            stringResource(R.string.tile_peers) to details.peers.toString(),
+            stringResource(R.string.tile_progress) to percent,
+        )
+        TileRow(
+            stringResource(R.string.detail_chain) to details.chain,
+            stringResource(R.string.detail_pruned) to (details.pruneHeight?.toString() ?: "-"),
+        )
+        StatTile(stringResource(R.string.detail_version), details.version, Modifier.fillMaxWidth())
+    }
+}
+
+@Composable
+private fun TileRow(left: Pair<String, String>, right: Pair<String, String>) {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+        StatTile(left.first, left.second, Modifier.weight(1f))
+        StatTile(right.first, right.second, Modifier.weight(1f))
     }
 }
 

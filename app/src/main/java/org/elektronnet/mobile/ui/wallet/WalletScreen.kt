@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.node.NodeFailure
 import org.elektronnet.mobile.service.NodeNotification
@@ -49,12 +50,19 @@ fun WalletScreen(
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        NodeChipRow(model.chip, Modifier.clickable(onClick = onOpenNode))
         HeroCard {
+            Text(
+                stringResource(R.string.wallet_title).uppercase(),
+                fontFamily = org.elektronnet.mobile.ui.theme.ElektronDisplay,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                letterSpacing = 3.sp,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            androidx.compose.material3.HorizontalDivider(modifier = Modifier.fillMaxWidth(0.25f), thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
             Text(stringResource(R.string.balance_label), color = MaterialTheme.colorScheme.onSurfaceVariant)
             when {
                 balance?.amountText != null ->
-                    Text("${balance.amountText} ${stringResource(R.string.balance_unit)}", style = MaterialTheme.typography.displaySmall)
+                    Text("${balance.amountText} ${stringResource(R.string.balance_unit)}", style = MaterialTheme.typography.displaySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                 balance?.waitingForSync == true ->
                     Text(stringResource(R.string.balance_waiting), style = MaterialTheme.typography.titleMedium)
                 else -> Text(stringResource(R.string.balance_unavailable), style = MaterialTheme.typography.titleMedium)
@@ -65,15 +73,17 @@ fun WalletScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+            androidx.compose.material3.HorizontalDivider(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.45f))
+            NodeChipRow(model.chip, Modifier.clickable(onClick = onOpenNode))
             model.syncNote?.let { note ->
                 SyncNoteView(note)
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-            OutlinedButton(onClick = onReceive, modifier = Modifier.weight(1f)) {
+            Button(onClick = onReceive, modifier = Modifier.weight(1f)) {
                 Text(stringResource(R.string.action_receive))
             }
-            Button(onClick = onSend, enabled = model.canSend, modifier = Modifier.weight(1f)) {
+            OutlinedButton(onClick = onSend, enabled = model.canSend, modifier = Modifier.weight(1f)) {
                 Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)
                 Text(stringResource(R.string.action_send), modifier = Modifier.padding(start = 8.dp))
             }
