@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Distribution, Signing and Flavors
 
-- **Version:** 0.1 (draft)
+- **Version:** 0.2 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Release engineers, Android developers, maintainers who operate store accounts and signing keys
 - **Reference implementation:** `app/build.gradle.kts` product flavors and `native-build/` in this repository (to be created), [F-Droid Build Metadata Reference](https://f-droid.org/docs/Build_Metadata_Reference/), [Reproducible Builds](https://f-droid.org/docs/Reproducible_Builds/)
@@ -21,6 +21,7 @@ Requirement levels follow common practice: **MUST** = mandatory for correct/safe
 | Channels in v1 | GitHub repository and releases, direct APK, F-Droid, Google Play, and any other channel that accepts a signed APK |
 | Google Play account | The existing developer account is inactive. A new, separate account is opened for Elektron Net. |
 | Signing | Signed release APKs are required. One release key, one fingerprint, published. |
+| Testnet chain | `testnet` (testnet3, started with `-testnet`), decided October 18, 2026. Not testnet4. |
 | Payment URI | `elek:` for mainnet. Testnet scheme see §3. |
 | Biometric unlock | Possible, opt-in (plan §8.1) |
 
@@ -32,11 +33,11 @@ Two product flavors from one code base. The flavor changes identity and chain on
 |---|---|---|
 | `applicationId` | `org.elektronnet.mobile` | `org.elektronnet.mobiletestnet` |
 | App name | Elektron Net | Elektron Testnet |
-| Node chain argument | none (main) | `-testnet` or `-testnet4`, see open question in §9 |
+| Node chain argument | none (main) | `-testnet` |
 | Datadir | `files/node` | `files/node-testnet` (inside the testnet app's own private storage) |
 | Own `bitcoin.conf` | yes | yes (never shared) |
-| Ports | 8333 P2P, 8332 RPC (RPC on loopback only) | the chain's testnet ports, RPC on loopback only |
-| Address prefix | `be` | the chain's testnet prefix, shown in the UI |
+| Ports | 8333 P2P, 8332 RPC (RPC on loopback only) | 18333 P2P, 18332 RPC (RPC on loopback only) |
+| Address prefix (Bech32 HRP) | `be` | `tb` |
 | URI scheme | `elek:` | `elektest:` (recommended) |
 | Visual | default themes | permanent TESTNET bar, own icon color (design system §6) |
 | Distribution | all channels | GitHub releases and direct APK. F-Droid and Play optional later. |
@@ -44,7 +45,10 @@ Two product flavors from one code base. The flavor changes identity and chain on
 - **MUST:** the two apps can be installed side by side on one phone. They do not share data, keys, the Keystore alias or ports. Because the P2P port may clash when both nodes run, the testnet build uses the testnet port by chain and the supervisor handles a port-in-use error with a clear message.
 - **MUST:** the mainnet APK contains no testnet code path that can be switched on at runtime, and vice versa. The chain is a build constant, so a user cannot be tricked into the wrong chain by a setting.
 - **MUST:** `BuildConfig.CHAIN`, the applicationId and the URI scheme are the only values that differ. Everything else is shared code, so tests on one flavor cover the other.
-- The Core is built per flavor from the same source (§4). The contract check runs for both chains.
+- The Core is built once per ABI from the same source (§4) and serves both flavors, the chain is chosen by the start argument. The contract check covers mainnet and regtest today, a testnet case is a to-do.
+- Values verified in `elektron-net@main` (`src/kernel/chainparams.cpp`, `src/chainparamsbase.cpp`): testnet3 uses P2P port 18333, RPC port 18332, HRP `tb`, data subdirectory `testnet3`. The flavor constants live in `app/build.gradle.kts` and are exposed as `ChainConfig`.
+- **Upstream risk:** the node help text says testnet3 is deprecated and will be removed in an upcoming release, testnet4 (`-testnet4`, P2P 48333, RPC 48332, also HRP `tb`) is the successor. Because the chain is one build constant, a later switch is a change of a few values in the flavor definition. To do: add `-testnet` to the startup arguments of the contract check so that the day it disappears from `-help-debug` is a build error.
+- The HRP `tb` is the same as on Bitcoin testnet. The testnet flavor therefore rejects `bc`, `be` and `bcrt` addresses with a specific message, and the mainnet flavor rejects `tb` (plan §8.5). Testnet coins have no value, so a mix-up with Bitcoin testnet cannot lose money, but the warning text still says which network an address belongs to.
 
 ## 3. Payment URI Schemes
 
@@ -119,7 +123,7 @@ Google has announced that apps installed on certified Android devices must come 
 
 | # | Question | Recommendation |
 |---|---|---|
-| D1 | Which testnet does the node expose: `testnet` or `testnet4`? | Check `elektron-net` chainparams and the `-testnet*` options; use the one the project maintains, and set the scheme, ports and prefix accordingly. |
+| D1 | Which testnet? | **Resolved:** `testnet` (testnet3). Watch the upstream deprecation notice (§2). |
 | D2 | Play account type: personal or organization? | Organization (company or association) avoids the closed-test waiting rule if one is available; otherwise plan 14 days of closed testing with at least 12 testers. |
 | D3 | Own signing key uploaded to Play App Signing, or Play-generated key? | Upload the own key, one fingerprint everywhere. |
 | D4 | Can F-Droid build the native part from source in its environment? | Phase 0 spike, fallback is a hash-verified source archive per release. |
