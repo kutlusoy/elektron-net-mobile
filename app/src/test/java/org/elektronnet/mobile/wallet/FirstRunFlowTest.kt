@@ -36,6 +36,12 @@ class FirstRunFlowTest {
     }
 
     @Test
+    fun dicePathJoinsTheSameQuiz() {
+        assertEquals(FirstRunStep.PhraseShow, FirstRunFlow.next(FirstRunState(step = FirstRunStep.PhraseDice)).step)
+        assertEquals(FirstRunStep.PhraseIntro, FirstRunFlow.back(FirstRunState(step = FirstRunStep.PhraseDice))!!.step)
+    }
+
+    @Test
     fun phraseIsDroppedWhenDone() {
         val s = FirstRunFlow.next(FirstRunState(step = FirstRunStep.Creating, phrase = listOf("a")))
         assertTrue(s.phrase.isEmpty())

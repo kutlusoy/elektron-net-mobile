@@ -18,9 +18,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -48,6 +51,10 @@ import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.HeroCard
 import org.elektronnet.mobile.wallet.BackupQuiz
 import org.elektronnet.mobile.wallet.Bip39
+import org.elektronnet.mobile.wallet.DiceCheck
+import org.elektronnet.mobile.wallet.DiceIssue
+import org.elektronnet.mobile.wallet.EntropyGenerator
+import org.elektronnet.mobile.wallet.PhraseStrength
 import org.elektronnet.mobile.wallet.BootstrapFailure
 import org.elektronnet.mobile.wallet.BootstrapResult
 import org.elektronnet.mobile.wallet.FirstRunFlow
@@ -62,12 +69,15 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
     val scope = rememberCoroutineScope()
     var state by remember { mutableStateOf(FirstRunState()) }
     var passphrase by remember { mutableStateOf("") }
+    var strength by remember { mutableStateOf(PhraseStrength.Words12) }
+    var entropyError by remember { mutableStateOf(false) }
+    val entropyGenerator = remember { EntropyGenerator() }
 
     val bip39 = remember {
         Bip39(context.assets.open("bip39/english.txt").bufferedReader().readLines().filter { it.isNotBlank() })
     }
     val secureStep = state.step in setOf(
-        FirstRunStep.PhraseShow, FirstRunStep.PhraseQuiz, FirstRunStep.PassphraseNew,
+        FirstRunStep.PhraseDice, FirstRunStep.PhraseShow, FirstRunStep.PhraseQuiz, FirstRunStep.PassphraseNew,
         FirstRunStep.RestoreEnter, FirstRunStep.PassphraseRestore, FirstRunStep.Restoring,
     )
     DisposableEffect(secureStep) {
@@ -170,16 +180,86 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
             FirstRunStep.PhraseIntro -> {
                 Text(stringResource(R.string.fr_phrase_intro_title), style = MaterialTheme.typography.headlineMedium)
                 Text(stringResource(R.string.fr_phrase_warning))
+                Text(stringResource(R.string.fr_strength_label))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(
+                        selected = strength == PhraseStrength.Words12,
+                        onClick = { strength = PhraseStrength.Words12 },
+                        label = { Text(stringResource(R.string.fr_strength_12)) },
+                    )
+                    FilterChip(
+                        selected = strength == PhraseStrength.Words24,
+                        onClick = { strength = PhraseStrength.Words24 },
+                        label = { Text(stringResource(R.string.fr_strength_24)) },
+                    )
+                }
+                if (entropyError) Text(stringResource(R.string.fr_entropy_error), color = MaterialTheme.colorScheme.error)
                 Button(
                     onClick = {
-                        val entropy = ByteArray(16).also { SecureRandom().nextBytes(it) }
-                        state = FirstRunFlow.next(state.copy(phrase = bip39.fromEntropy(entropy)))
+                        entropyError = false
+                        val entropy = runCatching { entropyGenerator.fromSystem(strength) }.getOrNull()
+                        if (entropy == null) {
+                            entropyError = true
+                        } else {
+                            val words = bip39.fromEntropy(entropy)
+                            entropy.fill(0)
+                            state = FirstRunFlow.next(state.copy(phrase = words))
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text(stringResource(R.string.fr_phrase_show)) }
+                ) { Text(stringResource(R.string.fr_gen_phone)) }
+                OutlinedButton(
+                    onClick = { state = state.copy(step = FirstRunStep.PhraseDice) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.fr_gen_dice)) }
+            }
+            FirstRunStep.PhraseDice -> {
+                var rolls by remember { mutableStateOf("") }
+                var diceOnly by remember { mutableStateOf(false) }
+                val check = DiceCheck.evaluate(rolls, strength)
+                val needed = strength.minRolls
+                Text(stringResource(R.string.fr_dice_title), style = MaterialTheme.typography.headlineMedium)
+                Text(stringResource(R.string.fr_dice_body, needed))
+                OutlinedTextField(
+                    value = rolls,
+                    onValueChange = { input -> rolls = input.filter { it in '1'..'6' }.take(DiceCheck.MAX_ROLLS) },
+                    label = { Text(stringResource(R.string.fr_dice_label)) },
+                    minLines = 3,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Text(stringResource(R.string.fr_dice_count, check.rolls, needed, check.bits.toInt()))
+                val issueText = when (check.issue) {
+                    null, DiceIssue.TooFew, DiceIssue.InvalidCharacter, DiceIssue.TooMany -> null
+                    DiceIssue.LongRun -> R.string.fr_dice_issue_run
+                    DiceIssue.RepeatedPattern -> R.string.fr_dice_issue_pattern
+                    DiceIssue.Biased -> R.string.fr_dice_issue_bias
+                }
+                issueText?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error) }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Switch(checked = diceOnly, onCheckedChange = { diceOnly = it })
+                    Text(stringResource(R.string.fr_dice_only), modifier = Modifier.padding(start = 12.dp))
+                }
+                Text(stringResource(if (diceOnly) R.string.fr_dice_only_hint else R.string.fr_dice_mix_hint))
+                if (entropyError) Text(stringResource(R.string.fr_entropy_error), color = MaterialTheme.colorScheme.error)
+                Button(
+                    onClick = {
+                        entropyError = false
+                        val entropy = runCatching { entropyGenerator.fromDice(strength, rolls, mixSystem = !diceOnly) }.getOrNull()
+                        if (entropy == null) {
+                            entropyError = true
+                        } else {
+                            val words = bip39.fromEntropy(entropy)
+                            entropy.fill(0)
+                            state = FirstRunFlow.next(state.copy(phrase = words))
+                        }
+                    },
+                    enabled = check.issue == null,
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.fr_dice_create)) }
             }
             FirstRunStep.PhraseShow -> {
-                Text(stringResource(R.string.fr_phrase_title), style = MaterialTheme.typography.headlineMedium)
+                Text(stringResource(R.string.fr_phrase_title, state.phrase.size), style = MaterialTheme.typography.headlineMedium)
                 Text(stringResource(R.string.fr_phrase_warning))
                 HeroCard {
                     state.phrase.chunked(2).forEachIndexed { row, pair ->

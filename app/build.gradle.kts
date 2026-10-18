@@ -156,7 +156,12 @@ val checkLocales by tasks.registering(Exec::class) {
     commandLine("python3", "-I", rootProject.file("tools/check-locales.py").path, rootProject.projectDir.path)
 }
 
-tasks.named("preBuild") { dependsOn(checkContrast, checkLocales) }
+val checkRng by tasks.registering(Exec::class) {
+    inputs.dir("src/main/java")
+    commandLine("python3", "-I", rootProject.file("tools/check-rng.py").path)
+}
+
+tasks.named("preBuild") { dependsOn(checkContrast, checkLocales, checkRng) }
 
 dependencies {
     implementation(platform(libs.compose.bom))
