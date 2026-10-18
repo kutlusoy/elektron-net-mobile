@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.5 (draft)
+- **Version:** 0.6 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -27,7 +27,8 @@
 - Optional biometric unlock, `elek:` payment links, QR scan and receive.
 - Many languages from the start: English, German, Spanish, French, Italian, then Chinese, Arabic, Japanese, Korean, Hindi, Portuguese, Russian, Turkish, Indonesian, Vietnamese after native review.
 - Cyberpunk design with neon and glow, ten color themes from the Osclass theme, no artwork, readability first. The ticker is ELEK.
-- Separate testnet build (`org.elektronnet.mobiletestnet`) next to the mainnet app (`org.elektronnet.mobile`).
+- Separate testnet build (`org.elektronnet.mobiletestnet`, chain `testnet`) next to the mainnet app (`org.elektronnet.mobile`).
+- English is the default language; the in-app language switch lists only reviewed translations.
 - Lightning is not part of v1, but the wallet layer keeps a pluggable path for it.
 - Local-only operation: no analytics, no remote geolocation, no remote QR services.
 
@@ -86,11 +87,12 @@ The storage saver default is set by `NODE_FASTPRUNE_DEFAULT` (default `1`). Prer
 # 1. Fetch the current elektron-net source and build the native node (emulator + phone)
 ./native-build/build.sh all
 
-# 2. Build the app
-./gradlew assembleDebug
+# 2. Build the app (flavors: mainnet, testnet)
+gradle wrapper --gradle-version 8.14.3   # once, creates ./gradlew
+./gradlew assembleMainnetDebug           # or assembleTestnetDebug
 
 # 3. Install without wiping node data
-adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/mainnet/debug/app-mainnet-debug.apk
 ```
 
 Do not clear app data if you want to keep the synchronized node and wallet database. Clearing data forces a full resync. Funds remain recoverable from the recovery phrase.
@@ -98,6 +100,7 @@ Do not clear app data if you want to keep the synchronized node and wallet datab
 ## 7. Repository structure (planned)
 
 ```text
+build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml   Gradle project
 app/                       Android application
   src/main/java/org/elektronnet/mobile/
     node/                  node supervisor, RPC client, policy engine
@@ -106,7 +109,8 @@ app/                       Android application
     ui/                    Compose screens
   src/main/jniLibs/        built libelektrond.so per ABI (generated)
 native-build/              fetch and build of elektrond (generated output not committed)
-design/                    palettes.json and check-contrast.py
+design/                    palettes.json, check-contrast.py, gen-theme.py
+tools/                     check-locales.py
 doc-elektron/              guidelines and reports
 .github/workflows/         CI
 ```
