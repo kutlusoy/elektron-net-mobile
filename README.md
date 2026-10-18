@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.7 (draft)
+- **Version:** 0.8 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -106,7 +106,10 @@ Do not clear app data if you want to keep the synchronized node and wallet datab
 build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml   Gradle project
 app/                       Android application
   src/main/java/org/elektronnet/mobile/
-    node/                  node supervisor, RPC client, policy engine
+    node/                  node supervisor, controller, RPC client
+    policy/                policy engine (network, battery, thermal, storage)
+    runtime/               tick loop and status headline
+    service/               foreground service, notification, device state
     wallet/                bootstrap, send flow, recovery, descriptors
     security/              keystore and secure window helpers
     ui/                    Compose screens
