@@ -20,3 +20,4 @@ RUN test -n "$NDK_SHA256" || { echo "NDK_SHA256 is empty, run native-build/pin-n
 ENV ANDROID_NDK_HOME=/opt/android-ndk
 
 COPY build-in-container.sh /usr/local/bin/build-in-container.sh
+RUN chmod 0755 /usr/local/bin/build-in-container.sh
