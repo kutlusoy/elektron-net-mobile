@@ -88,7 +88,7 @@ class NodeSupervisor(
 
     private fun awaitExit(started: Process, drainer: Thread) {
         val code = started.waitFor()
-        if (code != 0 && !stopRequested) drainer.join(DRAIN_JOIN_MS)
+        drainer.join(DRAIN_JOIN_MS)
         synchronized(lock) {
             if (process !== started) return
             process = null
