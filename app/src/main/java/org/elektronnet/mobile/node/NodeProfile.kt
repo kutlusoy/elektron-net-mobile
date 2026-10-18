@@ -6,10 +6,10 @@ enum class NodeProfile(val args: List<String>) {
     AlwaysOn(listOf("-dbcache=256", "-maxconnections=24", "-maxmempool=100")),
 }
 
-enum class Chain(val buildName: String, val arg: String?, val section: String?) {
-    Main("main", null, null),
-    Testnet("testnet", "-testnet", "test"),
-    Regtest("regtest", "-regtest", "regtest"),
+enum class Chain(val buildName: String, val arg: String?, val section: String?, val subdir: String) {
+    Main("main", null, null, ""),
+    Testnet("testnet", "-testnet", "test", "testnet3"),
+    Regtest("regtest", "-regtest", "regtest", "regtest"),
     ;
 
     companion object {

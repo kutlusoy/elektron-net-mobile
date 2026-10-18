@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Distribution, Signing and Flavors
 
-- **Version:** 0.3 (draft)
+- **Version:** 0.4 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Release engineers, Android developers, maintainers who operate store accounts and signing keys
 - **Reference implementation:** `app/build.gradle.kts` product flavors and `native-build/` in this repository (to be created), [F-Droid Build Metadata Reference](https://f-droid.org/docs/Build_Metadata_Reference/), [Reproducible Builds](https://f-droid.org/docs/Reproducible_Builds/)
@@ -32,7 +32,7 @@ Two product flavors from one code base. The flavor changes identity and chain on
 | Item | `mainnet` | `testnet` |
 |---|---|---|
 | `applicationId` | `org.elektronnet.mobile` | `org.elektronnet.mobiletestnet` |
-| App name | Elektron Net | Elektron Testnet |
+| App name (launcher label and notification title) | Elektron | Elektron (T) |
 | Node chain argument | none (main) | `-testnet` |
 | Datadir | `files/node` | `files/node-testnet` (inside the testnet app's own private storage) |
 | Own `bitcoin.conf` | yes | yes (never shared) |

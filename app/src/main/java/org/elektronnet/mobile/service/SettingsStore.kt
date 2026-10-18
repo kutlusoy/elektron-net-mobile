@@ -31,11 +31,25 @@ class SettingsStore(context: Context) {
         )
     }
 
+    fun walletReady(): Boolean = prefs.getBoolean(WALLET_READY, false)
+
+    fun setWalletReady(value: Boolean) = prefs.edit().putBoolean(WALLET_READY, value).apply()
+
+    var receiveAddress: String?
+        get() = prefs.getString(RECEIVE_ADDRESS, null)
+        set(value) = prefs.edit().putString(RECEIVE_ADDRESS, value).apply()
+
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
 
     fun setUserStopped(value: Boolean) = prefs.edit().putBoolean(USER_STOPPED, value).apply()
 
     fun setUserPaused(value: Boolean) = prefs.edit().putBoolean(USER_PAUSED, value).apply()
+
+    fun setAllowMetered(value: Boolean) = prefs.edit().putBoolean(ALLOW_METERED, value).apply()
+
+    fun setChargingOnly(value: Boolean) = prefs.edit().putBoolean(CHARGING_ONLY, value).apply()
+
+    fun setBackgroundEnabled(value: Boolean) = prefs.edit().putBoolean(BACKGROUND, value).apply()
 
     fun loadBudget(): MonthlyDataBudget {
         val month = prefs.getString(BUDGET_MONTH, null)?.let { runCatching { YearMonth.parse(it) }.getOrNull() }
@@ -61,6 +75,8 @@ class SettingsStore(context: Context) {
         const val SCHEDULE_START = "schedule_start"
         const val SCHEDULE_END = "schedule_end"
         const val FASTPRUNE = "fastprune"
+        const val WALLET_READY = "wallet_ready"
+        const val RECEIVE_ADDRESS = "receive_address"
         const val BUDGET_MONTH = "budget_month"
         const val BUDGET_USED = "budget_used"
     }

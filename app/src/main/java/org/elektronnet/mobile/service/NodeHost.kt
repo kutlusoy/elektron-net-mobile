@@ -9,9 +9,19 @@ import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.node.Chain
 import org.elektronnet.mobile.node.NodeConfig
 import org.elektronnet.mobile.node.NodeController
+import org.elektronnet.mobile.node.NodeState
 import org.elektronnet.mobile.policy.PolicyEngine
 import org.elektronnet.mobile.runtime.NodeRuntime
 import org.elektronnet.mobile.runtime.RuntimeSnapshot
+import org.elektronnet.mobile.wallet.AddressCheck
+import org.elektronnet.mobile.wallet.AddressStore
+import org.elektronnet.mobile.wallet.Bip39
+import org.elektronnet.mobile.wallet.PaymentUri
+import org.elektronnet.mobile.wallet.ReceiveWallet
+import org.elektronnet.mobile.wallet.SendEngine
+import org.elektronnet.mobile.wallet.WalletReader
+import org.elektronnet.mobile.wallet.WalletBootstrap
+import org.elektronnet.mobile.wallet.asWalletRpc
 
 object NodeHost {
     @Volatile
@@ -21,8 +31,11 @@ object NodeHost {
         private set
 
     private var settings: SettingsStore? = null
+
+    val store: SettingsStore? get() = settings
     private var runtime: NodeRuntime? = null
     private var controller: NodeController? = null
+    private var datadir: File? = null
 
     @Synchronized
     fun init(context: Context): SettingsStore {
@@ -31,6 +44,7 @@ object NodeHost {
         val store = SettingsStore(app)
         val datadir = File(app.filesDir, ChainConfig.datadirName)
         datadir.mkdirs()
+        this.datadir = datadir
         val config = NodeConfig(
             binary = File(app.applicationInfo.nativeLibraryDir, "libelektrond.so"),
             datadir = datadir,
@@ -60,6 +74,53 @@ object NodeHost {
         latest = snapshot
         return snapshot
     }
+
+    fun bootstrap(context: Context): WalletBootstrap? {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
+        val root = datadir ?: return null
+        val chain = Chain.fromBuildName(ChainConfig.chain)
+        val words = context.applicationContext.assets.open("bip39/english.txt").bufferedReader().readLines().filter { it.isNotBlank() }
+        return WalletBootstrap(
+            rpc = supervisor.rpc.asWalletRpc(),
+            bip39 = Bip39(words),
+            testnet = ChainConfig.isTestnet,
+            removeWalletFiles = { name -> File(root, "${chain.subdir}/wallets/$name").deleteRecursively() },
+        )
+    }
+
+    fun receiveWallet(): ReceiveWallet? {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
+        val store = settings ?: return null
+        return ReceiveWallet(
+            rpc = supervisor.rpc.asWalletRpc(),
+            store = object : AddressStore {
+                override var current: String?
+                    get() = store.receiveAddress
+                    set(value) {
+                        store.receiveAddress = value
+                    }
+            },
+        )
+    }
+
+    fun walletReader(): WalletReader? {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
+        return WalletReader(supervisor.rpc.asWalletRpc())
+    }
+
+    var incomingUri: String? by mutableStateOf(null)
+
+    fun sendEngine(): SendEngine? {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
+        return SendEngine(supervisor.rpc.asWalletRpc(), AddressCheck(ChainConfig.isTestnet))
+    }
+
+    fun lockWallet() {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return
+        Thread { runCatching { supervisor.rpc.call("walletlock", emptyList<Any?>(), wallet = WalletBootstrap.DEFAULT_WALLET) } }.start()
+    }
+
+    val paymentUri: PaymentUri = PaymentUri(ChainConfig.uriScheme, AddressCheck(ChainConfig.isTestnet))
 
     fun stopNow() {
         controller?.shutdown()

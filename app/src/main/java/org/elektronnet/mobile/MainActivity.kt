@@ -1,7 +1,6 @@
 package org.elektronnet.mobile
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -12,7 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.service.NodeService
-import org.elektronnet.mobile.ui.HomeScreen
+import org.elektronnet.mobile.ui.AppRoot
 import org.elektronnet.mobile.ui.theme.ElektronTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,12 +23,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val settings = NodeHost.init(this)
+        NodeHost.incomingUri = intent?.dataString
         setContent {
             ElektronTheme {
-                HomeScreen(onStart = ::requestStart, onStop = ::stopNode)
+                AppRoot(
+                    onStart = ::requestStart,
+                    onStop = { NodeService.send(this, NodeService.ACTION_STOP) },
+                    onPause = { NodeService.send(this, NodeService.ACTION_PAUSE) },
+                    onResume = { NodeService.send(this, NodeService.ACTION_RESUME) },
+                )
             }
         }
         if (!settings.load().userStopped) requestStart()
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        NodeHost.incomingUri = intent.dataString
     }
 
     override fun onStart() {
@@ -39,18 +49,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onStop() {
         NodeHost.appVisible = false
+        NodeHost.lockWallet()
         super.onStop()
     }
 
     private fun requestStart() {
-        val needsPermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+        val needsPermission = NodeHost.store?.walletReady() == true && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         if (needsPermission) notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS) else startNode()
     }
 
     private fun startNode() = NodeService.start(this)
-
-    private fun stopNode() {
-        ContextCompat.startForegroundService(this, Intent(this, NodeService::class.java).setAction(NodeService.ACTION_STOP))
-    }
 }

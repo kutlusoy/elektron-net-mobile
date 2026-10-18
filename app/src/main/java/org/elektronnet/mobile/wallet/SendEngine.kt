@@ -1,0 +1,188 @@
+package org.elektronnet.mobile.wallet
+
+import java.math.BigDecimal
+import java.math.RoundingMode
+import org.elektronnet.mobile.node.RpcException
+
+enum class SendFailure {
+    InvalidAddress, ForeignNetwork, LegacyNotConfirmed, InvalidAmount, AmountTooSmall, InsufficientFunds,
+    FeeTooLow, PolicyChanged, PsbtMismatch, WrongPassphrase, NodeNotReady, Rejected, Unknown,
+}
+
+class SendException(val failure: SendFailure, detail: String = "") : Exception(detail)
+
+data class SendRequest(
+    val address: String,
+    val amountLep: Long?,
+    val max: Boolean,
+    val feeRate: BigDecimal,
+    val allowLegacy: Boolean = false,
+)
+
+data class Review(
+    val address: String,
+    val amountLep: Long,
+    val feeLep: Long,
+    val changeLep: Long,
+    val totalLep: Long,
+    val feeRate: BigDecimal,
+    val inputs: Int,
+)
+
+class PreparedSend(val psbt: String, val request: SendRequest, val review: Review, val policyFloor: BigDecimal, val grossLep: Long)
+
+class SendEngine(
+    private val rpc: WalletRpc,
+    private val addresses: AddressCheck,
+    private val walletName: String = WalletBootstrap.DEFAULT_WALLET,
+) {
+    fun feeOptions(): List<FeeOption> = guard { FeeSource(rpc).options() }
+
+    fun feeFloor(): BigDecimal = guard { FeeSource(rpc).floor() }
+
+    fun spendableLep(): Long = WalletReader(rpc, walletName).balances().trustedLep
+
+    fun prepare(request: SendRequest): PreparedSend {
+        when (val kind = addresses.classify(request.address)) {
+            AddressKind.Native -> Unit
+            AddressKind.LegacyBase58 -> if (!request.allowLegacy) throw SendException(SendFailure.LegacyNotConfirmed)
+            is AddressKind.ForeignNetwork -> throw SendException(SendFailure.ForeignNetwork, kind.hrp)
+            AddressKind.Invalid -> throw SendException(SendFailure.InvalidAddress)
+        }
+        val address = addresses.normalized(request.address)
+        val floor = guard { FeeSource(rpc).floor() }
+        if (request.feeRate < floor) throw SendException(SendFailure.FeeTooLow)
+        val gross = if (request.max) spendableLep().also { if (it <= 0) throw SendException(SendFailure.InsufficientFunds) } else request.amountLep ?: 0L
+        if (gross <= 0) throw SendException(SendFailure.InvalidAmount)
+        val options = linkedMapOf<String, Any?>("fee_rate" to request.feeRate, "replaceable" to true)
+        if (request.max) options["subtractFeeFromOutputs"] = listOf(0)
+        val created = guard {
+            rpc.call(
+                "walletcreatefundedpsbt",
+                linkedMapOf(
+                    "inputs" to emptyList<Any?>(),
+                    "outputs" to listOf(linkedMapOf(address to BigDecimal(gross).movePointLeft(8))),
+                    "locktime" to 0,
+                    "options" to options,
+                ),
+                walletName,
+            ) as Map<*, *>
+        }
+        val psbt = created["psbt"].toString()
+        val prepared = PreparedSend(psbt, request.copy(address = address), Review(address, 0, 0, 0, 0, request.feeRate, 0), floor, gross)
+        val review = validate(prepared)
+        return PreparedSend(psbt, request.copy(address = address), review, floor, gross)
+    }
+
+    fun validate(prepared: PreparedSend): Review {
+        val decoded = guard { rpc.call("decodepsbt", listOf(prepared.psbt), null) as Map<*, *> }
+        val tx = decoded["tx"] as? Map<*, *> ?: throw SendException(SendFailure.PsbtMismatch)
+        val outputs = (tx["vout"] as? List<*>)?.map { it as Map<*, *> } ?: throw SendException(SendFailure.PsbtMismatch)
+        val inputRows = (decoded["inputs"] as? List<*>)?.map { it as Map<*, *> } ?: throw SendException(SendFailure.PsbtMismatch)
+        if (inputRows.isEmpty() || outputs.isEmpty() || inputRows.size != (tx["vin"] as? List<*>)?.size) throw SendException(SendFailure.PsbtMismatch)
+        val sumIn = inputRows.sumOf { row ->
+            val utxo = row["witness_utxo"] as? Map<*, *> ?: throw SendException(SendFailure.PsbtMismatch)
+            WalletReader.lep(utxo["amount"])
+        }
+        val rows = outputs.map { out ->
+            val script = out["scriptPubKey"] as? Map<*, *> ?: throw SendException(SendFailure.PsbtMismatch)
+            val address = script["address"]?.toString() ?: throw SendException(SendFailure.PsbtMismatch)
+            address to WalletReader.lep(out["value"])
+        }
+        val sumOut = rows.sumOf { it.second }
+        val fee = sumIn - sumOut
+        (decoded["fee"] as? Any?)?.let { if (WalletReader.lep(it) != fee) throw SendException(SendFailure.PsbtMismatch) }
+        if (fee <= 0) throw SendException(SendFailure.PsbtMismatch)
+        val destinations = rows.filter { it.first == prepared.request.address }
+        if (destinations.size != 1) throw SendException(SendFailure.PsbtMismatch)
+        val amount = destinations.single().second
+        val expected = if (prepared.request.max) prepared.grossLep - fee else prepared.grossLep
+        if (amount != expected || amount <= 0) throw SendException(SendFailure.PsbtMismatch)
+        val others = rows.filter { it.first != prepared.request.address }
+        if (others.size > 1 || (prepared.request.max && others.isNotEmpty())) throw SendException(SendFailure.PsbtMismatch)
+        others.forEach { if (!isOwnChange(it.first)) throw SendException(SendFailure.PsbtMismatch) }
+        val vsize = ESTIMATE_OVERHEAD + ESTIMATE_INPUT * inputRows.size + ESTIMATE_OUTPUT * rows.size
+        val rate = BigDecimal(fee).divide(BigDecimal(vsize), 2, RoundingMode.HALF_UP)
+        if (rate > prepared.request.feeRate.multiply(RATE_TOLERANCE).add(BigDecimal.ONE)) throw SendException(SendFailure.PsbtMismatch)
+        val change = others.sumOf { it.second }
+        return Review(
+            address = prepared.request.address,
+            amountLep = amount,
+            feeLep = fee,
+            changeLep = change,
+            totalLep = if (prepared.request.max) prepared.grossLep else amount + fee,
+            feeRate = rate,
+            inputs = inputRows.size,
+        )
+    }
+
+    fun send(prepared: PreparedSend, passphrase: String): String {
+        val before = validate(prepared)
+        if (before != prepared.review) throw SendException(SendFailure.PsbtMismatch)
+        val floor = guard { FeeSource(rpc).floor() }
+        if (floor > prepared.request.feeRate) throw SendException(SendFailure.PolicyChanged)
+        var unlocked = false
+        try {
+            try {
+                rpc.call("walletpassphrase", listOf(passphrase, UNLOCK_SECONDS), walletName)
+                unlocked = true
+            } catch (e: RpcException) {
+                throw SendException(if (e.code == WRONG_PASSPHRASE) SendFailure.WrongPassphrase else map(e).failure, e.message ?: "")
+            }
+            val processed = guard {
+                rpc.call("walletprocesspsbt", listOf(prepared.psbt, true, "ALL", true, false), walletName) as Map<*, *>
+            }
+            lockQuietly()
+            unlocked = false
+            val signed = processed["psbt"].toString()
+            if (validate(PreparedSend(signed, prepared.request, prepared.review, prepared.policyFloor, prepared.grossLep)) != prepared.review) {
+                throw SendException(SendFailure.PsbtMismatch)
+            }
+            val finalized = guard { rpc.call("finalizepsbt", listOf(signed, true), null) as Map<*, *> }
+            if (finalized["complete"] != true) throw SendException(SendFailure.Unknown, "psbt incomplete")
+            val maxRate = FeePresets.btcPerKvb(prepared.request.feeRate.multiply(BigDecimal(SEND_RATE_CAP)))
+            return guard { rpc.call("sendrawtransaction", listOf(finalized["hex"].toString(), maxRate), null).toString() }
+        } finally {
+            if (unlocked) lockQuietly()
+        }
+    }
+
+    private fun isOwnChange(address: String): Boolean = guard {
+        val info = rpc.call("getaddressinfo", listOf(address), walletName) as Map<*, *>
+        info["ismine"] == true && info["ischange"] == true
+    }
+
+    private fun lockQuietly() {
+        runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+    }
+
+    private fun <T> guard(block: () -> T): T = try {
+        block()
+    } catch (e: RpcException) {
+        throw map(e)
+    }
+
+    private fun map(e: RpcException): SendException = SendException(
+        when {
+            e.inWarmup -> SendFailure.NodeNotReady
+            e.code == INSUFFICIENT_FUNDS || (e.message ?: "").contains("Insufficient funds", ignoreCase = true) -> SendFailure.InsufficientFunds
+            (e.message ?: "").contains("too small", ignoreCase = true) -> SendFailure.AmountTooSmall
+            e.code == VERIFY_REJECTED || e.code == VERIFY_ERROR -> SendFailure.Rejected
+            else -> SendFailure.Unknown
+        },
+        e.message ?: "",
+    )
+
+    private companion object {
+        const val UNLOCK_SECONDS = 10
+        const val WRONG_PASSPHRASE = -14
+        const val INSUFFICIENT_FUNDS = -6
+        const val VERIFY_ERROR = -25
+        const val VERIFY_REJECTED = -26
+        const val ESTIMATE_OVERHEAD = 11
+        const val ESTIMATE_INPUT = 68
+        const val ESTIMATE_OUTPUT = 31
+        const val SEND_RATE_CAP = 3
+        val RATE_TOLERANCE = BigDecimal("1.3")
+    }
+}

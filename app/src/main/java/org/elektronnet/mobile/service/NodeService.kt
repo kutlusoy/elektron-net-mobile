@@ -94,5 +94,9 @@ class NodeService : Service() {
         fun start(context: Context) {
             ContextCompat.startForegroundService(context, Intent(context, NodeService::class.java))
         }
+
+        fun send(context: Context, action: String) {
+            ContextCompat.startForegroundService(context, Intent(context, NodeService::class.java).setAction(action))
+        }
     }
 }

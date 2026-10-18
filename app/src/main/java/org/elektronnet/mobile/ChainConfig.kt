@@ -9,4 +9,5 @@ object ChainConfig {
     const val rpcPort: Int = BuildConfig.RPC_PORT
     const val isTestnet: Boolean = BuildConfig.IS_TESTNET
     const val ticker: String = "ELEK"
+    val uriScheme: String = if (isTestnet) "elektest" else "elek"
 }

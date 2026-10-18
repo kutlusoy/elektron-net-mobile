@@ -61,22 +61,20 @@ object NodeNotification {
         is Headline.Crashed -> context.getString(R.string.headline_crashed)
     }
 
-    private fun reason(context: Context, reasons: Set<PolicyReason>): String {
-        val first = reasons.firstOrNull() ?: return context.getString(R.string.reason_unknown)
-        return context.getString(
-            when (first) {
-                PolicyReason.UserPaused -> R.string.reason_user_paused
-                PolicyReason.NoNetwork -> R.string.reason_no_network
-                PolicyReason.MeteredNotAllowed -> R.string.reason_metered
-                PolicyReason.RoamingNotAllowed -> R.string.reason_roaming
-                PolicyReason.DataSaver -> R.string.reason_data_saver
-                PolicyReason.DataCapReached -> R.string.reason_data_cap
-                PolicyReason.NeedsCharging -> R.string.reason_needs_charging
-                PolicyReason.BatteryLow -> R.string.reason_battery
-                PolicyReason.ThermalPause -> R.string.reason_thermal
-                PolicyReason.OutsideSchedule -> R.string.reason_schedule
-                else -> R.string.reason_unknown
-            },
-        )
+    fun reasonRes(reason: PolicyReason?): Int = when (reason) {
+        PolicyReason.UserPaused -> R.string.reason_user_paused
+        PolicyReason.NoNetwork -> R.string.reason_no_network
+        PolicyReason.MeteredNotAllowed -> R.string.reason_metered
+        PolicyReason.RoamingNotAllowed -> R.string.reason_roaming
+        PolicyReason.DataSaver -> R.string.reason_data_saver
+        PolicyReason.DataCapReached -> R.string.reason_data_cap
+        PolicyReason.NeedsCharging -> R.string.reason_needs_charging
+        PolicyReason.BatteryLow -> R.string.reason_battery
+        PolicyReason.ThermalPause -> R.string.reason_thermal
+        PolicyReason.OutsideSchedule -> R.string.reason_schedule
+        else -> R.string.reason_unknown
     }
+
+    private fun reason(context: Context, reasons: Set<PolicyReason>): String =
+        context.getString(reasonRes(reasons.firstOrNull()))
 }

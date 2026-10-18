@@ -1,11 +1,11 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.3 (draft)
+- **Version:** 0.9 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (the project's light wallet; only its address safety wording is kept consistent, no code or screens are taken)
-- **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) (§3.3, §3.4, §8), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md), [`guideline-expert-console.md`](./guideline-expert-console.md)
+- **See also:** [`guideline-entropy-and-randomness.md`](./guideline-entropy-and-randomness.md), [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) (§3.3, §3.4, §8), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md), [`guideline-expert-console.md`](./guideline-expert-console.md)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet
 
 Requirement levels follow common practice: **MUST** = mandatory for correct/safe operation, **SHOULD** = strongly recommended, **MAY** = optional.
@@ -71,16 +71,18 @@ Bottom bar with three items, always visible except during Send and the onboardin
 
 ```text
 Welcome  ->  Create new wallet  /  Restore wallet
-Create:  explain recovery phrase  ->  show 12 words  ->  quiz (3 words)  ->  choose passphrase  ->  optional biometric  ->  Home
+Create:  explain recovery phrase  ->  generate (phone, drawing or own dice)  ->  show 12 or 24 words  ->  quiz (3 words)  ->  choose passphrase  ->  optional biometric  ->  Home
 Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when your node has caught up"  ->  Home with progress
 ```
 
 - **Welcome:** one sentence on what the app is ("Your own wallet with your own copy of the network. No account, no server.") and the two buttons. A short link "How does this work?" opens a one-screen explainer about the node (what it does, that it syncs in the background, that it uses data and battery, that the user controls it).
 - **Network question, once:** "Sync only on Wi-Fi? (recommended)" with a short note about mobile data. This sets `allowMetered`. The default is Wi-Fi only.
 - **Notification permission:** an explainer screen before the system dialog: "The node runs in the background and shows its status in a notification. You can pause or stop it there."
+- **Randomness:** the default is the phone generator with health checks. An optional step lets the user draw on the screen until a bar is full, which adds extra randomness on top of the phone generator. An advanced option lets the user roll their own dice (50 rolls for 12 words, 100 for 24), either mixed with the phone generator or dice only. A failed generator check creates no phrase and says so. Full rules: [`guideline-entropy-and-randomness.md`](./guideline-entropy-and-randomness.md).
 - **Recovery phrase:** shown on a screen with screenshots blocked (`FLAG_SECURE`). Wording: "Write these words down on paper. Anyone with them can take your coins. We cannot recover them for you." The quiz asks for three random positions and does not allow skipping in v1. The phrase is never shown again after the quiz (plan §8.1). Settings, Security has a "Check my backup" action that repeats the quiz.
 - **Passphrase:** the user chooses a wallet passphrase that is needed to send. The text explains that this is not the recovery phrase. A strength hint is shown, no composition rules beyond a minimum length. Biometric unlock is offered afterwards as an opt-in switch with the trade-off sentence from plan §8.1.
 - **Restore while the node is syncing:** restore needs a synchronized node (plan §8.3). The screen says so plainly and shows the same progress card as the home screen. The app keeps the entered phrase only until the restore finishes if the user chooses "Restore automatically when ready", otherwise the user returns later and enters it again. Decision to confirm (§12, U3).
+- **Implementation notes (v0.4):** the flow logic is pure Kotlin (`wallet/FirstRunModel.kt`) and tested on the JVM; the wallet is created through `WalletBootstrap` (plan §8.3) with BIP-39 words checked against the official word list, the master key derived from the seed (PBKDF2 and HMAC-SHA512 from the JDK, no third-party crypto) and the descriptors imported by the node, so no private key handling exists beyond the master extended key in memory during creation. Restore refuses to start before wallet creation when the node lacks `rescanutxoset` (X1), and shows a plain message. The optional biometric step is not built yet. The recovery phrase screens set `FLAG_SECURE`; the phrase is held in memory only while the flow runs and is dropped when it ends or the app is recreated.
 - **A new wallet is usable immediately** for receiving, even while the node syncs. A first-time user sees a working Receive screen in under a minute.
 
 ## 6. Screens
@@ -92,6 +94,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - **Buttons:** Receive and Send, equal size, under the card. Send is disabled with an explanation while the node is not synchronized (see §6.3).
 - **Transaction list:** grouped by day, one row per transaction: icon (arrow in or out), label or short address, amount with sign, status word for unconfirmed. Pull to refresh does nothing visible except a state check. Empty state: "No payments yet. Tap Receive to get your first address."
 - **History limit:** below the list a quiet line: "Older payments than about 137 days are not stored on the network." with a "Why?" link (plan §8.3).
+- **Implementation notes (v0.8):** balance and history come from the wallet RPC (`getbalances`, `listtransactions`), refreshed every 8 seconds while synchronized and every 15 seconds otherwise, and only while the app is visible. `listtransactions` returns one entry per output, so entries are grouped per transaction: the net amount includes the network fee once, a transaction whose sent and received parts cancel out is shown as "Moved within your wallet", and generation entries are "Mining reward". Amounts are converted from the node's decimals without floating point. Confirmation words: 0 is "Waiting for confirmation", 1 to 5 shows "n of 6", 6 and more shows nothing. A balance of zero while the node is not yet synchronized and no history exists shows "Waiting for your node to catch up" instead of 0 (plan §8.3). Unconfirmed incoming and outgoing amounts show as "Pending". The list shows the latest 100 transactions grouped by day.
 - **Not on this screen:** block height, peer count, fee rates, UTXO count, addresses with balance. Those are under Node and Settings.
 
 ### 6.2 Receive
@@ -100,6 +103,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - Optional "Request an amount" and "Add a note" fields, collapsed. They update the QR.
 - A fresh address is shown for every visit once the previous one has received a payment. The user never has to think about address reuse.
 - Always native SegWit `be1...`. No address type switch in the everyday flow (Settings, Advanced).
+- **Implementation notes (v0.7):** the address comes from `getnewaddress` with type `bech32`. The current address is kept and shown again until `getreceivedbyaddress` (0 confirmations, so unconfirmed payments count) is above zero, then a new one is created. The URI builder and parser (`PaymentUri`), amount handling (decimal ELEK, at most 8 decimals, comma accepted only in the input field) and address classification (`AddressCheck`, Bech32 and Bech32m with checksum, Base58 with checksum, foreign network detection) are pure Kotlin with test vectors from BIP-173 and a fuzz test. The QR text is uppercased (alphanumeric mode, a smaller code) only when no note is present. The QR is drawn from a ZXing core matrix as black on white regardless of theme. Copy puts only the address on the clipboard and clears it after 60 seconds if unchanged. The note is sent as the URI `message` parameter and is not stored.
 - Works while syncing. A short note: "Payments to this address will appear when your node has caught up."
 
 ### 6.3 Send
@@ -114,6 +118,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - **Review:** recipient (shortened with emphasized ends), amount, network fee, total. Everything the PSBT contains is checked before this screen is shown (plan §8.4). A single primary button "Send".
 - **Confirm:** biometric prompt if enabled, otherwise the passphrase field. The wallet is unlocked only for the signing window (plan S4).
 - **Done:** check mark, amount, "View transaction", "Done". The new transaction appears at the top of the list as pending.
+- **Implementation notes (v0.9):** `SendEngine` builds the payment with `walletcreatefundedpsbt` (explicit fee rate, replaceable, native change from the wallet), decodes it and checks that the destination appears exactly once with the exact amount, that every other output is the wallet's own change address (`getaddressinfo` with `ischange`), that inputs minus outputs equals the fee, and that the effective fee rate is within a tolerance of the chosen one. The same check runs again immediately before the wallet is unlocked and once more on the signed PSBT, and the review must be identical each time (plan S5). The unlock lasts 10 seconds and `walletlock` runs in a `finally` path, so a wrong passphrase, a mismatch or a rejection leaves the wallet locked and nothing sent. "Send everything" uses `subtractFeeFromOutputs`. Fee choices come from `estimatesmartfee` for 30, 5 and 1 blocks (the block time is 60 seconds), kept in ascending order and never below the larger of the relay minimum, the mempool minimum and the wallet minimum of 1 lep/vB. While no estimate exists the lowest accepted fees are used and the screen says so. Payment links open the same screen through the `elek:` or `elektest:` intent. The send screens block screenshots and ignore touches from overlay windows (S3, S8), and the wallet is locked whenever the app leaves the foreground.
 - **While not synchronized:** the Send button explains "Sending needs a synchronized node. Your node is at 62 percent." and links to the Node tab. v1 has no override. Rationale: an incomplete view of the chain can show wrong balances and invite double-spend mistakes. Decision to confirm (§12, U2).
 - Failure messages map from node error codes to plain text with one suggested action (plan §3.5).
 
@@ -211,11 +216,11 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 ## 13. Checklist
 
 - [ ] Navigation shell with Wallet, Node and Settings tabs and the node status chip
-- [ ] Wallet home with balance card, sync states, list and empty state
-- [ ] First-run flow with explainer, backup quiz and passphrase
-- [ ] Receive with `elek:` QR, fresh address per visit, optional amount and note
-- [ ] Send flow with inline validation, fee choices, review, authentication, done
-- [ ] Transaction details
+- [x] Wallet home with balance card, sync states, list and empty state (screens unbuilt on device, logic tested)
+- [x] First-run flow with explainer, backup quiz and passphrase (logic and screens in place, biometric step still open, restore waits for X1)
+- [x] Receive with `elek:` QR, fresh address per visit, optional amount and note (screen unbuilt on device, logic tested)
+- [x] Send flow with inline validation, fee choices, review, authentication, done (logic tested against a real node, screens unbuilt on device; QR scanning and biometric confirmation still open)
+- [x] Transaction details (explorer link and fee bump still open)
 - [ ] Node tab in plain language with details collapsed
 - [ ] Settings groups mapped to policy settings, defaults recommended
 - [ ] Error and state table implemented, no raw RPC text
