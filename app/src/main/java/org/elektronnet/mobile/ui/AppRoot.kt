@@ -32,8 +32,20 @@ import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.node.NodeScreen
 import org.elektronnet.mobile.ui.receive.ReceiveScreen
+import org.elektronnet.mobile.ui.wallet.TxDetailsScreen
+import java.time.ZoneId
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import androidx.compose.runtime.LaunchedEffect
+import org.elektronnet.mobile.runtime.Headline
+import org.elektronnet.mobile.ui.model.HistoryModel
+import org.elektronnet.mobile.wallet.Balances
+import org.elektronnet.mobile.wallet.TxItem
 import org.elektronnet.mobile.ui.settings.SettingsScreen
 import org.elektronnet.mobile.ui.wallet.WalletScreen
+
+private data class WalletData(val balances: Balances, val items: List<TxItem>)
 
 private enum class Tab(val label: Int, val icon: ImageVector) {
     Wallet(R.string.tab_wallet, Icons.Filled.Home),
@@ -46,10 +58,25 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     var tab by rememberSaveable { mutableStateOf(Tab.Wallet.ordinal) }
     var showSoon by remember { mutableStateOf(false) }
     var showReceive by rememberSaveable { mutableStateOf(false) }
+    var openTx by rememberSaveable { mutableStateOf<String?>(null) }
+    var walletData by remember { mutableStateOf<WalletData?>(null) }
     val store = NodeHost.store
     var settings by remember { mutableStateOf(store?.load() ?: PolicySettings()) }
     val snapshot = NodeHost.latest
     var walletReady by remember { mutableStateOf(store?.walletReady() ?: false) }
+
+    LaunchedEffect(walletReady) {
+        while (walletReady) {
+            if (NodeHost.appVisible) {
+                val fresh = withContext(Dispatchers.IO) {
+                    val reader = NodeHost.walletReader() ?: return@withContext null
+                    runCatching { WalletData(reader.balances(), reader.transactions()) }.getOrNull()
+                }
+                if (fresh != null) walletData = fresh
+            }
+            delay(if (NodeHost.latest?.headline is Headline.Synchronized) 8_000 else 15_000)
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -81,6 +108,11 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
                 return@Box
             }
+            val detail = openTx?.let { id -> walletData?.items?.firstOrNull { it.txid == id } }
+            if (detail != null) {
+                TxDetailsScreen(detail, onClose = { openTx = null })
+                return@Box
+            }
             if (showReceive) {
                 ReceiveScreen(onClose = { showReceive = false })
                 return@Box
@@ -88,7 +120,13 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             when (Tab.entries[tab]) {
                 Tab.Wallet -> WalletScreen(
                     model = HomeUiModel.from(snapshot?.headline),
-                    balance = null,
+                    balance = HistoryModel.balance(
+                        walletData?.balances,
+                        synced = snapshot?.headline is Headline.Synchronized,
+                        hasHistory = walletData?.items?.isNotEmpty() == true,
+                    ),
+                    days = HistoryModel.days(walletData?.items.orEmpty(), ZoneId.systemDefault()),
+                    onOpenTx = { openTx = it },
                     onOpenNode = { tab = Tab.Node.ordinal },
                     onReceive = { showReceive = true },
                     onSend = { showSoon = true },

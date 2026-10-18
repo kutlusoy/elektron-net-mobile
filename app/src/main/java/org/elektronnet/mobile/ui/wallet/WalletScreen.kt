@@ -25,13 +25,17 @@ import org.elektronnet.mobile.node.NodeFailure
 import org.elektronnet.mobile.service.NodeNotification
 import org.elektronnet.mobile.ui.HeroCard
 import org.elektronnet.mobile.ui.NodeChipRow
+import org.elektronnet.mobile.ui.model.BalanceUi
+import org.elektronnet.mobile.ui.model.HistoryDay
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.SyncNote
 
 @Composable
 fun WalletScreen(
     model: HomeUiModel,
-    balance: String?,
+    balance: BalanceUi?,
+    days: List<HistoryDay>,
+    onOpenTx: (String) -> Unit,
     onOpenNode: () -> Unit,
     onReceive: () -> Unit,
     onSend: () -> Unit,
@@ -47,10 +51,18 @@ fun WalletScreen(
         NodeChipRow(model.chip, Modifier.clickable(onClick = onOpenNode))
         HeroCard {
             Text(stringResource(R.string.balance_label), color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (balance != null) {
-                Text("$balance ${stringResource(R.string.balance_unit)}", style = MaterialTheme.typography.displaySmall)
-            } else {
-                Text(stringResource(R.string.balance_unavailable), style = MaterialTheme.typography.titleMedium)
+            when {
+                balance?.amountText != null ->
+                    Text("${balance.amountText} ${stringResource(R.string.balance_unit)}", style = MaterialTheme.typography.displaySmall)
+                balance?.waitingForSync == true ->
+                    Text(stringResource(R.string.balance_waiting), style = MaterialTheme.typography.titleMedium)
+                else -> Text(stringResource(R.string.balance_unavailable), style = MaterialTheme.typography.titleMedium)
+            }
+            balance?.pendingText?.let {
+                Text(
+                    stringResource(R.string.balance_pending, it, stringResource(R.string.balance_unit)),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             model.syncNote?.let { note ->
                 SyncNoteView(note)
@@ -72,7 +84,11 @@ fun WalletScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        Text(stringResource(R.string.history_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (days.isEmpty()) {
+            Text(stringResource(R.string.history_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        } else {
+            days.forEach { day -> HistoryDaySection(day, onOpenTx) }
+        }
         Text(
             stringResource(R.string.history_limit),
             style = MaterialTheme.typography.bodySmall,

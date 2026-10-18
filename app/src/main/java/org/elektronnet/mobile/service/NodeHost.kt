@@ -18,6 +18,7 @@ import org.elektronnet.mobile.wallet.AddressStore
 import org.elektronnet.mobile.wallet.Bip39
 import org.elektronnet.mobile.wallet.PaymentUri
 import org.elektronnet.mobile.wallet.ReceiveWallet
+import org.elektronnet.mobile.wallet.WalletReader
 import org.elektronnet.mobile.wallet.WalletBootstrap
 import org.elektronnet.mobile.wallet.asWalletRpc
 
@@ -99,6 +100,11 @@ object NodeHost {
                     }
             },
         )
+    }
+
+    fun walletReader(): WalletReader? {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
+        return WalletReader(supervisor.rpc.asWalletRpc())
     }
 
     val paymentUri: PaymentUri = PaymentUri(ChainConfig.uriScheme, AddressCheck(ChainConfig.isTestnet))

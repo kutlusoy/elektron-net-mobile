@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.7 (draft)
+- **Version:** 0.8 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -94,6 +94,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - **Buttons:** Receive and Send, equal size, under the card. Send is disabled with an explanation while the node is not synchronized (see §6.3).
 - **Transaction list:** grouped by day, one row per transaction: icon (arrow in or out), label or short address, amount with sign, status word for unconfirmed. Pull to refresh does nothing visible except a state check. Empty state: "No payments yet. Tap Receive to get your first address."
 - **History limit:** below the list a quiet line: "Older payments than about 137 days are not stored on the network." with a "Why?" link (plan §8.3).
+- **Implementation notes (v0.8):** balance and history come from the wallet RPC (`getbalances`, `listtransactions`), refreshed every 8 seconds while synchronized and every 15 seconds otherwise, and only while the app is visible. `listtransactions` returns one entry per output, so entries are grouped per transaction: the net amount includes the network fee once, a transaction whose sent and received parts cancel out is shown as "Moved within your wallet", and generation entries are "Mining reward". Amounts are converted from the node's decimals without floating point. Confirmation words: 0 is "Waiting for confirmation", 1 to 5 shows "n of 6", 6 and more shows nothing. A balance of zero while the node is not yet synchronized and no history exists shows "Waiting for your node to catch up" instead of 0 (plan §8.3). Unconfirmed incoming and outgoing amounts show as "Pending". The list shows the latest 100 transactions grouped by day.
 - **Not on this screen:** block height, peer count, fee rates, UTXO count, addresses with balance. Those are under Node and Settings.
 
 ### 6.2 Receive
@@ -214,11 +215,11 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 ## 13. Checklist
 
 - [ ] Navigation shell with Wallet, Node and Settings tabs and the node status chip
-- [ ] Wallet home with balance card, sync states, list and empty state
+- [x] Wallet home with balance card, sync states, list and empty state (screens unbuilt on device, logic tested)
 - [x] First-run flow with explainer, backup quiz and passphrase (logic and screens in place, biometric step still open, restore waits for X1)
 - [x] Receive with `elek:` QR, fresh address per visit, optional amount and note (screen unbuilt on device, logic tested)
 - [ ] Send flow with inline validation, fee choices, review, authentication, done
-- [ ] Transaction details
+- [x] Transaction details (explorer link and fee bump still open)
 - [ ] Node tab in plain language with details collapsed
 - [ ] Settings groups mapped to policy settings, defaults recommended
 - [ ] Error and state table implemented, no raw RPC text

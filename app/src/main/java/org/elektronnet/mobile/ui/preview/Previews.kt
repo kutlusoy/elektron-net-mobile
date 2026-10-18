@@ -33,9 +33,9 @@ private val crashed = snapshot(Headline.Crashed(NodeFailure.DiskFull), NodeState
 private val stopped = snapshot(Headline.Stopped, NodeState.Stopped, withStatus = false)
 
 @Composable
-private fun Wallet(snapshot: RuntimeSnapshot?, balance: String? = null) {
+private fun Wallet(snapshot: RuntimeSnapshot?, balance: org.elektronnet.mobile.ui.model.BalanceUi? = null) {
     ElektronTheme {
-        WalletScreen(HomeUiModel.from(snapshot?.headline), balance, onOpenNode = {}, onReceive = {}, onSend = {})
+        WalletScreen(HomeUiModel.from(snapshot?.headline), balance, emptyList(), onOpenTx = {}, onOpenNode = {}, onReceive = {}, onSend = {})
     }
 }
 
@@ -48,7 +48,7 @@ private fun Node(snapshot: RuntimeSnapshot?, userPaused: Boolean = false) {
 
 @Preview(name = "Wallet syncing", showBackground = true) @Composable private fun WalletSyncing() = Wallet(syncing)
 
-@Preview(name = "Wallet synced", showBackground = true) @Composable private fun WalletSynced() = Wallet(synced, balance = "12.5")
+@Preview(name = "Wallet synced", showBackground = true) @Composable private fun WalletSynced() = Wallet(synced, balance = org.elektronnet.mobile.ui.model.BalanceUi("12.5", "0.25", false))
 
 @Preview(name = "Wallet paused", showBackground = true) @Composable private fun WalletPaused() = Wallet(paused)
 
