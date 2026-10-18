@@ -6,13 +6,19 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import android.graphics.Color
+import android.os.PowerManager
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.service.NodeService
 import org.elektronnet.mobile.ui.AppRoot
 import org.elektronnet.mobile.ui.theme.ElektronTheme
+import org.elektronnet.mobile.ui.theme.UiState
 
 class MainActivity : ComponentActivity() {
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -25,7 +31,18 @@ class MainActivity : ComponentActivity() {
         val settings = NodeHost.init(this)
         NodeHost.incomingUri = intent?.dataString
         setContent {
-            ElektronTheme {
+            val ui = UiState.settings
+            val dark = ui.isDark(isSystemInDarkTheme())
+            val saver = (getSystemService(POWER_SERVICE) as PowerManager).isPowerSaveMode
+            LaunchedEffect(dark) {
+                val style = if (dark) SystemBarStyle.dark(Color.TRANSPARENT) else SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+                enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
+            }
+            ElektronTheme(
+                paletteKey = ui.themeKey ?: BuildConfig.DEFAULT_THEME,
+                dark = dark,
+                effects = UiState.effectLevel(ui.effectiveEffects(saver)),
+            ) {
                 AppRoot(
                     onStart = ::requestStart,
                     onStop = { NodeService.send(this, NodeService.ACTION_STOP) },

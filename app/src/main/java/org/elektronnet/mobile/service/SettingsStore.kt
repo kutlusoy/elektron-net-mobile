@@ -3,6 +3,7 @@ package org.elektronnet.mobile.service
 import android.content.Context
 import java.time.YearMonth
 import org.elektronnet.mobile.node.Json
+import org.elektronnet.mobile.ui.model.UiSettings
 import org.elektronnet.mobile.node.NodeProfile
 import org.elektronnet.mobile.wallet.EscrowRecord
 import org.elektronnet.mobile.wallet.EscrowStore
@@ -57,6 +58,13 @@ class SettingsStore(context: Context) {
         get() = prefs.getBoolean(RESCAN_PENDING, false)
         set(value) = prefs.edit().putBoolean(RESCAN_PENDING, value).apply()
 
+    fun loadUi(validKeys: Set<String>): UiSettings =
+        UiSettings.restore(prefs.getString(THEME_KEY, null), prefs.getString(THEME_MODE, null), prefs.getString(EFFECTS, null), validKeys)
+
+    fun saveUi(ui: UiSettings) {
+        prefs.edit().putString(THEME_KEY, ui.themeKey).putString(THEME_MODE, ui.mode.name).putString(EFFECTS, ui.effects.name).apply()
+    }
+
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
 
     fun setUserStopped(value: Boolean) = prefs.edit().putBoolean(USER_STOPPED, value).apply()
@@ -94,6 +102,9 @@ class SettingsStore(context: Context) {
         const val SCHEDULE_END = "schedule_end"
         const val FASTPRUNE = "fastprune"
         const val WALLET_READY = "wallet_ready"
+        const val THEME_KEY = "theme_key"
+        const val THEME_MODE = "theme_mode"
+        const val EFFECTS = "effects"
         const val RESCAN_PENDING = "rescan_pending"
         const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"

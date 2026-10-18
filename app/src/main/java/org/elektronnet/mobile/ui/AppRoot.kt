@@ -29,6 +29,7 @@ import org.elektronnet.mobile.R
 import org.elektronnet.mobile.policy.PolicySettings
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.firstrun.FirstRunScreen
+import org.elektronnet.mobile.ui.theme.UiState
 import org.elektronnet.mobile.wallet.SetupStatus
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeTabModel
@@ -193,6 +194,11 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
                 Tab.Settings -> SettingsScreen(
                     settings = settings,
+                    ui = UiState.settings,
+                    onUi = {
+                        store?.saveUi(it)
+                        UiState.settings = it
+                    },
                     onAllowMetered = {
                         store?.setAllowMetered(it)
                         settings = settings.copy(allowMetered = it)

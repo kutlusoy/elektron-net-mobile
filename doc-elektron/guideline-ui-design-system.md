@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UI Design System
 
-- **Version:** 0.4 (draft)
+- **Version:** 0.5 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, security reviewers
 - **Reference implementation:** [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) `osclass/osclasselektron/css/style.css` (palette source, commit `37aae603`), `design/palettes.json` and `design/check-contrast.py` in this repository (machine readable palettes and the legibility gate)
@@ -43,7 +43,7 @@ The themes are stored once, in `design/palettes.json`, with the tokens `accent`,
 | `terminal` | Terminal | `#5af78e` | `#ffb86c` | green terminal |
 
 - **MUST:** the default theme is Elektron Blue in dark mode. Light mode exists for every theme and follows the system setting unless the user chooses a mode.
-- **SHOULD:** the theme picker shows a live preview card with balance, a button and a warning, so the user sees legibility before choosing.
+- **MUST:** the theme picker (Settings, Appearance) lists all ten themes with a four color swatch, a live preview card with balance, a button, a warning and a link, a mode choice (system, light, dark) and an effect choice (Off, Subtle, Full). Changes apply at once and are stored in app preferences. The first start uses Elektron Blue, dark, Subtle.
 - **MUST:** the red status color for errors is fixed per mode and independent from the theme. In the `red` theme the accent is red, so destructive and error states additionally use an icon and a text label, never color alone.
 - Status colors (success, danger, warning) are shared by all themes (see `palettes.json`, key `status`).
 - The Material 3 dynamic color (wallpaper based) is not used, to keep the brand and the legibility gate deterministic.
@@ -122,7 +122,7 @@ Mainnet and testnet are separate builds with separate application IDs (see [`gui
 ## 7. Implementation Notes
 
 - Tokens live in one Kotlin object generated from `palettes.json`; no hex value appears elsewhere in app code (lint rule).
-- `Effects` level, theme key and mode are stored in app preferences (non-sensitive).
+- Theme key, mode and effect level are stored in app preferences (non-sensitive) and loaded before the first frame, so the first screens already show the chosen look. When battery saver is on, the effective effect level is Off, the stored choice is kept.
 - Compose previews exist for each theme and mode, used by the screenshot tests.
 
 ## 8. Tests

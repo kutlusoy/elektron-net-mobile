@@ -84,6 +84,7 @@ object NodeHost {
             budget = store.loadBudget(),
         )
         settings = store
+        org.elektronnet.mobile.ui.theme.UiState.settings = store.loadUi(org.elektronnet.mobile.ui.theme.Palettes.all.map { it.key }.toSet())
         return store
     }
 
