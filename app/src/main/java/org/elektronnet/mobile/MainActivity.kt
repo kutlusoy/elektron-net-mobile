@@ -1,7 +1,6 @@
 package org.elektronnet.mobile
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -12,7 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.service.NodeService
-import org.elektronnet.mobile.ui.HomeScreen
+import org.elektronnet.mobile.ui.AppRoot
 import org.elektronnet.mobile.ui.theme.ElektronTheme
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +25,12 @@ class MainActivity : ComponentActivity() {
         val settings = NodeHost.init(this)
         setContent {
             ElektronTheme {
-                HomeScreen(onStart = ::requestStart, onStop = ::stopNode)
+                AppRoot(
+                    onStart = ::requestStart,
+                    onStop = { NodeService.send(this, NodeService.ACTION_STOP) },
+                    onPause = { NodeService.send(this, NodeService.ACTION_PAUSE) },
+                    onResume = { NodeService.send(this, NodeService.ACTION_RESUME) },
+                )
             }
         }
         if (!settings.load().userStopped) requestStart()
@@ -49,8 +53,4 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startNode() = NodeService.start(this)
-
-    private fun stopNode() {
-        ContextCompat.startForegroundService(this, Intent(this, NodeService::class.java).setAction(NodeService.ACTION_STOP))
-    }
 }
