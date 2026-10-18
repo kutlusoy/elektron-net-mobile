@@ -107,7 +107,7 @@ class PaymentTest {
     @Test
     fun fuzzNeverThrows() {
         val random = java.util.Random(11)
-        val alphabet = "elek:?&=%0123456789abcdefABCDEF.-_ ‮\n"
+        val alphabet = "elek:?&=%0123456789abcdefABCDEF.-_ \u202e\n"
         repeat(20000) {
             val text = (if (it % 3 == 0) "elek:$address?" else "") + (1..random.nextInt(60)).joinToString("") { alphabet[random.nextInt(alphabet.length)].toString() }
             uris.parse(text)

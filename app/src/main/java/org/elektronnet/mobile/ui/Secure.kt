@@ -1,14 +1,13 @@
 package org.elektronnet.mobile.ui
 
-import android.app.Activity
 import android.view.WindowManager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.LocalActivity
 
 @Composable
 fun SecureWindow(enabled: Boolean = true) {
-    val window = (LocalContext.current as? Activity)?.window
+    val window = LocalActivity.current?.window
     DisposableEffect(enabled) {
         if (enabled) {
             window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)

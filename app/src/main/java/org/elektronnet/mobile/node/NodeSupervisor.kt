@@ -14,6 +14,7 @@ class NodeSupervisor(
     private val lock = Any()
     private val listeners = CopyOnWriteArrayList<(NodeState) -> Unit>()
     private var process: Process? = null
+    @Volatile
     private var stopRequested = false
 
     @Volatile
@@ -36,8 +37,8 @@ class NodeSupervisor(
                 .start()
             process = started
             setState(NodeState.Starting)
-            thread("node-output") { drain(started) }
-            thread("node-exit") { awaitExit(started) }
+            val drainer = thread("node-output") { drain(started) }
+            thread("node-exit") { awaitExit(started, drainer) }
             thread("node-ready") { awaitReady(started) }
         }
     }
@@ -85,8 +86,9 @@ class NodeSupervisor(
         started.inputStream.bufferedReader().useLines { lines -> lines.forEach { output.add(it) } }
     }
 
-    private fun awaitExit(started: Process) {
+    private fun awaitExit(started: Process, drainer: Thread) {
         val code = started.waitFor()
+        drainer.join(DRAIN_JOIN_MS)
         synchronized(lock) {
             if (process !== started) return
             process = null
@@ -126,7 +128,10 @@ class NodeSupervisor(
         listeners.forEach { it(next) }
     }
 
-    private fun thread(name: String, body: () -> Unit) {
-        Thread(body, name).apply { isDaemon = true }.start()
+    private fun thread(name: String, body: () -> Unit): Thread =
+        Thread(body, name).apply { isDaemon = true }.also { it.start() }
+
+    private companion object {
+        const val DRAIN_JOIN_MS = 500L
     }
 }
