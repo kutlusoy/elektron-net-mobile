@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.1 (draft)
+- **Version:** 0.2 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) `electrum/gui/qml/components/` (Electrum's Android screens: `WalletMainView`, `History`, `ReceiveDialog`, `SendDialog`, `ConfirmTxDialog`, `TxDetails`, `Addresses`, `Preferences`, `NetworkOverview`, `wizard/`), this repository `app/src/main/java/org/elektronnet/mobile/ui/`
@@ -14,7 +14,7 @@ Requirement levels follow common practice: **MUST** = mandatory for correct/safe
 
 ## 1. Goal and Decisions
 
-The app must be intuitive and simple for everyday wallet users. The layout may follow Cake Wallet and the Electrum wallet (decided October 18, 2026). The node is the product's strength, but a user who only wants to receive and send never has to understand it.
+The app must be intuitive and simple for everyday wallet users. The layout may follow the Electrum wallet, whose Android screens already exist in the project's own fork (decided October 18, 2026). No third-party commercial wallet is used as a reference, and no third-party screens, assets or texts are copied. The node is the product's strength, but a user who only wants to receive and send never has to understand it.
 
 | Topic | Decision |
 |---|---|
@@ -29,9 +29,8 @@ The app must be intuitive and simple for everyday wallet users. The layout may f
 | Source | What we take | What we leave |
 |---|---|---|
 | Electrum Android (reviewed in `elektron-net-electrum`) | Main view with balance and history, Receive and Send as the two primary buttons, address and QR dialog with amount and label, confirm dialog with fee choice, transaction details, new-wallet wizard (seed, confirmation, password) | Expert screens as first-level menu items (addresses and coins, channels, sweep, sign message), server configuration, multi-wallet management |
-| Cake Wallet (general public layout, not reviewed from source) | Calm home screen with one balance card, large action buttons, simple list, few settings with clear toggles, onboarding that explains backup | Fiat and exchange features, multi-currency wallet picker, node picker (this app runs its own node) |
 
-The goal is familiarity, not a copy. Visual style comes from the design system guideline.
+The goal is familiarity with common wallet conventions (balance on top, Receive and Send as the main actions, a transaction list), not a copy of any product. Screens, icons and texts are written for this project. Visual style comes from the design system guideline.
 
 ## 3. Principles
 
