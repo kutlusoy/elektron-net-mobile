@@ -47,7 +47,7 @@ fun HeroCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
             .fillMaxWidth()
             .accentGlow(LocalEffectLevel.current, MaterialTheme.colorScheme.primary)
             .clip(RoundedCornerShape(28.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.82f))
+            .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.88f), MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.78f))))
             .border(1.dp, androidx.compose.ui.graphics.Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.85f), MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))), RoundedCornerShape(28.dp))
             .padding(20.dp),
     ) {

@@ -101,7 +101,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         containerColor = androidx.compose.ui.graphics.Color.Transparent,
         topBar = { if (ChainConfig.isTestnet) TestnetBar() },
         bottomBar = {
-            if (walletReady) NavigationBar(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)) {
+            if (walletReady) NavigationBar(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)) {
                 Tab.entries.forEach { entry ->
                     NavigationBarItem(
                         selected = tab == entry.ordinal,
