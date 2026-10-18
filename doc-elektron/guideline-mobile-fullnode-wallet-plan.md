@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.9 (draft)
+- **Version:** 0.10 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
@@ -140,6 +140,7 @@ The user can see what the node is doing whenever they want. Everything in the No
 Multi-language support is a core requirement, not a late polish item.
 
 - **MUST:** no user-visible text in code. All text lives in Android string resources, with plurals, positional format arguments and no concatenated sentences. A CI lint gate turns missing translations and hard-coded strings into errors for the supported locales.
+- **English is the default language** (decided October 18, 2026): `values/strings.xml` is English, every other locale is an overlay, and the app falls back to English whenever the system language is not shipped or a string is missing. The shipped locale list lives in `app/shipped-locales.txt` and always starts with `en`. `tools/check-locales.py` fails the build if English is not first, if `locales_config.xml` differs from the list, or if a shipped locale lacks keys.
 - **Locales:** English (source) plus the most widespread languages, in two tiers. Tier A at launch: German, Spanish, French, Italian (the four already used by the reviewed concept). Tier B: Simplified Chinese (`zh-Hans`), Traditional Chinese (`zh-Hant`), Arabic (`ar`, right-to-left), Japanese, Korean, Hindi, Brazilian Portuguese, Russian, Turkish, Indonesian, Vietnamese. A language ships only after a native speaker has reviewed the security texts (below). Until then it stays out of the release, so a partial or machine-only translation never carries a seed warning.
 - **Scripts:** amounts, block heights and addresses always use Latin digits and the node's address alphabet in every language. Addresses, hashes and console text are isolated as left-to-right runs inside right-to-left text. Non-Latin scripts use the system fonts (details in the design system guideline, §5).
 - **Translation workflow:** plain pull requests with string resource files, plus an optional self-hosted tool later. The `.tx` directory of the node repository is Core's Transifex setup and is not reused.
@@ -382,7 +383,7 @@ Base58 prefixes equal Bitcoin mainnet's (`guideline-wallet-integration.md` §4.4
 
 - Only Bech32 `be1...` receive addresses are generated and shown by default.
 - Pasting or scanning a legacy Base58 address or importing a WIF key shows an explicit warning that the same string is valid on Bitcoin mainnet.
-- Addresses with HRP `bc`/`tb`/`bcrt` are rejected with a specific message.
+- Addresses with a foreign HRP are rejected with a specific message. The mainnet flavor rejects `bc`, `tb` and `bcrt`. The testnet flavor (HRP `tb`) rejects `bc`, `be` and `bcrt`.
 - The `elektron-net-electrum` implementation of this UX is the reference for wording and behavior to keep both wallets consistent.
 
 ### 8.6 Local data, labels and privacy
@@ -425,7 +426,8 @@ elektron-net-mobile/
       security/    keystore, secure window helpers
       ui/          Compose screens
     src/main/jniLibs/{arm64-v8a,x86_64}/libelektrond.so
-    src/main/res/                       strings (en plus the shipped locales, §3.5)
+    src/main/res/                       strings (English default, plus the shipped locales, §3.5)
+    shipped-locales.txt                 shipped locale list, English first
     src/mainnet/, src/testnet/          flavor overrides (ID, name, chain, scheme, icon)
   native-build/                         reproducible NDK build of elektrond
     core-source.env                     Core repository URL, ref to track, NDK version
@@ -434,7 +436,9 @@ elektron-net-mobile/
     contract-check.py, contract/        interface check against the built node (§11.2)
     docker/                             builder image and in-container build script
     tests/                              tests of the build scripts
-  design/                               palettes.json (Osclass themes) and check-contrast.py
+  design/                               palettes.json (Osclass themes), check-contrast.py, gen-theme.py
+  tools/                                check-locales.py
+  build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml
   doc-elektron/                         guidelines and reports (this file)
   .github/workflows/                    CI
 ```
@@ -519,7 +523,8 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 
 ### Phase 1: Node host MVP
 
-- [ ] Gradle project, signing config, CI
+- [x] Gradle project skeleton: flavors, theme generator, contrast and locale gates, CI workflow. Not yet built against the Android toolchain
+- [ ] First green Gradle build, release signing in the release pipeline
 - [ ] Node supervisor (start/stop/drain/health/graceful stop)
 - [ ] Keystore-wrapped RPC credentials, `-rpcauth` or cookie
 - [ ] Sync dashboard with all phases from §5.1
@@ -611,7 +616,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 ## 16. Checklist
 
 - [ ] Phase 0 spikes completed and documented
-- [ ] Open items D1 to D5 of the distribution guideline answered
+- [ ] Open items D2 to D5 of the distribution guideline answered
 - [ ] Native build fetches current Core on every build and records commit SHA and binary hash in the manifest
 - [ ] Core contract check (§11.2) enforced in CI
 - [ ] Node supervisor with graceful stop, drain and health classification
@@ -644,11 +649,11 @@ All questions of the first drafts are answered. Decisions of October 18, 2026 ar
 | Q6 | Lightning | Open path, integrated as if the infrastructure existed, disabled in v1 | §8.4.2 |
 | Q7 | URI scheme | `elek:` (testnet `elektest:`) | §8.4.1, X10 |
 | Q8 | Release Core ref | Latest tagged release, dev and nightly track `main` | §11.1 |
-| Q9 | Testnet flavor | Separate build with its own ID `org.elektronnet.mobiletestnet`. The exact testnet chain is open question D1 in the distribution guideline | distribution guideline |
+| Q9 | Testnet flavor | Separate build with its own ID `org.elektronnet.mobiletestnet`. Chain is `testnet` (testnet3) with `-testnet`, P2P 18333, RPC 18332, HRP `tb`; upstream calls testnet3 deprecated, see the distribution guideline | distribution guideline |
 | Q10 | `-fastprune` default | On by default, opt-out in settings | §3.2, `core-source.env` |
 | Q11 | Ticker | ELEK only | all texts |
 | Q12 | Languages | English plus the most widespread languages in two tiers (Chinese, Arabic, Japanese, Korean and more) | §3.5 |
 | Q13 | Artwork | None, design only, Osclass color themes, cyberpunk with glow and neon that never impairs reading | §3.3, design system guideline |
 | Q14 | Expert console | Danger tier in the first release, device authentication once per session, persistent history with 90 days retention, console in all builds, file commands with passphrase-protected wallets only, manual dumps deleted after 7 days, `createwallet` forbidden without a passphrase | `guideline-expert-console.md` §1.1 |
 
-Remaining open items live in the distribution guideline (§9, D1 to D5): the testnet chain, the Play account type, the Play signing key choice, F-Droid native build and the foreground service type.
+Remaining open items live in the distribution guideline (§9, D2 to D5): the Play account type, the Play signing key choice, F-Droid native build and the foreground service type. D1 (testnet chain) is resolved: `testnet`.
