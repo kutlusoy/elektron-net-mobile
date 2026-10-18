@@ -53,6 +53,11 @@ CC_BIN=$BIN/${TRIPLE}${ANDROID_API}-clang
 CXX_BIN=$BIN/${TRIPLE}${ANDROID_API}-clang++
 PAGE_FLAGS="-Wl,-z,max-page-size=16384"
 
+# CMake adds --target=<host> to every compile, and without the API level clang cannot find the NDK start files and libc++
+grep -q "COMPILER_TARGET @host@${ANDROID_API}" "$SRC/depends/toolchain.cmake.in" \
+    || sed -i -E "s/(CMAKE_(C|CXX|OBJCXX)_COMPILER_TARGET @host@)/\\1${ANDROID_API}/" "$SRC/depends/toolchain.cmake.in"
+grep -c "COMPILER_TARGET @host@${ANDROID_API}" "$SRC/depends/toolchain.cmake.in" | grep -qx 3 || { echo "toolchain template was not patched" >&2; exit 1; }
+
 make -C "$SRC/depends" -j"$JOBS" \
     HOST="$TRIPLE" NO_QT=1 NO_QR=1 NO_ZMQ=1 NO_USDT=1 NO_IPC=1 \
     CC="$CC_BIN" CXX="$CXX_BIN" \
