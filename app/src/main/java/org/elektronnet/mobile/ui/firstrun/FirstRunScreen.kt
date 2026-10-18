@@ -1,9 +1,7 @@
 package org.elektronnet.mobile.ui.firstrun
 
 import android.Manifest
-import android.app.Activity
 import android.os.Build
-import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,7 +33,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +55,7 @@ import org.elektronnet.mobile.R
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.HeroCard
+import org.elektronnet.mobile.ui.SecureWindow
 import org.elektronnet.mobile.wallet.BackupQuiz
 import org.elektronnet.mobile.wallet.Bip39
 import org.elektronnet.mobile.wallet.DiceCheck
@@ -90,11 +88,7 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
         FirstRunStep.PhraseDice, FirstRunStep.PhraseTouch, FirstRunStep.PhraseShow, FirstRunStep.PhraseQuiz, FirstRunStep.PassphraseNew,
         FirstRunStep.RestoreEnter, FirstRunStep.PassphraseRestore, FirstRunStep.Restoring,
     )
-    DisposableEffect(secureStep) {
-        val window = (context as? Activity)?.window
-        if (secureStep) window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        onDispose { window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE) }
-    }
+    SecureWindow(secureStep)
 
     BackHandler(enabled = FirstRunFlow.back(state) != null) { FirstRunFlow.back(state)?.let { state = it } }
 
