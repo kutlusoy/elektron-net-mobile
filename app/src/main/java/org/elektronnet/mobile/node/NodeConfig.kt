@@ -11,6 +11,7 @@ data class NodeConfig(
     val profile: NodeProfile = NodeProfile.Balanced,
     val fastprune: Boolean = true,
     val listen: Boolean = false,
+    val networkActive: Boolean = true,
     val extraArgs: List<String> = emptyList(),
 ) {
     val cookieFile: File get() = File(datadir, ".rpc-cookie")
@@ -28,6 +29,7 @@ data class NodeConfig(
             "-printtoconsole=1",
             "-natpmp=0",
             "-listen=${if (listen) 1 else 0}",
+            "-networkactive=${if (networkActive) 1 else 0}",
         )
         chain.arg?.let { args.add(it) }
         args.addAll(profile.args)

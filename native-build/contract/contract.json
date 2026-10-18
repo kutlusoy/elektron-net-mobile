@@ -19,6 +19,7 @@
     "getmininginfo": {},
     "getnetworkhashps": {},
     "getnettotals": {},
+    "setnetworkactive": {"args": ["state"]},
     "getblockhash": {"args": ["height"]},
     "estimatesmartfee": {"args": ["conf_target"]},
     "stop": {},
