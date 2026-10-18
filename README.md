@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.14 (draft)
+- **Version:** 0.15 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -101,6 +101,10 @@ adb install -r app/build/outputs/apk/tnet/debug/app-tnet-debug.apk   # optional,
 The native node is built once per ABI and serves both flavors, so the testnet build adds almost no build time. CI builds and tests both flavors on every change.
 
 Do not clear app data if you want to keep the synchronized node and wallet database. Clearing data forces a full resync. Funds remain recoverable from the recovery phrase.
+
+### Releases
+
+Signed APKs are published under Releases as "Elektron Mobile v<version>", built by `.github/workflows/release.yml` from a pushed tag or a manual run, with the node built fresh from `elektron-net` (see [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) §6.1). Each release has the mainnet APK, the testnet APK and `SHA256SUMS.txt`.
 
 ## 7. Repository structure (planned)
 

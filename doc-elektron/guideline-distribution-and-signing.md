@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Distribution, Signing and Flavors
 
-- **Version:** 0.4 (draft)
+- **Version:** 0.5 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Release engineers, Android developers, maintainers who operate store accounts and signing keys
 - **Reference implementation:** `app/build.gradle.kts` product flavors and `native-build/` in this repository (to be created), [F-Droid Build Metadata Reference](https://f-droid.org/docs/Build_Metadata_Reference/), [Reproducible Builds](https://f-droid.org/docs/Reproducible_Builds/)
@@ -80,6 +80,19 @@ Two product flavors from one code base. The testnet flavor is named `tnet` becau
 
 - Tagged releases carry the signed APK of both flavors (`mainnet` and `tnet`), checksums, signature, the build manifest and release notes.
 - Nightly builds (`main` Core) are published separately as pre-releases, never as the latest release.
+
+#### Release workflow
+
+`.github/workflows/release.yml` builds and publishes the GitHub release without any manual step:
+
+1. **Start:** push a tag such as `v4.0.4`, or run the workflow manually ("Run workflow" with the version, the build type and an optional node ref).
+2. **Native build:** `native-build/build.sh all` fetches the node source (release builds use the latest release tag of `elektron-net`, nightly builds use `main`), builds `elektrond` for the host, runs the contract check, and builds `libelektrond.so` for `arm64-v8a` and `x86_64` in the pinned NDK container.
+3. **APKs:** both flavors are built from the same commit with the version name and a derived version code, and the node manifest is embedded.
+4. **Release:** the release is created with the title `Elektron Mobile v<version>`, the two APKs (`Elektron-Mobile-<version>-mainnet.apk`, `Elektron-Mobile-<version>-testnet.apk`), `SHA256SUMS.txt` and notes with the node tag, node commit and library hash. A release is marked as pre-release when it is a nightly build, when it is not signed with the release key, or when the version has a suffix such as `-rc1`.
+
+Signing: the workflow uses the repository secrets `ELEKTRON_KEYSTORE_BASE64` (the keystore file, base64 encoded), `ELEKTRON_KEYSTORE_PASSWORD`, `ELEKTRON_KEY_ALIAS` and `ELEKTRON_KEY_PASSWORD` (optional, defaults to the keystore password). Without them the workflow still runs and signs with a temporary test key under the application ID suffix `.nightly`. Such a build is labeled as not for distribution, and every run uses a new key, so an update over an earlier install is refused by Android until the app is uninstalled. Create the real release key offline first (§5) and add the secrets before the first public release.
+
+The NDK checksum (`NDK_SHA256` in `native-build/core-source.env`) must be pinned. Until it is, the workflow computes it from the download and prints a warning with the value to pin. The version code is `(major * 10000 + minor * 100 + patch) * 1000 + run number modulo 1000`.
 
 ### 6.2 Direct APK
 
