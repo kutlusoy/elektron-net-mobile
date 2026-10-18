@@ -132,7 +132,7 @@ fun ReceiveScreen(onClose: () -> Unit) {
 }
 
 @Composable
-private fun QrView(text: String) {
+internal fun QrView(text: String) {
     val matrix = remember(text) { runCatching { QrCode.matrix(text) }.getOrNull() } ?: return
     Box(
         modifier = Modifier

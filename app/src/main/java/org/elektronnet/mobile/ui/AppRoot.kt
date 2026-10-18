@@ -33,6 +33,7 @@ import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.node.NodeScreen
 import org.elektronnet.mobile.ui.receive.ReceiveScreen
 import org.elektronnet.mobile.ui.send.SendScreen
+import org.elektronnet.mobile.ui.tools.ToolsScreen
 import org.elektronnet.mobile.ui.wallet.TxDetailsScreen
 import java.time.ZoneId
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +61,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     var showSoon by remember { mutableStateOf(false) }
     var showReceive by rememberSaveable { mutableStateOf(false) }
     var showSend by rememberSaveable { mutableStateOf(false) }
+    var showTools by rememberSaveable { mutableStateOf(false) }
     var refreshTick by remember { mutableStateOf(0) }
     var openTx by rememberSaveable { mutableStateOf<String?>(null) }
     var walletData by remember { mutableStateOf<WalletData?>(null) }
@@ -118,6 +120,10 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             }
             val incoming = NodeHost.incomingUri
             if (incoming != null && walletReady) showSend = true
+            if (showTools) {
+                ToolsScreen(onClose = { showTools = false })
+                return@Box
+            }
             if (showSend) {
                 SendScreen(
                     initialUri = incoming,
@@ -148,6 +154,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     ),
                     days = HistoryModel.days(walletData?.items.orEmpty(), ZoneId.systemDefault()),
                     onOpenTx = { openTx = it },
+                    onOpenTools = { showTools = true },
                     onOpenNode = { tab = Tab.Node.ordinal },
                     onReceive = { showReceive = true },
                     onSend = { showSend = true },

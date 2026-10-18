@@ -55,6 +55,7 @@ import org.elektronnet.mobile.ui.model.RecipientState
 import org.elektronnet.mobile.ui.model.SendInput
 import org.elektronnet.mobile.wallet.AddressFormat
 import org.elektronnet.mobile.wallet.Amount
+import org.elektronnet.mobile.wallet.EscrowRecord
 import org.elektronnet.mobile.wallet.FeeLevel
 import org.elektronnet.mobile.wallet.FeeOption
 import org.elektronnet.mobile.wallet.PreparedSend
@@ -65,7 +66,7 @@ import org.elektronnet.mobile.wallet.SendRequest
 private enum class Step { Recipient, Amount, Fee, Review, Confirm, Working, Done }
 
 @Composable
-fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Unit) {
+fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Unit, escrow: EscrowRecord? = null) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var step by remember { mutableStateOf(Step.Recipient) }
@@ -84,6 +85,8 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var failure by remember { mutableStateOf<SendFailure?>(null) }
     var txid by remember { mutableStateOf<String?>(null) }
     var noteFromLink by remember { mutableStateOf<String?>(null) }
+    var exportedPsbt by remember { mutableStateOf<String?>(null) }
+    val walletName = escrow?.walletName ?: org.elektronnet.mobile.wallet.WalletBootstrap.DEFAULT_WALLET
 
     val resolved = SendInput.recipient(recipientText, NodeHost.paymentUri, org.elektronnet.mobile.wallet.AddressCheck(ChainConfig.isTestnet), ChainConfig.uriScheme)
     val amountState = SendInput.amount(amountText, available ?: 0L)
@@ -102,7 +105,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     }
 
     LaunchedEffect(Unit) {
-        available = withContext(Dispatchers.IO) { runCatching { NodeHost.sendEngine()?.spendableLep() }.getOrNull() }
+        available = withContext(Dispatchers.IO) { runCatching { NodeHost.sendEngine(walletName)?.spendableLep() }.getOrNull() }
     }
     LaunchedEffect(initialUri, resolved.address) {
         if (initialUri != null && resolved.usable && step == Step.Recipient) {
@@ -123,7 +126,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
         val req = request()
         scope.launch {
             val result = withContext(Dispatchers.IO) {
-                runCatching { NodeHost.sendEngine()?.prepare(req) ?: throw SendException(SendFailure.NodeNotReady) }
+                runCatching { NodeHost.sendEngine(walletName)?.prepare(req) ?: throw SendException(SendFailure.NodeNotReady) }
             }
             result.onSuccess { prepared = it; step = Step.Review }
             result.onFailure { failure = (it as? SendException)?.failure ?: SendFailure.Unknown; step = Step.Fee }
@@ -137,10 +140,16 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
         step = Step.Working
         scope.launch {
             val result = withContext(Dispatchers.IO) {
-                runCatching { NodeHost.sendEngine()?.send(ready, pass) ?: throw SendException(SendFailure.NodeNotReady) }
+                runCatching {
+                    val engine = NodeHost.sendEngine(walletName) ?: throw SendException(SendFailure.NodeNotReady)
+                    if (escrow != null) engine.sign(ready, pass).psbt else engine.send(ready, pass)
+                }
             }
             passphrase = ""
-            result.onSuccess { txid = it; step = Step.Done }
+            result.onSuccess {
+                if (escrow != null) exportedPsbt = it else txid = it
+                step = Step.Done
+            }
             result.onFailure {
                 val f = (it as? SendException)?.failure ?: SendFailure.Unknown
                 failure = f
@@ -169,7 +178,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     Text(stringResource(R.string.action_back))
                 }
             }
-            Text(stringResource(R.string.send_title), style = MaterialTheme.typography.titleLarge)
+            Text(if (escrow != null) escrow.name else stringResource(R.string.send_title), style = MaterialTheme.typography.titleLarge)
         }
         failure?.let { Text(stringResource(failureText(it)), color = MaterialTheme.colorScheme.error) }
         when (step) {
@@ -230,7 +239,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                 LaunchedEffect(Unit) {
                     if (options.isEmpty()) {
                         val loaded = withContext(Dispatchers.IO) {
-                            runCatching { NodeHost.sendEngine()?.let { it.feeOptions() to it.feeFloor() } }.getOrNull()
+                            runCatching { NodeHost.sendEngine(walletName)?.let { it.feeOptions() to it.feeFloor() } }.getOrNull()
                         }
                         loaded?.let { options = it.first; floor = it.second }
                     }
@@ -303,7 +312,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         Text(elek(review.feeLep) + "  (" + stringResource(R.string.send_fee_rate, review.feeRate.toPlainString()) + ")")
                     }
                     ReviewLine(stringResource(R.string.send_review_total)) { Text(elek(review.totalLep), style = MaterialTheme.typography.titleLarge) }
-                    Button(onClick = { step = Step.Confirm }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.action_send)) }
+                    Button(onClick = { step = Step.Confirm }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(if (escrow != null) R.string.escrow_sign_action else R.string.action_send)) }
                 }
             }
             Step.Confirm -> {
@@ -319,7 +328,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Button(onClick = ::send, enabled = passphrase.isNotEmpty(), modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.action_send))
+                    Text(stringResource(if (escrow != null) R.string.escrow_sign_action else R.string.action_send))
                 }
             }
             Step.Working -> {
@@ -327,10 +336,22 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                 Text(stringResource(R.string.send_working))
             }
             Step.Done -> {
-                Text(stringResource(R.string.send_done_title), style = MaterialTheme.typography.headlineSmall)
-                prepared?.review?.let { Text(elek(it.amountLep)) }
-                Button(onClick = { onDone(txid) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_view_tx)) }
-                OutlinedButton(onClick = { onDone(null) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_done_close)) }
+                val psbt = exportedPsbt
+                if (psbt != null) {
+                    Text(stringResource(R.string.escrow_proposal_title), style = MaterialTheme.typography.headlineSmall)
+                    Text(stringResource(R.string.escrow_proposal_body, escrow?.required ?: 2))
+                    Text(psbt, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall, maxLines = 8)
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        OutlinedButton(onClick = { copyPlain(context, psbt) }) { Text(stringResource(R.string.action_copy)) }
+                        Button(onClick = { sharePlain(context, psbt) }) { Text(stringResource(R.string.action_share)) }
+                    }
+                    OutlinedButton(onClick = { onDone(null) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_done_close)) }
+                } else {
+                    Text(stringResource(R.string.send_done_title), style = MaterialTheme.typography.headlineSmall)
+                    prepared?.review?.let { Text(elek(it.amountLep)) }
+                    Button(onClick = { onDone(txid) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_view_tx)) }
+                    OutlinedButton(onClick = { onDone(null) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_done_close)) }
+                }
             }
         }
     }
@@ -384,6 +405,16 @@ private fun failureText(failure: SendFailure): Int = when (failure) {
     SendFailure.NodeNotReady -> R.string.fr_err_node
     SendFailure.Rejected -> R.string.send_err_rejected
     SendFailure.Unknown -> R.string.send_err_unknown
+}
+
+private fun copyPlain(context: Context, text: String) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    clipboard.setPrimaryClip(android.content.ClipData.newPlainText("psbt", text))
+}
+
+private fun sharePlain(context: Context, text: String) {
+    val intent = android.content.Intent(android.content.Intent.ACTION_SEND).setType("text/plain").putExtra(android.content.Intent.EXTRA_TEXT, text)
+    context.startActivity(android.content.Intent.createChooser(intent, null))
 }
 
 private fun clipboardText(context: Context): String {
