@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.1 (draft)
+- **Version:** 0.2 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -44,9 +44,17 @@ Elektron Net prunes every node to the last 197,280 blocks (about 137 days) by de
 
 The node is not stored in this repository. On every build, the build scripts fetch the current source from the canonical repository [`kutlusoy/elektron-net`](https://github.com/kutlusoy/elektron-net), build `elektrond` for the target ABI, and run a contract check against the result. The resolved commit SHA and the SHA-256 of the produced binary are written to a build manifest that ships inside the app and is shown on the node screen.
 
-By default the tracked ref is `main`. It can be overridden for debugging or for reproducing an older build:
+Which ref is fetched depends on the build type:
+
+| Build type | Core source |
+|---|---|
+| `dev`, `nightly` | `main` of `elektron-net` |
+| `release` | the latest tagged release of `elektron-net` (never `main`) |
+
+The ref can be overridden for debugging or for reproducing an older build:
 
 ```bash
+BUILD_TYPE=release ./native-build/build.sh all
 CORE_REF=<branch|tag|sha> ./native-build/build.sh all
 ```
 

@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.2 (draft)
+- **Version:** 0.3 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
@@ -330,16 +330,20 @@ elektron-net-mobile/
 
 Requirement: the app always ships the node from the canonical repository [`kutlusoy/elektron-net`](https://github.com/kutlusoy/elektron-net). No copy of Core is vendored in this repository, and no old checkout is reused.
 
-- `native-build/fetch-core.sh` runs at the start of every build (local and CI). It resolves the tracked ref (`CORE_REF` in `core-source.env`, default `main`) to a commit SHA with `git ls-remote`, then clones or fetches that exact commit into a build cache and checks it out clean. A cached tree that does not match the freshly resolved SHA is discarded.
+- `native-build/fetch-core.sh` runs at the start of every build (local and CI). It resolves the tracked ref to a commit SHA with `git ls-remote` (see the ref policy below), then clones or fetches that exact commit into a build cache and checks it out clean. A cached tree that does not match the freshly resolved SHA is discarded.
 - The native build checks the manifest of the previous output (`Core SHA`, patch set SHA-256, NDK version). The binary is rebuilt whenever any of them differs, so a stale `libelektrond.so` can never be reused (this keeps the safety property of the reviewed concept).
-- `CORE_REF` MAY be overridden (branch, tag or SHA) for debugging and for reproducing an older release. The default is always the current upstream state.
+- **Ref policy by build type** (`BUILD_TYPE` in `core-source.env`, set by CI, default `dev`):
+  - `dev` and `nightly` builds track Core `main`.
+  - `release` builds MUST use the latest tagged release of `kutlusoy/elektron-net` and MUST NOT build from `main`. `fetch-core.sh` lists tags with `git ls-remote --tags`, keeps final version tags only (no pre-release suffixes such as `-rc`), sorts them by version and takes the highest. The tag is resolved to its commit SHA (the peeled commit for annotated tags). If no eligible tag exists the release build fails.
+  - Tag signature: if upstream signs release tags, `fetch-core.sh` SHOULD verify the signature against a trusted key stored in this repository (**verify** whether upstream signs tags).
+  - `CORE_REF` (branch, tag or SHA) overrides the policy for debugging and for reproducing an older build. A release build with an override is allowed only when the override is an existing release tag, so a published release always corresponds to a real upstream release.
 - The build manifest records: Core repository URL, resolved commit SHA, commit date, patch set SHA-256, NDK version, builder image digest, SHA-256 of each produced `libelektrond.so`. The manifest is embedded in the APK and shown in the app's About/Node screen. This is what keeps "always current" auditable and reproducible after the fact.
 - Third-party dependencies of Core (Boost, libevent and so on) are taken from the fetched Core's own `depends` definitions and their hashes, not re-specified here.
 - **Contract check (build gate):** after building, a script runs the produced binary (x86_64 in CI, host build locally) in `-regtest` and verifies the interface the app depends on: required RPCs exist (`help <name>`), protocol version and network magic match what the app expects, wallet RPC argument shapes used by the app are unchanged, and checkpoint/snapshot behavior on regtest still works. A failing contract fails the build with a message naming the missing or changed item. This turns upstream changes into immediate build errors instead of runtime surprises.
 - **Chain-generation guard:** the contract check also reads the genesis hash from the binary. If it differs from the one recorded in the app's datadir marker schema, the build still succeeds but the app's datadir versioning (§5.4) will trigger the controlled reset flow on first start.
 - **Patch drift:** because the base moves on every build, a patch that no longer applies cleanly MUST fail the build loudly. It is never skipped or force-applied. Landing X1 upstream removes the only planned patch.
-- Nightly CI builds against Core `main` so breaking upstream changes are visible before a release is cut.
-- Consequence to accept explicitly: a release contains whatever upstream `main` was at build time. Upstream consensus changes therefore flow into the app automatically. Release builds MUST be cut only from a green contract check, and the resolved SHA is part of the release notes.
+- Nightly CI builds against Core `main` and additionally against the latest release tag, so breaking upstream changes are visible before a release is cut.
+- Consequence: a release contains the node of the latest upstream release at build time, never unreleased `main` code. A new upstream release flows into the next app release build automatically, so release builds MUST be cut only from a green contract check, and the tag name and resolved SHA are part of the release notes.
 
 ## 12. Cross-Repo Impact
 
@@ -477,5 +481,5 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 5. Distribution channels for v1: direct APK, F-Droid, Google Play, or a staged combination?
 6. Is Lightning in scope after v1? Per `guideline-wallet-integration.md` it needs routing/trampoline infrastructure that does not exist yet and a different wallet stack than the Core descriptor wallet.
 7. URI scheme for payment requests (BIP21-style `elektron:` or similar): not yet defined in the network documentation.
-8. Should release builds track Core `main` (current default in §11.1) or the latest tagged release of `elektron-net`? Dev and nightly builds track `main` either way.
+8. ~~Should release builds track Core `main` or the latest tagged release?~~ **Resolved in v0.3:** release builds use the latest tagged release, dev and nightly builds track `main` (§11.1).
 9. Is a testnet build flavor (separate app ID, `tb`-style HRP handling) wanted from day one for safer public testing?
