@@ -23,6 +23,7 @@
     <string name="note_problem_disk">Not enough free space. Free up some storage to continue.</string>
     <string name="note_problem_database">Your node data is damaged and needs to be repaired.</string>
     <string name="note_problem_running">Another copy of the node is already running.</string>
+    <string name="note_problem_start">Your node could not be started. The technical details below help to find the cause.</string>
     <string name="note_problem_unknown">Your node stopped unexpectedly.</string>
     <string name="send_needs_sync">Sending needs a synchronized node. Open the Node tab to see the progress.</string>
     <string name="history_empty">No payments yet. Tap Receive to get your first address.</string>

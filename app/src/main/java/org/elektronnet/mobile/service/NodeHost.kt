@@ -72,6 +72,7 @@ object NodeHost {
             rpcPort = ChainConfig.rpcPort,
             p2pPort = ChainConfig.p2pPort,
             fastprune = store.fastprune(),
+            homeDir = app.filesDir,
         )
         val device = AndroidDeviceState(app, datadir)
         val nodeController = NodeController(config)
@@ -212,6 +213,10 @@ object NodeHost {
     }
 
     val paymentUri: PaymentUri = PaymentUri(ChainConfig.uriScheme, AddressCheck(ChainConfig.isTestnet))
+
+    fun clearCrash() {
+        controller?.clearCrash()
+    }
 
     fun stopNow() {
         controller?.shutdown()

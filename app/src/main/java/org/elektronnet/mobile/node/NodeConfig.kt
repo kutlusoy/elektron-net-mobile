@@ -13,6 +13,7 @@ data class NodeConfig(
     val listen: Boolean = false,
     val networkActive: Boolean = true,
     val extraArgs: List<String> = emptyList(),
+    val homeDir: File? = null,
 ) {
     val cookieFile: File get() = File(datadir, ".rpc-cookie")
     val confFile: File get() = File(datadir, "bitcoin.conf")

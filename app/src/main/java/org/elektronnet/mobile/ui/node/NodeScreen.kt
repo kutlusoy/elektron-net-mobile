@@ -54,6 +54,7 @@ fun NodeScreen(
             NodeChipRow(chipFor(model.state))
             Text(title(model), style = MaterialTheme.typography.titleLarge)
             hint(model)?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            model.detail?.let { Text(it, style = MaterialTheme.typography.bodySmall.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)) }
             if (model.state == NodeTabState.CatchingUp && model.percent != null) {
                 LinearProgressIndicator(progress = { model.percent / 100f }, modifier = Modifier.fillMaxWidth())
             }
@@ -136,6 +137,7 @@ private fun hint(model: NodeTabModel): String? = when (model.state) {
             org.elektronnet.mobile.node.NodeFailure.DiskFull -> R.string.note_problem_disk
             org.elektronnet.mobile.node.NodeFailure.CorruptedDatabase -> R.string.note_problem_database
             org.elektronnet.mobile.node.NodeFailure.AlreadyRunning -> R.string.note_problem_running
+            org.elektronnet.mobile.node.NodeFailure.StartFailed -> R.string.note_problem_start
             else -> R.string.note_problem_unknown
         },
     )

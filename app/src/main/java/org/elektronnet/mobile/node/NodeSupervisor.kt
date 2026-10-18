@@ -28,13 +28,23 @@ class NodeSupervisor(
     fun start() {
         synchronized(lock) {
             if (state == NodeState.Starting || state == NodeState.Running || state == NodeState.Stopping) return
-            check(config.binary.canExecute()) { "node binary is not executable: ${config.binary}" }
-            NodeConfigFile.ensure(config)
-            config.cookieFile.delete()
             stopRequested = false
-            val started = ProcessBuilder(listOf(config.binary.absolutePath) + config.arguments())
-                .redirectErrorStream(true)
-                .start()
+            val started = try {
+                check(config.binary.exists()) { "node binary is missing: ${config.binary}" }
+                check(config.binary.canExecute()) { "node binary is not executable: ${config.binary}" }
+                NodeConfigFile.ensure(config)
+                config.cookieFile.delete()
+                val builder = ProcessBuilder(listOf(config.binary.absolutePath) + config.arguments())
+                    .directory(config.datadir)
+                    .redirectErrorStream(true)
+                config.homeDir?.let { builder.environment()["HOME"] = it.absolutePath }
+                builder.start()
+            } catch (e: Exception) {
+                val message = e.message ?: e.javaClass.simpleName
+                output.add(message)
+                setState(NodeState.Crashed(-1, NodeFailure.StartFailed, message))
+                return
+            }
             process = started
             setState(NodeState.Starting)
             val drainer = thread("node-output") { drain(started) }
@@ -95,7 +105,7 @@ class NodeSupervisor(
             if (stopRequested || code == 0) {
                 setState(NodeState.Stopped)
             } else {
-                setState(NodeState.Crashed(code, FailureClassifier.classify(output.tail(100))))
+                setState(NodeState.Crashed(code, FailureClassifier.classify(output.tail(100)), output.tail(6).joinToString("\n")))
             }
         }
     }
