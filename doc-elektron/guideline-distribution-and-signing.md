@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Distribution, Signing and Flavors
 
-- **Version:** 0.2 (draft)
+- **Version:** 0.3 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Release engineers, Android developers, maintainers who operate store accounts and signing keys
 - **Reference implementation:** `app/build.gradle.kts` product flavors and `native-build/` in this repository (to be created), [F-Droid Build Metadata Reference](https://f-droid.org/docs/Build_Metadata_Reference/), [Reproducible Builds](https://f-droid.org/docs/Reproducible_Builds/)
@@ -60,6 +60,7 @@ Two product flavors from one code base. The flavor changes identity and chain on
 
 - **MUST:** every release has a pinned Core tag (plan §11.1), a pinned NDK and image (plan §11), and the manifest with the resulting hashes. The release notes quote the Core tag and commit SHA.
 - **SHOULD:** the APK build is reproducible: same source commit, same pinned toolchain, same unsigned APK bytes (apart from the signature). Reproducibility is the precondition for F-Droid's reproducible-build verification and gives users a way to check the binary.
+- **MUST:** every build produces both flavors. The native node is built once per ABI and shared, so the testnet APK costs almost nothing extra. CI builds, tests and lints both flavors on every change, so a break in the testnet flavor shows up at once. Releases produce both APKs from the same commit and the same Core tag, signed with the same key, and publish them as separate files.
 - Native libraries are built inside the pinned Docker image from the fetched Core source. Gradle consumes the resulting `libelektrond.so` per ABI. No prebuilt binary is committed.
 - 16 KB page size alignment is verified for each library at build time (already part of `native-build/build.sh`).
 
@@ -77,7 +78,7 @@ Two product flavors from one code base. The flavor changes identity and chain on
 
 ### 6.1 GitHub repository and releases (primary source)
 
-- Tagged releases carry the signed APK per flavor, checksums, signature, the build manifest and release notes.
+- Tagged releases carry the signed APK of both flavors (`mainnet` and `testnet`), checksums, signature, the build manifest and release notes.
 - Nightly builds (`main` Core) are published separately as pre-releases, never as the latest release.
 
 ### 6.2 Direct APK
