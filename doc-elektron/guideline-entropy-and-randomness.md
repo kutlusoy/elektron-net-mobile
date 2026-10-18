@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Entropy and Randomness
 
-- **Version:** 0.2 (draft)
+- **Version:** 0.3 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, security reviewers, auditors, users who want to verify their own wallet creation
 - **Reference implementation:** `app/src/main/java/org/elektronnet/mobile/wallet/Entropy.kt`, `Bip39.kt`, `Bip32.kt`, `WalletBootstrap.kt`, `app/src/test/java/org/elektronnet/mobile/wallet/EntropyTest.kt` and `tools/check-rng.py` in this repository
@@ -30,7 +30,9 @@ A wallet is only as strong as the randomness behind its recovery phrase. Weak ra
 
 - **MUST:** the only seed for a phrase is the output of `SystemEntropy.draw`. It is a cryptographic generator seeded by the Android kernel (`SecureRandom`, backed by the kernel generator) combined with a direct read of `/dev/urandom`. The mixing function is SHA-512 over a fixed domain string and all source outputs, truncated to the needed length.
 - **MUST:** mixing never makes the result weaker than the strongest healthy source. A hash of independent inputs is at least as unpredictable as the best of them, so a damaged second source cannot lower the strength.
-- **MUST (health check per source):** each source is read twice. A source is rejected if its first output is constant (all bytes equal, including all zero) or equals its second output. The read is retried up to three times. The primary source (`SecureRandom`) is required: if it fails, creation stops with an error. The optional second source (`/dev/urandom`) is skipped silently if absent or unhealthy, because a healthy primary source is sufficient.
+- **Primary source:** one long-lived `SecureRandom` instance is shared by the app and is the only source the floor depends on. Android documents it as a cryptographically strong generator seeded by the kernel.
+- **MUST (sanity check per source):** each source is read twice. A source is rejected if its first output is constant (all bytes equal, including all zero) or equals its second output. The read is retried up to three times. The primary source (`SecureRandom`) is required: if it fails, creation stops with an error. The second source (`/dev/urandom`) is optional by design: it is skipped silently if absent, unreadable or failing the same check, and every error from reading it is caught. It is mixed in as a hedge against a faulty primary provider and is never needed to reach the floor.
+- **What the sanity check is and is not:** it only catches gross faults (a zero or constant buffer, a stuck generator). It cannot detect a generator that is weak but varies, and it is not evidence of entropy. The security of the system source rests on the operating system generator, not on this check.
 - **MUST:** if the check fails, the screen says that the device generator failed its safety check, creates no words, and offers retry and the dice mode.
 - **MUST NOT:** `java.util.Random`, `kotlin.random`, `Math.random`, `ThreadLocalRandom`, `shuffled()`, clock values or counters are used to create key material. `tools/check-rng.py` fails the build if one of them appears in app code. `SecureRandom` may only be used in the entropy module and for the non-secret quiz positions.
 - **MUST:** entropy arrays are zeroed right after the words are derived. The JVM cannot guarantee full erasure, so the exposure window is kept as short as possible (plan §8.1).
@@ -58,17 +60,17 @@ The minimum is rounded up, so the entropy is never below the target. (Some tools
 
 ### 3.3 Input checks
 
-Humans make poor random numbers, so the input is rejected when it looks non-random. The thresholds are chosen so that honest dice are almost never rejected (measured below 1 percent in the unit test).
+Only input errors block creation. Statistical observations are shown as warnings and never block, because a fair die can produce an unusual sequence and a statistical test can neither prove nor disprove entropy.
 
-| Check | Rule | Honest false reject |
-|---|---|---|
-| Characters | only 1 to 6, whitespace and commas are ignored | none |
-| Length | at least the minimum, at most 200 | none |
-| Long run | 9 or more identical results in a row | about 3 in 100,000 |
-| Repeated pattern | any sequence of 9 results appears twice | below 0.1 percent |
-| Bias | chi-square over the six faces above 20.515 (p below 0.001, 5 degrees of freedom) | 0.1 percent |
+| Check | Rule | Effect | Honest false alarm |
+|---|---|---|---|
+| Characters | only 1 to 6, whitespace and commas are ignored | blocks | none |
+| Length | at least the minimum, at most 200 | blocks | none |
+| Long run | 9 or more identical results in a row | warning | about 3 in 100,000 |
+| Repeated pattern | any sequence of 9 results appears twice | warning | below 0.1 percent |
+| Bias | chi-square over the six faces above 20.515 (p below 0.001, 5 degrees of freedom; the limit does not depend on the length) | warning | 0.1 percent |
 
-On rejection the user keeps rolling or re-rolls. The text explains in plain words what looks wrong and never accuses the user.
+The warnings exist to catch the real risk, which is a user who makes up numbers instead of rolling. In mixed mode the phone generator carries the floor anyway, so a warning is informational. In dice-only mode a warning requires the user to confirm that every result came from a real die, because there the dice are the only source. The text explains in plain words what looks unusual and never accuses the user.
 
 ### 3.4 User guidance (shown in the app)
 
@@ -88,7 +90,17 @@ The user can move a finger around a box on the screen until a bar is full. The m
 - **What does not count:** a sample counts only if it moved at least 4 pixels and at least 4 ms passed since the last counted sample. Repeating an identical step, drawing a perfectly straight line for more than 12 steps, holding still or tiny jitter earn nothing, and a scripted burst of events earns at most one sample.
 - The step is optional. "Generate with my phone" without drawing is equally safe, because the floor does not depend on the drawing.
 
-## 5. From Entropy to Wallet
+## 5. Assumptions and Limits
+
+- The guarantee of 128 bits in the system mode rests on two assumptions: the Android kernel generator works as documented, and the device is not compromised while the phrase is created. Neither can be proven by the app.
+- The guarantee of 128 bits in dice mode rests on a fair die, independent rolls and honest input. Counting rolls gives 2.585 bits per roll under exactly that model. A hash cannot add entropy that the input does not have, and it does not hide a lack of it.
+- Mixed mode is the default because it keeps the floor if either the dice or the phone generator is good. Dice only is for users who want to rely on nothing but their own dice and who can verify the derivation.
+- Touch drawing and the optional second system source are hedges, not guarantees, and are never counted toward the floor.
+- The domain strings used for hashing (`elektron-system-entropy-v1`, `elektron-dice-mix-v1`, `elektron-touch-mix-v1`) are fixed and versioned. A change of any derivation creates a new version string, and the dice-only derivation (plain SHA-256 of the digits) is frozen so that users can always recompute their words.
+- The chain from entropy to the root key is covered by published vectors: BIP-39 entropy to words, words to seed, seed to the BIP-32 root key.
+- Wiping buffers with zeros reduces exposure but does not guarantee that no copy remains in memory.
+
+## 6. From Entropy to Wallet
 
 ```text
 entropy (16 or 32 bytes) -> BIP-39 words (checksum) -> seed (PBKDF2-HMAC-SHA512, 2048 rounds)
@@ -96,19 +108,19 @@ entropy (16 or 32 bytes) -> BIP-39 words (checksum) -> seed (PBKDF2-HMAC-SHA512,
 ```
 
 - The word list is the official BIP-39 English list (SHA-256 `2f5eed53a4727b4bf8880d8f3f199efc90e58503646d9ff8eff3a2ed3b24dbda`), unchanged.
-- BIP-39 and BIP-32 are verified against the published test vectors in the unit tests. Only the JDK's crypto providers are used, with no third-party code in the key path.
+- BIP-39 and BIP-32 are verified against the published test vectors in the unit tests, including the full chain from entropy to the root key. Only the JDK's crypto providers are used, with no third-party code in the key path.
 - The master key is checked to be in range (not zero, below the curve order). The extremely unlikely failure stops creation instead of continuing.
 - The recovery phrase is never shown again after the backup quiz (plan §8.1). The quiz positions are not secret and use a normal secure generator.
 
-## 6. Tests
+## 7. Tests
 
-- **Unit tests (CI, every change):** health check rejects zero, constant and repeating sources; a failing optional source is ignored; a failing required source stops creation; dice-only output equals the independent SHA-256 vector; mixed output changes with either input; the minimum rolls reach the target bits and one roll fewer does not; every dice rule fires on a crafted input; the false reject rate of honest dice stays below 1 percent over 4,000 trials.
+- **Unit tests (CI, every change):** health check rejects zero, constant and repeating sources; a failing optional source is ignored; a failing required source stops creation; dice-only output equals the independent SHA-256 vector; mixed output changes with either input; the minimum rolls reach the target bits and one roll fewer does not; every dice rule fires on a crafted input, warnings never block and only input errors do; the false warning rate of honest dice stays below 1 percent over 4,000 trials.
 - **Touch tests:** human-like motion fills the bar, standing still, a straight line and a scripted burst earn almost nothing, the output depends on every input (position, time), and a broken system generator still stops creation even with full touch data.
 - **Distribution test:** thousands of phrases from the real generator are all distinct and the bit balance stays within one percent of one half. This is a smoke test, not proof of randomness.
 - **Static check:** `tools/check-rng.py` in CI and as a Gradle `preBuild` dependency.
-- **Release gate:** an independent review of `Entropy.kt` and the creation flow before the public beta (plan §13, Phase 5). A device test confirms that `SecureRandom` and `/dev/urandom` are readable on the supported Android versions and ABIs.
+- **Release gate:** an independent review of `Entropy.kt` and the creation flow before the public beta (plan §13, Phase 5). The review must cover the whole chain from entropy to the private key, not only `Entropy.kt`. A device test confirms that `SecureRandom` and `/dev/urandom` are readable on the supported Android versions and ABIs.
 
-## 7. Risks
+## 8. Risks
 
 | Risk | Impact | Mitigation |
 |---|---|---|
@@ -117,7 +129,7 @@ entropy (16 or 32 bytes) -> BIP-39 words (checksum) -> seed (PBKDF2-HMAC-SHA512,
 | Screenshot or clipboard leak of dice or words | Fund loss | `FLAG_SECURE`, no clipboard writes of secrets |
 | Compromised device while creating the wallet | Fund loss | Cannot be fully solved on a phone, documented in the security summary, advise a clean device and hardware wallets for large amounts |
 
-## 8. Open Questions
+## 9. Open Questions
 
 | # | Question | Recommendation |
 |---|---|---|
@@ -125,11 +137,11 @@ entropy (16 or 32 bytes) -> BIP-39 words (checksum) -> seed (PBKDF2-HMAC-SHA512,
 | R2 | Hold the phrase in a `CharArray` or `ByteArray` instead of strings to allow zeroing? | Yes in Phase 4 hardening, as far as the Compose text layer allows. |
 | R3 | Add a camera or sensor based source as another mixed input? | Touch drawing is included (§4) because users expect it. Camera and motion sensors stay out: they add permissions and code without raising the guaranteed floor. |
 
-## 9. Checklist
+## 10. Checklist
 
 - [x] System entropy with two sources, health checks, no weak fallback
 - [x] Dice mode with 50 or 100 rolls, mixed and dice-only derivation
-- [x] Input quality checks for dice
+- [x] Input checks for dice (errors block, statistical observations warn)
 - [x] Touch drawing as extra mixed input, never counted toward the floor
 - [x] Static check against weak randomness APIs in CI and Gradle
 - [x] BIP-39 and BIP-32 test vectors

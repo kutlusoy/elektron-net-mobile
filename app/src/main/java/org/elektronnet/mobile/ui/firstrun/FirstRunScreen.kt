@@ -296,13 +296,21 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Text(stringResource(R.string.fr_dice_count, check.rolls, needed, check.bits.toInt()))
-                val issueText = when (check.issue) {
+                val issueText = when (check.warning) {
                     null, DiceIssue.TooFew, DiceIssue.InvalidCharacter, DiceIssue.TooMany -> null
                     DiceIssue.LongRun -> R.string.fr_dice_issue_run
                     DiceIssue.RepeatedPattern -> R.string.fr_dice_issue_pattern
                     DiceIssue.Biased -> R.string.fr_dice_issue_bias
                 }
                 issueText?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error) }
+                var confirmed by remember { mutableStateOf(false) }
+                val needsConfirm = diceOnly && check.warning != null
+                if (needsConfirm) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Switch(checked = confirmed, onCheckedChange = { confirmed = it })
+                        Text(stringResource(R.string.fr_dice_confirm), modifier = Modifier.padding(start = 12.dp))
+                    }
+                }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Switch(checked = diceOnly, onCheckedChange = { diceOnly = it })
                     Text(stringResource(R.string.fr_dice_only), modifier = Modifier.padding(start = 12.dp))
@@ -321,7 +329,7 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
                             state = FirstRunFlow.next(state.copy(phrase = words))
                         }
                     },
-                    enabled = check.issue == null,
+                    enabled = check.issue == null && (!needsConfirm || confirmed),
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.fr_dice_create)) }
             }

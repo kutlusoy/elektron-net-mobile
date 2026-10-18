@@ -84,6 +84,16 @@ class WalletReaderTest {
     }
 
     @Test
+    fun equalTimestampsKeepNewestFirst() {
+        val rpc = WalletRpc { _, _, _ ->
+            Json.parse((1..150).joinToString(",", "[", "]") { "{\"txid\":\"t$it\",\"category\":\"receive\",\"amount\":1,\"confirmations\":1,\"time\":500}" })
+        }
+        val list = WalletReader(rpc).transactions()
+        assertEquals(100, list.size)
+        assertEquals("t150", list.first().txid)
+    }
+
+    @Test
     fun historyGroupsByDay() {
         val zone = ZoneId.of("UTC")
         val items = listOf(

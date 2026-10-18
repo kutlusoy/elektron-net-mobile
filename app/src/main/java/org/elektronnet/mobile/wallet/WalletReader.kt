@@ -42,7 +42,7 @@ class WalletReader(private val rpc: WalletRpc, private val walletName: String = 
 
     fun transactions(limit: Int = DEFAULT_LIMIT): List<TxItem> {
         val entries = rpc.call("listtransactions", listOf("*", ENTRY_WINDOW, 0), walletName) as List<*>
-        return group(entries.map { it as Map<*, *> }).sortedByDescending { it.timeSeconds }.take(limit)
+        return group(entries.map { it as Map<*, *> }).reversed().sortedByDescending { it.timeSeconds }.take(limit)
     }
 
     companion object {

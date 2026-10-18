@@ -36,3 +36,17 @@ class Bip32Test {
         assertEquals(listOf("wpkh(KEY/84h/1h/0h/0/*)", "wpkh(KEY/84h/1h/0h/1/*)"), testnet.map { it.descriptor })
     }
 }
+
+class DerivationChainTest {
+    @Test
+    fun entropyToRootKeyMatchesPublishedVectors() {
+        val bip39 = Bip39(loadWordlist())
+        val phrase = bip39.fromEntropy(ByteArray(16))
+        assertEquals(12, phrase.size)
+        val root = Bip32.masterExtendedKey(Bip39.toSeed(phrase, ""), testnet = false)
+        assertEquals(
+            "xprv9s21ZrQH143K3GJpoapnV8SFfukcVBSfeCficPSGfubmSFDxo1kuHnLisriDvSnRRuL2Qrg5ggqHKNVpxR86QEC8w35uxmGoggxtQTPvfUu",
+            root,
+        )
+    }
+}

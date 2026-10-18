@@ -20,7 +20,7 @@ fun interface RandomSource {
 }
 
 class SystemEntropy(
-    private val primary: RandomSource = RandomSource { n -> ByteArray(n).also { SecureRandom().nextBytes(it) } },
+    private val primary: RandomSource = SHARED_PRIMARY,
     private val extra: List<RandomSource> = listOfNotNull(devUrandom()),
 ) {
     fun draw(count: Int = 32): ByteArray {
@@ -50,6 +50,8 @@ class SystemEntropy(
 
     companion object {
         private val DOMAIN = "elektron-system-entropy-v1".toByteArray()
+        private val SHARED_RANDOM = SecureRandom()
+        private val SHARED_PRIMARY = RandomSource { n -> ByteArray(n).also { SHARED_RANDOM.nextBytes(it) } }
         private const val ATTEMPTS = 3
 
         private fun devUrandom(): RandomSource? {
@@ -75,7 +77,7 @@ class EntropyGenerator(private val system: SystemEntropy = SystemEntropy()) {
 
     fun fromDice(strength: PhraseStrength, rolls: String, mixSystem: Boolean): ByteArray {
         val check = DiceCheck.evaluate(rolls, strength)
-        if (check.issue != null) throw IllegalArgumentException("dice rolls rejected: ${check.issue}")
+        require(check.issue == null) { "dice rolls rejected: ${check.issue}" }
         val sha = MessageDigest.getInstance("SHA-256")
         if (!mixSystem) return sha.digest(check.normalized.toByteArray(Charsets.US_ASCII)).copyOf(strength.bytes)
         sha.update(MIX_DOMAIN)
@@ -94,7 +96,7 @@ class EntropyGenerator(private val system: SystemEntropy = SystemEntropy()) {
 
 enum class DiceIssue { TooFew, InvalidCharacter, TooMany, LongRun, RepeatedPattern, Biased }
 
-data class DiceResult(val normalized: String, val rolls: Int, val bits: Double, val issue: DiceIssue?)
+data class DiceResult(val normalized: String, val rolls: Int, val bits: Double, val issue: DiceIssue?, val warning: DiceIssue?)
 
 object DiceCheck {
     val BITS_PER_ROLL: Double = Math.log(6.0) / Math.log(2.0)
@@ -106,14 +108,17 @@ object DiceCheck {
     fun evaluate(input: String, strength: PhraseStrength): DiceResult {
         val rolls = input.filterNot { it.isWhitespace() || it == ',' }
         val bits = rolls.length * BITS_PER_ROLL
-        fun result(issue: DiceIssue?) = DiceResult(rolls, rolls.length, bits, issue)
+        fun result(issue: DiceIssue?, warning: DiceIssue? = null) = DiceResult(rolls, rolls.length, bits, issue, warning)
         if (rolls.any { it !in '1'..'6' }) return result(DiceIssue.InvalidCharacter)
         if (rolls.length > MAX_ROLLS) return result(DiceIssue.TooMany)
         if (rolls.length < strength.minRolls) return result(DiceIssue.TooFew)
-        if (longestRun(rolls) >= MAX_RUN) return result(DiceIssue.LongRun)
-        if (hasRepeatedPattern(rolls)) return result(DiceIssue.RepeatedPattern)
-        if (chiSquare(rolls) > CHI_SQUARE_LIMIT) return result(DiceIssue.Biased)
-        return result(null)
+        val warning = when {
+            longestRun(rolls) >= MAX_RUN -> DiceIssue.LongRun
+            hasRepeatedPattern(rolls) -> DiceIssue.RepeatedPattern
+            chiSquare(rolls) > CHI_SQUARE_LIMIT -> DiceIssue.Biased
+            else -> null
+        }
+        return result(null, warning)
     }
 
     private fun longestRun(s: String): Int {

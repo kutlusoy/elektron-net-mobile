@@ -13,7 +13,7 @@ class EntropyTest {
     private val rolls50 = "32461151351521144121541512665155412152342515356215"
     private val rolls100 = "5623156151524654345433226215354364351154232441615533635454113466116636564364631432514123262444124453"
 
-    private fun issue(rolls: String, strength: PhraseStrength = PhraseStrength.Words12) = DiceCheck.evaluate(rolls, strength).issue
+    private fun issue(rolls: String, strength: PhraseStrength = PhraseStrength.Words12) = DiceCheck.evaluate(rolls, strength).let { it.issue ?: it.warning }
 
     private fun counter(): RandomSource {
         val n = AtomicInteger()
@@ -75,6 +75,20 @@ class EntropyTest {
         val biased = (1..60).joinToString("") { (if (loaded.nextInt(100) < 45) 1 else loaded.nextInt(6) + 1).toString() }
         assertEquals(DiceIssue.Biased, issue(biased))
         assertEquals(DiceIssue.TooMany, issue("1".repeat(201)))
+    }
+
+    @Test
+    fun qualityWarningsNeverBlockEntropy() {
+        val runny = "1".repeat(10) + rolls50.drop(10)
+        val result = DiceCheck.evaluate(runny, PhraseStrength.Words12)
+        assertEquals(null, result.issue)
+        assertEquals(DiceIssue.LongRun, result.warning)
+        assertEquals(16, EntropyGenerator().fromDice(PhraseStrength.Words12, runny, mixSystem = false).size)
+        try {
+            EntropyGenerator().fromDice(PhraseStrength.Words12, rolls50.dropLast(1), mixSystem = false)
+            fail("too few rolls accepted")
+        } catch (e: IllegalArgumentException) {
+        }
     }
 
     @Test

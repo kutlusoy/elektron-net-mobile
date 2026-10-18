@@ -142,12 +142,13 @@
     <string name="fr_dice_body">Roll a normal six-sided die at least %1$d times and type each result, digits 1 to 6. Use a real die and shake it well. Do not make up numbers.</string>
     <string name="fr_dice_label">Dice rolls</string>
     <string name="fr_dice_count">%1$d of %2$d rolls, %3$d bits</string>
-    <string name="fr_dice_issue_run">Too many identical results in a row. Real dice rarely do this. Check your rolls or roll again.</string>
-    <string name="fr_dice_issue_pattern">A part of the sequence repeats. Roll again with fresh results.</string>
-    <string name="fr_dice_issue_bias">The results look uneven for a fair die. Roll again, or add more rolls.</string>
+    <string name="fr_dice_issue_run">Many identical results in a row. This can happen with real dice but is rare. Check that you typed every roll.</string>
+    <string name="fr_dice_issue_pattern">A part of the sequence repeats. This is unlikely with real dice. Check that you did not copy a pattern.</string>
+    <string name="fr_dice_issue_bias">The results look uneven for a fair die. This can happen by chance. More rolls are fine.</string>
     <string name="fr_dice_only">Dice only (verifiable)</string>
     <string name="fr_dice_only_hint">The words come from your dice alone. You can recompute them yourself with SHA-256 of the digits. Only safe if every roll is real.</string>
     <string name="fr_dice_mix_hint">Your dice are mixed with the phone random generator. The result is at least as strong as the better of the two.</string>
+    <string name="fr_dice_confirm">I rolled a real die for every result</string>
     <string name="fr_dice_create">Create words</string>
     <string name="fr_phrase_show">Show my words</string>
     <string name="fr_phrase_title">Write down these %1$d words</string>
