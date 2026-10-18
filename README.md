@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.10 (draft)
+- **Version:** 0.11 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -152,4 +152,4 @@ The full requirement list is in plan section 9.
 
 ## 11. License
 
-This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries. Review the upstream licenses before redistribution. The license of this repository is not yet decided (see the plan, section 17, Q2).
+Copyright © 2026 Elektron Net Developers. The app is called "Elektron" (mainnet) and "Elektron (T)" (testnet). This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries. Review the upstream licenses before redistribution. The license of this repository is not yet decided (see the plan, section 17, Q2).
