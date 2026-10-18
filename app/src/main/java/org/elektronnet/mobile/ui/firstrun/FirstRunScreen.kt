@@ -54,6 +54,9 @@ import kotlinx.coroutines.withContext
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.ui.BrandBackground
+import org.elektronnet.mobile.ui.BrandHeader
+import org.elektronnet.mobile.ui.GlassCard
 import org.elektronnet.mobile.ui.HeroCard
 import org.elektronnet.mobile.ui.SecureWindow
 import org.elektronnet.mobile.wallet.BackupQuiz
@@ -62,6 +65,7 @@ import org.elektronnet.mobile.wallet.DiceCheck
 import org.elektronnet.mobile.wallet.DiceIssue
 import org.elektronnet.mobile.wallet.EntropyGenerator
 import org.elektronnet.mobile.wallet.PhraseStrength
+import org.elektronnet.mobile.wallet.SetupRequest
 import org.elektronnet.mobile.wallet.TouchEntropy
 import org.elektronnet.mobile.wallet.BootstrapFailure
 import org.elektronnet.mobile.wallet.BootstrapResult
@@ -70,6 +74,7 @@ import org.elektronnet.mobile.wallet.FirstRunState
 import org.elektronnet.mobile.wallet.FirstRunStep
 import org.elektronnet.mobile.wallet.PassphraseCheck
 import org.elektronnet.mobile.wallet.PassphraseStrength
+import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
 fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
@@ -93,36 +98,23 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
     BackHandler(enabled = FirstRunFlow.back(state) != null) { FirstRunFlow.back(state)?.let { state = it } }
 
     fun submit(recover: Boolean) {
-        val phrase = state.phrase
-        val pass = passphrase
-        state = FirstRunFlow.next(state)
-        scope.launch {
-            val result = withContext(Dispatchers.IO) {
-                if (recover) {
-                    while (NodeHost.latest?.headline !is Headline.Synchronized) delay(1_000)
-                }
-                val bootstrap = NodeHost.bootstrap(context)
-                    ?: return@withContext BootstrapResult.Failed(BootstrapFailure.NodeNotReady, "")
-                if (recover) bootstrap.recover(phrase, pass) else bootstrap.create(phrase, pass)
-            }
-            passphrase = ""
-            when (result) {
-                is BootstrapResult.Created -> {
-                    state = FirstRunFlow.next(state)
-                    onFinished()
-                }
-                is BootstrapResult.Failed -> state = FirstRunFlow.failed(state, result.reason)
-            }
-        }
+        NodeHost.beginSetup(SetupRequest(state.phrase, passphrase, recover))
+        passphrase = ""
+        state = state.copy(step = FirstRunStep.Done, phrase = emptyList())
+        onFinished()
     }
 
+    BrandBackground {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
+        BrandHeader(compact = state.step != FirstRunStep.Welcome)
+        GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         when (state.step) {
             FirstRunStep.Welcome -> {
                 Text(stringResource(R.string.fr_welcome_title), style = MaterialTheme.typography.headlineMedium)
@@ -336,7 +328,7 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
                             pair.forEachIndexed { col, word ->
                                 Text(
                                     "${row * 2 + col + 1}. $word",
-                                    fontFamily = FontFamily.Monospace,
+                                    fontFamily = ElektronMono,
                                     modifier = Modifier.weight(1f),
                                 )
                             }
@@ -418,6 +410,9 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
             }
             FirstRunStep.Done -> Unit
         }
+        }
+        }
+    }
     }
 }
 

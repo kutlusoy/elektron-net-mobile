@@ -33,6 +33,7 @@ import org.elektronnet.mobile.ui.SecureWindow
 import org.elektronnet.mobile.wallet.MessageException
 import org.elektronnet.mobile.wallet.MessageFailure
 import org.elektronnet.mobile.wallet.VerifyResult
+import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
 fun MessageScreen(onBack: () -> Unit) {
@@ -137,7 +138,7 @@ fun MessageScreen(onBack: () -> Unit) {
             ) { Text(stringResource(R.string.msg_sign_action)) }
             if (signature.isNotEmpty()) {
                 Text(stringResource(R.string.msg_signature), style = MaterialTheme.typography.labelLarge)
-                Text(signature, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
+                Text(signature, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = { copyText(context, "signature", signature) }) { Text(stringResource(R.string.action_copy)) }
                     TextButton(onClick = { shareText(context, signature) }) { Text(stringResource(R.string.action_share)) }

@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.14 (draft)
+- **Version:** 0.15 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
@@ -360,6 +360,7 @@ Recover:
 ```
 
 - Recovery MUST be re-runnable from the UI without touching chainstate or restarting sync.
+- **Order changed (October 2026):** wallet creation and restore no longer wait for the node. The wallet is created as soon as the node answers (start-up phase counts as waiting), and for a restore the rescan steps 4 and 5 run afterwards when the node has caught up. The abort in step 1 for a missing `rescanutxoset` is replaced by a partial restore with a clear message, so a user can always create or restore a wallet at once.
 - Findings from the contract check on `elektron-net@main` (`447c069`, regtest with `-fastprune`): `importdescriptors` with `timestamp: 0` fails per descriptor on a pruned node (error -1, "Rescan failed ... pruning"), although the wallet is left with a partial balance. Use `"now"` and the explicit rescan. `rescanblockchain` fails with -13 while the wallet is locked, so the wallet must stay unlocked for the whole scan, and the scan can run for minutes on a phone. A reload (`unloadwallet` then `loadwallet`) does not restore coins from pruned blocks: the restored test wallet showed 114.6 of 1,400.9. `rescanutxoset` does not exist in `elektron-net@main`, so X1 is a hard prerequisite for recovery.
 - Use the `checksum` field of `getdescriptorinfo` and append it as `#checksum`. The `descriptor` field it returns has the private keys stripped and cannot be imported.
 - The recovery unlock is the one exception to the 10 second rule (S4). It is bounded to the scan, requires the app in the foreground with the screen kept on, shows progress, and `walletlock` runs in a `finally` path.

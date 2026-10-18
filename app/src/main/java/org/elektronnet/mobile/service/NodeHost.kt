@@ -21,6 +21,9 @@ import org.elektronnet.mobile.wallet.ReceiveWallet
 import org.elektronnet.mobile.wallet.EscrowManager
 import org.elektronnet.mobile.wallet.MessageTools
 import org.elektronnet.mobile.wallet.PsbtTools
+import org.elektronnet.mobile.wallet.SetupRequest
+import org.elektronnet.mobile.wallet.SetupStatus
+import org.elektronnet.mobile.wallet.WalletSetup
 import org.elektronnet.mobile.wallet.SendEngine
 import org.elektronnet.mobile.wallet.SweepEngine
 import org.elektronnet.mobile.wallet.WalletReader
@@ -42,12 +45,23 @@ object NodeHost {
     private var runtime: NodeRuntime? = null
     private var controller: NodeController? = null
     private var datadir: File? = null
+    private var appContext: Context? = null
+
+    private val walletSetup = WalletSetup { appContext?.let(::bootstrap) }
+
+    var setupStatus: SetupStatus by mutableStateOf(SetupStatus.None)
+        private set
 
     @Synchronized
     fun init(context: Context): SettingsStore {
         settings?.let { return it }
         val app = context.applicationContext
+        appContext = app
         val store = SettingsStore(app)
+        if (store.walletReady() && store.rescanPending) {
+            walletSetup.markRescanPending()
+            setupStatus = walletSetup.status
+        }
         val datadir = File(app.filesDir, ChainConfig.datadirName)
         datadir.mkdirs()
         this.datadir = datadir
@@ -70,6 +84,7 @@ object NodeHost {
             budget = store.loadBudget(),
         )
         settings = store
+        org.elektronnet.mobile.ui.theme.UiState.settings = store.loadUi(org.elektronnet.mobile.ui.theme.Palettes.all.map { it.key }.toSet())
         return store
     }
 
@@ -79,6 +94,47 @@ object NodeHost {
         settings?.saveBudget(current.budget)
         latest = snapshot
         return snapshot
+    }
+
+    fun beginSetup(request: SetupRequest) {
+        walletSetup.begin(request)
+        setupStatus = walletSetup.status
+    }
+
+    fun retrySetup() {
+        walletSetup.retry()
+        setupStatus = walletSetup.status
+    }
+
+    fun cancelSetup() {
+        walletSetup.cancel()
+        settings?.rescanPending = false
+        setupStatus = walletSetup.status
+    }
+
+    fun provideRescanPassphrase(passphrase: String) {
+        walletSetup.resumeRescan(passphrase)
+        setupStatus = walletSetup.status
+    }
+
+    val needsRescanPassphrase: Boolean get() = setupStatus == SetupStatus.NeedsRescan && !walletSetup.hasRescanPassphrase
+
+    fun setupTick() {
+        val synced = latest?.headline is org.elektronnet.mobile.runtime.Headline.Synchronized
+        val status = walletSetup.step(synced)
+        val store = settings
+        when (status) {
+            is SetupStatus.Ready -> {
+                store?.setWalletReady(true)
+                store?.rescanPending = false
+            }
+            SetupStatus.NeedsRescan, SetupStatus.Rescanning -> {
+                store?.setWalletReady(true)
+                store?.rescanPending = true
+            }
+            else -> Unit
+        }
+        setupStatus = status
     }
 
     fun bootstrap(context: Context): WalletBootstrap? {

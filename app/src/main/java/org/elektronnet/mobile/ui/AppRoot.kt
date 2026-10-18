@@ -1,6 +1,7 @@
 package org.elektronnet.mobile.ui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -28,6 +29,8 @@ import org.elektronnet.mobile.R
 import org.elektronnet.mobile.policy.PolicySettings
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.firstrun.FirstRunScreen
+import org.elektronnet.mobile.ui.theme.UiState
+import org.elektronnet.mobile.wallet.SetupStatus
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.node.NodeScreen
@@ -68,7 +71,17 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     val store = NodeHost.store
     var settings by remember { mutableStateOf(store?.load() ?: PolicySettings()) }
     val snapshot = NodeHost.latest
-    var walletReady by remember { mutableStateOf(store?.walletReady() ?: false) }
+    var storeReady by remember { mutableStateOf(store?.walletReady() ?: false) }
+    val setup = NodeHost.setupStatus
+    val walletReady = storeReady || setup != SetupStatus.None
+
+    LaunchedEffect(setup) {
+        if (setup is SetupStatus.Ready || setup == SetupStatus.NeedsRescan || setup == SetupStatus.Rescanning) storeReady = true
+        while (setup == SetupStatus.Waiting || setup == SetupStatus.Rescanning || (setup == SetupStatus.NeedsRescan && !NodeHost.needsRescanPassphrase)) {
+            withContext(Dispatchers.IO) { NodeHost.setupTick() }
+            delay(1_000)
+        }
+    }
 
     LaunchedEffect(walletReady, refreshTick) {
         while (walletReady) {
@@ -83,11 +96,12 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         }
     }
 
+    BrandBackground {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
         topBar = { if (ChainConfig.isTestnet) TestnetBar() },
         bottomBar = {
-            if (walletReady) NavigationBar {
+            if (walletReady) NavigationBar(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)) {
                 Tab.entries.forEach { entry ->
                     NavigationBarItem(
                         selected = tab == entry.ordinal,
@@ -106,10 +120,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         store?.setAllowMetered(it)
                         settings = settings.copy(allowMetered = it)
                     },
-                    onFinished = {
-                        store?.setWalletReady(true)
-                        walletReady = true
-                    },
+                    onFinished = {},
                 )
                 return@Box
             }
@@ -145,7 +156,15 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 return@Box
             }
             when (Tab.entries[tab]) {
-                Tab.Wallet -> WalletScreen(
+                Tab.Wallet -> Column {
+                    SetupBanner(
+                        status = setup,
+                        needsPassphrase = NodeHost.needsRescanPassphrase,
+                        onRetry = NodeHost::retrySetup,
+                        onStartOver = NodeHost::cancelSetup,
+                        onPassphrase = NodeHost::provideRescanPassphrase,
+                    )
+                    WalletScreen(
                     model = HomeUiModel.from(snapshot?.headline),
                     balance = HistoryModel.balance(
                         walletData?.balances,
@@ -159,6 +178,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     onReceive = { showReceive = true },
                     onSend = { showSend = true },
                 )
+                }
                 Tab.Node -> NodeScreen(
                     model = NodeTabModel.from(snapshot, settings.userPaused),
                     onPause = {
@@ -174,6 +194,11 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
                 Tab.Settings -> SettingsScreen(
                     settings = settings,
+                    ui = UiState.settings,
+                    onUi = {
+                        store?.saveUi(it)
+                        UiState.settings = it
+                    },
                     onAllowMetered = {
                         store?.setAllowMetered(it)
                         settings = settings.copy(allowMetered = it)
@@ -189,6 +214,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
             }
         }
+    }
     }
 
     if (showSoon) {

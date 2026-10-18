@@ -1,6 +1,7 @@
 package org.elektronnet.mobile.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,8 +46,9 @@ fun HeroCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
         modifier = modifier
             .fillMaxWidth()
             .accentGlow(LocalEffectLevel.current, MaterialTheme.colorScheme.primary)
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.72f))
+            .border(1.dp, androidx.compose.ui.graphics.Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))), RoundedCornerShape(16.dp))
             .padding(16.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) { content() }

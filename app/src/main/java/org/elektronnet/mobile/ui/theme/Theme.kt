@@ -44,6 +44,6 @@ fun ElektronTheme(
         LocalStatus provides status,
         LocalTokens provides tokens,
     ) {
-        MaterialTheme(colorScheme = tokens.toScheme(dark), content = content)
+        MaterialTheme(colorScheme = tokens.toScheme(dark), typography = elektronTypography(), content = content)
     }
 }

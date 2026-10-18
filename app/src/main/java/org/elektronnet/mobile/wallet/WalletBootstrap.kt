@@ -7,7 +7,13 @@ sealed class BootstrapResult {
     data class Failed(val reason: BootstrapFailure, val detail: String) : BootstrapResult()
 }
 
-enum class BootstrapFailure { InvalidPhrase, WeakPassphrase, NodeNotReady, WalletExists, ImportFailed, RecoveryUnsupported, Unknown }
+enum class BootstrapFailure { InvalidPhrase, WeakPassphrase, WrongPassphrase, NodeNotReady, WalletExists, ImportFailed, RecoveryUnsupported, Unknown }
+
+sealed interface RescanOutcome {
+    data object Full : RescanOutcome
+    data object Partial : RescanOutcome
+    data class Failed(val reason: BootstrapFailure) : RescanOutcome
+}
 
 class WalletBootstrap(
     private val rpc: WalletRpc,
@@ -20,9 +26,27 @@ class WalletBootstrap(
     fun create(mnemonic: List<String>, passphrase: String): BootstrapResult =
         run(mnemonic, passphrase, recover = false)
 
-    fun recover(mnemonic: List<String>, passphrase: String): BootstrapResult {
-        if (!supportsUtxoRescan()) return BootstrapResult.Failed(BootstrapFailure.RecoveryUnsupported, "rescanutxoset missing")
-        return run(mnemonic, passphrase, recover = true)
+    fun recover(mnemonic: List<String>, passphrase: String): BootstrapResult = run(mnemonic, passphrase, recover = true)
+
+    fun rescan(passphrase: String): RescanOutcome {
+        var unlocked = false
+        try {
+            try {
+                rpc.call("walletpassphrase", listOf(passphrase, RECOVERY_UNLOCK_SECONDS), walletName)
+                unlocked = true
+            } catch (e: RpcException) {
+                return RescanOutcome.Failed(if (e.code == WRONG_PASSPHRASE) BootstrapFailure.WrongPassphrase else if (e.inWarmup) BootstrapFailure.NodeNotReady else BootstrapFailure.Unknown)
+            }
+            val pruneHeight = (rpc.call("getblockchaininfo", emptyList<Any?>(), null) as Map<*, *>)["pruneheight"] as? Long ?: 0L
+            rpc.call("rescanblockchain", listOf(pruneHeight), walletName)
+            if (!supportsUtxoRescan()) return RescanOutcome.Partial
+            rpc.call("rescanutxoset", emptyList<Any?>(), walletName)
+            return RescanOutcome.Full
+        } catch (e: RpcException) {
+            return RescanOutcome.Failed(if (e.inWarmup) BootstrapFailure.NodeNotReady else BootstrapFailure.Unknown)
+        } finally {
+            if (unlocked) runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+        }
     }
 
     fun supportsUtxoRescan(): Boolean {
@@ -68,11 +92,6 @@ class WalletBootstrap(
                 val error = (failure as Map<*, *>)["error"] as? Map<*, *>
                 throw ImportException(error?.get("message")?.toString() ?: "import failed")
             }
-            if (recover) {
-                val pruneHeight = (rpc.call("getblockchaininfo", emptyList<Any?>(), null) as Map<*, *>)["pruneheight"] as? Long ?: 0L
-                rpc.call("rescanblockchain", listOf(pruneHeight), walletName)
-                rpc.call("rescanutxoset", emptyList<Any?>(), walletName)
-            }
             return BootstrapResult.Created(walletName)
         } catch (e: ImportException) {
             abort(created)
@@ -101,6 +120,7 @@ class WalletBootstrap(
     companion object {
         const val DEFAULT_WALLET = "elektron"
         const val WALLET_EXISTS = -4
+        const val WRONG_PASSPHRASE = -14
         const val CREATE_UNLOCK_SECONDS = 60
         const val RECOVERY_UNLOCK_SECONDS = 3600
         const val CREATE_LOOKAHEAD = 199

@@ -36,6 +36,7 @@ import org.elektronnet.mobile.wallet.Amount
 import org.elektronnet.mobile.wallet.TxItem
 import org.elektronnet.mobile.wallet.TxKind
 import org.elektronnet.mobile.wallet.TxStatus
+import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
 internal fun HistoryDaySection(day: HistoryDay, onOpen: (String) -> Unit) {
@@ -74,7 +75,7 @@ private fun HistoryRowView(row: HistoryRow, onClick: () -> Unit) {
                 Text(detail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        Text("${row.amountText} ${stringResource(R.string.balance_unit)}", fontFamily = FontFamily.Monospace)
+        Text("${row.amountText} ${stringResource(R.string.balance_unit)}", fontFamily = ElektronMono)
     }
 }
 
@@ -137,7 +138,7 @@ fun TxDetailsScreen(item: TxItem, onClose: () -> Unit) {
 private fun DetailLine(label: String, value: String, mono: Boolean = false) {
     Column {
         Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, fontFamily = if (mono) FontFamily.Monospace else null)
+        Text(value, fontFamily = if (mono) ElektronMono else null)
     }
 }
 
