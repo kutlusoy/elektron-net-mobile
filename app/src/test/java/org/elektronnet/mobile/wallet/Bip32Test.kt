@@ -25,15 +25,15 @@ class Bip32Test {
         val mainnet = Descriptors.forWallet("KEY", testnet = false)
         assertEquals(
             listOf(
-                "wpkh(KEY/84h/1370h/0h/0/*)", "wpkh(KEY/84h/1370h/0h/1/*)",
+                "wpkh(KEY/84h/1370h/0h/0/*)", "wpkh(KEY/84h/1370h/0h/1/*)", "pkh(KEY/84h/1370h/0h/0/*)",
                 "wpkh(KEY/84h/0h/0h/0/*)", "wpkh(KEY/84h/0h/0h/1/*)",
             ),
             mainnet.map { it.descriptor },
         )
-        assertEquals(listOf(true, true, false, false), mainnet.map { it.active })
+        assertEquals(listOf(true, true, false, false, false), mainnet.map { it.active })
         assertEquals(listOf(false, true), mainnet.take(2).map { it.internal })
         val testnet = Descriptors.forWallet("KEY", testnet = true)
-        assertEquals(listOf("wpkh(KEY/84h/1h/0h/0/*)", "wpkh(KEY/84h/1h/0h/1/*)"), testnet.map { it.descriptor })
+        assertEquals(listOf("wpkh(KEY/84h/1h/0h/0/*)", "wpkh(KEY/84h/1h/0h/1/*)", "pkh(KEY/84h/1h/0h/0/*)"), testnet.map { it.descriptor })
     }
 }
 

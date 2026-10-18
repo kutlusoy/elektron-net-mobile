@@ -6,4 +6,4 @@ fun interface WalletRpc {
     fun call(method: String, params: Any, wallet: String?): Any?
 }
 
-fun RpcClient.asWalletRpc() = WalletRpc { method, params, wallet -> call(method, params, wallet) }
+fun RpcClient.asWalletRpc(timeoutMs: Int = 30_000) = WalletRpc { method, params, wallet -> call(method, params, wallet, timeoutMs) }

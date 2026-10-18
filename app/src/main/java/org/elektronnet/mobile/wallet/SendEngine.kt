@@ -6,7 +6,7 @@ import org.elektronnet.mobile.node.RpcException
 
 enum class SendFailure {
     InvalidAddress, ForeignNetwork, LegacyNotConfirmed, InvalidAmount, AmountTooSmall, InsufficientFunds,
-    FeeTooLow, PolicyChanged, PsbtMismatch, WrongPassphrase, NodeNotReady, Rejected, Unknown,
+    FeeTooLow, PolicyChanged, PsbtMismatch, WrongPassphrase, NodeNotReady, Rejected, InvalidPsbt, NothingToSign, Unknown,
 }
 
 class SendException(val failure: SendFailure, detail: String = "") : Exception(detail)
@@ -28,6 +28,8 @@ data class Review(
     val feeRate: BigDecimal,
     val inputs: Int,
 )
+
+class SignedSend(val psbt: String, val complete: Boolean)
 
 class PreparedSend(val psbt: String, val request: SendRequest, val review: Review, val policyFloor: BigDecimal, val grossLep: Long)
 
@@ -101,7 +103,8 @@ class SendEngine(
         val others = rows.filter { it.first != prepared.request.address }
         if (others.size > 1 || (prepared.request.max && others.isNotEmpty())) throw SendException(SendFailure.PsbtMismatch)
         others.forEach { if (!isOwnChange(it.first)) throw SendException(SendFailure.PsbtMismatch) }
-        val vsize = ESTIMATE_OVERHEAD + ESTIMATE_INPUT * inputRows.size + ESTIMATE_OUTPUT * rows.size
+        val vsize = (runCatching { (rpc.call("analyzepsbt", listOf(prepared.psbt), null) as Map<*, *>)["estimated_vsize"] as? Number }.getOrNull()?.toInt())
+            ?: (ESTIMATE_OVERHEAD + ESTIMATE_INPUT * inputRows.size + ESTIMATE_OUTPUT * rows.size)
         val rate = BigDecimal(fee).divide(BigDecimal(vsize), 2, RoundingMode.HALF_UP)
         if (rate > prepared.request.feeRate.multiply(RATE_TOLERANCE).add(BigDecimal.ONE)) throw SendException(SendFailure.PsbtMismatch)
         val change = others.sumOf { it.second }
@@ -116,7 +119,7 @@ class SendEngine(
         )
     }
 
-    fun send(prepared: PreparedSend, passphrase: String): String {
+    fun sign(prepared: PreparedSend, passphrase: String): SignedSend {
         val before = validate(prepared)
         if (before != prepared.review) throw SendException(SendFailure.PsbtMismatch)
         val floor = guard { FeeSource(rpc).floor() }
@@ -138,13 +141,24 @@ class SendEngine(
             if (validate(PreparedSend(signed, prepared.request, prepared.review, prepared.policyFloor, prepared.grossLep)) != prepared.review) {
                 throw SendException(SendFailure.PsbtMismatch)
             }
-            val finalized = guard { rpc.call("finalizepsbt", listOf(signed, true), null) as Map<*, *> }
-            if (finalized["complete"] != true) throw SendException(SendFailure.Unknown, "psbt incomplete")
-            val maxRate = FeePresets.btcPerKvb(prepared.request.feeRate.multiply(BigDecimal(SEND_RATE_CAP)))
-            return guard { rpc.call("sendrawtransaction", listOf(finalized["hex"].toString(), maxRate), null).toString() }
+            val finalized = guard { rpc.call("finalizepsbt", listOf(signed, false), null) as Map<*, *> }
+            return SignedSend(signed, finalized["complete"] == true)
         } finally {
             if (unlocked) lockQuietly()
         }
+    }
+
+    fun broadcast(prepared: PreparedSend, signedPsbt: String): String {
+        val finalized = guard { rpc.call("finalizepsbt", listOf(signedPsbt, true), null) as Map<*, *> }
+        if (finalized["complete"] != true) throw SendException(SendFailure.Unknown, "psbt incomplete")
+        val maxRate = FeePresets.btcPerKvb(prepared.request.feeRate.multiply(BigDecimal(SEND_RATE_CAP)))
+        return guard { rpc.call("sendrawtransaction", listOf(finalized["hex"].toString(), maxRate), null).toString() }
+    }
+
+    fun send(prepared: PreparedSend, passphrase: String): String {
+        val signed = sign(prepared, passphrase)
+        if (!signed.complete) throw SendException(SendFailure.Unknown, "psbt incomplete")
+        return broadcast(prepared, signed.psbt)
     }
 
     private fun isOwnChange(address: String): Boolean = guard {
