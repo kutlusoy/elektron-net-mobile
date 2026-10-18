@@ -22,7 +22,7 @@
 - Non-custodial wallet on the node's own descriptor wallet: native SegWit (`be1q...`) addresses, BIP-39 recovery phrase, SLIP-44 coin type 1370 plus legacy path recovery.
 - Review-before-sign transaction flow (PSBT), fee policy re-check before signing, coin control, QR receive and scan.
 - Node dashboard: sync phase, height, peers, disk usage, prune height, snapshot state.
-- Simple everyday wallet in the style of the Electrum wallet (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node.
+- Simple everyday wallet following common mobile wallet conventions (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node.
 - Storage saver (`-fastprune`) on by default with an opt-out; phone nodes serve snapshots only on Wi-Fi while charging.
 - Optional biometric unlock, `elek:` payment links, QR scan and receive.
 - Many languages from the start: English, German, Spanish, French, Italian, then Chinese, Arabic, Japanese, Korean, Hindi, Portuguese, Russian, Turkish, Indonesian, Vietnamese after native review.
