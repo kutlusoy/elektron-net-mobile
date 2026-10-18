@@ -404,7 +404,7 @@ private fun failureText(failure: SendFailure): Int = when (failure) {
     SendFailure.WrongPassphrase -> R.string.send_err_passphrase
     SendFailure.NodeNotReady -> R.string.fr_err_node
     SendFailure.Rejected -> R.string.send_err_rejected
-    SendFailure.Unknown -> R.string.send_err_unknown
+    SendFailure.InvalidPsbt, SendFailure.NothingToSign, SendFailure.Unknown -> R.string.send_err_unknown
 }
 
 private fun copyPlain(context: Context, text: String) {
