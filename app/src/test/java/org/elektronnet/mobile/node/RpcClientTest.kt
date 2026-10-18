@@ -1,9 +1,10 @@
 package org.elektronnet.mobile.node
 
-import com.sun.net.httpserver.HttpServer
 import java.io.File
 import java.io.IOException
-import java.net.InetSocketAddress
+import java.net.InetAddress
+import java.net.ServerSocket
+import java.net.Socket
 import java.nio.file.Files
 import java.util.Base64
 import org.junit.After
@@ -13,7 +14,7 @@ import org.junit.Before
 import org.junit.Test
 
 class RpcClientTest {
-    private lateinit var server: HttpServer
+    private lateinit var server: ServerSocket
     private lateinit var cookie: File
     private var lastAuth: String? = null
     private var lastPath: String? = null
@@ -24,24 +25,63 @@ class RpcClientTest {
     @Before
     fun setUp() {
         cookie = Files.createTempFile("cookie", "").toFile().apply { writeText("__cookie__:secret\n") }
-        server = HttpServer.create(InetSocketAddress("127.0.0.1", 0), 0)
-        server.createContext("/") { exchange ->
-            lastAuth = exchange.requestHeaders.getFirst("Authorization")
-            lastPath = exchange.requestURI.path
-            lastBody = exchange.requestBody.readBytes().toString(Charsets.UTF_8)
-            val bytes = reply.toByteArray()
-            exchange.sendResponseHeaders(status, bytes.size.toLong())
-            exchange.responseBody.use { it.write(bytes) }
+        server = ServerSocket(0, 10, InetAddress.getByName("127.0.0.1"))
+        Thread {
+            while (!server.isClosed) {
+                val socket = try {
+                    server.accept()
+                } catch (e: IOException) {
+                    break
+                }
+                socket.use { handle(it) }
+            }
+        }.apply { isDaemon = true }.start()
+    }
+
+    private fun handle(socket: Socket) {
+        val input = socket.getInputStream()
+        fun readLine(): String {
+            val line = StringBuilder()
+            while (true) {
+                val c = input.read()
+                if (c < 0 || c == '\n'.code) break
+                if (c != '\r'.code) line.append(c.toChar())
+            }
+            return line.toString()
         }
-        server.start()
+        val request = readLine().split(" ")
+        lastPath = java.net.URLDecoder.decode(request[1], "UTF-8").replace("+", " ")
+        var length = 0
+        lastAuth = null
+        while (true) {
+            val header = readLine()
+            if (header.isEmpty()) break
+            val name = header.substringBefore(':').trim().lowercase()
+            val value = header.substringAfter(':').trim()
+            if (name == "content-length") length = value.toInt()
+            if (name == "authorization") lastAuth = value
+        }
+        val body = ByteArray(length)
+        var read = 0
+        while (read < length) {
+            val n = input.read(body, read, length - read)
+            if (n < 0) break
+            read += n
+        }
+        lastBody = String(body, Charsets.UTF_8)
+        val bytes = reply.toByteArray()
+        val out = socket.getOutputStream()
+        out.write("HTTP/1.1 $status X\r\nContent-Length: ${bytes.size}\r\nConnection: close\r\n\r\n".toByteArray())
+        out.write(bytes)
+        out.flush()
     }
 
     @After
     fun tearDown() {
-        server.stop(0)
+        server.close()
     }
 
-    private fun client() = RpcClient(server.address.port, cookie)
+    private fun client() = RpcClient(server.localPort, cookie)
 
     @Test
     fun sendsCookieAuthAndParams() {
