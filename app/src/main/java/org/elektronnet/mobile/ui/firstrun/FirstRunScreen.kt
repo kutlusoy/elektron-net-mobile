@@ -472,5 +472,6 @@ private fun failureText(failure: BootstrapFailure): Int = when (failure) {
     BootstrapFailure.RecoveryUnsupported -> R.string.fr_err_recovery
     BootstrapFailure.InvalidPhrase -> R.string.fr_restore_invalid
     BootstrapFailure.WeakPassphrase -> R.string.fr_pass_weak
+    BootstrapFailure.WrongPassphrase -> R.string.fr_err_passphrase
     BootstrapFailure.ImportFailed, BootstrapFailure.Unknown -> R.string.fr_err_unknown
 }

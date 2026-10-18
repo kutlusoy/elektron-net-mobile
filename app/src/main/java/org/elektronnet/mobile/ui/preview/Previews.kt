@@ -11,6 +11,7 @@ import org.elektronnet.mobile.policy.PolicyReason
 import org.elektronnet.mobile.policy.PolicySettings
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.runtime.RuntimeSnapshot
+import org.elektronnet.mobile.ui.model.UiSettings
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.node.NodeScreen
@@ -74,9 +75,9 @@ private fun Node(snapshot: RuntimeSnapshot?, userPaused: Boolean = false) {
 @Preview(name = "Node stopped", showBackground = true) @Composable private fun NodeStopped() = Node(stopped)
 
 @Preview(name = "Settings", showBackground = true) @Composable private fun SettingsPreview() = ElektronTheme {
-    SettingsScreen(PolicySettings(), onAllowMetered = {}, onChargingOnly = {}, onBackground = {})
+    SettingsScreen(PolicySettings(), onAllowMetered = {}, onChargingOnly = {}, onBackground = {}, ui = UiSettings(), onUi = {})
 }
 
 @Preview(name = "Settings large font", showBackground = true, fontScale = 2f) @Composable private fun SettingsLargeFont() = ElektronTheme {
-    SettingsScreen(PolicySettings(chargingOnly = true), onAllowMetered = {}, onChargingOnly = {}, onBackground = {})
+    SettingsScreen(PolicySettings(chargingOnly = true), onAllowMetered = {}, onChargingOnly = {}, onBackground = {}, ui = UiSettings(), onUi = {})
 }

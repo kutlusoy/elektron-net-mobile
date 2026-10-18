@@ -354,6 +354,7 @@
     <string name="fr_restore_title">Enter your recovery phrase</string>
     <string name="fr_restore_body">Enter your 12 or 24 words separated by spaces.</string>
     <string name="fr_restore_invalid">These words are not a valid recovery phrase. Check spelling and order.</string>
+    <string name="fr_err_passphrase">That passphrase does not match this wallet.</string>
     <string name="fr_err_node">Your node is not ready yet. Wait a moment and try again.</string>
     <string name="fr_err_exists">A wallet already exists on this device.</string>
     <string name="fr_err_recovery">Restoring is not available yet with this version of the node.</string>
