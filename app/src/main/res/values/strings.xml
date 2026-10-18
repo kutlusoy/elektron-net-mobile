@@ -268,6 +268,14 @@
     <string name="receive_amount">Amount (%1$s)</string>
     <string name="receive_amount_invalid">Enter a number with up to 8 decimals, for example 1.5.</string>
     <string name="receive_note">Note (optional)</string>
+    <string name="setup_waiting">Your wallet is being set up. This happens as soon as your node has started.</string>
+    <string name="setup_rescanning">Restoring your balance. This can take a few minutes.</string>
+    <string name="setup_needs_sync">Your wallet was restored. Your balance appears when your node has caught up with the network.</string>
+    <string name="setup_partial">Older payments cannot be restored yet with this version of the node. New payments appear normally.</string>
+    <string name="setup_start_over">Start over</string>
+    <string name="setup_enter_passphrase">Enter passphrase to finish restoring</string>
+    <string name="setup_pass_title">Finish restoring</string>
+    <string name="setup_pass_body">Your passphrase unlocks the wallet for the search of your coins. It is not stored.</string>
     <string name="fr_welcome_title">Welcome</string>
     <string name="fr_welcome_body">Your own wallet with your own copy of the network. No account, no server.</string>
     <string name="fr_create">Create new wallet</string>

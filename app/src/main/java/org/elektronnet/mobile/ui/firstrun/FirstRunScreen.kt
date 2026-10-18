@@ -62,6 +62,7 @@ import org.elektronnet.mobile.wallet.DiceCheck
 import org.elektronnet.mobile.wallet.DiceIssue
 import org.elektronnet.mobile.wallet.EntropyGenerator
 import org.elektronnet.mobile.wallet.PhraseStrength
+import org.elektronnet.mobile.wallet.SetupRequest
 import org.elektronnet.mobile.wallet.TouchEntropy
 import org.elektronnet.mobile.wallet.BootstrapFailure
 import org.elektronnet.mobile.wallet.BootstrapResult
@@ -93,27 +94,10 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
     BackHandler(enabled = FirstRunFlow.back(state) != null) { FirstRunFlow.back(state)?.let { state = it } }
 
     fun submit(recover: Boolean) {
-        val phrase = state.phrase
-        val pass = passphrase
-        state = FirstRunFlow.next(state)
-        scope.launch {
-            val result = withContext(Dispatchers.IO) {
-                if (recover) {
-                    while (NodeHost.latest?.headline !is Headline.Synchronized) delay(1_000)
-                }
-                val bootstrap = NodeHost.bootstrap(context)
-                    ?: return@withContext BootstrapResult.Failed(BootstrapFailure.NodeNotReady, "")
-                if (recover) bootstrap.recover(phrase, pass) else bootstrap.create(phrase, pass)
-            }
-            passphrase = ""
-            when (result) {
-                is BootstrapResult.Created -> {
-                    state = FirstRunFlow.next(state)
-                    onFinished()
-                }
-                is BootstrapResult.Failed -> state = FirstRunFlow.failed(state, result.reason)
-            }
-        }
+        NodeHost.beginSetup(SetupRequest(state.phrase, passphrase, recover))
+        passphrase = ""
+        state = state.copy(step = FirstRunStep.Done, phrase = emptyList())
+        onFinished()
     }
 
     Column(

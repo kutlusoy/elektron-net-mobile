@@ -82,11 +82,14 @@ class WalletBootstrapIntegrationTest {
     }
 
     @Test
-    fun recoveryAbortsWhenUtxoRescanIsMissing() = withNode { rpc, dir ->
+    fun recoveryCreatesTheWalletAtOnceAndRescansLater() = withNode { rpc, dir ->
         val b = bootstrap(rpc, dir)
-        if (b.supportsUtxoRescan()) return@withNode
-        val result = b.recover(phrase, "correct horse battery")
-        assertEquals(BootstrapFailure.RecoveryUnsupported, (result as BootstrapResult.Failed).reason)
-        assertEquals(emptyList<Any?>(), rpc.call("listwallets", emptyList<Any?>(), null))
+        assertEquals(BootstrapResult.Created("elektron"), b.recover(phrase, "correct horse battery"))
+        assertEquals(listOf("elektron"), rpc.call("listwallets", emptyList<Any?>(), null))
+        val outcome = b.rescan("correct horse battery")
+        assertTrue(outcome is RescanOutcome.Full || outcome is RescanOutcome.Partial)
+        assertEquals(RescanOutcome.Failed(BootstrapFailure.WrongPassphrase), b.rescan("wrong passphrase!"))
+        val info = rpc.call("getwalletinfo", emptyList<Any?>(), "elektron") as Map<*, *>
+        assertEquals(0L, info["unlocked_until"])
     }
 }

@@ -53,6 +53,10 @@ class SettingsStore(context: Context) {
         }
     }
 
+    var rescanPending: Boolean
+        get() = prefs.getBoolean(RESCAN_PENDING, false)
+        set(value) = prefs.edit().putBoolean(RESCAN_PENDING, value).apply()
+
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
 
     fun setUserStopped(value: Boolean) = prefs.edit().putBoolean(USER_STOPPED, value).apply()
@@ -90,6 +94,7 @@ class SettingsStore(context: Context) {
         const val SCHEDULE_END = "schedule_end"
         const val FASTPRUNE = "fastprune"
         const val WALLET_READY = "wallet_ready"
+        const val RESCAN_PENDING = "rescan_pending"
         const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"
         const val BUDGET_MONTH = "budget_month"
