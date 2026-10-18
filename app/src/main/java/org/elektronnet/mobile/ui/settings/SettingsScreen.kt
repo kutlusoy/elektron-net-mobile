@@ -40,6 +40,7 @@ fun SettingsScreen(
         ToggleRow(R.string.settings_background, R.string.settings_background_hint, settings.backgroundEnabled, onBackground)
         Text(stringResource(R.string.settings_about), style = MaterialTheme.typography.titleMedium)
         Text(stringResource(R.string.settings_version, BuildConfig.VERSION_NAME), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.settings_copyright), color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 

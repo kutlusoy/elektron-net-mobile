@@ -55,7 +55,7 @@ android {
         create("mainnet") {
             dimension = "chain"
             applicationId = "org.elektronnet.mobile"
-            resValue("string", "app_name", "Elektron Net")
+            resValue("string", "app_name", "Elektron")
             manifestPlaceholders["uriScheme"] = "elek"
             buildConfigField("String", "CHAIN", "\"main\"")
             buildConfigField("String", "NODE_CHAIN_ARG", "\"\"")
@@ -69,7 +69,7 @@ android {
         create("testnet") {
             dimension = "chain"
             applicationId = "org.elektronnet.mobiletestnet"
-            resValue("string", "app_name", "Elektron Testnet")
+            resValue("string", "app_name", "Elektron (T)")
             manifestPlaceholders["uriScheme"] = "elektest"
             buildConfigField("String", "CHAIN", "\"testnet\"")
             buildConfigField("String", "NODE_CHAIN_ARG", "\"-testnet\"")
