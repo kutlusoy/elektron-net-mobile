@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.8 (draft)
+- **Version:** 0.9 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -118,6 +118,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - **Review:** recipient (shortened with emphasized ends), amount, network fee, total. Everything the PSBT contains is checked before this screen is shown (plan §8.4). A single primary button "Send".
 - **Confirm:** biometric prompt if enabled, otherwise the passphrase field. The wallet is unlocked only for the signing window (plan S4).
 - **Done:** check mark, amount, "View transaction", "Done". The new transaction appears at the top of the list as pending.
+- **Implementation notes (v0.9):** `SendEngine` builds the payment with `walletcreatefundedpsbt` (explicit fee rate, replaceable, native change from the wallet), decodes it and checks that the destination appears exactly once with the exact amount, that every other output is the wallet's own change address (`getaddressinfo` with `ischange`), that inputs minus outputs equals the fee, and that the effective fee rate is within a tolerance of the chosen one. The same check runs again immediately before the wallet is unlocked and once more on the signed PSBT, and the review must be identical each time (plan S5). The unlock lasts 10 seconds and `walletlock` runs in a `finally` path, so a wrong passphrase, a mismatch or a rejection leaves the wallet locked and nothing sent. "Send everything" uses `subtractFeeFromOutputs`. Fee choices come from `estimatesmartfee` for 30, 5 and 1 blocks (the block time is 60 seconds), kept in ascending order and never below the larger of the relay minimum, the mempool minimum and the wallet minimum of 1 lep/vB. While no estimate exists the lowest accepted fees are used and the screen says so. Payment links open the same screen through the `elek:` or `elektest:` intent. The send screens block screenshots and ignore touches from overlay windows (S3, S8), and the wallet is locked whenever the app leaves the foreground.
 - **While not synchronized:** the Send button explains "Sending needs a synchronized node. Your node is at 62 percent." and links to the Node tab. v1 has no override. Rationale: an incomplete view of the chain can show wrong balances and invite double-spend mistakes. Decision to confirm (§12, U2).
 - Failure messages map from node error codes to plain text with one suggested action (plan §3.5).
 
@@ -218,7 +219,7 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 - [x] Wallet home with balance card, sync states, list and empty state (screens unbuilt on device, logic tested)
 - [x] First-run flow with explainer, backup quiz and passphrase (logic and screens in place, biometric step still open, restore waits for X1)
 - [x] Receive with `elek:` QR, fresh address per visit, optional amount and note (screen unbuilt on device, logic tested)
-- [ ] Send flow with inline validation, fee choices, review, authentication, done
+- [x] Send flow with inline validation, fee choices, review, authentication, done (logic tested against a real node, screens unbuilt on device; QR scanning and biometric confirmation still open)
 - [x] Transaction details (explorer link and fee bump still open)
 - [ ] Node tab in plain language with details collapsed
 - [ ] Settings groups mapped to policy settings, defaults recommended

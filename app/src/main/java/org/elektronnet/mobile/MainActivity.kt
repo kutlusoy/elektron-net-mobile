@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val settings = NodeHost.init(this)
+        NodeHost.incomingUri = intent?.dataString
         setContent {
             ElektronTheme {
                 AppRoot(
@@ -36,6 +37,11 @@ class MainActivity : ComponentActivity() {
         if (!settings.load().userStopped) requestStart()
     }
 
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        NodeHost.incomingUri = intent.dataString
+    }
+
     override fun onStart() {
         super.onStart()
         NodeHost.appVisible = true
@@ -43,6 +49,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStop() {
         NodeHost.appVisible = false
+        NodeHost.lockWallet()
         super.onStop()
     }
 

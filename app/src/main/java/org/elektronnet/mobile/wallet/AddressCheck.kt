@@ -7,8 +7,7 @@ sealed interface AddressKind {
     data object Invalid : AddressKind
 }
 
-class AddressCheck(private val testnet: Boolean) {
-    private val hrp = if (testnet) "tb" else "be"
+class AddressCheck(private val testnet: Boolean, private val hrp: String = if (testnet) "tb" else "be") {
     private val legacyVersions = if (testnet) setOf(0x6f, 0xc4) else setOf(0x00, 0x05)
 
     fun classify(raw: String): AddressKind {

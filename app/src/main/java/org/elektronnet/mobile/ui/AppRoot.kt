@@ -32,6 +32,7 @@ import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.node.NodeScreen
 import org.elektronnet.mobile.ui.receive.ReceiveScreen
+import org.elektronnet.mobile.ui.send.SendScreen
 import org.elektronnet.mobile.ui.wallet.TxDetailsScreen
 import java.time.ZoneId
 import kotlinx.coroutines.Dispatchers
@@ -58,6 +59,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     var tab by rememberSaveable { mutableStateOf(Tab.Wallet.ordinal) }
     var showSoon by remember { mutableStateOf(false) }
     var showReceive by rememberSaveable { mutableStateOf(false) }
+    var showSend by rememberSaveable { mutableStateOf(false) }
+    var refreshTick by remember { mutableStateOf(0) }
     var openTx by rememberSaveable { mutableStateOf<String?>(null) }
     var walletData by remember { mutableStateOf<WalletData?>(null) }
     val store = NodeHost.store
@@ -65,7 +68,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     val snapshot = NodeHost.latest
     var walletReady by remember { mutableStateOf(store?.walletReady() ?: false) }
 
-    LaunchedEffect(walletReady) {
+    LaunchedEffect(walletReady, refreshTick) {
         while (walletReady) {
             if (NodeHost.appVisible) {
                 val fresh = withContext(Dispatchers.IO) {
@@ -113,6 +116,24 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 TxDetailsScreen(detail, onClose = { openTx = null })
                 return@Box
             }
+            val incoming = NodeHost.incomingUri
+            if (incoming != null && walletReady) showSend = true
+            if (showSend) {
+                SendScreen(
+                    initialUri = incoming,
+                    onClose = {
+                        NodeHost.incomingUri = null
+                        showSend = false
+                    },
+                    onDone = { id ->
+                        NodeHost.incomingUri = null
+                        showSend = false
+                        refreshTick++
+                        openTx = id
+                    },
+                )
+                return@Box
+            }
             if (showReceive) {
                 ReceiveScreen(onClose = { showReceive = false })
                 return@Box
@@ -129,7 +150,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     onOpenTx = { openTx = it },
                     onOpenNode = { tab = Tab.Node.ordinal },
                     onReceive = { showReceive = true },
-                    onSend = { showSoon = true },
+                    onSend = { showSend = true },
                 )
                 Tab.Node -> NodeScreen(
                     model = NodeTabModel.from(snapshot, settings.userPaused),
