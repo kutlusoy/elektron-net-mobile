@@ -510,8 +510,6 @@
     <string name="bump_err_unknown">The node did not accept the replacement.</string>
     <string name="addr_label">Label</string>
     <string name="addr_label_hint">For example the name of the sender</string>
-    <string name="addr_label">Label</string>
-    <string name="addr_label_hint">For example the name of the sender</string>
     <string name="addr_empty">No addresses used yet.</string>
     <string name="addr_copy_hint">Tap an address to copy it.</string>
     <string name="add_wallet_title">Add a wallet</string>
