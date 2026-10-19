@@ -1,6 +1,7 @@
 package org.elektronnet.mobile.service
 
 import android.content.Context
+import org.elektronnet.mobile.wallet.AmountUnit
 import java.time.YearMonth
 import org.elektronnet.mobile.node.Json
 import org.elektronnet.mobile.ui.model.UiSettings
@@ -86,6 +87,14 @@ class SettingsStore(context: Context) {
     fun saveUi(ui: UiSettings) {
         prefs.edit().putString(THEME_KEY, ui.themeKey).putString(THEME_MODE, ui.mode.name).apply()
     }
+
+    var amountUnit: AmountUnit
+        get() = AmountUnit.entries.firstOrNull { it.name == prefs.getString(AMOUNT_UNIT, null) } ?: AmountUnit.Elek
+        set(value) = prefs.edit().putString(AMOUNT_UNIT, value.name).apply()
+
+    var nodeOnly: Boolean
+        get() = prefs.getBoolean(NODE_ONLY, false)
+        set(value) = prefs.edit().putBoolean(NODE_ONLY, value).apply()
 
     var lockGraceMs: Long
         get() = prefs.getLong(LOCK_GRACE, 30_000L)
@@ -176,6 +185,8 @@ class SettingsStore(context: Context) {
         const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"
         const val LOCK_GRACE = "lock_grace_ms"
+        const val AMOUNT_UNIT = "amount_unit"
+        const val NODE_ONLY = "node_only"
         const val NOTIFY_INCOMING = "notify_incoming"
         const val SEEN_INCOMING = "seen_incoming"
         const val BUDGET_MONTH = "budget_month"

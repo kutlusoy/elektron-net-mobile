@@ -685,4 +685,25 @@
     <string name="settings_language">Dil</string>
     <string name="settings_language_system">Sistem dili</string>
     <string name="events_to_retarget">Retarget\'e kalan blok</string>
+    <string name="settings_units">Tutarlar için birim</string>
+    <string name="units_hint">Tüm tutarlar ve girişler için kullanılır. Onay ekranları tutarı ELEK olarak da gösterir. Ücretler lep/vB olarak kalır.</string>
+    <string name="update_title">Güncellemeler</string>
+    <string name="update_hint">github.com\'dan bu uygulamanın en yeni sürüm etiketini ister. Başka hiçbir şey gönderilmez.</string>
+    <string name="update_check">Güncellemeleri denetle</string>
+    <string name="update_checking">Denetleniyor...</string>
+    <string name="update_latest">En son sürüme sahipsiniz.</string>
+    <string name="update_available">%1$s sürümü mevcut.</string>
+    <string name="update_open">Sürüm sayfasını aç</string>
+    <string name="update_failed">Güncellemeler denetlenemedi. Daha sonra tekrar deneyin.</string>
+    <string name="history_page">Sayfa %1$d / %2$d</string>
+    <string name="history_prev">Yeni</string>
+    <string name="history_next">Eski</string>
+    <string name="fr_skip">Şimdilik atla (yalnızca düğüm)</string>
+    <string name="fr_skip_hint">Yalnızca düğümü çalıştır. Cüzdanı istediğiniz zaman Cüzdan sekmesinde oluşturabilir veya geri yükleyebilirsiniz.</string>
+    <string name="nowallet_title">Henüz cüzdan yok</string>
+    <string name="nowallet_body">Düğümünüz cüzdansız çalışıyor. İstediğiniz zaman bir cüzdan oluşturun veya geri yükleyin, eşitlenen veriler korunur.</string>
+    <string name="nowallet_create">Cüzdan oluştur veya geri yükle</string>
+    <string name="secret_show">Göster</string>
+    <string name="secret_hide">Gizle</string>
+    <string name="wallets_remove_unused">Bu cüzdanda ödeme ve bakiye yok. Parola ifadesi olmadan kaldırabilirsiniz, alanı boş bırakın.</string>
 </resources>

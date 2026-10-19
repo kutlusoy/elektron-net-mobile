@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.tools
 
+import org.elektronnet.mobile.ui.SecretField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -163,12 +164,11 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(stringResource(R.string.send_confirm_body))
-                    OutlinedTextField(
+                    SecretField(
                         value = passphrase,
                         onValueChange = { passphrase = it },
                         label = { Text(stringResource(R.string.fr_pass_label)) },
                         singleLine = true,
-                        visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     )
                 }
@@ -244,7 +244,7 @@ private fun PsbtDetails(v: PsbtView, labels: Map<String, String>) {
     }
     v.netByWallet.forEach { (wallet, net) ->
         val sign = if (net > 0) "+" else if (net < 0) "-" else ""
-        Text(stringResource(R.string.psbt_net, labels[wallet] ?: wallet, sign + Amount.format(Math.abs(net)), stringResource(R.string.balance_unit)))
+        Text(stringResource(R.string.psbt_net, labels[wallet] ?: wallet, sign + Amount.display(Math.abs(net)), Amount.unitSymbol()))
     }
     Text(stringResource(R.string.psbt_outputs), style = MaterialTheme.typography.labelLarge)
     v.outputs.forEach { out ->
@@ -252,14 +252,14 @@ private fun PsbtDetails(v: PsbtView, labels: Map<String, String>) {
         Column {
             Text(out.address?.let(HistoryModel::shorten) ?: stringResource(R.string.psbt_unknown_output), fontFamily = ElektronMono)
             Text(
-                Amount.format(out.amountLep) + " " + stringResource(R.string.balance_unit) + (owner?.let { "  " + stringResource(R.string.psbt_output_own, it) } ?: ""),
+                Amount.display(out.amountLep) + " " + Amount.unitSymbol() + (owner?.let { "  " + stringResource(R.string.psbt_output_own, it) } ?: ""),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
     v.feeLep?.let {
-        Text(stringResource(R.string.tx_fee) + ": " + Amount.format(it) + " " + stringResource(R.string.balance_unit) + (v.feeRate?.let { r -> "  (" + stringResource(R.string.send_fee_rate, r.toPlainString()) + ")" } ?: ""))
+        Text(stringResource(R.string.tx_fee) + ": " + Amount.display(it) + " " + Amount.unitSymbol() + (v.feeRate?.let { r -> "  (" + stringResource(R.string.send_fee_rate, r.toPlainString()) + ")" } ?: ""))
     }
 }
 

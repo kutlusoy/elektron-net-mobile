@@ -49,7 +49,7 @@ object SendInput {
 
     fun amount(text: String, availableLep: Long): AmountState {
         if (text.isBlank()) return AmountState.Empty
-        val lep = Amount.parse(text, allowComma = true) ?: return AmountState.Invalid
+        val lep = Amount.parseIn(Amount.unit, text, allowComma = true) ?: return AmountState.Invalid
         return if (lep > availableLep) AmountState.Over(availableLep) else AmountState.Ok(lep)
     }
 

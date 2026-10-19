@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.wallet
 
+import org.elektronnet.mobile.ui.SecretField
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -86,7 +87,7 @@ internal fun HistoryRowView(row: HistoryRow, onClick: () -> Unit) {
                 Text(detail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        Text("${row.amountText} ${stringResource(R.string.balance_unit)}", fontFamily = ElektronMono)
+        Text("${row.amountText} ${Amount.unitSymbol()}", fontFamily = ElektronMono)
     }
 }
 
@@ -130,7 +131,7 @@ fun TxDetailsScreen(item: TxItem, onClose: () -> Unit, onBumped: (String) -> Uni
         Text(status)
         val sign = if (item.netLep > 0) "+" else if (item.netLep < 0) "-" else ""
         Text(
-            "$sign${Amount.format(Math.abs(item.netLep))} ${stringResource(R.string.balance_unit)}",
+            "$sign${Amount.display(Math.abs(item.netLep))} ${Amount.unitSymbol()}",
             style = MaterialTheme.typography.displaySmall,
         )
         if (item.timeSeconds > 0) {
@@ -139,7 +140,7 @@ fun TxDetailsScreen(item: TxItem, onClose: () -> Unit, onBumped: (String) -> Uni
             DetailLine(stringResource(R.string.tx_date), formatted)
         }
         item.address?.let { DetailLine(stringResource(R.string.tx_address), it, mono = true) }
-        item.feeLep?.let { DetailLine(stringResource(R.string.tx_fee), "${Amount.format(it)} ${stringResource(R.string.balance_unit)}") }
+        item.feeLep?.let { DetailLine(stringResource(R.string.tx_fee), "${Amount.display(it)} ${Amount.unitSymbol()}") }
         DetailLine(stringResource(R.string.tx_id), item.txid, mono = true)
         OutlinedButton(onClick = { copy(context, item.txid) }) { Text(stringResource(R.string.action_copy)) }
         NodeHost.explorerTxUrl(item.txid)?.let { link ->
@@ -197,12 +198,11 @@ private fun BumpSection(txid: String, onBumped: (String) -> Unit) {
         keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal),
         modifier = Modifier.fillMaxWidth(),
     )
-    androidx.compose.material3.OutlinedTextField(
+    SecretField(
         value = passphrase,
         onValueChange = { passphrase = it },
         label = { Text(stringResource(R.string.fr_pass_label)) },
         singleLine = true,
-        visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
         keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Password),
         modifier = Modifier.fillMaxWidth(),
     )

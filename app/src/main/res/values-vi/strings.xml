@@ -685,4 +685,25 @@
     <string name="settings_language">Ngôn ngữ</string>
     <string name="settings_language_system">Ngôn ngữ hệ thống</string>
     <string name="events_to_retarget">Số khối đến retarget</string>
+    <string name="settings_units">Đơn vị cho số tiền</string>
+    <string name="units_hint">Dùng cho mọi số tiền và ô nhập. Màn hình xem lại cũng hiện số tiền theo ELEK. Phí vẫn tính bằng lep/vB.</string>
+    <string name="update_title">Cập nhật</string>
+    <string name="update_hint">Hỏi github.com về thẻ bản phát hành mới nhất của ứng dụng này. Không gửi thêm gì khác.</string>
+    <string name="update_check">Kiểm tra cập nhật</string>
+    <string name="update_checking">Đang kiểm tra...</string>
+    <string name="update_latest">Bạn đang dùng phiên bản mới nhất.</string>
+    <string name="update_available">Đã có phiên bản %1$s.</string>
+    <string name="update_open">Mở trang phát hành</string>
+    <string name="update_failed">Không thể kiểm tra cập nhật. Hãy thử lại sau.</string>
+    <string name="history_page">Trang %1$d/%2$d</string>
+    <string name="history_prev">Mới hơn</string>
+    <string name="history_next">Cũ hơn</string>
+    <string name="fr_skip">Bỏ qua (chỉ chạy node)</string>
+    <string name="fr_skip_hint">Chỉ chạy node. Bạn có thể tạo hoặc khôi phục ví bất cứ lúc nào trong tab Ví.</string>
+    <string name="nowallet_title">Chưa có ví</string>
+    <string name="nowallet_body">Node của bạn đang chạy mà không có ví. Hãy tạo hoặc khôi phục khi bạn muốn, dữ liệu đã đồng bộ vẫn được giữ.</string>
+    <string name="nowallet_create">Tạo hoặc khôi phục ví</string>
+    <string name="secret_show">Hiện</string>
+    <string name="secret_hide">Ẩn</string>
+    <string name="wallets_remove_unused">Ví này không có giao dịch và không có tiền. Bạn có thể xóa mà không cần cụm mật khẩu, hãy để trống ô.</string>
 </resources>

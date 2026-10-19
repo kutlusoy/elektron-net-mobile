@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.wallets
 
+import org.elektronnet.mobile.ui.SecretField
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -112,11 +113,11 @@ fun WalletDetailsScreen(onBack: () -> Unit) {
                 }
                 InfoRow(stringResource(R.string.details_id), NodeHost.activeWallet, mono = true)
                 balances?.let {
-                    InfoRow(stringResource(R.string.details_balance), Amount.format(it.trustedLep) + " " + stringResource(R.string.balance_unit))
-                    InfoRow(stringResource(R.string.details_pending), Amount.format(it.pendingLep) + " " + stringResource(R.string.balance_unit))
-                    InfoRow(stringResource(R.string.details_immature), Amount.format(it.immatureLep) + " " + stringResource(R.string.balance_unit))
+                    InfoRow(stringResource(R.string.details_balance), Amount.display(it.trustedLep) + " " + Amount.unitSymbol())
+                    InfoRow(stringResource(R.string.details_pending), Amount.display(it.pendingLep) + " " + Amount.unitSymbol())
+                    InfoRow(stringResource(R.string.details_immature), Amount.display(it.immatureLep) + " " + Amount.unitSymbol())
                     if (it.usedLep > 0) {
-                        InfoRow(stringResource(R.string.details_used), Amount.format(it.usedLep) + " " + stringResource(R.string.balance_unit))
+                        InfoRow(stringResource(R.string.details_used), Amount.display(it.usedLep) + " " + Amount.unitSymbol())
                         Hint(stringResource(R.string.details_used_hint))
                     }
                 }
@@ -163,9 +164,9 @@ fun CoinsScreen(onBack: () -> Unit) {
         if (failed) ErrorText(stringResource(R.string.coins_unavailable))
         if (tab == 0) {
             val list = coins.orEmpty()
-            val unit = stringResource(R.string.balance_unit)
+            val unit = Amount.unitSymbol()
             Text(
-                stringResource(R.string.coins_summary, Amount.format(list.filter { !it.frozen }.sumOf { it.amountLep }) + " " + unit, Amount.format(list.filter { it.frozen }.sumOf { it.amountLep }) + " " + unit),
+                stringResource(R.string.coins_summary, Amount.display(list.filter { !it.frozen }.sumOf { it.amountLep }) + " " + unit, Amount.display(list.filter { it.frozen }.sumOf { it.amountLep }) + " " + unit),
                 style = MaterialTheme.typography.titleMedium,
             )
             Hint(stringResource(R.string.coins_frozen_hint))
@@ -174,7 +175,7 @@ fun CoinsScreen(onBack: () -> Unit) {
                 GlassCard {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text(Amount.format(coin.amountLep) + " " + unit, style = MaterialTheme.typography.titleMedium)
+                            Text(Amount.display(coin.amountLep) + " " + unit, style = MaterialTheme.typography.titleMedium)
                             coin.address?.let {
                                 Text(it, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall, modifier = Modifier.clickable { copyText(context, "address", it) })
                             }
@@ -207,7 +208,7 @@ fun CoinsScreen(onBack: () -> Unit) {
                         Column(modifier = Modifier.weight(1f).clickable { copyText(context, "address", row.address) }, verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(row.address, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
                             row.label?.let { Text(it, color = MaterialTheme.colorScheme.primary) }
-                            Hint(stringResource(R.string.addr_received, Amount.format(row.receivedLep) + " " + stringResource(R.string.balance_unit)) + "  ·  " + stringResource(R.string.addr_tx, row.txCount))
+                            Hint(stringResource(R.string.addr_received, Amount.display(row.receivedLep) + " " + Amount.unitSymbol()) + "  ·  " + stringResource(R.string.addr_tx, row.txCount))
                         }
                         TextButton(onClick = { labelFor = row }) { Text(stringResource(R.string.addr_label)) }
                     }
@@ -295,7 +296,7 @@ fun CoinPickerDialog(wallet: String, selected: List<Coin>, onDone: (List<Coin>) 
     LaunchedEffect(wallet) {
         coins = withContext(Dispatchers.IO) { runCatching { NodeHost.coinControl(wallet)?.coins()?.filter { !it.frozen } }.getOrNull() }.orEmpty()
     }
-    val unit = stringResource(R.string.balance_unit)
+    val unit = Amount.unitSymbol()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.coinpick_title)) },
@@ -318,7 +319,7 @@ fun CoinPickerDialog(wallet: String, selected: List<Coin>, onDone: (List<Coin>) 
                     ) {
                         androidx.compose.material3.Checkbox(checked = coin.id in chosen, onCheckedChange = null)
                         Column(modifier = Modifier.padding(start = 8.dp)) {
-                            Text(Amount.format(coin.amountLep) + " " + unit)
+                            Text(Amount.display(coin.amountLep) + " " + unit)
                             coin.address?.let { Text(it.take(10) + "..." + it.takeLast(6), fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
                         }
                     }
@@ -339,22 +340,24 @@ private fun RemoveWalletDialog(wallet: OwnWallet, onDismiss: () -> Unit) {
     var confirmed by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var failure by remember { mutableStateOf<org.elektronnet.mobile.wallet.RemoveFailure?>(null) }
+    var unused by remember { mutableStateOf(false) }
+    LaunchedEffect(wallet.name) { unused = withContext(Dispatchers.IO) { NodeHost.walletIsUnused(wallet.name) } }
     AlertDialog(
         onDismissRequest = { if (!busy) onDismiss() },
         title = { Text(stringResource(R.string.wallets_remove_title, walletTitle(wallet))) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(stringResource(R.string.wallets_remove_body))
+                if (unused) Text(stringResource(R.string.wallets_remove_unused), color = MaterialTheme.colorScheme.primary)
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { confirmed = !confirmed }) {
                     androidx.compose.material3.Checkbox(checked = confirmed, onCheckedChange = null)
                     Text(stringResource(R.string.wallets_remove_confirm), modifier = Modifier.padding(start = 8.dp))
                 }
-                OutlinedTextField(
+                SecretField(
                     value = passphrase,
                     onValueChange = { passphrase = it },
                     label = { Text(stringResource(R.string.fr_pass_label)) },
                     singleLine = true,
-                    visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Password),
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -373,14 +376,14 @@ private fun RemoveWalletDialog(wallet: OwnWallet, onDismiss: () -> Unit) {
         },
         confirmButton = {
             TextButton(
-                enabled = confirmed && passphrase.isNotEmpty() && !busy,
+                enabled = confirmed && (passphrase.isNotEmpty() || unused) && !busy,
                 onClick = {
                     val pass = passphrase
                     passphrase = ""
                     failure = null
                     busy = true
                     scope.launch {
-                        val result = withContext(Dispatchers.IO) { runCatching { NodeHost.removeWallet(wallet.name, pass) }.getOrDefault(org.elektronnet.mobile.wallet.RemoveFailure.Unknown) }
+                        val result = withContext(Dispatchers.IO) { runCatching { NodeHost.removeWallet(wallet.name, pass.ifEmpty { null }) }.getOrDefault(org.elektronnet.mobile.wallet.RemoveFailure.Unknown) }
                         busy = false
                         if (result == null) onDismiss() else failure = result
                     }
@@ -410,13 +413,12 @@ private fun RescanDialog(onDismiss: () -> Unit) {
                     else -> {
                         Text(stringResource(if (synced) R.string.rescan_body else R.string.rescan_needs_sync))
                         if (busy) androidx.compose.material3.LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                        OutlinedTextField(
+                        SecretField(
                             value = passphrase,
                             onValueChange = { passphrase = it },
                             label = { Text(stringResource(R.string.fr_pass_label)) },
                             singleLine = true,
                             enabled = synced && !busy,
-                            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
                             keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Password),
                             modifier = Modifier.fillMaxWidth(),
                         )

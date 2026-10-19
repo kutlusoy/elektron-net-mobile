@@ -685,4 +685,25 @@
     <string name="settings_language">اللغة</string>
     <string name="settings_language_system">لغة النظام</string>
     <string name="events_to_retarget">الكتل حتى إعادة الضبط</string>
+    <string name="settings_units">وحدة المبالغ</string>
+    <string name="units_hint">تُستخدم لجميع المبالغ والمدخلات. تعرض شاشات المراجعة المبلغ بوحدة ELEK أيضًا. تبقى الرسوم بوحدة lep/vB.</string>
+    <string name="update_title">التحديثات</string>
+    <string name="update_hint">يسأل github.com عن أحدث وسم إصدار لهذا التطبيق. لا يُرسل أي شيء آخر.</string>
+    <string name="update_check">التحقق من وجود تحديثات</string>
+    <string name="update_checking">جارٍ التحقق...</string>
+    <string name="update_latest">لديك أحدث إصدار.</string>
+    <string name="update_available">الإصدار %1$s متاح.</string>
+    <string name="update_open">فتح صفحة الإصدار</string>
+    <string name="update_failed">تعذر التحقق من التحديثات. حاول مرة أخرى لاحقًا.</string>
+    <string name="history_page">الصفحة %1$d من %2$d</string>
+    <string name="history_prev">الأحدث</string>
+    <string name="history_next">الأقدم</string>
+    <string name="fr_skip">تخطَّ الآن (العقدة فقط)</string>
+    <string name="fr_skip_hint">شغّل العقدة فقط. يمكنك إنشاء محفظة أو استعادتها في أي وقت من تبويب المحفظة.</string>
+    <string name="nowallet_title">لا توجد محفظة بعد</string>
+    <string name="nowallet_body">تعمل عقدتك بدون محفظة. أنشئ محفظة أو استعدها متى شئت، وستبقى البيانات المتزامنة محفوظة.</string>
+    <string name="nowallet_create">إنشاء محفظة أو استعادتها</string>
+    <string name="secret_show">إظهار</string>
+    <string name="secret_hide">إخفاء</string>
+    <string name="wallets_remove_unused">لا توجد في هذه المحفظة مدفوعات ولا أموال. يمكنك حذفها بدون عبارة المرور، اترك الحقل فارغًا.</string>
 </resources>

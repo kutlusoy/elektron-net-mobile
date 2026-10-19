@@ -3,6 +3,7 @@
 - **Version:** 0.9 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, security reviewers
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) `osclass/osclasselektron/css/style.css` (palette source, commit `37aae603`), `design/palettes.json` and `design/check-contrast.py` in this repository (machine readable palettes and the legibility gate)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (branding), [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) (color themes)
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) (sections §3.3, §3.5), [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md) (testnet flavor)

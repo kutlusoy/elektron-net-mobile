@@ -17,13 +17,11 @@ class PaymentUri(private val scheme: String, private val addresses: AddressCheck
         request.amountLep?.let { params += "amount=" + Amount.format(it) }
         request.label?.takeIf { it.isNotEmpty() }?.let { params += "label=" + encode(it) }
         request.message?.takeIf { it.isNotEmpty() }?.let { params += "message=" + encode(it) }
-        return "$scheme:" + request.address + if (params.isEmpty()) "" else "?" + params.joinToString("&")
+        val address = if (addresses.classify(request.address) == AddressKind.Native) request.address.lowercase() else request.address
+        return "${scheme.lowercase()}:" + address + if (params.isEmpty()) "" else "?" + params.joinToString("&")
     }
 
-    fun qrText(request: PaymentRequest): String {
-        val uri = build(request)
-        return if (request.label.isNullOrEmpty() && request.message.isNullOrEmpty() && addresses.classify(request.address) == AddressKind.Native) uri.uppercase() else uri
-    }
+    fun qrText(request: PaymentRequest): String = build(request)
 
     fun parse(input: String): UriParse {
         val text = input.trim()

@@ -76,7 +76,12 @@ object NodeHost {
         refreshWallets()
     }
 
-    fun removeWallet(name: String, passphrase: String): org.elektronnet.mobile.wallet.RemoveFailure? {
+    fun walletIsUnused(name: String): Boolean {
+        val supervisor = runningSupervisor() ?: return false
+        return org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) {}.isUnused(name)
+    }
+
+    fun removeWallet(name: String, passphrase: String?): org.elektronnet.mobile.wallet.RemoveFailure? {
         val supervisor = runningSupervisor() ?: return org.elektronnet.mobile.wallet.RemoveFailure.NodeNotReady
         val root = datadir ?: return org.elektronnet.mobile.wallet.RemoveFailure.Unknown
         val chain = Chain.fromBuildName(ChainConfig.chain)
@@ -146,6 +151,8 @@ object NodeHost {
             budget = store.loadBudget(),
         )
         settings = store
+        org.elektronnet.mobile.ui.theme.UnitState.current = store.amountUnit
+        org.elektronnet.mobile.wallet.Amount.unitProvider = { org.elektronnet.mobile.ui.theme.UnitState.current }
         org.elektronnet.mobile.ui.theme.UiState.settings = store.loadUi(org.elektronnet.mobile.ui.theme.Palettes.all.map { it.key }.toSet())
         return store
     }

@@ -10,6 +10,7 @@ data class ReceiveUiModel(
     val runs: List<AddressFormat.Run>,
     val uri: String,
     val qrText: String,
+    val copyText: String,
     val amountInvalid: Boolean,
     val showSyncNote: Boolean,
 ) {
@@ -17,13 +18,14 @@ data class ReceiveUiModel(
         const val NOTE_LIMIT = 120
 
         fun build(address: String, uris: PaymentUri, amountText: String, note: String, synced: Boolean): ReceiveUiModel {
-            val amount = if (amountText.isBlank()) null else Amount.parse(amountText, allowComma = true)
+            val amount = if (amountText.isBlank()) null else Amount.parseIn(Amount.unit, amountText, allowComma = true)
             val request = PaymentRequest(address, amount, message = note.trim().take(NOTE_LIMIT).ifEmpty { null })
             return ReceiveUiModel(
                 address = address,
                 runs = AddressFormat.runs(address),
                 uri = uris.build(request),
                 qrText = uris.qrText(request),
+                copyText = if (amount != null || request.message != null) uris.build(request) else address,
                 amountInvalid = amountText.isNotBlank() && amount == null,
                 showSyncNote = !synced,
             )

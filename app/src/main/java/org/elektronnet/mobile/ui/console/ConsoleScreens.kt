@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.console
 
+import org.elektronnet.mobile.ui.SecretField
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -500,8 +501,8 @@ private fun SetPassphraseDialog(wallet: String, onDone: () -> Unit) {
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.console_restore_pass_body, wallet))
-                OutlinedTextField(value = pass, onValueChange = { pass = it }, singleLine = true, label = { Text(stringResource(R.string.fr_pass_label)) }, visualTransformation = PasswordVisualTransformation())
-                OutlinedTextField(value = repeat, onValueChange = { repeat = it }, singleLine = true, label = { Text(stringResource(R.string.fr_pass_confirm)) }, visualTransformation = PasswordVisualTransformation())
+                SecretField(value = pass, onValueChange = { pass = it }, singleLine = true, label = { Text(stringResource(R.string.fr_pass_label)) }, )
+                SecretField(value = repeat, onValueChange = { repeat = it }, singleLine = true, label = { Text(stringResource(R.string.fr_pass_confirm)) }, )
                 if (failed) ErrorText(stringResource(R.string.console_restore_pass_failed))
             }
         },

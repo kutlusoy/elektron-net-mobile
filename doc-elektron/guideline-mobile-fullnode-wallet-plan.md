@@ -1,8 +1,9 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.21 (draft)
+- **Version:** 0.22 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (light wallet, source of branding, address safety UX and strings), [`elektron-net-mempool`](https://github.com/kutlusoy/elektron-net-mempool) (explorer, deep links only)
 - **See also:** [`guideline-escrow-psbt-and-tools.md`](./guideline-escrow-psbt-and-tools.md), [`guideline-entropy-and-randomness.md`](./guideline-entropy-and-randomness.md), [`guideline-expert-console.md`](./guideline-expert-console.md), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md), [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md), [`guideline-wallet-integration.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/guideline-wallet-integration.md), [`AUDIT_PRUNING_SNAPSHOT.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/AUDIT_PRUNING_SNAPSHOT.md), [`BITCOIN_CORE_DIFF.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/BITCOIN_CORE_DIFF.md), [`CHANGELOG-slip44-coin-type.md`](https://github.com/kutlusoy/elektron-net/blob/main/doc-elektron/CHANGELOG-slip44-coin-type.md), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
@@ -169,7 +170,7 @@ Expert mode gives advanced users a console to the node, comparable to the debug 
 
 ### 3.7 Node-only mode and server mode (planned, next milestone)
 
-Status: planning only, nothing of this is built. It comes right after the current wallet work.
+Status: the first step is built: the first-run screen offers "Skip for now (node only)", the choice is remembered, the Wallet and History tabs then show a card with a button to create or restore a wallet at any time, and the node runs and the notification permission is requested as usual. Server access, hashed RPC users and the mining readiness are still planned.
 
 **Goal.** The app can run as a plain Elektron Net node on Android: start it without ever creating a wallet, and optionally make the node reachable from other machines on the same network, for example as the backend of a mining pool or a solo miner (`getblocktemplate` and `submitblock`, see `mining-pool-integration.md` of the node repository).
 
@@ -434,8 +435,9 @@ elek:<address>[?amount=<decimal ELEK>][&label=<text>][&message=<text>]
 - BIP21-style. `amount` is a decimal in ELEK with at most 8 decimals, no exponent, no sign, never in lep. Invalid amounts reject the whole URI.
 - Parameters starting with `req-` that the app does not know make the URI invalid. Other unknown parameters are ignored.
 - `label` and `message` are untrusted display text. They are length limited, percent-decoded once, stripped of control characters and Unicode bidirectional controls, and shown as plain text.
+- Generated links are always lowercase (scheme and Bech32 address), also in QR codes, because uppercase links are not understood by many scanners and wallets. Parsing accepts any case. A note typed in Receive is sent as `message`, the amount is always in ELEK whatever the display unit is.
 - The address must pass the same checks as a manually entered one (§8.5): Bech32 `be1...` is accepted, a Base58 address triggers the collision warning.
-- A URI never sends anything by itself. It only fills the Send screen, which goes through the full PSBT review (§8.4). QR codes in uppercase (alphanumeric mode) are accepted. The QR scanner and the intent filter feed the same parser.
+- A URI never sends anything by itself. It only fills the Send screen (pasting a link into the recipient field, scanning it or opening it fills address, amount and note alike), which goes through the full PSBT review (§8.4). QR codes in uppercase (alphanumeric mode) are accepted. The QR scanner and the intent filter feed the same parser.
 - The parameter name `lightning` is reserved for a future invoice fallback (§8.4.2) and is ignored today.
 - The parser lives in one pure Kotlin class with unit tests and a fuzz test, and its test vectors are shared with `elektron-net-electrum` (X10).
 
@@ -489,7 +491,15 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 
 - The app keeps a list of its own wallets in the app preferences (name of the node wallet file and a user label). The first wallet is `elektron`, further ones `elektron_2`, `elektron_3` and so on. One wallet is active and used for balance, history, Receive, Send, coin control, signing and sweeping. Escrow wallets stay separate (`guideline-escrow-psbt-and-tools.md`).
 - Every wallet has its own recovery phrase, passphrase, descriptors and receive address. Adding a wallet uses the same create or restore flow as the first run, without the network and notification steps, and the same deferred setup that waits for the node (§8.3).
+- **Removing an unused wallet** (no transactions and no funds, checked with `getwalletinfo` and `getbalances`) is also possible without the passphrase, for example after a mistyped passphrase at creation. Used wallets always need the passphrase.
 - **Removing a wallet** needs the wallet's own passphrase and a confirmation that the user has its recovery phrase. The app checks the passphrase with a short unlock, unloads the wallet with `load_on_startup=false` and deletes its directory. Removing the last wallet returns the app to the first-run screens.
+
+### 8.10 Units and amounts
+
+- Display units (Settings, Unit for amounts): ELEK (default), mELEK (milli-Elektron), bit (micro-Elektron) and lepton. The factors are fixed: 1 ELEK = 1,000 mELEK = 1,000,000 bit = 100,000,000 lepton. Internally everything is an integer number of lepton. The decimals are 8, 5, 2 and 0, so every amount is exact in every unit.
+- The chosen unit applies to balances, history, amounts in forms and input fields (the field label names the unit). Fees stay in lep/vB. CSV export and payment links always use ELEK.
+- To prevent unit mistakes the Send screen shows the amount again in ELEK below the input and in the review whenever the unit is not ELEK.
+- Input accepts only as many decimals as the unit allows and refuses everything else.
 
 ### 8.9 Wallet tools
 
@@ -536,6 +546,7 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 | S29 | Node only mode holds no key material until the user creates a wallet, and adding a wallet needs no node restart (§3.7) | MUST |
 
 | S30 | Cleartext traffic is refused app wide except to `127.0.0.1`, `localhost` and onion hosts (network security config), so the local RPC works and no other http request can leave the app | MUST |
+| S31 | The only outbound request not tied to an explorer is the update check the user starts in Settings. It asks `api.github.com` for the tags of this repository, sends no identifiers and is limited to 64 KB of reply | MUST |
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 
 ## 10. Repository Layout (proposal)
@@ -792,6 +803,7 @@ All questions of the first drafts are answered. Decisions of October 18, 2026 ar
 | Q12 | Languages | English plus the most widespread languages in two tiers (Chinese, Arabic, Japanese, Korean and more) | §3.5 |
 | Q13 | Artwork | None, design only, five reduced color themes with dark and light mode, no glow, readability first | §3.3, design system guideline |
 | Q14 | Expert console | Danger tier in the first release, device authentication once per session, persistent history with 90 days retention, console in all builds, file commands with passphrase-protected wallets only, manual dumps deleted after 7 days, `createwallet` forbidden without a passphrase | `guideline-expert-console.md` §1.1 |
+| Q16 | License | MIT, copyright Elektron Net Developers, Ali Kutlusoy and Milio aka 1000mio, `LICENSE` in the repository and in the About screen | README §12 |
 | Q15 | Node only and server mode | Planned as the next milestone: node without wallet, optional LAN RPC with hashed users and method whitelist, mining readiness | §3.7 |
 
 Remaining open items live in the distribution guideline (§9, D2 to D5): the Play account type, the Play signing key choice, F-Droid native build and the foreground service type. D1 (testnet chain) is resolved: `testnet`.

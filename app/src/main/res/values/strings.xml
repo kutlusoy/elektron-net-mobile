@@ -689,4 +689,32 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_system">System language</string>
     <string name="events_to_retarget">Blocks to retarget</string>
+    <string name="settings_units">Unit for amounts</string>
+    <string name="units_hint">Used for all amounts and inputs. Review screens also show the amount in ELEK. Fees stay in lep/vB.</string>
+    <string name="update_title">Updates</string>
+    <string name="update_hint">Asks github.com for the newest release tag of this app. Nothing else is sent.</string>
+    <string name="update_check">Check for updates</string>
+    <string name="update_checking">Checking...</string>
+    <string name="update_latest">You have the latest version.</string>
+    <string name="update_available">Version %1$s is available.</string>
+    <string name="update_open">Open release page</string>
+    <string name="update_failed">Could not check for updates. Try again later.</string>
+    <string name="unit_elek" translatable="false">ELEK</string>
+    <string name="unit_melek" translatable="false">mELEK (milli-Elektron)</string>
+    <string name="unit_bit" translatable="false">bit (micro-Elektron)</string>
+    <string name="unit_lep" translatable="false">lepton (lep)</string>
+    <string name="units_rates" translatable="false">1 ELEK = 1,000 mELEK\n1 ELEK = 1,000,000 bit\n1 ELEK = 100,000,000 lepton</string>
+    <string name="about_license" translatable="false">MIT License</string>
+    <string name="about_developers" translatable="false">Elektron Net Developers\nAli Kutlusoy (X: @kutlusoy)\nMilio aka 1000mio (X: @spiroflex)</string>
+    <string name="history_page">Page %1$d of %2$d</string>
+    <string name="history_prev">Newer</string>
+    <string name="history_next">Older</string>
+    <string name="fr_skip">Skip for now (node only)</string>
+    <string name="fr_skip_hint">Run just the node. You can create or restore a wallet any time in the Wallet tab.</string>
+    <string name="nowallet_title">No wallet yet</string>
+    <string name="nowallet_body">Your node runs without a wallet. Create or restore one whenever you like, the synced data is kept.</string>
+    <string name="nowallet_create">Create or restore a wallet</string>
+    <string name="secret_show">Show</string>
+    <string name="secret_hide">Hide</string>
+    <string name="wallets_remove_unused">This wallet has no payments and no funds. You can remove it without its passphrase, leave the field empty.</string>
 </resources>

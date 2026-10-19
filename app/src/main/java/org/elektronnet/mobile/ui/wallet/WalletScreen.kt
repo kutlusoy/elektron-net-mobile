@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.wallet
 
+import org.elektronnet.mobile.wallet.Amount
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -63,14 +64,14 @@ fun WalletScreen(
             Text(stringResource(R.string.balance_label), color = MaterialTheme.colorScheme.onSurfaceVariant)
             when {
                 balance?.amountText != null ->
-                    Text("${balance.amountText} ${stringResource(R.string.balance_unit)}", style = MaterialTheme.typography.displaySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                    Text("${balance.amountText} ${Amount.unitSymbol()}", style = MaterialTheme.typography.displaySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                 balance?.waitingForSync == true ->
                     Text(stringResource(R.string.balance_waiting), style = MaterialTheme.typography.titleMedium)
                 else -> Text(stringResource(R.string.balance_unavailable), style = MaterialTheme.typography.titleMedium)
             }
             balance?.pendingText?.let {
                 Text(
-                    stringResource(R.string.balance_pending, it, stringResource(R.string.balance_unit)),
+                    stringResource(R.string.balance_pending, it, Amount.unitSymbol()),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }

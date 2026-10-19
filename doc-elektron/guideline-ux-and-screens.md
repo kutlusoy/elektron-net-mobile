@@ -1,8 +1,9 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.16 (draft)
+- **Version:** 0.17 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (the project's light wallet; only its address safety wording is kept consistent, no code or screens are taken)
 - **See also:** [`guideline-entropy-and-randomness.md`](./guideline-entropy-and-randomness.md), [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) (§3.3, §3.4, §8), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md), [`guideline-expert-console.md`](./guideline-expert-console.md)
@@ -152,12 +153,16 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 | Sharing | "Accept incoming connections", "Share snapshots (Wi-Fi and charging only)" | `allowInbound`, `serveSnapshots`, plan §5.2 |
 | Storage | "Storage saver" (fast pruning, applies at the next node start), "Stop the node when free space is below" (slider, 1 to 20 GB) | `fastprune`, `storageFloorBytes`, plan §3.2 |
 | Block explorer | Add, edit, reorder and remove explorer addresses (default `https://mempool.elektron-net.org`), with the privacy sentence | plan §8.7, S23 |
+| Unit | ELEK, mELEK, bit, lepton with the conversion table | plan §8.10 |
+| Updates | Check for updates (asks GitHub for the newest tag) | S31 |
 | Language | System language or any of the 15 shipped languages, each in its own name, applied at once | plan §3.5 |
 | Appearance | Theme (five themes with swatches and a live preview), Light or dark | design system §2 |
-| About | Version, wallet version, node version, node commit, node library hash, signing key fingerprint, copyright | distribution guideline §8 |
+| About | Version, wallet version, node version, node commit, node library hash, signing key fingerprint, copyright, MIT license, developers with their X accounts, repository and whitepaper links | distribution guideline §8 |
 | Advanced | Storage saver, Resource profile, Expert mode and console, Live log, Address list, Export descriptors, Rescan, Reset | plan §3.2, §3.6 |
 
 - Label and value rows wrap instead of squeezing: when the value does not fit beside the label it moves to its own line, and filter chips and action buttons flow onto the next line (no text is ever broken letter by letter).
+- The history shows 10 payments per page, newest first, with Newer and Older buttons and "Page x of y". Search and filters work across all payments and reset the page.
+- Every password field has a Show and Hide button. The first-run screen offers "Skip for now (node only)".
 - Settings are grouped in tiles (cards), one per group, so the page can be scanned at a glance.
 - Limits are sliders with discrete steps, the current value is shown beside the title and a limit that means "none" sits at the far end.
 - Stopping or pausing the node asks for confirmation first, so a stray tap cannot switch the node off.

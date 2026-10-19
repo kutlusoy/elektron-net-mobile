@@ -685,4 +685,25 @@
     <string name="settings_language">Bahasa</string>
     <string name="settings_language_system">Bahasa sistem</string>
     <string name="events_to_retarget">Blok menuju retarget</string>
+    <string name="settings_units">Satuan untuk jumlah</string>
+    <string name="units_hint">Dipakai untuk semua jumlah dan input. Layar tinjauan juga menampilkan jumlah dalam ELEK. Biaya tetap dalam lep/vB.</string>
+    <string name="update_title">Pembaruan</string>
+    <string name="update_hint">Meminta github.com tag rilis terbaru aplikasi ini. Tidak ada data lain yang dikirim.</string>
+    <string name="update_check">Periksa pembaruan</string>
+    <string name="update_checking">Memeriksa...</string>
+    <string name="update_latest">Anda memakai versi terbaru.</string>
+    <string name="update_available">Versi %1$s tersedia.</string>
+    <string name="update_open">Buka halaman rilis</string>
+    <string name="update_failed">Gagal memeriksa pembaruan. Coba lagi nanti.</string>
+    <string name="history_page">Halaman %1$d dari %2$d</string>
+    <string name="history_prev">Terbaru</string>
+    <string name="history_next">Lama</string>
+    <string name="fr_skip">Lewati dulu (hanya node)</string>
+    <string name="fr_skip_hint">Jalankan node saja. Anda bisa membuat atau memulihkan dompet kapan saja di tab Dompet.</string>
+    <string name="nowallet_title">Belum ada dompet</string>
+    <string name="nowallet_body">Node Anda berjalan tanpa dompet. Buat atau pulihkan kapan pun Anda mau, data yang sudah sinkron tetap tersimpan.</string>
+    <string name="nowallet_create">Buat atau pulihkan dompet</string>
+    <string name="secret_show">Tampilkan</string>
+    <string name="secret_hide">Sembunyikan</string>
+    <string name="wallets_remove_unused">Dompet ini tidak punya pembayaran dan dana. Anda bisa menghapusnya tanpa frasa sandi, biarkan kolom kosong.</string>
 </resources>

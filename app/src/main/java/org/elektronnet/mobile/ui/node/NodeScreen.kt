@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.node
 
+import org.elektronnet.mobile.wallet.Amount
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -486,7 +487,7 @@ private fun MaintenanceCard(onRestart: () -> Unit) {
 @Composable
 private fun ChainEventsCard(schedule: org.elektronnet.mobile.node.ChainSchedule, difficulty: Double?) {
     val dash = "-"
-    val unit = stringResource(R.string.balance_unit)
+    val unit = Amount.unitSymbol()
     val date = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM)
     val number = java.text.NumberFormat.getIntegerInstance()
     fun day(ms: Long) = date.format(java.util.Date(ms))
@@ -497,7 +498,7 @@ private fun ChainEventsCard(schedule: org.elektronnet.mobile.node.ChainSchedule,
             TelemetryRow(stringResource(R.string.events_to_halving), number.format(schedule.blocksToHalving))
             TelemetryRow(
                 stringResource(R.string.events_reward),
-                org.elektronnet.mobile.wallet.Amount.format(schedule.rewardNowLep) + " \u2192 " + org.elektronnet.mobile.wallet.Amount.format(schedule.rewardNextLep) + " " + unit,
+                Amount.display(schedule.rewardNowLep) + " \u2192 " + Amount.display(schedule.rewardNextLep) + " " + unit,
             )
             TelemetryRow(stringResource(R.string.events_epoch), number.format(schedule.epochBlocksMined) + " / " + number.format(schedule.epochLength))
             TelemetryRow(stringResource(R.string.events_avg_block), schedule.avgBlockSeconds?.let { String.format(java.util.Locale.getDefault(), "%.1f s", it) } ?: dash)

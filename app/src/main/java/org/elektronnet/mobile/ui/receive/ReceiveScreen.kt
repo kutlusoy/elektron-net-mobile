@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.receive
 
+import org.elektronnet.mobile.wallet.Amount
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -104,7 +105,7 @@ fun ReceiveScreen(onClose: () -> Unit) {
             style = MaterialTheme.typography.titleMedium,
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = { copyAddress(context, model.address) }) { Text(stringResource(R.string.action_copy)) }
+            OutlinedButton(onClick = { copyAddress(context, model.copyText) }) { Text(stringResource(R.string.action_copy)) }
             Button(onClick = { share(context, model.uri) }) { Text(stringResource(R.string.action_share)) }
         }
         if (model.showSyncNote) Text(stringResource(R.string.receive_sync_note), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -115,7 +116,7 @@ fun ReceiveScreen(onClose: () -> Unit) {
             OutlinedTextField(
                 value = amount,
                 onValueChange = { amount = it },
-                label = { Text(stringResource(R.string.receive_amount, stringResource(R.string.balance_unit))) },
+                label = { Text(stringResource(R.string.receive_amount, Amount.unitSymbol())) },
                 isError = model.amountInvalid,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),

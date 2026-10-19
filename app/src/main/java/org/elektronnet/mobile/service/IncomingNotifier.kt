@@ -33,7 +33,7 @@ class IncomingNotifier(private val context: Context, private val settings: Setti
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_node)
             .setContentTitle(context.getString(R.string.notify_incoming_title))
-            .setContentText(context.getString(R.string.notify_incoming_text, Amount.format(total), context.getString(R.string.balance_unit)))
+            .setContentText(context.getString(R.string.notify_incoming_text, Amount.display(total), Amount.unitSymbol()))
             .setContentIntent(open)
             .setAutoCancel(true)
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)

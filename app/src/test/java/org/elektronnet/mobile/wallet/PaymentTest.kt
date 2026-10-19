@@ -70,8 +70,9 @@ class PaymentTest {
     }
 
     @Test
-    fun uppercaseQrOnlyWithoutFreeText() {
-        assertEquals(("elek:$address?amount=2").uppercase(), uris.qrText(PaymentRequest(address, 200_000_000L)))
+    fun qrTextIsAlwaysLowercase() {
+        assertEquals("elek:$address?amount=2", uris.qrText(PaymentRequest(address, 200_000_000L)))
+        assertEquals("elek:" + address.lowercase(), uris.build(PaymentRequest(address.uppercase())))
         assertEquals(uris.build(PaymentRequest(address, null, null, "Thanks")), uris.qrText(PaymentRequest(address, null, null, "Thanks")))
         val parsed = uris.parse(uris.qrText(PaymentRequest(address, 200_000_000L))) as UriParse.Ok
         assertEquals(address, parsed.request.address)
@@ -133,7 +134,23 @@ class PaymentTest {
         val bad = ReceiveUiModel.build(address, uris, "abc", "", synced = true)
         assertTrue(bad.amountInvalid)
         assertEquals("elek:$address", bad.uri)
-        assertEquals("ELEK:" + address.uppercase(), bad.qrText)
+        assertEquals("elek:$address", bad.qrText)
         assertEquals(120, ReceiveUiModel.build(address, uris, "", "n".repeat(500), true).uri.substringAfter("message=").length)
+        assertEquals(address, ReceiveUiModel.build(address, uris, "", "", true).copyText)
+        assertEquals("elek:$address?amount=0.137", ReceiveUiModel.build(address, uris, "0.137", "", true).copyText)
+        assertEquals("elek:$address?message=Hi", ReceiveUiModel.build(address, uris, "", "Hi", true).copyText)
+    }
+
+    @Test
+    fun parsesTypicalFaucetAndShareLinks() {
+        val faucet = uris.parse("elek:$address?amount=0.13700000&label=Faucet%20Donation") as UriParse.Ok
+        assertEquals(13_700_000L, faucet.request.amountLep)
+        assertEquals("Faucet Donation", faucet.request.label)
+        val shared = uris.parse("elek:$address?amount=0.137&message=Meine%20Nachricht") as UriParse.Ok
+        assertEquals("Meine Nachricht", shared.request.message)
+        assertEquals("elek:$address?amount=0.137&message=Meine%20Nachricht", uris.build(shared.request))
+        val upper = uris.parse("ELEK:" + address.uppercase() + "?AMOUNT=1") as UriParse.Ok
+        assertEquals(address, upper.request.address)
+        assertEquals(100_000_000L, upper.request.amountLep)
     }
 }

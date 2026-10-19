@@ -136,7 +136,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun requestStart() {
-        val needsPermission = NodeHost.store?.walletReady() == true && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+        val needsPermission = (NodeHost.store?.walletReady() == true || NodeHost.store?.nodeOnly == true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         if (needsPermission) notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS) else startNode()
     }

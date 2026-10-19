@@ -22,6 +22,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.elektronnet.mobile.node.UpdateCheck
+import org.elektronnet.mobile.node.UpdateFetch
+import org.elektronnet.mobile.node.UpdateResult
+import org.elektronnet.mobile.ui.theme.UnitState
+import org.elektronnet.mobile.wallet.Amount
+import org.elektronnet.mobile.wallet.AmountUnit
 import androidx.compose.material3.Slider
 import kotlin.math.roundToInt
 import org.elektronnet.mobile.service.AppLanguage
@@ -152,6 +161,9 @@ fun SettingsScreen(
             ToggleRow(R.string.settings_screenshots, R.string.settings_screenshots_hint, ScreenshotMode.allowed) { ScreenshotMode.allowed = it }
         }
         SettingsCard(R.string.settings_language) { LanguagePicker() }
+        SettingsCard(R.string.settings_units) {
+            UnitPicker()
+        }
         SettingsCard(R.string.settings_appearance) { AppearanceSection(ui, onUi) }
         SettingsCard(R.string.settings_about) {
             val node = remember { CoreManifestLoader.load(context)?.label() ?: BuildConfig.NODE_VERSION }
@@ -174,8 +186,83 @@ fun SettingsScreen(
                     Text(stringResource(label))
                 }
             }
+            Text(stringResource(R.string.about_license), color = muted)
+            Text(stringResource(R.string.about_developers), color = muted)
             Text(stringResource(R.string.settings_copyright), color = muted)
         }
+        SettingsCard(R.string.update_title) { UpdateChecker() }
+    }
+}
+
+@Composable
+private fun UnitPicker() {
+    val saved = UnitState.current
+    var position by remember(saved) { mutableStateOf(saved.ordinal.toFloat()) }
+    val shown = AmountUnit.entries[position.roundToInt().coerceIn(0, AmountUnit.entries.lastIndex)]
+    val number = java.text.NumberFormat.getIntegerInstance()
+    Text(stringResource(unitLabel(shown)), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+    Slider(
+        value = position,
+        onValueChange = { position = it },
+        onValueChangeFinished = {
+            UnitState.current = shown
+            NodeHost.store?.amountUnit = shown
+        },
+        valueRange = 0f..AmountUnit.entries.lastIndex.toFloat(),
+        steps = AmountUnit.entries.size - 2,
+    )
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        AmountUnit.entries.forEach { Text(it.symbol, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+    }
+    Text(
+        "1 ELEK = " + number.format(Amount.formatIn(shown, Amount.LEP_PER_ELEK).toLong()) + " " + shown.symbol,
+        style = MaterialTheme.typography.headlineSmall,
+        fontFamily = ElektronMono,
+    )
+    Text(stringResource(R.string.units_rates), fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
+    Hint(stringResource(R.string.units_hint))
+}
+
+private fun unitLabel(unit: AmountUnit): Int = when (unit) {
+    AmountUnit.Elek -> R.string.unit_elek
+    AmountUnit.MilliElek -> R.string.unit_melek
+    AmountUnit.Bit -> R.string.unit_bit
+    AmountUnit.Lepton -> R.string.unit_lep
+}
+
+@Composable
+private fun UpdateChecker() {
+    val context = LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    var busy by remember { mutableStateOf(false) }
+    var result by remember { mutableStateOf<UpdateResult?>(null) }
+    var failed by remember { mutableStateOf(false) }
+    Hint(stringResource(R.string.update_hint))
+    androidx.compose.material3.OutlinedButton(
+        enabled = !busy,
+        onClick = {
+            busy = true
+            failed = false
+            result = null
+            scope.launch {
+                val json = withContext(Dispatchers.IO) { runCatching { UpdateFetch.tags() }.getOrNull() }
+                busy = false
+                if (json == null) failed = true else result = UpdateCheck.evaluate(BuildConfig.VERSION_NAME, BuildConfig.MOBILE_VERSION, json)
+            }
+        },
+        modifier = Modifier.fillMaxWidth(),
+    ) { Text(stringResource(if (busy) R.string.update_checking else R.string.update_check)) }
+    if (failed) Text(stringResource(R.string.update_failed), color = MaterialTheme.colorScheme.error)
+    when (val r = result) {
+        is UpdateResult.Newer -> {
+            Text(stringResource(R.string.update_available, r.tag), color = MaterialTheme.colorScheme.primary)
+            androidx.compose.material3.TextButton(onClick = {
+                context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(UpdateCheck.RELEASE_URL + r.tag)))
+            }) { Text(stringResource(R.string.update_open)) }
+        }
+        UpdateResult.UpToDate -> Text(stringResource(R.string.update_latest))
+        UpdateResult.Unknown -> Text(stringResource(R.string.update_failed), color = MaterialTheme.colorScheme.error)
+        null -> Unit
     }
 }
 
