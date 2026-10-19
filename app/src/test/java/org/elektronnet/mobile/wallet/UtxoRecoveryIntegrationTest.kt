@@ -55,6 +55,7 @@ class UtxoRecoveryIntegrationTest {
             fun trusted(wallet: String) = WalletReader.lep(((rpc.call("getbalances", emptyList<Any?>(), wallet) as Map<*, *>)["mine"] as Map<*, *>)["trusted"])
             assertEquals(1_000_000_000L, trusted("w2"))
             assertEquals(real, outpoints("w2"))
+            assertTrue((rpc.call("listtransactions", listOf("*", 100), "w2") as List<*>).isEmpty())
 
             rpc.call("rescanutxoset", emptyList<Any?>(), "w2")
             assertEquals(1_000_000_000L, trusted("w2"))
@@ -137,6 +138,7 @@ class UtxoRecoveryIntegrationTest {
             rpc.call("loadwallet", listOf("w2"), null)
             assertEquals(expectedBalance, trusted("w2"))
             assertEquals(expected, outpoints("w2"))
+            assertTrue((rpc.call("listtransactions", listOf("*", 100), "w2") as List<*>).none { WalletReader.lep((it as Map<*, *>)["amount"]) == 0L })
 
             val txid = rpc.call("sendtoaddress", linkedMapOf("address" to miner, "amount" to 1.0, "fee_rate" to 10), "w2").toString()
             assertTrue((rpc.call("getrawmempool", emptyList<Any?>(), null) as List<*>).contains(txid))
