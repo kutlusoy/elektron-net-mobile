@@ -176,6 +176,7 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.icons.core)
     implementation(libs.zxing.core)
+    implementation(libs.androidx.fragment)
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.camerax.core)
