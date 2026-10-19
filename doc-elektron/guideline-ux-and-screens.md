@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.14 (draft)
+- **Version:** 0.15 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -54,11 +54,12 @@ The goal is familiarity with these conventions, not a copy of any product. Scree
 
 ## 4. Navigation
 
-Bottom bar with three items, visible on every screen except the onboarding. Tapping a tab always leaves the page that is open (Send, Receive, Tools, details) and shows that tab:
+Bottom bar with four items, visible on every screen except the onboarding. Tapping a tab always leaves the page that is open (Send, Receive, Tools, details) and shows that tab:
 
 | Tab | Content |
 |---|---|
-| **Wallet** (home) | Balance card, Receive and Send buttons, transaction list |
+| **Wallet** (home) | Wallet switcher and menu, balance card, Receive and Send buttons, the eight most recent payments with "Show all payments" |
+| **History** | The complete transaction history of the active wallet with search and filters (all, received, sent) |
 | **Node** | Plain status, pause and resume, details, snapshot and storage information |
 | **Settings** | Security, Network and battery, Appearance, About, Advanced |
 
@@ -66,6 +67,7 @@ Bottom bar with three items, visible on every screen except the onboarding. Tapp
 - Receive and Send open as full screens with a back arrow. They never nest more than one level deep.
 - Android back always goes one step back. From the home screen it leaves the app and the node keeps running (foreground service).
 - The testnet flavor shows its permanent bar above all of this (design system §6).
+- **History per wallet:** every wallet has its own history. It lives in the node wallet, so it is complete from the moment the wallet exists on this phone and survives app updates and restarts. A wallet restored from its recovery phrase only shows payments that the network still stores (plan §2.1). The History tab loads all pages of the wallet (not just the newest ones), shows the last loaded list at once when the user switches wallets and refreshes it in the background.
 - **Several wallets:** the Wallet tab starts with the name of the active wallet and a menu: Wallet details, Addresses and coins, Sign and verify messages, Sweep keys, Escrow and PSBT tools, and Other wallets. "Other wallets" lists all wallets, switches the active one, renames them and adds a new one (create or restore, same flow as the first run without the network and notification steps). Each wallet has its own recovery phrase, passphrase and receive address. Balance, history, Receive and Send always use the active wallet.
 - **Coin control:** "Addresses and coins" lists every coin with its amount, address and confirmations, and a Frozen switch (a frozen coin is never selected automatically and stays frozen after a restart), plus the used addresses with label, received amount and transaction count. In the Send amount step "Choose coins" restricts the payment to the chosen coins, "Max" then spends exactly those coins, and a too small selection fails instead of pulling in other coins.
 

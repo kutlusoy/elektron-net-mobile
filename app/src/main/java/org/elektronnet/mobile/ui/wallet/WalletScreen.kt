@@ -42,6 +42,8 @@ fun WalletScreen(
     onReceive: () -> Unit,
     onSend: () -> Unit,
     modifier: Modifier = Modifier,
+    hasMore: Boolean = false,
+    onShowAll: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -99,6 +101,7 @@ fun WalletScreen(
             Text(stringResource(R.string.history_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
         } else {
             days.forEach { day -> HistoryDaySection(day, onOpenTx) }
+            if (hasMore) androidx.compose.material3.TextButton(onClick = onShowAll) { Text(stringResource(R.string.history_show_all)) }
         }
         Text(
             stringResource(R.string.history_limit),

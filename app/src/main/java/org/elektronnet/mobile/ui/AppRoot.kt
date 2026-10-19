@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -51,14 +52,18 @@ import org.elektronnet.mobile.ui.model.HistoryModel
 import org.elektronnet.mobile.wallet.Balances
 import org.elektronnet.mobile.wallet.TxItem
 import org.elektronnet.mobile.ui.settings.SettingsScreen
+import org.elektronnet.mobile.ui.wallet.HistoryScreen
 import org.elektronnet.mobile.ui.wallet.WalletScreen
 
 private data class WalletData(val balances: Balances, val items: List<TxItem>)
 
 private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet }
 
+private const val RECENT_COUNT = 8
+
 private enum class Tab(val label: Int, val icon: ImageVector) {
     Wallet(R.string.tab_wallet, Icons.Filled.Home),
+    History(R.string.tab_history, Icons.AutoMirrored.Filled.List),
     Node(R.string.tab_node, Icons.Filled.Refresh),
     Settings(R.string.tab_settings, Icons.Filled.Settings),
 }
@@ -77,6 +82,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     var fastprune by remember { mutableStateOf(NodeHost.store?.fastprune() ?: true) }
     var openTx by rememberSaveable { mutableStateOf<String?>(null) }
     var walletData by remember { mutableStateOf<WalletData?>(null) }
+    var histories by remember { mutableStateOf<Map<String, List<org.elektronnet.mobile.wallet.TxItem>>>(emptyMap()) }
     val store = NodeHost.store
     var settings by remember { mutableStateOf(store?.load() ?: PolicySettings()) }
     val snapshot = NodeHost.latest
@@ -103,6 +109,17 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 if (fresh != null) walletData = fresh
             }
             delay(if (NodeHost.latest?.headline is Headline.Synchronized) 8_000 else 15_000)
+        }
+    }
+
+    LaunchedEffect(tab, walletReady, NodeHost.activeWallet, refreshTick) {
+        while (walletReady && tab == Tab.History.ordinal) {
+            val name = NodeHost.activeWallet
+            if (NodeHost.appVisible) {
+                val all = withContext(Dispatchers.IO) { runCatching { NodeHost.walletReader()?.allTransactions() }.getOrNull() }
+                if (all != null) histories = histories + (name to all)
+            }
+            delay(10_000)
         }
     }
 
@@ -149,7 +166,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
                 return@Box
             }
-            val detail = openTx?.let { id -> walletData?.items?.firstOrNull { it.txid == id } }
+            val detail = openTx?.let { id -> histories[NodeHost.activeWallet]?.firstOrNull { it.txid == id } ?: walletData?.items?.firstOrNull { it.txid == id } }
             if (detail != null) {
                 TxDetailsScreen(detail, onClose = { openTx = null }, onBumped = { refreshTick++ })
                 return@Box
@@ -213,7 +230,9 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         synced = snapshot?.headline is Headline.Synchronized,
                         hasHistory = walletData?.items?.isNotEmpty() == true,
                     ),
-                    days = HistoryModel.days(walletData?.items.orEmpty(), ZoneId.systemDefault()),
+                    days = HistoryModel.days(walletData?.items.orEmpty().take(RECENT_COUNT), ZoneId.systemDefault()),
+                    hasMore = (walletData?.items?.size ?: 0) > RECENT_COUNT,
+                    onShowAll = { tab = Tab.History.ordinal },
                     onOpenTx = { openTx = it },
                     onOpenTools = { show(Overlay.Tools) },
                     onOpenNode = { tab = Tab.Node.ordinal },
@@ -221,6 +240,11 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     onSend = { show(Overlay.Send) },
                 )
                 }
+                Tab.History -> HistoryScreen(
+                    wallet = NodeHost.wallets.firstOrNull { it.name == NodeHost.activeWallet },
+                    items = histories[NodeHost.activeWallet],
+                    onOpenTx = { openTx = it },
+                )
                 Tab.Node -> NodeScreen(
                     model = NodeTabModel.from(snapshot, settings.userPaused),
                     peers = peers,

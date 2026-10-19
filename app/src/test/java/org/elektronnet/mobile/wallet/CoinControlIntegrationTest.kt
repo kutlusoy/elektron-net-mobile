@@ -143,4 +143,19 @@ class CoinControlIntegrationTest {
         }
         assertTrue((env.rpc.call("getrawmempool", emptyList<Any?>(), null) as List<*>).contains(oldTxid))
     }
+
+    @Test
+    fun pagedHistoryMatchesTheFullList() = withEnv(29012) { env ->
+        repeat(3) {
+            env.send.send(env.send.prepare(SendRequest(env.miner, 10_000_000L, false, rate(env))), pass)
+            env.rpc.call("generatetoaddress", listOf(1, env.miner), "miner")
+        }
+        val reader = WalletReader(env.rpc)
+        val paged = reader.allTransactions(pageSize = 2)
+        val whole = reader.allTransactions()
+        assertEquals(whole.map { it.txid }, paged.map { it.txid })
+        assertEquals(5, paged.size)
+        assertEquals(listOf(TxKind.Sent, TxKind.Sent, TxKind.Sent), paged.filter { it.kind == TxKind.Sent }.map { it.kind })
+        assertEquals(paged.map { it.timeSeconds }.sortedDescending(), paged.map { it.timeSeconds })
+    }
 }

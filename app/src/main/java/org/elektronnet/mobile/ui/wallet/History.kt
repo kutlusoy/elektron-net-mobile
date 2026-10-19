@@ -58,7 +58,7 @@ internal fun HistoryDaySection(day: HistoryDay, onOpen: (String) -> Unit) {
 }
 
 @Composable
-private fun dayTitle(date: LocalDate): String {
+internal fun dayTitle(date: LocalDate): String {
     val today = LocalDate.now()
     return when (date) {
         today -> stringResource(R.string.day_today)
@@ -68,7 +68,7 @@ private fun dayTitle(date: LocalDate): String {
 }
 
 @Composable
-private fun HistoryRowView(row: HistoryRow, onClick: () -> Unit) {
+internal fun HistoryRowView(row: HistoryRow, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
