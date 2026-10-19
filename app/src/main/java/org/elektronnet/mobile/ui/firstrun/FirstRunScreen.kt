@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.firstrun
 
+import org.elektronnet.mobile.ui.SecretField
 import android.Manifest
 import android.os.Build
 import androidx.activity.compose.BackHandler
@@ -77,7 +78,7 @@ import org.elektronnet.mobile.wallet.PassphraseStrength
 import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
-fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, addWallet: Boolean = false, onCancel: () -> Unit = {}) {
+fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, addWallet: Boolean = false, onCancel: () -> Unit = {}, onSkip: (() -> Unit)? = null) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var state by remember { mutableStateOf(FirstRunState(addWallet = addWallet)) }
@@ -141,6 +142,10 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
                 if (addWallet) {
                     TextButton(onClick = onCancel) { Text(stringResource(R.string.action_cancel)) }
                 } else {
+                    if (onSkip != null) {
+                        OutlinedButton(onClick = onSkip, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.fr_skip)) }
+                        Text(stringResource(R.string.fr_skip_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                     TextButton(onClick = { state = state.copy(step = FirstRunStep.HowItWorks) }) {
                         Text(stringResource(R.string.fr_how_link))
                     }
@@ -443,12 +448,11 @@ private fun PassphraseStep(
     val strength = PassphraseCheck.strength(value)
     Text(stringResource(R.string.fr_pass_title), style = MaterialTheme.typography.headlineMedium)
     Text(stringResource(R.string.fr_pass_body))
-    OutlinedTextField(
+    SecretField(
         value = value,
         onValueChange = onValue,
         label = { Text(stringResource(R.string.fr_pass_label)) },
         singleLine = true,
-        visualTransformation = PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         modifier = Modifier.fillMaxWidth(),
     )
@@ -463,12 +467,11 @@ private fun PassphraseStep(
             PassphraseCheck.MIN_LENGTH,
         ),
     )
-    OutlinedTextField(
+    SecretField(
         value = confirm,
         onValueChange = { confirm = it },
         label = { Text(stringResource(R.string.fr_pass_confirm)) },
         singleLine = true,
-        visualTransformation = PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         isError = confirm.isNotEmpty() && confirm != value,
         modifier = Modifier.fillMaxWidth(),

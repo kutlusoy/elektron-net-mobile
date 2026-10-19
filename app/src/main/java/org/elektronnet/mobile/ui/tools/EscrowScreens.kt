@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.tools
 
+import org.elektronnet.mobile.ui.SecretField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -147,12 +148,11 @@ private fun EscrowDialog(
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
-                OutlinedTextField(
+                SecretField(
                     value = passphrase,
                     onValueChange = { passphrase = it },
                     label = { Text(stringResource(R.string.fr_pass_label)) },
                     singleLine = true,
-                    visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -249,12 +249,11 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
                     Text(stringResource(R.string.escrow_threshold, effective, total), style = MaterialTheme.typography.titleMedium)
                     OutlinedButton(onClick = { required = (effective + 1).coerceAtMost(total) }) { Text("+") }
                 }
-                OutlinedTextField(
+                SecretField(
                     value = passphrase,
                     onValueChange = { passphrase = it },
                     label = { Text(stringResource(R.string.fr_pass_label)) },
                     singleLine = true,
-                    visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -284,9 +283,9 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
             Text(stringResource(R.string.escrow_code, checksum), fontFamily = ElektronMono)
             Hint(stringResource(R.string.escrow_code_hint))
             balances?.let {
-                Text(Amount.format(it.trustedLep) + " " + stringResource(R.string.balance_unit), style = MaterialTheme.typography.headlineMedium)
+                Text(Amount.display(it.trustedLep) + " " + Amount.unitSymbol(), style = MaterialTheme.typography.headlineMedium)
                 val pending = it.pendingLep + it.immatureLep
-                if (pending != 0L) Hint(stringResource(R.string.balance_pending, Amount.format(Math.abs(pending)), stringResource(R.string.balance_unit)))
+                if (pending != 0L) Hint(stringResource(R.string.balance_pending, Amount.display(Math.abs(pending)), Amount.unitSymbol()))
             }
             address?.let { a ->
                 Text(stringResource(R.string.escrow_deposit), style = MaterialTheme.typography.labelLarge)
@@ -301,7 +300,7 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
                 val row = HistoryModel.row(tx)
                 Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(HistoryModel.shorten(tx.txid), fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
-                    Text(row.amountText + " " + stringResource(R.string.balance_unit), fontFamily = ElektronMono)
+                    Text(row.amountText + " " + Amount.unitSymbol(), fontFamily = ElektronMono)
                 }
             }
             OutlinedButton(onClick = {

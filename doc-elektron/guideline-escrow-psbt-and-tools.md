@@ -3,6 +3,7 @@
 - **Version:** 0.2 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, security reviewers, release engineers, support staff who help users with shared wallets
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** `app/src/main/java/org/elektronnet/mobile/wallet/EscrowManager.kt`, `PsbtTools.kt`, `SweepEngine.kt`, `MessageTools.kt`, `SendEngine.kt` and `app/src/test/java/org/elektronnet/mobile/wallet/ToolsIntegrationTest.kt` in this repository. Node behavior: [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/rpc/` (`gethdkeys`, `importdescriptors`, `walletprocesspsbt`, `signmessage`), `src/rpc/rawtransaction.cpp` (`decodepsbt`, `analyzepsbt`, `combinepsbt`, `finalizepsbt`, `signrawtransactionwithkey`), `src/rpc/blockchain.cpp` (`scantxoutset`) and `src/common/signmessage.cpp`
 - **Related repositories:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) (node), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (message format compatibility)
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) (§8, §9), [`guideline-ux-and-screens.md`](./guideline-ux-and-screens.md), [`guideline-entropy-and-randomness.md`](./guideline-entropy-and-randomness.md)

@@ -3,6 +3,7 @@
 - **Version:** 0.7 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Release engineers, Android developers, maintainers who operate store accounts and signing keys
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** `app/build.gradle.kts` product flavors and `native-build/` in this repository (to be created), [F-Droid Build Metadata Reference](https://f-droid.org/docs/Build_Metadata_Reference/), [Reproducible Builds](https://f-droid.org/docs/Reproducible_Builds/)
 - **Related repositories:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) (node source), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum)
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md)

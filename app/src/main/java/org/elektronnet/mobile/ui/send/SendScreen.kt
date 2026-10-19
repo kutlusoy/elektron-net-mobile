@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.send
 
+import org.elektronnet.mobile.ui.SecretField
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.activity.compose.BackHandler
@@ -56,6 +57,7 @@ import org.elektronnet.mobile.ui.model.RecipientState
 import org.elektronnet.mobile.ui.model.SendInput
 import org.elektronnet.mobile.wallet.AddressFormat
 import org.elektronnet.mobile.wallet.Amount
+import org.elektronnet.mobile.wallet.AmountUnit
 import org.elektronnet.mobile.wallet.EscrowRecord
 import org.elektronnet.mobile.wallet.FeeLevel
 import org.elektronnet.mobile.wallet.FeeOption
@@ -115,9 +117,10 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     LaunchedEffect(Unit) {
         available = withContext(Dispatchers.IO) { runCatching { NodeHost.sendEngine(walletName)?.spendableLep() }.getOrNull() }
     }
-    LaunchedEffect(initialUri, resolved.address) {
-        if (initialUri != null && resolved.usable && step == Step.Recipient) {
-            resolved.amountLep?.let { amountText = Amount.format(it) }
+    LaunchedEffect(recipientText, resolved.address) {
+        val isLink = recipientText.trim().startsWith(ChainConfig.uriScheme + ":", ignoreCase = true)
+        if (isLink && resolved.usable && step == Step.Recipient) {
+            resolved.amountLep?.let { amountText = Amount.display(it); max = false }
             noteFromLink = resolved.note
         }
     }
@@ -236,7 +239,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             Step.Amount -> {
                 Text(stringResource(R.string.send_amount_title), style = MaterialTheme.typography.headlineSmall)
                 if (available != null) {
-                    Text(stringResource(R.string.send_available, Amount.format(spendable), stringResource(R.string.balance_unit)), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.send_available, Amount.display(spendable), Amount.unitSymbol()), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = { pickCoins = true }) { Text(stringResource(R.string.coinpick_action)) }
@@ -246,9 +249,9 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     }
                 }
                 OutlinedTextField(
-                    value = if (max) Amount.format(spendable) else amountText,
+                    value = if (max) Amount.display(spendable) else amountText,
                     onValueChange = { amountText = it; max = false },
-                    label = { Text(stringResource(R.string.receive_amount, stringResource(R.string.balance_unit))) },
+                    label = { Text(stringResource(R.string.receive_amount, Amount.unitSymbol())) },
                     enabled = !max,
                     singleLine = true,
                     isError = !max && (amountState == AmountState.Invalid || amountState is AmountState.Over),
@@ -262,9 +265,12 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                 if (!max) {
                     when (val a = amountState) {
                         AmountState.Invalid -> Text(stringResource(R.string.receive_amount_invalid), color = MaterialTheme.colorScheme.error)
-                        is AmountState.Over -> Text(stringResource(R.string.send_over_balance, Amount.format(a.availableLep), stringResource(R.string.balance_unit)), color = MaterialTheme.colorScheme.error)
+                        is AmountState.Over -> Text(stringResource(R.string.send_over_balance, Amount.display(a.availableLep), Amount.unitSymbol()), color = MaterialTheme.colorScheme.error)
                         else -> Unit
                     }
+                }
+                (amountState as? AmountState.Ok)?.takeIf { !max && Amount.unit != AmountUnit.Elek }?.let {
+                    Text("= " + Amount.formatIn(AmountUnit.Elek, it.lep) + " " + AmountUnit.Elek.symbol, color = MaterialTheme.colorScheme.primary)
                 }
                 noteFromLink?.let { Text(stringResource(R.string.send_link_note, it), color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 Button(
@@ -368,12 +374,11 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             Step.Confirm -> {
                 Text(stringResource(R.string.send_confirm_title), style = MaterialTheme.typography.headlineSmall)
                 Text(stringResource(R.string.send_confirm_body))
-                OutlinedTextField(
+                SecretField(
                     value = passphrase,
                     onValueChange = { passphrase = it },
                     label = { Text(stringResource(R.string.fr_pass_label)) },
                     singleLine = true,
-                    visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -409,7 +414,8 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
 }
 
 @Composable
-private fun elek(lep: Long): String = Amount.format(lep) + " " + stringResource(R.string.balance_unit)
+private fun elek(lep: Long): String =
+    Amount.displayWithUnit(lep) + if (Amount.unit != AmountUnit.Elek) " (= " + Amount.formatIn(AmountUnit.Elek, lep) + " " + AmountUnit.Elek.symbol + ")" else ""
 
 @Composable
 private fun ReviewLine(label: String, content: @Composable () -> Unit) {

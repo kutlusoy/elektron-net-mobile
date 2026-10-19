@@ -5,6 +5,7 @@ package org.elektronnet.mobile.ui.wallet
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,8 +45,13 @@ fun HistoryScreen(wallet: OwnWallet?, items: List<TxItem>?, onOpenTx: (String) -
     var query by rememberSaveable { mutableStateOf("") }
     val selected = HistoryFilter.valueOf(filter)
     val shown = remember(items, selected, query) { HistoryModel.filter(items.orEmpty(), selected, query) }
-    val entries = remember(shown) {
-        HistoryModel.days(shown, ZoneId.systemDefault()).flatMap { day -> listOf<Entry>(Entry.Header(day)) + day.rows.map { Entry.Item(it) } }
+    var page by rememberSaveable { mutableStateOf(0) }
+    androidx.compose.runtime.LaunchedEffect(filter, query) { page = 0 }
+    val pages = HistoryModel.pageCount(shown.size)
+    val current = page.coerceIn(0, pages - 1)
+    val pageItems = remember(shown, current) { HistoryModel.page(shown, current) }
+    val entries = remember(pageItems) {
+        HistoryModel.days(pageItems, ZoneId.systemDefault()).flatMap { day -> listOf<Entry>(Entry.Header(day)) + day.rows.map { Entry.Item(it) } }
     }
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(stringResource(R.string.history_title, walletTitle(wallet)), style = MaterialTheme.typography.titleLarge)
@@ -90,6 +96,13 @@ fun HistoryScreen(wallet: OwnWallet?, items: List<TxItem>?, onOpenTx: (String) -
                         modifier = Modifier.padding(vertical = 16.dp),
                     )
                 }
+            }
+        }
+        if (pages > 1) {
+            Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                androidx.compose.material3.OutlinedButton(onClick = { page = current - 1 }, enabled = current > 0) { Text(stringResource(R.string.history_prev)) }
+                Text(stringResource(R.string.history_page, current + 1, pages), style = MaterialTheme.typography.bodyMedium)
+                androidx.compose.material3.OutlinedButton(onClick = { page = current + 1 }, enabled = current < pages - 1) { Text(stringResource(R.string.history_next)) }
             }
         }
     }

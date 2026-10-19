@@ -3,6 +3,7 @@
 - **Version:** 0.5 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, security reviewers, translators of the app
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/rpc/` and `src/wallet/rpc/` (RPC surface), `src/init.cpp` (RPC arguments), treat the node's `help` output as ground truth for command names and arguments
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) (§3.3 sections, §3.4 node transparency, §4.2 supervisor, §8.3 recovery, §9 security, §11.2 contract check), [`native-build/contract/console-tiers.json`](../native-build/contract/console-tiers.json) (command classification), [`native-build/contract/contract.json`](../native-build/contract/contract.json)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet

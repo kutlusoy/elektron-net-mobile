@@ -25,4 +25,16 @@ class HistoryFilterTest {
         assertEquals(listOf("cc33"), HistoryModel.filter(items, HistoryFilter.All, "cc3").map { it.txid })
         assertEquals(emptyList<TxItem>(), HistoryModel.filter(items, HistoryFilter.Sent, "alice"))
     }
+
+    @Test
+    fun pagesHoldTenNewestFirstAndSearchSpansEverything() {
+        val many = (1..25).map { n -> TxItem("tx$n", TxKind.Received, 5, null, 6, n.toLong() * 100, null, if (n == 3) "Rent" else null, abandoned = false, immature = false) }
+        assertEquals(3, HistoryModel.pageCount(many.size))
+        assertEquals((25 downTo 16).map { "tx$it" }, HistoryModel.page(many, 0).map { it.txid })
+        assertEquals((5 downTo 1).map { "tx$it" }, HistoryModel.page(many, 2).map { it.txid })
+        assertEquals(listOf("tx5", "tx4", "tx3", "tx2", "tx1").size, HistoryModel.page(many, 99).size)
+        assertEquals(1, HistoryModel.pageCount(0))
+        val hits = HistoryModel.filter(many, HistoryFilter.All, "rent")
+        assertEquals(listOf("tx3"), HistoryModel.page(hits, 0).map { it.txid })
+    }
 }

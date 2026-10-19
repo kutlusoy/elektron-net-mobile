@@ -121,4 +121,19 @@ class ExportAndCpfpIntegrationTest {
             assertEquals(ExportFailure.TargetExists, e.failure)
         }
     }
+
+    @Test
+    fun unusedWalletsCanBeRemovedWithoutThePassphraseButUsedOnesCannot() = withEnv(29152) { env ->
+        val removed = mutableListOf<String>()
+        val remover = WalletRemover(env.rpc) { removed.add(it) }
+        assertTrue(remover.isUnused("elektron"))
+        lowFeePayment(env)
+        assertFalse(remover.isUnused("elektron"))
+        assertEquals(RemoveFailure.WrongPassphrase, remover.remove("elektron", null))
+        assertTrue(removed.isEmpty())
+        env.rpc.call("createwallet", linkedMapOf("wallet_name" to "second", "passphrase" to "another long phrase"), null)
+        assertTrue(remover.isUnused("second"))
+        assertEquals(null, remover.remove("second", null))
+        assertEquals(listOf("second"), removed)
+    }
 }

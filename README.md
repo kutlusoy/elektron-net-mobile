@@ -1,8 +1,9 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.25 (draft)
+- **Version:** 0.26 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
 - **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md), [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 
@@ -24,7 +25,7 @@
 - Escrow wallets (M of N multisig, for example 2 of 3 with an arbiter), PSBT tools to check, sign, combine and send payment files, key sweep like in Electrum, and message signing and verification.
 - Several wallets with a quick switch and removal only with that wallet's passphrase, review-before-sign transaction flow (PSBT), fee policy re-check before signing, optional "subtract fee from amount", coin control (choose and freeze coins), address labels, QR receive and scan.
 - No address reuse by default: fresh receive and change addresses, and coins that arrive on an already spent address are kept out of automatic spending (shown separately, spendable on purpose).
-- Complete transaction history per wallet with search, filters and CSV export; speed up a waiting payment with fee bump (RBF) when you sent it, or with CPFP when it is incoming.
+- Complete transaction history per wallet, 10 per page newest first, with search across everything, filters and CSV export; speed up a waiting payment with fee bump (RBF) when you sent it, or with CPFP when it is incoming.
 - Address book (local, shared by all wallets), public descriptor export and an encrypted wallet file export through the system file picker.
 - Fee estimates come from the node with a fallback to a mempool explorer; the explorer list (default `https://mempool.elektron-net.org`) can be edited and is also used for transaction links.
 - Node dashboard: sync phase, height, peers with country (offline DB-IP Country Lite lookup, addresses never leave the phone), disk usage, prune height, snapshot state.
@@ -33,6 +34,7 @@
 - Optional biometric unlock with an adjustable lock delay, a temporary screenshot switch for tutorials, confirmation before the node is stopped or paused, `elek:` payment links, QR scan (CameraX and ZXing, no Google services) and receive, and an optional notification for incoming payments that hides the amount on the lock screen.
 - Node dashboard also shows upcoming chain events: next halving with date and block reward, difficulty epoch progress and the projected difficulty at the next retarget.
 - Node tools: sync progress, optional live node log with a cleaned copy and share (IP addresses, onion names, addresses and paths removed), peer details with country on tap, and a guided reset of the downloaded chain data that keeps your wallets.
+- Amounts can be shown in ELEK, mELEK, bit or lepton (1 ELEK = 1,000 mELEK = 1,000,000 bit = 100,000,000 lepton), with the ELEK value repeated when you send. Payment links are lowercase and carry amount and message. The first start can skip the wallet and run the node only.
 - Language follows the system and can be switched in Settings to any shipped language.
 - Fifteen languages ship as drafts: English, German, Spanish, French, Italian, Chinese (Simplified), Arabic, Japanese, Korean, Hindi, Portuguese (Brazil), Russian, Turkish, Indonesian and Vietnamese. All except English await native-speaker review of the security texts before a store release.
 - Calm design without glow: five color themes (Teal, Blue, Rust, Red and Matrix), each in a dark and a light mode, one readable system font for all themes, a contrast check in CI, no artwork. The ticker is ELEK.
@@ -139,7 +141,7 @@ doc-elektron/              guidelines and reports
 
 ## 8. Security summary
 
-- Cleartext HTTP is refused app wide except to the loopback node, localhost and onion hosts. Node RPC is bound to loopback and authenticated with a cookie file in the app-private data directory that the node recreates at every start; no password is stored anywhere.
+- The only web request outside the explorer list is the update check you start yourself in Settings. Cleartext HTTP is refused app wide except to the loopback node, localhost and onion hosts. Node RPC is bound to loopback and authenticated with a cookie file in the app-private data directory that the node recreates at every start; no password is stored anywhere.
 - Wallet unlock is short-lived and always followed by a lock.
 - Sensitive screens block screenshots and recent-app previews.
 - Android backup of app data is disabled.
@@ -164,7 +166,8 @@ The full requirement list is in plan section 9.
 ## 10. Credits
 
 - **Elektron Net Developers:** development of the app and the node integration.
-- **Milio (aka 1000io), X [@spiroflex](https://x.com/spiroflex) 🇪🇸 (Spain):** co-author and the originator of the idea for this successor app.
+- **Ali Kutlusoy, X [@kutlusoy](https://x.com/kutlusoy):** founder of Elektron Net and lead of this app.
+- **Milio aka 1000mio, X [@spiroflex](https://x.com/spiroflex) 🇪🇸 (Spain):** co-author and the originator of the idea for this successor app.
 
 ## 11. Links
 
@@ -175,4 +178,4 @@ The full requirement list is in plan section 9.
 
 ## 12. License
 
-Copyright © 2026 Elektron Net Developers. The app is called "Elektron" (mainnet) and "Elektron (T)" (testnet). This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries. Review the upstream licenses before redistribution. The license of this repository is not yet decided (see the plan, section 17, Q2).
+Released under the [MIT License](./LICENSE). Copyright (c) 2026 Elektron Net Developers, Ali Kutlusoy (@kutlusoy) and Milio aka 1000mio (@spiroflex). The app is called "Elektron" (mainnet) and "Elektron (T)" (testnet). This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries, each under its own license. Review the upstream licenses before redistribution.

@@ -685,4 +685,25 @@
     <string name="settings_language">Язык</string>
     <string name="settings_language_system">Язык системы</string>
     <string name="events_to_retarget">Блоков до ретаргета</string>
+    <string name="settings_units">Единица для сумм</string>
+    <string name="units_hint">Используется для всех сумм и полей ввода. На экранах проверки сумма также показана в ELEK. Комиссии остаются в lep/vB.</string>
+    <string name="update_title">Обновления</string>
+    <string name="update_hint">Запрашивает у github.com тег последнего релиза этого приложения. Больше ничего не отправляется.</string>
+    <string name="update_check">Проверить обновления</string>
+    <string name="update_checking">Проверка...</string>
+    <string name="update_latest">У вас последняя версия.</string>
+    <string name="update_available">Доступна версия %1$s.</string>
+    <string name="update_open">Открыть страницу релиза</string>
+    <string name="update_failed">Не удалось проверить обновления. Попробуйте позже.</string>
+    <string name="history_page">Страница %1$d из %2$d</string>
+    <string name="history_prev">Новее</string>
+    <string name="history_next">Старее</string>
+    <string name="fr_skip">Пропустить (только узел)</string>
+    <string name="fr_skip_hint">Запустить только узел. Создать или восстановить кошелек можно в любое время на вкладке «Кошелек».</string>
+    <string name="nowallet_title">Кошелька пока нет</string>
+    <string name="nowallet_body">Ваш узел работает без кошелька. Создайте или восстановите его, когда захотите, синхронизированные данные сохранятся.</string>
+    <string name="nowallet_create">Создать или восстановить кошелек</string>
+    <string name="secret_show">Показать</string>
+    <string name="secret_hide">Скрыть</string>
+    <string name="wallets_remove_unused">В этом кошельке нет платежей и средств. Его можно удалить без парольной фразы, оставьте поле пустым.</string>
 </resources>

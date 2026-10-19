@@ -685,4 +685,25 @@
     <string name="settings_language">Lingua</string>
     <string name="settings_language_system">Lingua di sistema</string>
     <string name="events_to_retarget">Blocchi al retarget</string>
+    <string name="settings_units">Unità degli importi</string>
+    <string name="units_hint">Usata per tutti gli importi e i campi. Le schermate di verifica mostrano l\'importo anche in ELEK. Le commissioni restano in lep/vB.</string>
+    <string name="update_title">Aggiornamenti</string>
+    <string name="update_hint">Chiede a github.com il tag della release più recente di questa app. Non viene inviato altro.</string>
+    <string name="update_check">Cerca aggiornamenti</string>
+    <string name="update_checking">Ricerca...</string>
+    <string name="update_latest">Hai l\'ultima versione.</string>
+    <string name="update_available">La versione %1$s è disponibile.</string>
+    <string name="update_open">Apri pagina della release</string>
+    <string name="update_failed">Impossibile cercare aggiornamenti. Riprova più tardi.</string>
+    <string name="history_page">Pagina %1$d di %2$d</string>
+    <string name="history_prev">Più recenti</string>
+    <string name="history_next">Meno recenti</string>
+    <string name="fr_skip">Salta per ora (solo nodo)</string>
+    <string name="fr_skip_hint">Avvia solo il nodo. Puoi creare o ripristinare un portafoglio quando vuoi dalla scheda Portafoglio.</string>
+    <string name="nowallet_title">Ancora nessun portafoglio</string>
+    <string name="nowallet_body">Il tuo nodo funziona senza portafoglio. Creane o ripristinane uno quando vuoi, i dati sincronizzati vengono conservati.</string>
+    <string name="nowallet_create">Crea o ripristina un portafoglio</string>
+    <string name="secret_show">Mostra</string>
+    <string name="secret_hide">Nascondi</string>
+    <string name="wallets_remove_unused">Questo portafoglio non ha pagamenti né fondi. Puoi rimuoverlo senza la sua passphrase, lascia il campo vuoto.</string>
 </resources>

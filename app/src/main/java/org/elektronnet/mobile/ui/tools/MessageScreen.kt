@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.tools
 
+import org.elektronnet.mobile.ui.SecretField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -108,12 +109,11 @@ fun MessageScreen(onBack: () -> Unit) {
                 if (bad) ErrorText(stringResource(text)) else Text(stringResource(text), style = MaterialTheme.typography.titleMedium)
             }
         } else {
-            OutlinedTextField(
+            SecretField(
                 value = passphrase,
                 onValueChange = { passphrase = it },
                 label = { Text(stringResource(R.string.fr_pass_label)) },
                 singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier.fillMaxWidth(),
             )

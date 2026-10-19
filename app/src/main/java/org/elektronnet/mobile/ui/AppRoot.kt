@@ -61,6 +61,7 @@ import org.elektronnet.mobile.wallet.Balances
 import org.elektronnet.mobile.wallet.TxItem
 import org.elektronnet.mobile.ui.settings.SettingsScreen
 import org.elektronnet.mobile.ui.wallet.HistoryScreen
+import org.elektronnet.mobile.ui.wallet.NoWalletCard
 import org.elektronnet.mobile.ui.wallet.WalletScreen
 
 private data class WalletData(val balances: Balances, val items: List<TxItem>)
@@ -97,6 +98,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     var storeReady by remember { mutableStateOf(store?.walletReady() ?: false) }
     val setup = NodeHost.setupStatus
     val walletReady = (storeReady && NodeHost.wallets.isNotEmpty()) || setup != SetupStatus.None
+    var nodeOnly by remember { mutableStateOf(store?.nodeOnly == true) }
+    val shell = walletReady || nodeOnly
 
     LaunchedEffect(setup) {
         if (setup is SetupStatus.Ready || setup == SetupStatus.NeedsRescan || setup == SetupStatus.Rescanning) storeReady = true
@@ -174,7 +177,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             }
         },
         bottomBar = {
-            if (walletReady) PillNavBar(
+            if (shell) PillNavBar(
                 items = Tab.entries.map { Triple(stringResource(it.label), it.icon, it.ordinal) },
                 selected = tab,
                 onSelect = {
@@ -187,13 +190,18 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         },
     ) { padding ->
         Box(modifier = Modifier.padding(padding).consumeWindowInsets(padding).imePadding()) {
-            if (!walletReady) {
+            if (!shell) {
                 FirstRunScreen(
                     onAllowMetered = {
                         store?.setAllowMetered(it)
                         settings = settings.copy(allowMetered = it)
                     },
                     onFinished = {},
+                    onSkip = {
+                        store?.nodeOnly = true
+                        nodeOnly = true
+                        onStart()
+                    },
                 )
                 return@Box
             }
@@ -229,7 +237,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     onAllowMetered = {},
                     onFinished = { show(Overlay.None) },
                     addWallet = true,
-                    onCancel = { show(Overlay.Wallets) },
+                    onCancel = { show(if (walletReady) Overlay.Wallets else Overlay.None) },
                 )
                 Overlay.Console -> ConsoleRoot(onClose = { show(Overlay.None) })
                 Overlay.Contacts -> ContactsScreen(onBack = { show(Overlay.None) })
@@ -240,7 +248,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             BrandHeader(compact = true, showTagline = true)
             Box(modifier = Modifier.weight(1f)) {
             when (Tab.entries[tab]) {
-                Tab.Wallet -> Column {
+                Tab.Wallet -> if (!walletReady) NoWalletCard(onCreate = { show(Overlay.AddWallet) }) else Column {
                     WalletSwitcher(
                         onDetails = { show(Overlay.Details) },
                         onCoins = { show(Overlay.Coins) },
@@ -274,7 +282,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     onSend = { show(Overlay.Send) },
                 )
                 }
-                Tab.History -> HistoryScreen(
+                Tab.History -> if (!walletReady) NoWalletCard(onCreate = { show(Overlay.AddWallet) }) else HistoryScreen(
                     wallet = NodeHost.wallets.firstOrNull { it.name == NodeHost.activeWallet },
                     items = histories[NodeHost.activeWallet],
                     onOpenTx = { openTx = it },

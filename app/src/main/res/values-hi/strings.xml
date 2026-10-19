@@ -685,4 +685,25 @@
     <string name="settings_language">भाषा</string>
     <string name="settings_language_system">सिस्टम भाषा</string>
     <string name="events_to_retarget">रिटार्गेट तक ब्लॉक</string>
+    <string name="settings_units">राशि की इकाई</string>
+    <string name="units_hint">सभी राशियों और इनपुट के लिए उपयोग होती है। समीक्षा स्क्रीन पर राशि ELEK में भी दिखती है। शुल्क lep/vB में ही रहता है।</string>
+    <string name="update_title">अपडेट</string>
+    <string name="update_hint">github.com से इस ऐप का नवीनतम रिलीज़ टैग पूछता है। इसके अलावा कुछ नहीं भेजा जाता।</string>
+    <string name="update_check">अपडेट जाँचें</string>
+    <string name="update_checking">जाँच हो रही है...</string>
+    <string name="update_latest">आपके पास नवीनतम संस्करण है।</string>
+    <string name="update_available">संस्करण %1$s उपलब्ध है।</string>
+    <string name="update_open">रिलीज़ पेज खोलें</string>
+    <string name="update_failed">अपडेट की जाँच नहीं हो सकी। बाद में फिर कोशिश करें।</string>
+    <string name="history_page">पेज %1$d / %2$d</string>
+    <string name="history_prev">नया</string>
+    <string name="history_next">पुराना</string>
+    <string name="fr_skip">अभी छोड़ें (केवल नोड)</string>
+    <string name="fr_skip_hint">सिर्फ़ नोड चलाएँ। वॉलेट आप कभी भी वॉलेट टैब में बना या रीस्टोर कर सकते हैं।</string>
+    <string name="nowallet_title">अभी कोई वॉलेट नहीं है</string>
+    <string name="nowallet_body">आपका नोड बिना वॉलेट के चल रहा है। जब चाहें वॉलेट बनाएँ या रीस्टोर करें, सिंक किया गया डेटा सुरक्षित रहेगा।</string>
+    <string name="nowallet_create">वॉलेट बनाएँ या रीस्टोर करें</string>
+    <string name="secret_show">दिखाएँ</string>
+    <string name="secret_hide">छिपाएँ</string>
+    <string name="wallets_remove_unused">इस वॉलेट में कोई भुगतान या धनराशि नहीं है। आप इसे पासफ़्रेज़ के बिना हटा सकते हैं, फ़ील्ड खाली छोड़ें।</string>
 </resources>

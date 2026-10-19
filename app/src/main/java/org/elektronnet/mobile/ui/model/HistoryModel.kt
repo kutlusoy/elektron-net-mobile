@@ -39,6 +39,18 @@ object HistoryModel {
         }
     }
 
+    const val PAGE_SIZE = 10
+
+    fun newestFirst(items: List<TxItem>): List<TxItem> = items.sortedByDescending { it.timeSeconds }
+
+    fun pageCount(total: Int, size: Int = PAGE_SIZE): Int = if (total <= 0) 1 else (total + size - 1) / size
+
+    fun page(items: List<TxItem>, page: Int, size: Int = PAGE_SIZE): List<TxItem> {
+        val sorted = newestFirst(items)
+        val index = page.coerceIn(0, pageCount(sorted.size, size) - 1)
+        return sorted.drop(index * size).take(size)
+    }
+
     fun days(items: List<TxItem>, zone: ZoneId): List<HistoryDay> =
         items.map(::row).groupBy { Instant.ofEpochSecond(it.timeSeconds).atZone(zone).toLocalDate() }
             .map { (date, rows) -> HistoryDay(date, rows.sortedByDescending { it.timeSeconds }) }
@@ -50,7 +62,7 @@ object HistoryModel {
         return HistoryRow(
             txid = item.txid,
             kind = item.kind,
-            amountText = sign + Amount.format(Math.abs(item.netLep)),
+            amountText = sign + Amount.display(Math.abs(item.netLep)),
             incoming = incoming,
             status = item.status,
             confirmations = item.confirmations,
@@ -64,8 +76,8 @@ object HistoryModel {
         val pending = balances.pendingLep + balances.immatureLep
         val empty = balances.trustedLep == 0L && pending == 0L && !hasHistory
         return BalanceUi(
-            amountText = if (!synced && empty) null else Amount.format(balances.trustedLep),
-            pendingText = if (pending != 0L) Amount.format(Math.abs(pending)) else null,
+            amountText = if (!synced && empty) null else Amount.display(balances.trustedLep),
+            pendingText = if (pending != 0L) Amount.display(Math.abs(pending)) else null,
             waitingForSync = !synced && empty,
         )
     }

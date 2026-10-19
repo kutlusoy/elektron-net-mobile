@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui.wallet
 
+import org.elektronnet.mobile.ui.SecretField
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -72,14 +73,13 @@ fun CpfpSection(txid: String, onDone: (String) -> Unit) {
     )
     plan?.let {
         Text(stringResource(R.string.cpfp_current, it.packageRate.toPlainString()))
-        Text(stringResource(R.string.cpfp_cost, Amount.format(it.childFeeLep), stringResource(R.string.balance_unit)))
+        Text(stringResource(R.string.cpfp_cost, Amount.display(it.childFeeLep), Amount.unitSymbol()))
     }
-    OutlinedTextField(
+    SecretField(
         value = passphrase,
         onValueChange = { passphrase = it },
         label = { Text(stringResource(R.string.fr_pass_label)) },
         singleLine = true,
-        visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
         keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Password),
         modifier = Modifier.fillMaxWidth(),
     )

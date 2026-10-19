@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.ui
 
+import org.elektronnet.mobile.ui.SecretField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -66,12 +67,11 @@ fun SetupBanner(
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(stringResource(R.string.setup_pass_body))
-                    OutlinedTextField(
+                    SecretField(
                         value = value,
                         onValueChange = { value = it },
                         label = { Text(stringResource(R.string.fr_pass_label)) },
                         singleLine = true,
-                        visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     )
                 }

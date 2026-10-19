@@ -685,4 +685,25 @@
     <string name="settings_language">Idioma</string>
     <string name="settings_language_system">Idioma do sistema</string>
     <string name="events_to_retarget">Blocos até o retarget</string>
+    <string name="settings_units">Unidade dos valores</string>
+    <string name="units_hint">Usada em todos os valores e campos. As telas de revisão também mostram o valor em ELEK. As taxas continuam em lep/vB.</string>
+    <string name="update_title">Atualizações</string>
+    <string name="update_hint">Consulta o github.com para saber a tag da versão mais recente deste app. Nada mais é enviado.</string>
+    <string name="update_check">Verificar atualizações</string>
+    <string name="update_checking">Verificando...</string>
+    <string name="update_latest">Você está com a versão mais recente.</string>
+    <string name="update_available">A versão %1$s está disponível.</string>
+    <string name="update_open">Abrir página da versão</string>
+    <string name="update_failed">Não foi possível verificar atualizações. Tente novamente mais tarde.</string>
+    <string name="history_page">Página %1$d de %2$d</string>
+    <string name="history_prev">Mais novos</string>
+    <string name="history_next">Mais antigos</string>
+    <string name="fr_skip">Pular por enquanto (só o nó)</string>
+    <string name="fr_skip_hint">Execute apenas o nó. Você pode criar ou restaurar uma carteira quando quiser na aba Carteira.</string>
+    <string name="nowallet_title">Ainda sem carteira</string>
+    <string name="nowallet_body">Seu nó funciona sem carteira. Crie ou restaure uma quando quiser, os dados sincronizados são mantidos.</string>
+    <string name="nowallet_create">Criar ou restaurar uma carteira</string>
+    <string name="secret_show">Mostrar</string>
+    <string name="secret_hide">Ocultar</string>
+    <string name="wallets_remove_unused">Esta carteira não tem pagamentos nem fundos. Você pode removê-la sem a frase secreta, deixe o campo vazio.</string>
 </resources>

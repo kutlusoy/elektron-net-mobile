@@ -3,6 +3,7 @@
 - **Version:** 0.3 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, security reviewers, auditors, users who want to verify their own wallet creation
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** `app/src/main/java/org/elektronnet/mobile/wallet/Entropy.kt`, `Bip39.kt`, `Bip32.kt`, `WalletBootstrap.kt`, `app/src/test/java/org/elektronnet/mobile/wallet/EntropyTest.kt` and `tools/check-rng.py` in this repository
 - **Related repositories:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) (node and wallet), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (wording only)
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) (§8.1, §8.3, §9), [`guideline-ux-and-screens.md`](./guideline-ux-and-screens.md) (§5)

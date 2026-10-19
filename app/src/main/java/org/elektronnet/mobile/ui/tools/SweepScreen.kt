@@ -115,7 +115,7 @@ fun SweepScreen(onBack: () -> Unit) {
             Phase.Found -> {
                 val s = scan
                 if (s != null) {
-                    Text(stringResource(R.string.sweep_found, Amount.format(s.totalLep), stringResource(R.string.balance_unit), s.utxos.size), style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.sweep_found, Amount.display(s.totalLep), Amount.unitSymbol(), s.utxos.size), style = MaterialTheme.typography.titleMedium)
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
@@ -142,8 +142,8 @@ fun SweepScreen(onBack: () -> Unit) {
                 if (p != null) {
                     Text(stringResource(R.string.send_review_title), style = MaterialTheme.typography.titleMedium)
                     Text(stringResource(R.string.sweep_to_wallet), fontFamily = ElektronMono)
-                    Text(stringResource(R.string.send_review_amount) + ": " + Amount.format(p.amountLep) + " " + stringResource(R.string.balance_unit))
-                    Text(stringResource(R.string.tx_fee) + ": " + Amount.format(p.feeLep) + " " + stringResource(R.string.balance_unit) + "  (" + stringResource(R.string.send_fee_rate, p.feeRate.toPlainString()) + ")")
+                    Text(stringResource(R.string.send_review_amount) + ": " + Amount.display(p.amountLep) + " " + Amount.unitSymbol())
+                    Text(stringResource(R.string.tx_fee) + ": " + Amount.display(p.feeLep) + " " + Amount.unitSymbol() + "  (" + stringResource(R.string.send_fee_rate, p.feeRate.toPlainString()) + ")")
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
