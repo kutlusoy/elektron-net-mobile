@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package org.elektronnet.mobile.ui.wallets
 
 import androidx.activity.compose.BackHandler
@@ -54,7 +56,7 @@ fun ContactsScreen(onBack: () -> Unit) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(contact.name, style = MaterialTheme.typography.titleMedium)
                     Text(contact.address, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
-                    Row {
+                    androidx.compose.foundation.layout.FlowRow {
                         TextButton(onClick = { copyText(context, "address", contact.address) }) { Text(stringResource(R.string.action_copy)) }
                         TextButton(onClick = { editing = contact }) { Text(stringResource(R.string.wallets_rename)) }
                         TextButton(onClick = {

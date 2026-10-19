@@ -665,9 +665,9 @@
     <string name="events_halving">Sonraki halving</string>
     <string name="events_to_halving">Halving\'e kalan blok</string>
     <string name="events_reward">Blok ödülü</string>
-    <string name="events_epoch">Zorluk dönemi (blok)</string>
+    <string name="events_epoch">Dönem ilerlemesi</string>
     <string name="events_avg_block">Ortalama blok süresi</string>
-    <string name="events_retarget">Sonraki yeniden ayarlama (kalan blok)</string>
+    <string name="events_retarget">Sonraki retarget</string>
     <string name="events_projection">Tahmini zorluk</string>
     <string name="export_saved">Dosya kaydedildi.</string>
     <string name="confirm_stop_title">Düğüm durdurulsun mu?</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">Ekran görüntüleri açık</string>
     <string name="settings_language">Dil</string>
     <string name="settings_language_system">Sistem dili</string>
+    <string name="events_to_retarget">Retarget\'e kalan blok</string>
 </resources>

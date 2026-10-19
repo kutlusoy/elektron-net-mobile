@@ -665,9 +665,9 @@
     <string name="events_halving">下次减半</string>
     <string name="events_to_halving">距离减半的区块数</string>
     <string name="events_reward">区块奖励</string>
-    <string name="events_epoch">难度周期(区块)</string>
+    <string name="events_epoch">周期进度</string>
     <string name="events_avg_block">平均出块时间</string>
-    <string name="events_retarget">下次难度调整(剩余区块)</string>
+    <string name="events_retarget">下次难度调整</string>
     <string name="events_projection">预计难度</string>
     <string name="export_saved">文件已保存。</string>
     <string name="confirm_stop_title">停止节点?</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">截屏已开启</string>
     <string name="settings_language">语言</string>
     <string name="settings_language_system">系统语言</string>
+    <string name="events_to_retarget">距难度调整的区块数</string>
 </resources>

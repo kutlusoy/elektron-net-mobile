@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package org.elektronnet.mobile.ui.wallet
 
 import androidx.compose.foundation.layout.Arrangement
@@ -54,7 +56,7 @@ fun HistoryScreen(wallet: OwnWallet?, items: List<TxItem>?, onOpenTx: (String) -
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             HistoryFilter.entries.forEach { option ->
                 FilterChip(
                     selected = selected == option,

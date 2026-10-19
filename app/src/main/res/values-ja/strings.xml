@@ -665,9 +665,9 @@
     <string name="events_halving">次の半減期</string>
     <string name="events_to_halving">半減期までのブロック数</string>
     <string name="events_reward">ブロック報酬</string>
-    <string name="events_epoch">難易度期間(ブロック)</string>
+    <string name="events_epoch">エポックの進捗</string>
     <string name="events_avg_block">平均ブロック時間</string>
-    <string name="events_retarget">次の難易度調整(残りブロック)</string>
+    <string name="events_retarget">次のリターゲット</string>
     <string name="events_projection">予想される難易度</string>
     <string name="export_saved">ファイルを保存しました。</string>
     <string name="confirm_stop_title">ノードを停止しますか?</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">スクリーンショットはオンです</string>
     <string name="settings_language">言語</string>
     <string name="settings_language_system">システムの言語</string>
+    <string name="events_to_retarget">リターゲットまでのブロック数</string>
 </resources>

@@ -665,9 +665,9 @@
     <string name="events_halving">다음 반감기</string>
     <string name="events_to_halving">반감기까지 남은 블록</string>
     <string name="events_reward">블록 보상</string>
-    <string name="events_epoch">난이도 주기(블록)</string>
+    <string name="events_epoch">에폭 진행률</string>
     <string name="events_avg_block">평균 블록 시간</string>
-    <string name="events_retarget">다음 난이도 조정(남은 블록)</string>
+    <string name="events_retarget">다음 리타겟</string>
     <string name="events_projection">예상 난이도</string>
     <string name="export_saved">파일이 저장되었습니다.</string>
     <string name="confirm_stop_title">노드를 중지할까요?</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">스크린샷이 켜져 있습니다</string>
     <string name="settings_language">언어</string>
     <string name="settings_language_system">시스템 언어</string>
+    <string name="events_to_retarget">리타겟까지 남은 블록</string>
 </resources>

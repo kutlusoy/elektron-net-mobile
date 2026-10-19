@@ -41,6 +41,7 @@ import org.elektronnet.mobile.service.NodeNotification
 import org.elektronnet.mobile.ui.GlassCard
 import org.elektronnet.mobile.ui.HeroCard
 import org.elektronnet.mobile.ui.NodeChipRow
+import org.elektronnet.mobile.ui.InfoRow
 import org.elektronnet.mobile.ui.StatTile
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeChip
@@ -332,12 +333,7 @@ private fun TelemetrySection(details: NodeDetails, telemetry: org.elektronnet.mo
 }
 
 @Composable
-private fun TelemetryRow(label: String, value: String) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, modifier = Modifier.padding(start = 12.dp))
-    }
-}
+private fun TelemetryRow(label: String, value: String) = InfoRow(label, value)
 
 @Composable
 private fun PeerSection(peers: List<NodeHost.PeerRow>, showGeoCredit: Boolean) {
@@ -420,12 +416,7 @@ private fun TileRow(left: Pair<String, String>, right: Pair<String, String>) {
 }
 
 @Composable
-private fun DetailRow(label: String, value: String) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value)
-    }
-}
+private fun DetailRow(label: String, value: String) = InfoRow(label, value)
 
 private fun chipFor(state: NodeTabState): NodeChip = when (state) {
     NodeTabState.UpToDate -> NodeChip.Synced
@@ -510,7 +501,8 @@ private fun ChainEventsCard(schedule: org.elektronnet.mobile.node.ChainSchedule,
             )
             TelemetryRow(stringResource(R.string.events_epoch), number.format(schedule.epochBlocksMined) + " / " + number.format(schedule.epochLength))
             TelemetryRow(stringResource(R.string.events_avg_block), schedule.avgBlockSeconds?.let { String.format(java.util.Locale.getDefault(), "%.1f s", it) } ?: dash)
-            TelemetryRow(stringResource(R.string.events_retarget), "~" + day(schedule.retargetAtMs) + " (" + number.format(schedule.retargetBlocksLeft) + ")")
+            TelemetryRow(stringResource(R.string.events_retarget), "~" + day(schedule.retargetAtMs))
+            TelemetryRow(stringResource(R.string.events_to_retarget), number.format(schedule.retargetBlocksLeft))
             val projected = schedule.projectedDifficulty
             val factor = schedule.difficultyFactor
             TelemetryRow(

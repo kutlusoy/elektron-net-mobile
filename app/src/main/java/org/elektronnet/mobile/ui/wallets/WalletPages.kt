@@ -41,6 +41,7 @@ import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.GlassCard
+import org.elektronnet.mobile.ui.InfoRow
 import org.elektronnet.mobile.ui.theme.ElektronMono
 import org.elektronnet.mobile.ui.tools.ErrorText
 import org.elektronnet.mobile.ui.tools.Hint
@@ -132,13 +133,6 @@ fun WalletDetailsScreen(onBack: () -> Unit) {
     }
 }
 
-@Composable
-private fun InfoRow(label: String, value: String, mono: Boolean = false) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, fontFamily = if (mono) ElektronMono else null, modifier = Modifier.padding(start = 12.dp))
-    }
-}
 
 @Composable
 fun CoinsScreen(onBack: () -> Unit) {

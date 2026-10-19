@@ -665,9 +665,9 @@
     <string name="events_halving">Halving berikutnya</string>
     <string name="events_to_halving">Blok menuju halving</string>
     <string name="events_reward">Hadiah blok</string>
-    <string name="events_epoch">Periode kesulitan (blok)</string>
+    <string name="events_epoch">Progres epoch</string>
     <string name="events_avg_block">Rata-rata waktu blok</string>
-    <string name="events_retarget">Penyesuaian berikutnya (sisa blok)</string>
+    <string name="events_retarget">Retarget berikutnya</string>
     <string name="events_projection">Perkiraan kesulitan</string>
     <string name="export_saved">File telah disimpan.</string>
     <string name="confirm_stop_title">Hentikan node?</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">Tangkapan layar aktif</string>
     <string name="settings_language">Bahasa</string>
     <string name="settings_language_system">Bahasa sistem</string>
+    <string name="events_to_retarget">Blok menuju retarget</string>
 </resources>

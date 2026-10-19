@@ -665,9 +665,9 @@
     <string name="events_halving">Nächstes Halving</string>
     <string name="events_to_halving">Blöcke bis zum Halving</string>
     <string name="events_reward">Block-Belohnung</string>
-    <string name="events_epoch">Difficulty-Epoche (Blöcke)</string>
+    <string name="events_epoch">Epochen-Fortschritt</string>
     <string name="events_avg_block">Durchschnittliche Blockzeit</string>
-    <string name="events_retarget">Nächster Retarget (verbleibende Blöcke)</string>
+    <string name="events_retarget">Nächster Retarget</string>
     <string name="events_projection">Voraussichtliche Difficulty</string>
     <string name="export_saved">Die Datei wurde gespeichert.</string>
     <string name="confirm_stop_title">Node stoppen?</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">Screenshots sind aktiviert</string>
     <string name="settings_language">Sprache</string>
     <string name="settings_language_system">Systemsprache</string>
+    <string name="events_to_retarget">Blöcke bis Retarget</string>
 </resources>

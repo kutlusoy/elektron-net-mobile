@@ -157,6 +157,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 | About | Version, wallet version, node version, node commit, node library hash, signing key fingerprint, copyright | distribution guideline §8 |
 | Advanced | Storage saver, Resource profile, Expert mode and console, Live log, Address list, Export descriptors, Rescan, Reset | plan §3.2, §3.6 |
 
+- Label and value rows wrap instead of squeezing: when the value does not fit beside the label it moves to its own line, and filter chips and action buttons flow onto the next line (no text is ever broken letter by letter).
 - Settings are grouped in tiles (cards), one per group, so the page can be scanned at a glance.
 - Limits are sliders with discrete steps, the current value is shown beside the title and a limit that means "none" sits at the far end.
 - Stopping or pausing the node asks for confirmation first, so a stray tap cannot switch the node off.
