@@ -11,12 +11,13 @@
 
 ## 1. Summary
 
-A wallet restored from its recovery phrase on a pruned node recovers outputs that are still inside the retained blocks through `rescanblockchain`. Outputs created before the pruning boundary are recovered from the current UTXO set by `CWallet::ScanUTXOSet()`. Two defects were found in that second path. Both are fixed in the node source on branch `4.0.6` of `elektron-net` (wallet code only, no consensus change, activation height 500000 unchanged). Builds against an older node source keep the first fix through a build patch, and the second through the PSBT path below.
+A wallet restored from its recovery phrase on a pruned node recovers outputs that are still inside the retained blocks through `rescanblockchain`. Outputs created before the pruning boundary are recovered from the current UTXO set by `CWallet::ScanUTXOSet()`. Three defects were found in that second path. All are fixed in the node source on branch `4.0.6` of `elektron-net` (wallet code only, no consensus change, activation height 500000 unchanged). Builds against an older node source keep the first fix through a build patch, and the second through the PSBT path below.
 
 | # | Defect | Status |
 |---|---|---|
 | D1 | `CreditUTXOFromChain()` builds a partial transaction that holds only the recovered output. Two recovered outputs with the same script, value and index produce the same partial transaction, so the second `AddToWallet()` trips `TxStateSerializedBlockHash(wtx.m_state) == TxStateSerializedBlockHash(state)`. | Fixed in the node source (`4.0.6`). Older sources get the same fix from `rescanutxoset.py`, which is a no-op once the source contains it. |
 | D2 | The partial transaction cannot have the original txid, so the wallet lists the recovered coin under a synthetic outpoint. The balance is correct, but a payment built from that coin spends an outpoint that does not exist in the UTXO set and is not accepted by the mempool. | Fixed in the node source (`4.0.6`): the recovered output is listed, selected and signed under its real outpoint. Older sources are worked around by a PSBT path that uses the real outpoints (section 4). |
+| D3 | The scan only adds coins. A wallet that was offline while one of its coins was spent elsewhere keeps that coin as unspent. | Fixed in the node source (`4.0.6`): outputs missing from the UTXO set are marked spent after a scan outside initial block download. Not fixed on older sources. |
 
 ## 2. Reproduction (regtest, verified against the patched native build)
 
