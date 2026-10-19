@@ -66,6 +66,13 @@ class UtxoRecoveryIntegrationTest {
             assertEquals(1_000_000_000L, trusted("w2"))
             assertEquals(real, outpoints("w2"))
 
+            val first = real.first().split(":")
+            val coin = listOf(linkedMapOf("txid" to first[0], "vout" to first[1].toInt()))
+            rpc.call("lockunspent", listOf(false, coin), "w2")
+            assertEquals(1, (rpc.call("listlockunspent", emptyList<Any?>(), "w2") as List<*>).size)
+            rpc.call("lockunspent", listOf(true, coin), "w2")
+            assertTrue((rpc.call("listlockunspent", emptyList<Any?>(), "w2") as List<*>).isEmpty())
+
             val funded = rpc.call("walletcreatefundedpsbt", listOf(emptyList<Any?>(), listOf(linkedMapOf(miner to 1.0)), 0, linkedMapOf("fee_rate" to 10)), "w2") as Map<*, *>
             val processed = rpc.call("walletprocesspsbt", listOf(funded["psbt"], true, "ALL", true, true), "w2") as Map<*, *>
             assertEquals(true, processed["complete"])
