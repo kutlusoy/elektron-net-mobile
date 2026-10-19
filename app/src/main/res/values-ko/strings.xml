@@ -661,4 +661,27 @@
     <string name="details_used_hint">이 코인은 이미 사용한 적이 있는 주소에 있습니다. 지갑은 결제가 서로 연결되지 않도록 이 코인을 자동으로 사용하지 않습니다. 직접 사용하려면 코인에서 선택하세요.</string>
     <string name="details_noreuse">주소 재사용 방지가 켜져 있습니다. 모든 수신 주소와 잔돈 주소는 한 번만 사용되며, 재사용된 주소의 코인은 자동 사용에서 제외됩니다.</string>
     <string name="coins_reused">재사용된 주소</string>
+    <string name="events_title">예정된 체인 이벤트</string>
+    <string name="events_halving">다음 반감기</string>
+    <string name="events_to_halving">반감기까지 남은 블록</string>
+    <string name="events_reward">블록 보상</string>
+    <string name="events_epoch">난이도 주기(블록)</string>
+    <string name="events_avg_block">평균 블록 시간</string>
+    <string name="events_retarget">다음 난이도 조정(남은 블록)</string>
+    <string name="events_projection">예상 난이도</string>
+    <string name="export_saved">파일이 저장되었습니다.</string>
+    <string name="confirm_stop_title">노드를 중지할까요?</string>
+    <string name="confirm_stop_body">노드가 실행 중이 아니면 지갑이 새 입금을 확인하거나 송금할 수 없습니다. 여기서 언제든 다시 시작할 수 있어요.</string>
+    <string name="confirm_pause_title">노드를 일시 중지할까요?</string>
+    <string name="confirm_pause_body">다시 시작할 때까지 동기화가 멈춥니다. 그동안 잔액이 최신이 아닐 수 있어요.</string>
+    <string name="settings_lock_delay">잠금 시간</string>
+    <string name="settings_lock_delay_hint">앱이 백그라운드에 있을 수 있는 시간입니다. 이후 다시 인증을 요청합니다.</string>
+    <string name="settings_lock_now">즉시</string>
+    <string name="settings_seconds">%1$d초</string>
+    <string name="settings_minutes">%1$d분</string>
+    <string name="settings_screenshots">스크린샷 허용</string>
+    <string name="settings_screenshots_hint">튜토리얼용 임시 설정입니다. 앱을 닫거나 잠그면 해제됩니다. 복구 단어가 캡처될 수 있으니 주의하세요.</string>
+    <string name="screenshot_banner">스크린샷이 켜져 있습니다</string>
+    <string name="settings_language">언어</string>
+    <string name="settings_language_system">시스템 언어</string>
 </resources>

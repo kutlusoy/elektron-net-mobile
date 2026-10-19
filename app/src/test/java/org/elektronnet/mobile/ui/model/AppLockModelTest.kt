@@ -50,4 +50,14 @@ class AppLockModelTest {
         lock.onStarted(36_000)
         assertTrue(lock.locked)
     }
+
+    @Test
+    fun graceCanBeChangedAndZeroLocksImmediately() {
+        val lock = AppLockModel(graceMs = 30_000).apply { start(true); unlock() }
+        lock.graceMs = 0
+        lock.onStopped(1_000)
+        lock.onStarted(1_001)
+        assertTrue(lock.locked)
+        assertTrue(AppLockModel.CHOICES_MS.contains(AppLockModel.GRACE_MS))
+    }
 }

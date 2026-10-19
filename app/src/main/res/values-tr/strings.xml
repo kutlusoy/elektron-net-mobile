@@ -661,4 +661,27 @@
     <string name="details_used_hint">Bu coinler, daha önce harcama yapılmış bir adreste duruyor. Cüzdan bunları otomatik olarak harcamaz, böylece ödemeleriniz birbirine bağlanamaz. Bilerek harcamak için Coinler bölümünden seçin.</string>
     <string name="details_noreuse">Adres yeniden kullanım koruması açık: her alma ve para üstü adresi yalnızca bir kez kullanılır, yeniden kullanılan bir adresteki coinler otomatik harcamanın dışında kalır.</string>
     <string name="coins_reused">Yeniden kullanılan adres</string>
+    <string name="events_title">Yaklaşan zincir olayları</string>
+    <string name="events_halving">Sonraki halving</string>
+    <string name="events_to_halving">Halving\'e kalan blok</string>
+    <string name="events_reward">Blok ödülü</string>
+    <string name="events_epoch">Zorluk dönemi (blok)</string>
+    <string name="events_avg_block">Ortalama blok süresi</string>
+    <string name="events_retarget">Sonraki yeniden ayarlama (kalan blok)</string>
+    <string name="events_projection">Tahmini zorluk</string>
+    <string name="export_saved">Dosya kaydedildi.</string>
+    <string name="confirm_stop_title">Düğüm durdurulsun mu?</string>
+    <string name="confirm_stop_body">Çalışan bir düğüm olmadan cüzdanınız yeni ödemeleri göremez ve gönderim yapamaz. Buradan tekrar başlatabilirsiniz.</string>
+    <string name="confirm_pause_title">Düğüm duraklatılsın mı?</string>
+    <string name="confirm_pause_body">Devam edene kadar senkronizasyon durur. Bakiyeniz bu sürede güncel olmayabilir.</string>
+    <string name="settings_lock_delay">Kilitleme süresi</string>
+    <string name="settings_lock_delay_hint">Uygulama arka planda ne kadar kalabilir, sonra tekrar kilit açma ister.</string>
+    <string name="settings_lock_now">Hemen</string>
+    <string name="settings_seconds">%1$d sn</string>
+    <string name="settings_minutes">%1$d dk</string>
+    <string name="settings_screenshots">Ekran görüntülerine izin ver</string>
+    <string name="settings_screenshots_hint">Geçici, eğitimler için. Uygulama kapatılınca veya kilitlenince sona erer. Kurtarma kelimeleri görüntülenebilir hale gelir, dikkatli olun.</string>
+    <string name="screenshot_banner">Ekran görüntüleri açık</string>
+    <string name="settings_language">Dil</string>
+    <string name="settings_language_system">Sistem dili</string>
 </resources>

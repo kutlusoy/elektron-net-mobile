@@ -661,4 +661,27 @@
     <string name="details_used_hint">Estas monedas están en una dirección de la que ya se gastó. La billetera no las gasta automáticamente, para que tus pagos no se puedan vincular. Selecciónalas en Monedas para gastarlas a propósito.</string>
     <string name="details_noreuse">La protección contra reutilización de direcciones está activada: cada dirección de recepción y de cambio se usa una sola vez, y las monedas en una dirección reutilizada quedan fuera del gasto automático.</string>
     <string name="coins_reused">Dirección reutilizada</string>
+    <string name="events_title">Próximos eventos de la cadena</string>
+    <string name="events_halving">Próximo halving</string>
+    <string name="events_to_halving">Bloques hasta el halving</string>
+    <string name="events_reward">Recompensa por bloque</string>
+    <string name="events_epoch">Época de dificultad (bloques)</string>
+    <string name="events_avg_block">Tiempo medio de bloque</string>
+    <string name="events_retarget">Próximo retarget (bloques restantes)</string>
+    <string name="events_projection">Dificultad proyectada</string>
+    <string name="export_saved">El archivo se guardó.</string>
+    <string name="confirm_stop_title">¿Detener el nodo?</string>
+    <string name="confirm_stop_body">Sin un nodo en marcha, tu billetera no puede ver pagos nuevos ni enviar. Vuelve a iniciarlo desde aquí.</string>
+    <string name="confirm_pause_title">¿Pausar el nodo?</string>
+    <string name="confirm_pause_body">La sincronización se detiene hasta que la reanudes. Mientras tanto, tu saldo puede estar desactualizado.</string>
+    <string name="settings_lock_delay">Bloquear después de</string>
+    <string name="settings_lock_delay_hint">Cuánto tiempo puede estar la app en segundo plano antes de volver a pedir el acceso.</string>
+    <string name="settings_lock_now">Inmediatamente</string>
+    <string name="settings_seconds">%1$d s</string>
+    <string name="settings_minutes">%1$d min</string>
+    <string name="settings_screenshots">Permitir capturas de pantalla</string>
+    <string name="settings_screenshots_hint">Temporal, para tutoriales. Termina al cerrar o bloquear la app. Las palabras de recuperación podrán capturarse, así que ten cuidado.</string>
+    <string name="screenshot_banner">Las capturas están activadas</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_system">Idioma del sistema</string>
 </resources>

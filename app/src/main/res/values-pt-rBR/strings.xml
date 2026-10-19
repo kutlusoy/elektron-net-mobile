@@ -661,4 +661,27 @@
     <string name="details_used_hint">Estas moedas estão em um endereço do qual já se gastou. A carteira não as gasta automaticamente, para que seus pagamentos não possam ser vinculados. Selecione-as em Moedas para gastá-las de propósito.</string>
     <string name="details_noreuse">A proteção contra reutilização de endereços está ativada: cada endereço de recebimento e de troco é usado uma única vez, e as moedas em um endereço reutilizado ficam fora do gasto automático.</string>
     <string name="coins_reused">Endereço reutilizado</string>
+    <string name="events_title">Próximos eventos da chain</string>
+    <string name="events_halving">Próximo halving</string>
+    <string name="events_to_halving">Blocos até o halving</string>
+    <string name="events_reward">Recompensa do bloco</string>
+    <string name="events_epoch">Época de dificuldade (blocos)</string>
+    <string name="events_avg_block">Tempo médio de bloco</string>
+    <string name="events_retarget">Próximo retarget (blocos restantes)</string>
+    <string name="events_projection">Dificuldade projetada</string>
+    <string name="export_saved">O arquivo foi salvo.</string>
+    <string name="confirm_stop_title">Parar o nó?</string>
+    <string name="confirm_stop_body">Sem um nó em execução, sua carteira não vê novos pagamentos nem consegue enviar. Inicie-o de novo por aqui.</string>
+    <string name="confirm_pause_title">Pausar o nó?</string>
+    <string name="confirm_pause_body">A sincronização para até você retomar. Enquanto isso, seu saldo pode estar desatualizado.</string>
+    <string name="settings_lock_delay">Bloquear após</string>
+    <string name="settings_lock_delay_hint">Por quanto tempo o app pode ficar em segundo plano antes de pedir acesso de novo.</string>
+    <string name="settings_lock_now">Imediatamente</string>
+    <string name="settings_seconds">%1$d s</string>
+    <string name="settings_minutes">%1$d min</string>
+    <string name="settings_screenshots">Permitir capturas de tela</string>
+    <string name="settings_screenshots_hint">Temporário, para tutoriais. Termina quando o app é fechado ou bloqueado. As palavras de recuperação ficam capturáveis, então tenha cuidado.</string>
+    <string name="screenshot_banner">Capturas de tela ativadas</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_system">Idioma do sistema</string>
 </resources>

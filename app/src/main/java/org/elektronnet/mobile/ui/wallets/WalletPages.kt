@@ -126,15 +126,6 @@ fun WalletDetailsScreen(onBack: () -> Unit) {
         OutlinedButton(onClick = { rescanning = true }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.rescan_action)) }
         Hint(stringResource(R.string.rescan_hint))
         if (rescanning) RescanDialog(onDismiss = { rescanning = false })
-        val context = LocalContext.current
-        OutlinedButton(
-            onClick = {
-                val items = NodeHost.walletReader()?.let { runCatching { it.transactions(EXPORT_LIMIT) }.getOrNull() }
-                if (items != null) org.elektronnet.mobile.ui.tools.shareText(context, org.elektronnet.mobile.wallet.HistoryExport.csv(items))
-            },
-            modifier = Modifier.fillMaxWidth(),
-        ) { Text(stringResource(R.string.details_export)) }
-        Hint(stringResource(R.string.details_export_hint))
         ExportSection()
         Hint(stringResource(R.string.details_noreuse))
         Hint(stringResource(R.string.details_hint))

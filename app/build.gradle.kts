@@ -153,6 +153,13 @@ val checkContrast by tasks.registering(Exec::class) {
     commandLine("python3", "-I", designDir.resolve("check-contrast.py").path)
 }
 
+val checkSplash by tasks.registering(Exec::class) {
+    inputs.file(designDir.resolve("palettes.json"))
+    inputs.file(rootProject.file("tools/gen-splash.py"))
+    inputs.file("src/main/res/values/themes_splash.xml")
+    commandLine("python3", "-I", rootProject.file("tools/gen-splash.py").path, "--check")
+}
+
 val checkLocales by tasks.registering(Exec::class) {
     inputs.dir("src/main/res")
     inputs.file("shipped-locales.txt")
@@ -171,7 +178,7 @@ val copyConsoleTiers by tasks.registering(Copy::class) {
 
 android.sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/consoleAssets"))
 
-tasks.named("preBuild") { dependsOn(checkContrast, checkLocales, checkRng, copyConsoleTiers) }
+tasks.named("preBuild") { dependsOn(checkContrast, checkLocales, checkRng, checkSplash, copyConsoleTiers) }
 
 dependencies {
     implementation(platform(libs.compose.bom))

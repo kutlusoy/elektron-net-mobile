@@ -661,4 +661,27 @@
     <string name="details_used_hint">Các coin này nằm trên một địa chỉ đã từng được chi tiêu. Ví không tự động chi tiêu chúng, nên các khoản thanh toán của bạn không thể bị liên kết. Hãy chọn chúng trong Coin để chủ động chi tiêu.</string>
     <string name="details_noreuse">Bảo vệ chống dùng lại địa chỉ đang bật: mỗi địa chỉ nhận và địa chỉ nhận tiền thừa chỉ được dùng một lần, và coin trên địa chỉ được dùng lại sẽ không bị chi tiêu tự động.</string>
     <string name="coins_reused">Địa chỉ được dùng lại</string>
+    <string name="events_title">Sự kiện chuỗi sắp tới</string>
+    <string name="events_halving">Lần halving tiếp theo</string>
+    <string name="events_to_halving">Số khối đến halving</string>
+    <string name="events_reward">Phần thưởng khối</string>
+    <string name="events_epoch">Chu kỳ độ khó (khối)</string>
+    <string name="events_avg_block">Thời gian khối trung bình</string>
+    <string name="events_retarget">Lần điều chỉnh tiếp theo (số khối còn lại)</string>
+    <string name="events_projection">Độ khó dự kiến</string>
+    <string name="export_saved">Đã lưu tệp.</string>
+    <string name="confirm_stop_title">Dừng nút?</string>
+    <string name="confirm_stop_body">Không có nút đang chạy, ví của bạn không thể thấy khoản thanh toán mới hoặc gửi đi. Hãy khởi động lại từ đây.</string>
+    <string name="confirm_pause_title">Tạm dừng nút?</string>
+    <string name="confirm_pause_body">Quá trình đồng bộ sẽ dừng cho đến khi bạn tiếp tục. Số dư có thể chưa cập nhật trong lúc đó.</string>
+    <string name="settings_lock_delay">Khóa sau</string>
+    <string name="settings_lock_delay_hint">Ứng dụng có thể chạy nền bao lâu trước khi yêu cầu mở khóa lại.</string>
+    <string name="settings_lock_now">Ngay lập tức</string>
+    <string name="settings_seconds">%1$d giây</string>
+    <string name="settings_minutes">%1$d phút</string>
+    <string name="settings_screenshots">Cho phép chụp màn hình</string>
+    <string name="settings_screenshots_hint">Tạm thời, dùng cho hướng dẫn. Kết thúc khi ứng dụng đóng hoặc bị khóa. Cụm từ khôi phục có thể bị chụp lại, hãy cẩn thận.</string>
+    <string name="screenshot_banner">Chụp màn hình đang bật</string>
+    <string name="settings_language">Ngôn ngữ</string>
+    <string name="settings_language_system">Ngôn ngữ hệ thống</string>
 </resources>

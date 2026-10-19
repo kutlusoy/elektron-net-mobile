@@ -108,8 +108,21 @@ class NodeSupervisor(
     }
 
     fun telemetry(): Telemetry {
-        fun call(method: String) = try { rpc.call(method, timeoutMs = 5_000) } catch (e: RpcException) { null }
-        return Telemetry.parse(call("getblockchaininfo"), call("getmininginfo"), call("getmempoolinfo"), call("getnetworkinfo"))
+        fun call(method: String, params: List<Any?> = emptyList()) = try { rpc.call(method, params, timeoutMs = 5_000) } catch (e: RpcException) { null }
+        val chain = call("getblockchaininfo")
+        val base = Telemetry.parse(chain, call("getmininginfo"), call("getmempoolinfo"), call("getnetworkinfo"))
+        return base.copy(schedule = schedule(chain as? Map<*, *>, base.difficulty) { m, p -> call(m, p) })
+    }
+
+    private fun schedule(chain: Map<*, *>?, difficulty: Double?, call: (String, List<Any?>) -> Any?): ChainSchedule? {
+        val height = (chain?.get("blocks") as? Number)?.toLong() ?: return null
+        val tipHash = chain["bestblockhash"]?.toString() ?: return null
+        fun time(hash: Any?): Long? = ((hash?.toString()?.let { call("getblockheader", listOf(it)) }) as? Map<*, *>)?.get("time")?.let { (it as? Number)?.toLong() }
+        val tipTime = time(tipHash) ?: return null
+        val rules = ChainRules()
+        val startHeight = height - height % rules.retargetInterval
+        val startTime = if (startHeight < height) time(call("getblockhash", listOf(startHeight))) else null
+        return ChainSchedule.compute(height, tipTime, startTime, difficulty, rules)
     }
 
     fun peers(): List<PeerInfo> = PeerInfo.parse(rpc.call("getpeerinfo", timeoutMs = 5_000))

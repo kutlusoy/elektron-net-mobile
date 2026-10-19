@@ -661,4 +661,27 @@
     <string name="details_used_hint">这些币所在的地址之前已经花费过。钱包不会自动花费它们，这样你的付款就无法被关联。请在“币”中选择它们，以便有意识地花费。</string>
     <string name="details_noreuse">地址重复使用保护已开启：每个收款地址和找零地址只使用一次，重复使用地址上的币不会被自动花费。</string>
     <string name="coins_reused">重复使用的地址</string>
+    <string name="events_title">即将发生的链上事件</string>
+    <string name="events_halving">下次减半</string>
+    <string name="events_to_halving">距离减半的区块数</string>
+    <string name="events_reward">区块奖励</string>
+    <string name="events_epoch">难度周期(区块)</string>
+    <string name="events_avg_block">平均出块时间</string>
+    <string name="events_retarget">下次难度调整(剩余区块)</string>
+    <string name="events_projection">预计难度</string>
+    <string name="export_saved">文件已保存。</string>
+    <string name="confirm_stop_title">停止节点?</string>
+    <string name="confirm_stop_body">节点未运行时,钱包无法看到新的收款,也无法发送。可从这里重新启动。</string>
+    <string name="confirm_pause_title">暂停节点?</string>
+    <string name="confirm_pause_body">同步将停止,直到你恢复。期间余额可能不是最新的。</string>
+    <string name="settings_lock_delay">锁定时间</string>
+    <string name="settings_lock_delay_hint">应用在后台停留多久后会再次要求验证。</string>
+    <string name="settings_lock_now">立即</string>
+    <string name="settings_seconds">%1$d 秒</string>
+    <string name="settings_minutes">%1$d 分钟</string>
+    <string name="settings_screenshots">允许截屏</string>
+    <string name="settings_screenshots_hint">临时开启,用于教程。应用关闭或锁定后结束。恢复词可能被截取,请务必小心。</string>
+    <string name="screenshot_banner">截屏已开启</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_language_system">系统语言</string>
 </resources>

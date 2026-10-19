@@ -661,4 +661,27 @@
     <string name="details_used_hint">Эти монеты лежат на адресе, с которого уже тратили. Кошелек не тратит их автоматически, чтобы ваши платежи нельзя было связать. Выберите их в разделе Монеты, чтобы потратить намеренно.</string>
     <string name="details_noreuse">Защита от повторного использования адресов включена: каждый адрес для получения и для сдачи используется только один раз, а монеты на повторно использованном адресе не участвуют в автоматической трате.</string>
     <string name="coins_reused">Повторно использованный адрес</string>
+    <string name="events_title">Предстоящие события сети</string>
+    <string name="events_halving">Следующий халвинг</string>
+    <string name="events_to_halving">Блоков до халвинга</string>
+    <string name="events_reward">Награда за блок</string>
+    <string name="events_epoch">Период сложности (блоков)</string>
+    <string name="events_avg_block">Среднее время блока</string>
+    <string name="events_retarget">Следующая корректировка (осталось блоков)</string>
+    <string name="events_projection">Прогноз сложности</string>
+    <string name="export_saved">Файл сохранён.</string>
+    <string name="confirm_stop_title">Остановить узел?</string>
+    <string name="confirm_stop_body">Без работающего узла кошелёк не видит новые платежи и не может отправлять. Запустите его снова отсюда.</string>
+    <string name="confirm_pause_title">Приостановить узел?</string>
+    <string name="confirm_pause_body">Синхронизация остановится до возобновления. Баланс пока может быть неактуальным.</string>
+    <string name="settings_lock_delay">Блокировать через</string>
+    <string name="settings_lock_delay_hint">Как долго приложение может быть в фоне, прежде чем снова запросит вход.</string>
+    <string name="settings_lock_now">Сразу</string>
+    <string name="settings_seconds">%1$d с</string>
+    <string name="settings_minutes">%1$d мин</string>
+    <string name="settings_screenshots">Разрешить скриншоты</string>
+    <string name="settings_screenshots_hint">Временно, для обучающих материалов. Действует до закрытия или блокировки приложения. Слова восстановления можно будет снять на экран, будьте осторожны.</string>
+    <string name="screenshot_banner">Скриншоты включены</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_language_system">Язык системы</string>
 </resources>

@@ -8,8 +8,9 @@ import androidx.activity.compose.LocalActivity
 @Composable
 fun SecureWindow(enabled: Boolean = true) {
     val window = LocalActivity.current?.window
-    DisposableEffect(enabled) {
-        if (enabled) {
+    val active = enabled && !ScreenshotMode.allowed
+    DisposableEffect(active) {
+        if (active) {
             window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
             window?.decorView?.filterTouchesWhenObscured = true
         }

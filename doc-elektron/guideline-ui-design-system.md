@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UI Design System
 
-- **Version:** 0.8 (draft)
+- **Version:** 0.9 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, security reviewers
 - **Reference implementation:** [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) `osclass/osclasselektron/css/style.css` (palette source, commit `37aae603`), `design/palettes.json` and `design/check-contrast.py` in this repository (machine readable palettes and the legibility gate)
@@ -21,7 +21,7 @@ The app looks calm and technical: dark surfaces by default, a clear accent color
 | Artwork | None. The app ships no illustrations, mascots or background images. The look comes from color, type, shape and light only. The one exception is the official Elektron Net logo (below), which is the project's own mark. This also removes any third-party artwork question. |
 | Logo | The official Elektron Net logo, `src/qt/res/src/bitcoin-elektron.svg` in `elektron-net`, copied unchanged to `design/logo/bitcoin-elektron.svg` and converted to Android vector drawables by `design/gen-logo.py`. |
 | Color themes | Five themes: Elektron Teal, Elektron Blue, Rust, Hacker Red and Matrix, each in a dark and a light variant (§2). |
-| Style | Flat translucent surfaces on a quiet texture, one accent color per theme, no glow. |
+| Style | Flat translucent surfaces on a soft theme gradient, one accent color per theme, no glow. |
 | Legibility | Hard rule. Effects never reduce contrast of text, and a CI gate checks every theme (§4). |
 | Ticker | ELEK only. No other ticker is shown anywhere in the UI, in store listings or in strings. |
 
@@ -45,10 +45,9 @@ The themes are stored once, in `design/palettes.json`, with the tokens `accent`,
 
 ## 3. Effects
 
-The app has no glow, blur or neon effects. Surfaces are flat and translucent over a quiet grain texture with the logo as a watermark, and the accent color is used for borders, labels and the selected navigation pill. There is no effect setting.
+The app has no glow, blur or neon effects. Surfaces are flat and translucent over a soft diagonal gradient of the theme colors (clearly dark in dark themes, very faint in light themes) with the logo as a watermark, and no line or noise pattern, and the accent color is used for borders, labels and the selected navigation pill. There is no effect setting.
 
-- **MUST:** no texture or transparency is drawn behind or over body text so that contrast drops. Text sits on surfaces that keep the contrast ratios of section 4.
-- **MUST:** the grain texture is generated with a fixed pattern in code, not with a randomness source.
+- **MUST:** no pattern or transparency is drawn behind or over body text so that contrast drops. Text sits on surfaces that keep the contrast ratios of section 4.
 
 ## 4. Legibility Rules and CI Gate
 
@@ -111,4 +110,5 @@ Mainnet and testnet are separate builds with separate application IDs (see [`gui
 - [ ] No effect behind text; battery saver and reduce-motion honored
 - [ ] Non-Latin scripts use system fonts; RTL verified
 - [ ] Testnet bar and icon distinct
+- [x] Splash screen colors follow the chosen theme (generated splash styles checked against `palettes.json`; before Android 13 only the window background follows)
 - [ ] No artwork, no third-party images in the repository

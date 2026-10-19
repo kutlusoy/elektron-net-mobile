@@ -661,4 +661,27 @@
     <string name="details_used_hint">ये कॉइन ऐसे पते पर हैं जिससे पहले ही खर्च किया जा चुका है। वॉलेट इन्हें अपने आप खर्च नहीं करता, ताकि आपके भुगतान आपस में जोड़े न जा सकें। इन्हें जानबूझकर खर्च करने के लिए कॉइन में चुनें।</string>
     <string name="details_noreuse">पता दोबारा इस्तेमाल से सुरक्षा चालू है: हर प्राप्ति और बचे पैसे का पता सिर्फ एक बार इस्तेमाल होता है, और दोबारा इस्तेमाल हुए पते के कॉइन अपने आप खर्च होने से बाहर रहते हैं।</string>
     <string name="coins_reused">दोबारा इस्तेमाल हुआ पता</string>
+    <string name="events_title">आने वाले चेन इवेंट</string>
+    <string name="events_halving">अगला हाल्विंग</string>
+    <string name="events_to_halving">हाल्विंग तक ब्लॉक</string>
+    <string name="events_reward">ब्लॉक रिवॉर्ड</string>
+    <string name="events_epoch">डिफिकल्टी अवधि (ब्लॉक)</string>
+    <string name="events_avg_block">औसत ब्लॉक समय</string>
+    <string name="events_retarget">अगला रीटार्गेट (बचे ब्लॉक)</string>
+    <string name="events_projection">अनुमानित डिफिकल्टी</string>
+    <string name="export_saved">फ़ाइल सेव हो गई।</string>
+    <string name="confirm_stop_title">नोड बंद करें?</string>
+    <string name="confirm_stop_body">नोड चालू न होने पर आपका वॉलेट नए पेमेंट नहीं देख पाएगा और भेज भी नहीं पाएगा। आप इसे यहीं से दोबारा शुरू कर सकते हैं।</string>
+    <string name="confirm_pause_title">नोड रोकें?</string>
+    <string name="confirm_pause_body">दोबारा शुरू करने तक सिंक रुका रहेगा। तब तक आपका बैलेंस पुराना हो सकता है।</string>
+    <string name="settings_lock_delay">लॉक होने का समय</string>
+    <string name="settings_lock_delay_hint">ऐप कितनी देर बैकग्राउंड में रह सकता है, उसके बाद वह दोबारा पूछेगा।</string>
+    <string name="settings_lock_now">तुरंत</string>
+    <string name="settings_seconds">%1$d सेकंड</string>
+    <string name="settings_minutes">%1$d मिनट</string>
+    <string name="settings_screenshots">स्क्रीनशॉट की अनुमति दें</string>
+    <string name="settings_screenshots_hint">अस्थायी, ट्यूटोरियल के लिए। ऐप बंद या लॉक होने पर खत्म हो जाता है। रिकवरी शब्द कैप्चर हो सकते हैं, इसलिए सावधान रहें।</string>
+    <string name="screenshot_banner">स्क्रीनशॉट चालू हैं</string>
+    <string name="settings_language">भाषा</string>
+    <string name="settings_language_system">सिस्टम भाषा</string>
 </resources>

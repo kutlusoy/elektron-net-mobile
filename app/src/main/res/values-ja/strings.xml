@@ -661,4 +661,27 @@
     <string name="details_used_hint">このコインは、すでに使用済みのアドレスにあります。ウォレットは自動では使用しないので、支払いが紐付けられることはありません。意図して使うには、コインで選択してください。</string>
     <string name="details_noreuse">アドレス再利用保護がオンです。受取用とおつり用のアドレスはすべて一度だけ使われ、再利用されたアドレス上のコインは自動の支払いから除外されます。</string>
     <string name="coins_reused">再利用されたアドレス</string>
+    <string name="events_title">今後のチェーンイベント</string>
+    <string name="events_halving">次の半減期</string>
+    <string name="events_to_halving">半減期までのブロック数</string>
+    <string name="events_reward">ブロック報酬</string>
+    <string name="events_epoch">難易度期間(ブロック)</string>
+    <string name="events_avg_block">平均ブロック時間</string>
+    <string name="events_retarget">次の難易度調整(残りブロック)</string>
+    <string name="events_projection">予想される難易度</string>
+    <string name="export_saved">ファイルを保存しました。</string>
+    <string name="confirm_stop_title">ノードを停止しますか?</string>
+    <string name="confirm_stop_body">ノードが動いていないと、ウォレットは新しい入金を確認できず、送金もできません。ここからいつでも再開できます。</string>
+    <string name="confirm_pause_title">ノードを一時停止しますか?</string>
+    <string name="confirm_pause_body">再開するまで同期が止まります。その間、残高が古い可能性があります。</string>
+    <string name="settings_lock_delay">ロックまでの時間</string>
+    <string name="settings_lock_delay_hint">アプリがバックグラウンドにある間、再度ロック解除を求めるまでの時間です。</string>
+    <string name="settings_lock_now">すぐに</string>
+    <string name="settings_seconds">%1$d秒</string>
+    <string name="settings_minutes">%1$d分</string>
+    <string name="settings_screenshots">スクリーンショットを許可</string>
+    <string name="settings_screenshots_hint">チュートリアル用の一時的な設定です。アプリを閉じるかロックすると終了します。リカバリーワードが撮影可能になるので注意してください。</string>
+    <string name="screenshot_banner">スクリーンショットはオンです</string>
+    <string name="settings_language">言語</string>
+    <string name="settings_language_system">システムの言語</string>
 </resources>

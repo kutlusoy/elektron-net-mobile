@@ -661,4 +661,27 @@
     <string name="details_used_hint">Queste monete si trovano su un indirizzo da cui è già stato speso. Il portafoglio non le spende automaticamente, così i tuoi pagamenti non possono essere collegati. Selezionale in Monete per spenderle di proposito.</string>
     <string name="details_noreuse">La protezione dal riuso degli indirizzi è attiva: ogni indirizzo di ricezione e di resto viene usato una sola volta, e le monete su un indirizzo riutilizzato restano escluse dalla spesa automatica.</string>
     <string name="coins_reused">Indirizzo riutilizzato</string>
+    <string name="events_title">Prossimi eventi della chain</string>
+    <string name="events_halving">Prossimo halving</string>
+    <string name="events_to_halving">Blocchi al halving</string>
+    <string name="events_reward">Ricompensa del blocco</string>
+    <string name="events_epoch">Epoca di difficoltà (blocchi)</string>
+    <string name="events_avg_block">Tempo medio di blocco</string>
+    <string name="events_retarget">Prossimo retarget (blocchi rimanenti)</string>
+    <string name="events_projection">Difficoltà prevista</string>
+    <string name="export_saved">Il file è stato salvato.</string>
+    <string name="confirm_stop_title">Fermare il nodo?</string>
+    <string name="confirm_stop_body">Senza un nodo attivo il tuo wallet non vede i nuovi pagamenti e non può inviare. Riavvialo da qui.</string>
+    <string name="confirm_pause_title">Mettere in pausa il nodo?</string>
+    <string name="confirm_pause_body">La sincronizzazione si ferma finché non riprendi. Nel frattempo il saldo potrebbe non essere aggiornato.</string>
+    <string name="settings_lock_delay">Blocca dopo</string>
+    <string name="settings_lock_delay_hint">Per quanto tempo l\'app può restare in background prima di chiedere di nuovo l\'accesso.</string>
+    <string name="settings_lock_now">Subito</string>
+    <string name="settings_seconds">%1$d s</string>
+    <string name="settings_minutes">%1$d min</string>
+    <string name="settings_screenshots">Consenti screenshot</string>
+    <string name="settings_screenshots_hint">Temporaneo, per i tutorial. Termina quando l\'app viene chiusa o bloccata. Le parole di recupero diventano catturabili, quindi fai attenzione.</string>
+    <string name="screenshot_banner">Gli screenshot sono attivi</string>
+    <string name="settings_language">Lingua</string>
+    <string name="settings_language_system">Lingua di sistema</string>
 </resources>
