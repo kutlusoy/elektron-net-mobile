@@ -17,7 +17,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.ImageShader
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -68,19 +74,41 @@ fun BrandBackground(modifier: Modifier = Modifier, content: @Composable () -> Un
                     )
                 }
             },
-    ) { content() }
+    ) {
+        Image(
+            painter = painterResource(R.drawable.logo_mark),
+            contentDescription = null,
+            modifier = Modifier.align(Alignment.Center).fillMaxWidth(0.92f).alpha(0.07f),
+        )
+        Box(modifier = Modifier.fillMaxSize().drawBehind { drawRect(ShaderBrush(ImageShader(grainTile, TileMode.Repeated)), alpha = 0.5f) })
+        androidx.compose.runtime.CompositionLocalProvider(
+            androidx.compose.material3.LocalContentColor provides MaterialTheme.colorScheme.onBackground,
+        ) { content() }
+    }
+}
+
+private val grainTile: ImageBitmap by lazy {
+    val side = 192
+    val random = java.util.Random(7)
+    val pixels = IntArray(side * side)
+    for (i in pixels.indices) {
+        val v = random.nextGaussian()
+        val alpha = (kotlin.math.abs(v) * 22).toInt().coerceIn(0, 70)
+        pixels[i] = if (v > 0) android.graphics.Color.argb(alpha, 255, 255, 255) else android.graphics.Color.argb(alpha, 0, 0, 0)
+    }
+    android.graphics.Bitmap.createBitmap(pixels, side, side, android.graphics.Bitmap.Config.ARGB_8888).asImageBitmap()
 }
 
 @Composable
 fun GlassCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val tokens = LocalTokens.current
-    val shape = RoundedCornerShape(20.dp)
+    val shape = RoundedCornerShape(28.dp)
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(tokens.surface.copy(alpha = GLASS_ALPHA))
-            .border(1.dp, Brush.linearGradient(listOf(tokens.accent.copy(alpha = 0.55f), tokens.border.copy(alpha = 0.35f), tokens.accent2.copy(alpha = 0.35f))), shape)
+            .background(Brush.verticalGradient(listOf(tokens.surface.copy(alpha = 0.86f), tokens.surface.copy(alpha = 0.78f))))
+            .border(1.2.dp, Brush.linearGradient(listOf(tokens.accent.copy(alpha = 0.8f), tokens.accent.copy(alpha = 0.35f), tokens.accent2.copy(alpha = 0.5f))), shape)
             .padding(20.dp),
     ) { content() }
 }
@@ -100,16 +128,19 @@ fun ElektronLogo(size: Dp, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun BrandHeader(compact: Boolean) {
+fun BrandHeader(compact: Boolean, showTagline: Boolean = false) {
     val name = stringResource(R.string.app_name).uppercase()
     if (compact) {
         androidx.compose.foundation.layout.Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         ) {
-            ElektronLogo(36.dp)
-            Text(name, fontFamily = ElektronDisplay, fontWeight = FontWeight.Bold, fontSize = 18.sp, letterSpacing = 3.sp, color = MaterialTheme.colorScheme.onBackground)
+            ElektronLogo(if (showTagline) 52.dp else 36.dp)
+            Column {
+                Text(name, fontFamily = ElektronDisplay, fontWeight = FontWeight.Bold, fontSize = if (showTagline) 22.sp else 18.sp, letterSpacing = 3.sp, color = MaterialTheme.colorScheme.onBackground)
+                if (showTagline) Text(stringResource(R.string.brand_tagline), color = LocalTokens.current.accent, style = MaterialTheme.typography.bodyMedium)
+            }
         }
     } else {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(14.dp), modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 4.dp)) {
@@ -132,4 +163,3 @@ fun BrandHeader(compact: Boolean) {
     }
 }
 
-private const val GLASS_ALPHA = 0.72f

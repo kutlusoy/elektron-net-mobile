@@ -5,7 +5,7 @@ sealed interface NodeState {
     data object Starting : NodeState
     data object Running : NodeState
     data object Stopping : NodeState
-    data class Crashed(val exitCode: Int, val failure: NodeFailure) : NodeState
+    data class Crashed(val exitCode: Int, val failure: NodeFailure, val detail: String = "") : NodeState
 }
 
 data class NodeStatus(

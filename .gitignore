@@ -9,3 +9,4 @@ local.properties
 *.keystore
 .idea/
 *.iml
+app/src/main/assets/geoip/dbip-country-lite.mmdb

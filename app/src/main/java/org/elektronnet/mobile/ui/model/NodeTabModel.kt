@@ -1,6 +1,7 @@
 package org.elektronnet.mobile.ui.model
 
 import org.elektronnet.mobile.node.NodeFailure
+import org.elektronnet.mobile.node.NodeState
 import org.elektronnet.mobile.policy.PolicyReason
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.runtime.RuntimeSnapshot
@@ -26,6 +27,7 @@ data class NodeTabModel(
     val canStop: Boolean,
     val canStart: Boolean,
     val details: NodeDetails?,
+    val detail: String? = null,
 ) {
     companion object {
         fun from(snapshot: RuntimeSnapshot?, userPaused: Boolean): NodeTabModel {
@@ -54,7 +56,9 @@ data class NodeTabModel(
                     details = details,
                 )
                 is Headline.Synchronized -> model(NodeTabState.UpToDate, canPause = !userPaused, canStop = true, details = details)
-                is Headline.Crashed -> model(NodeTabState.Problem, failure = headline.failure, canStart = true)
+                is Headline.Crashed -> model(NodeTabState.Problem, failure = headline.failure, canStart = true).copy(
+                    detail = (snapshot.state as? NodeState.Crashed)?.detail?.takeIf { it.isNotBlank() },
+                )
             }
         }
 

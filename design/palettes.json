@@ -282,6 +282,33 @@
         "muted": "#4c5a54",
         "link": "#0a6b32"
       }
+    },
+    "teal": {
+      "name": "Elektron Teal",
+      "dark": {
+        "accent": "#20d9f1",
+        "hover": "#66dffc",
+        "accent-2": "#b9f3ff",
+        "on-accent": "#00161e",
+        "bg": "#061824",
+        "surface": "#082535",
+        "surface-2": "#0c3042",
+        "border": "#2c7696",
+        "text": "#f4fbff",
+        "muted": "#bfeaf4",
+        "link": "#66dffc"
+      },
+      "light": {
+        "accent": "#0a8fa3",
+        "on-accent": "#ffffff",
+        "bg": "#f1fafc",
+        "surface": "#ffffff",
+        "surface-2": "#e3f4f8",
+        "border": "#bddde6",
+        "text": "#061824",
+        "muted": "#3f5f6b",
+        "link": "#066b7b"
+      }
     }
   }
 }

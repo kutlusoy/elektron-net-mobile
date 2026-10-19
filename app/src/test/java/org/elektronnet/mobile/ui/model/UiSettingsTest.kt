@@ -13,11 +13,11 @@ class UiSettingsTest {
     fun restoreFallsBackToDefaults() {
         val defaults = UiSettings.restore(null, null, null, keys)
         assertNull(defaults.themeKey)
-        assertEquals(ThemeMode.System, defaults.mode)
+        assertEquals(ThemeMode.Dark, defaults.mode)
         assertEquals(EffectSetting.Subtle, defaults.effects)
         val bad = UiSettings.restore("gone", "Sepia", "Max", keys)
         assertNull(bad.themeKey)
-        assertEquals(ThemeMode.System, bad.mode)
+        assertEquals(ThemeMode.Dark, bad.mode)
         assertEquals(EffectSetting.Subtle, bad.effects)
     }
 

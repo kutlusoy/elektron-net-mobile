@@ -8,25 +8,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.elektronnet.mobile.R
+import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.service.NodeNotification
+import org.elektronnet.mobile.ui.GlassCard
 import org.elektronnet.mobile.ui.HeroCard
 import org.elektronnet.mobile.ui.NodeChipRow
+import org.elektronnet.mobile.ui.StatTile
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeChip
 import org.elektronnet.mobile.ui.model.NodeDetails
@@ -36,13 +33,14 @@ import org.elektronnet.mobile.ui.model.NodeTabState
 @Composable
 fun NodeScreen(
     model: NodeTabModel,
+    peers: List<NodeHost.PeerRow> = emptyList(),
+    showGeoCredit: Boolean = false,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onStop: () -> Unit,
     onStart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var showDetails by rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -54,6 +52,7 @@ fun NodeScreen(
             NodeChipRow(chipFor(model.state))
             Text(title(model), style = MaterialTheme.typography.titleLarge)
             hint(model)?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            model.detail?.let { Text(it, style = MaterialTheme.typography.bodySmall.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)) }
             if (model.state == NodeTabState.CatchingUp && model.percent != null) {
                 LinearProgressIndicator(progress = { model.percent / 100f }, modifier = Modifier.fillMaxWidth())
             }
@@ -73,29 +72,70 @@ fun NodeScreen(
             }
         }
         Text(stringResource(R.string.node_explainer), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        model.details?.let { details ->
-            TextButton(onClick = { showDetails = !showDetails }) {
-                Text(stringResource(if (showDetails) R.string.node_details_hide else R.string.node_details))
+        model.details?.let { StatGrid(it) }
+        if (model.details != null) PeerSection(peers, showGeoCredit)
+    }
+}
+
+@Composable
+private fun PeerSection(peers: List<NodeHost.PeerRow>, showGeoCredit: Boolean) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(stringResource(R.string.peers_title, peers.size), style = MaterialTheme.typography.titleLarge)
+        if (peers.isEmpty()) Text(stringResource(R.string.peers_none), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        peers.forEach { PeerCard(it) }
+        if (showGeoCredit) Text(stringResource(R.string.peers_geo_credit), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun PeerCard(row: NodeHost.PeerRow) {
+    val peer = row.peer
+    GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(peer.address, fontFamily = org.elektronnet.mobile.ui.theme.ElektronMono, modifier = Modifier.weight(1f))
+                Text(
+                    stringResource(if (peer.inbound) R.string.peer_inbound else R.string.peer_outbound),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.padding(start = 8.dp),
+                )
             }
-            if (showDetails) DetailsList(details)
+            if (peer.subversion.isNotEmpty()) Text(peer.subversion, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            row.country?.let { Text("${it.flag} ${it.name}", color = MaterialTheme.colorScheme.primary) }
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                peer.pingMs?.let { Text(stringResource(R.string.peer_ping, it.toInt()), style = MaterialTheme.typography.bodySmall) }
+                peer.startingHeight?.takeIf { it >= 0 }?.let { Text(stringResource(R.string.peer_height, it), style = MaterialTheme.typography.bodySmall) }
+            }
         }
     }
 }
 
 @Composable
-private fun DetailsList(details: NodeDetails) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        DetailRow(stringResource(R.string.detail_chain), details.chain)
-        HorizontalDivider()
-        DetailRow(stringResource(R.string.detail_blocks), stringResource(R.string.detail_blocks_value, details.blocks, details.headers))
-        HorizontalDivider()
-        DetailRow(stringResource(R.string.detail_peers), details.peers.toString())
-        details.pruneHeight?.let {
-            HorizontalDivider()
-            DetailRow(stringResource(R.string.detail_pruned), it.toString())
-        }
-        HorizontalDivider()
-        DetailRow(stringResource(R.string.detail_version), details.version)
+private fun StatGrid(details: NodeDetails) {
+    val percent = if (details.headers > 0) "%.1f %%".format(details.blocks * 100.0 / details.headers) else "-"
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        TileRow(
+            stringResource(R.string.tile_blocks) to details.blocks.toString(),
+            stringResource(R.string.tile_headers) to details.headers.toString(),
+        )
+        TileRow(
+            stringResource(R.string.tile_peers) to details.peers.toString(),
+            stringResource(R.string.tile_progress) to percent,
+        )
+        TileRow(
+            stringResource(R.string.detail_chain) to details.chain,
+            stringResource(R.string.detail_pruned) to (details.pruneHeight?.toString() ?: "-"),
+        )
+        StatTile(stringResource(R.string.detail_version), details.version, Modifier.fillMaxWidth())
+    }
+}
+
+@Composable
+private fun TileRow(left: Pair<String, String>, right: Pair<String, String>) {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+        StatTile(left.first, left.second, Modifier.weight(1f))
+        StatTile(right.first, right.second, Modifier.weight(1f))
     }
 }
 
@@ -136,6 +176,7 @@ private fun hint(model: NodeTabModel): String? = when (model.state) {
             org.elektronnet.mobile.node.NodeFailure.DiskFull -> R.string.note_problem_disk
             org.elektronnet.mobile.node.NodeFailure.CorruptedDatabase -> R.string.note_problem_database
             org.elektronnet.mobile.node.NodeFailure.AlreadyRunning -> R.string.note_problem_running
+            org.elektronnet.mobile.node.NodeFailure.StartFailed -> R.string.note_problem_start
             else -> R.string.note_problem_unknown
         },
     )

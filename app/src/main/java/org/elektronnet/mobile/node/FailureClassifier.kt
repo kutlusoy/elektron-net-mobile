@@ -1,6 +1,6 @@
 package org.elektronnet.mobile.node
 
-enum class NodeFailure { DiskFull, CorruptedDatabase, AlreadyRunning, Unknown }
+enum class NodeFailure { DiskFull, CorruptedDatabase, AlreadyRunning, StartFailed, Unknown }
 
 object FailureClassifier {
     private val patterns = listOf(

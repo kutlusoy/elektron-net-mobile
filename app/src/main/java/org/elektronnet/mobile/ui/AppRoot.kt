@@ -96,18 +96,35 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         }
     }
 
+    var peers by remember { mutableStateOf<List<NodeHost.PeerRow>>(emptyList()) }
+    LaunchedEffect(tab, walletReady) {
+        while (walletReady && tab == Tab.Node.ordinal) {
+            if (NodeHost.appVisible) {
+                val fresh = withContext(Dispatchers.IO) { NodeHost.peers() }
+                if (fresh != null) peers = fresh
+            }
+            delay(5_000)
+        }
+    }
+
     BrandBackground {
     Scaffold(
         containerColor = androidx.compose.ui.graphics.Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = { if (ChainConfig.isTestnet) TestnetBar() },
         bottomBar = {
-            if (walletReady) NavigationBar(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)) {
+            if (walletReady) NavigationBar(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)) {
                 Tab.entries.forEach { entry ->
                     NavigationBarItem(
                         selected = tab == entry.ordinal,
                         onClick = { tab = entry.ordinal },
                         icon = { Icon(entry.icon, contentDescription = null) },
                         label = { Text(stringResource(entry.label)) },
+                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                        ),
                     )
                 }
             }
@@ -155,6 +172,9 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 ReceiveScreen(onClose = { showReceive = false })
                 return@Box
             }
+            Column {
+            BrandHeader(compact = true, showTagline = true)
+            Box(modifier = Modifier.weight(1f)) {
             when (Tab.entries[tab]) {
                 Tab.Wallet -> Column {
                     SetupBanner(
@@ -181,6 +201,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 }
                 Tab.Node -> NodeScreen(
                     model = NodeTabModel.from(snapshot, settings.userPaused),
+                    peers = peers,
+                    showGeoCredit = NodeHost.geoAvailable,
                     onPause = {
                         onPause()
                         settings = settings.copy(userPaused = true)
@@ -212,6 +234,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         settings = settings.copy(backgroundEnabled = it)
                     },
                 )
+            }
+            }
             }
         }
     }

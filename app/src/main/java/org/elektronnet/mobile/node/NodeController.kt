@@ -45,8 +45,13 @@ class NodeController(
     }
 
     @Synchronized
-    fun restartAfterCrash(decision: PolicyDecision) {
+    fun clearCrash() {
         if (supervisor?.state is NodeState.Crashed) supervisor = null
+    }
+
+    @Synchronized
+    fun restartAfterCrash(decision: PolicyDecision) {
+        clearCrash()
         apply(decision)
     }
 

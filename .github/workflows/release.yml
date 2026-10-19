@@ -128,6 +128,8 @@ jobs:
             echo "::warning::No release key configured. The APKs are signed with a temporary test key and are not for distribution."
             echo "signed=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Peer country database
+        run: bash tools/fetch-geoip.sh
       - name: Build the APKs
         run: |
           if [[ ${{ steps.sign.outputs.signed }} == true ]]; then

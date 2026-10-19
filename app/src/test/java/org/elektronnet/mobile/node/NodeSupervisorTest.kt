@@ -32,8 +32,19 @@ class NodeSupervisorTest {
         val node = supervisor(script("echo 'Error opening block database'; exit 1"))
         node.start()
         waitFor { node.state is NodeState.Crashed }
-        assertEquals(NodeState.Crashed(1, NodeFailure.CorruptedDatabase), node.state)
+        val crashed = node.state as NodeState.Crashed
+        assertEquals(NodeFailure.CorruptedDatabase, crashed.failure)
+        assertTrue(crashed.detail.contains("Error opening block database"))
         assertTrue(node.output.snapshot().contains("Error opening block database"))
+    }
+
+    @Test
+    fun missingBinaryIsReportedAsStartFailure() {
+        val node = supervisor(File("/nonexistent/libelektrond.so"))
+        node.start()
+        val crashed = node.state as NodeState.Crashed
+        assertEquals(NodeFailure.StartFailed, crashed.failure)
+        assertTrue(crashed.detail.contains("missing"))
     }
 
     @Test
@@ -64,12 +75,10 @@ class NodeSupervisorTest {
     @Test
     fun refusesToStartNonExecutable() {
         val file = Files.createTempFile("not-exec", "").toFile().apply { setExecutable(false) }
-        val failed = try {
-            supervisor(file).start()
-            false
-        } catch (e: IllegalStateException) {
-            true
-        }
-        assertTrue(failed)
+        val node = supervisor(file)
+        node.start()
+        val crashed = node.state as NodeState.Crashed
+        assertEquals(NodeFailure.StartFailed, crashed.failure)
+        assertTrue(crashed.detail.contains("not executable"))
     }
 }

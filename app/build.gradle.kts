@@ -66,7 +66,7 @@ android {
             buildConfigField("String", "BECH32_HRP", "\"be\"")
             buildConfigField("int", "P2P_PORT", "8333")
             buildConfigField("int", "RPC_PORT", "8332")
-            buildConfigField("String", "DEFAULT_THEME", "\"blue\"")
+            buildConfigField("String", "DEFAULT_THEME", "\"teal\"")
             buildConfigField("boolean", "IS_TESTNET", "false")
         }
         create("tnet") {

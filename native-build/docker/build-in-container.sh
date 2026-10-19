@@ -24,6 +24,9 @@ for patch in "$PATCHES"/*.patch; do
     git -C "$SRC" apply --check "$patch"
     git -C "$SRC" apply "$patch"
 done
+for script in "$PATCHES"/*.py; do
+    python3 "$script" "$SRC" || echo "WARNING: $(basename "$script") did not apply, the node keeps its stock behavior" >&2
+done
 shopt -u nullglob
 
 find_daemon() {

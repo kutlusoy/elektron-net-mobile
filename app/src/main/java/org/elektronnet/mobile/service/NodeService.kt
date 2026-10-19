@@ -38,7 +38,10 @@ class NodeService : Service() {
             }
             ACTION_PAUSE -> settings.setUserPaused(true)
             ACTION_RESUME -> settings.setUserPaused(false)
-            else -> settings.setUserStopped(false)
+            else -> {
+                settings.setUserStopped(false)
+                NodeHost.clearCrash()
+            }
         }
         schedule(0)
         return START_STICKY

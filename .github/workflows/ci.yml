@@ -34,6 +34,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.14.3"
+      - name: Peer country database
+        run: bash tools/fetch-geoip.sh
       - name: Build both flavors
         run: gradle --no-daemon :app:assembleMainnetDebug :app:assembleTnetDebug
       - name: Unit tests and lint for both flavors

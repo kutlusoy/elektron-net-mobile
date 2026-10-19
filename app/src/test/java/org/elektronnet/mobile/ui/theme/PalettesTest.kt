@@ -8,8 +8,8 @@ import org.junit.Test
 class PalettesTest {
     @Test
     fun hasTenThemes() {
-        assertEquals(10, Palettes.all.size)
-        assertEquals(10, Palettes.all.map { it.key }.toSet().size)
+        assertEquals(11, Palettes.all.size)
+        assertEquals(11, Palettes.all.map { it.key }.toSet().size)
     }
 
     @Test
@@ -24,6 +24,6 @@ class PalettesTest {
 
     @Test
     fun mainnetUsesBlueTestnetUsesRed() {
-        assertTrue(BuildConfig.DEFAULT_THEME == if (BuildConfig.IS_TESTNET) "red" else "blue")
+        assertTrue(BuildConfig.DEFAULT_THEME == if (BuildConfig.IS_TESTNET) "red" else "teal")
     }
 }

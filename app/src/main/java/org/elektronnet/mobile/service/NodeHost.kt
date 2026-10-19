@@ -72,6 +72,7 @@ object NodeHost {
             rpcPort = ChainConfig.rpcPort,
             p2pPort = ChainConfig.p2pPort,
             fastprune = store.fastprune(),
+            homeDir = app.filesDir,
         )
         val device = AndroidDeviceState(app, datadir)
         val nodeController = NodeController(config)
@@ -212,6 +213,37 @@ object NodeHost {
     }
 
     val paymentUri: PaymentUri = PaymentUri(ChainConfig.uriScheme, AddressCheck(ChainConfig.isTestnet))
+
+    data class PeerRow(val peer: org.elektronnet.mobile.node.PeerInfo, val country: org.elektronnet.mobile.geo.Country?)
+
+    private var geoIp: org.elektronnet.mobile.geo.GeoIp? = null
+    val geoAvailable: Boolean get() = geoIp?.available == true
+
+    private fun geo(): org.elektronnet.mobile.geo.GeoIp {
+        geoIp?.let { return it }
+        val reader = runCatching {
+            val app = appContext ?: return@runCatching null
+            val file = File(app.filesDir, "geoip/dbip-country-lite.mmdb")
+            if (!file.exists()) {
+                file.parentFile?.mkdirs()
+                app.assets.open("geoip/dbip-country-lite.mmdb").use { input -> file.outputStream().use { input.copyTo(it) } }
+            }
+            java.io.RandomAccessFile(file, "r").use { raf ->
+                org.elektronnet.mobile.geo.MmdbReader(raf.channel.map(java.nio.channels.FileChannel.MapMode.READ_ONLY, 0, raf.length()))
+            }
+        }.getOrNull()
+        return org.elektronnet.mobile.geo.GeoIp(reader).also { geoIp = it }
+    }
+
+    fun peers(): List<PeerRow>? {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
+        val geo = geo()
+        return runCatching { supervisor.peers().map { PeerRow(it, geo.lookup(it.address)) } }.getOrNull()
+    }
+
+    fun clearCrash() {
+        controller?.clearCrash()
+    }
 
     fun stopNow() {
         controller?.shutdown()
