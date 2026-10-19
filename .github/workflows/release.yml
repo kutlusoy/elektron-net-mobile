@@ -75,13 +75,15 @@ jobs:
             native-${{ hashFiles('native-build/core-source.env', 'native-build/docker/**') }}-
       - name: Build elektrond for arm64-v8a and x86_64
         run: bash native-build/build.sh all
+      - name: Pack the node libraries
+        run: |
+          test -f app/src/main/jniLibs/arm64-v8a/libelektrond.so
+          tar -C app/src/main -cf native.tar jniLibs assets/core-manifest
       - uses: actions/upload-artifact@v4
         with:
           name: native
           retention-days: 7
-          path: |
-            app/src/main/jniLibs
-            app/src/main/assets/core-manifest
+          path: native.tar
 
   apk:
     needs: [prepare, native]
@@ -100,6 +102,11 @@ jobs:
         with:
           name: native
           path: .
+      - name: Unpack the node libraries
+        run: |
+          tar -C app/src/main -xf native.tar
+          test -f app/src/main/jniLibs/arm64-v8a/libelektrond.so
+          ls -l app/src/main/jniLibs/*/
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
