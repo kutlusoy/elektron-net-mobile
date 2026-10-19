@@ -45,7 +45,7 @@ android {
     }
 
     androidResources {
-        localeFilters += shippedLocales
+        localeFilters += shippedLocales.map { it.replace(Regex("^([a-z]+)-([A-Z]+)$"), "$1-r$2") }
     }
 
     compileOptions {
