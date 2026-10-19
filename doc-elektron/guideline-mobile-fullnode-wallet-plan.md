@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.23 (draft)
+- **Version:** 0.24 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
@@ -624,6 +624,21 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - **C. Regtest, functional** (with `-fastprune -natpmp=0`): a wallet is built from a fixed test master key with both coin types (`1370h` active, legacy `0h` imported inactive). The check verifies `bcrt1q` addresses on coin type 1370 and a locked wallet after import, then mines 700 blocks and verifies that block files roll over and the oldest is deleted, `pruneheight` advances, and exactly one checkpoint snapshot `<height>-<hash>.dat` with a `.dat.hash` sidecar exists for the latest multiple of the regtest checkpoint interval (100). It runs the full send flow (`walletcreatefundedpsbt`, `decodepsbt`, `walletpassphrase`, `walletprocesspsbt`, `finalizepsbt`, `sendrawtransaction`, `walletlock`, confirmation). It runs the recovery flow of §8.3 and verifies that the rescan from `pruneheight` restores only the retained part. If `rescanutxoset` exists it must restore the full balance, otherwise the check warns. Finally it restarts the node without `-fastprune` and mines on, which verifies that toggling the option on an existing datadir is safe.
 - Test nodes pre-create an empty `bitcoin.conf` (§4.2, item 7).
 - **Result on `elektron-net@main` (`447c069`, October 18, 2026):** 144 checks passed in about 8 seconds, one warning (`rescanutxoset` not present). The check also covers the commands the console needs and the console classification (`native-build/contract/console-tiers.json`, see `guideline-expert-console.md` §5): every command of the node's `help` list is classified (a warning in dev and nightly builds, a failure in release builds with `--strict-tiers`), argument rules and safety invariants are enforced (for example `sendtoaddress` is at least Danger, `stop` and `loadtxoutset` are Blocked), the console guards are verified (`createwallet` needs a passphrase, backups only for encrypted wallets, file paths, auto delete), and the file commands are exercised (`getwalletinfo.unlocked_until` identifies passphrase-protected wallets, `backupwallet` and `restorewallet` round trip keeps encryption and balance, `dumptxoutset` with `type=latest` writes a snapshot).
+
+### 11.3 Node v4.0.6 (branch `4.0.6` of `elektron-net`, checked October 20, 2026)
+
+Verified on a host build of the branch with our patch set: the `rescanutxoset` patch applies unchanged (`wallet.cpp` is the same as on `main`), the contract check passes (151 of 151, strict tiers) and all 285 unit and integration tests pass against that binary.
+
+| Change in 4.0.6 | Meaning for the app |
+|---|---|
+| **Consensus: PoW limit retarget overflow fix**, height gated, mainnet activation at block **500,000** (testnet immediately) | Every node of a user must run 4.0.6 or newer before the mainnet tip reaches 500,000 (at about 60 s per block roughly 5 months after the tip was near 273,000), otherwise it follows the old rules and forks off. Release builds MUST ship 4.0.6 or newer well before that. The app should tell users with an older node build to update (update check, Settings). |
+| Snapshot restart self-heal: a node that has lost its usable chain data restarts itself once with `-reindex` (`execv`, same PID, one-shot marker file) | Good for phones, where an interrupted snapshot is likely. The supervisor sees the same process, the wallet files are untouched. The guided chain data reset (§8.9) stays as the manual way out. |
+| Default config file is now `elektron.conf` for fresh datadirs, an existing `bitcoin.conf` is preferred, RPC server is commented out in the generated template | No effect: the app creates `bitcoin.conf` itself before the first start and passes `-server=1`, the loopback bind, the cookie file and the empty `-rpcpassword=` explicitly. |
+| macOS datadir note, documentation | None. |
+
+Not changed in 4.0.6 and therefore still open: the D1 and D2 defects of the UTXO recovery (`fix-report-utxo-recovery-after-pruning.md`, X11).
+
+**How to use it:** until the tag `v4.0.6` exists, run the release workflow by hand with `build_type` dev or nightly and `core_ref` `4.0.6`. Once the tag is pushed, release builds with version `v4.0.6-m<wallet version>` pick it up through the normal tag flow (§11.1).
 
 ## 12. Cross-Repo Impact
 
