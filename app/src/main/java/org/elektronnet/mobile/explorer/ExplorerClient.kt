@@ -34,7 +34,18 @@ class ExplorerClient(private val timeoutMs: Int = 5_000) {
             connection.setRequestProperty("Accept", "application/json")
             connection.setRequestProperty("User-Agent", "ElektronMobile")
             if (connection.responseCode != 200) throw IOException("HTTP ${connection.responseCode}")
-            return connection.inputStream.use { it.readNBytes(MAX_BYTES).toString(Charsets.UTF_8) }
+            return connection.inputStream.use { stream ->
+                val out = java.io.ByteArrayOutputStream()
+                val chunk = ByteArray(8192)
+                var left = MAX_BYTES
+                while (left > 0) {
+                    val n = stream.read(chunk, 0, minOf(chunk.size, left))
+                    if (n < 0) break
+                    out.write(chunk, 0, n)
+                    left -= n
+                }
+                out.toString(Charsets.UTF_8.name())
+            }
         } finally {
             connection.disconnect()
         }
