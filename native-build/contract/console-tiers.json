@@ -114,6 +114,7 @@
     "psbtbumpfee": {"tier": "confirm"},
     "removeprunedfunds": {"tier": "confirm"},
     "rescanblockchain": {"tier": "confirm", "heavy": true},
+    "rescanutxoset": {"tier": "confirm", "heavy": true},
     "restorewallet": {"tier": "danger", "path_args": ["backup_file"], "require_encrypted_wallet_after": true},
     "savemempool": {"tier": "confirm"},
     "scanblocks": {"tier": "open", "heavy": true},
