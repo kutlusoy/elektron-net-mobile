@@ -665,9 +665,9 @@
     <string name="events_halving">Prossimo halving</string>
     <string name="events_to_halving">Blocchi al halving</string>
     <string name="events_reward">Ricompensa del blocco</string>
-    <string name="events_epoch">Epoca di difficoltà (blocchi)</string>
+    <string name="events_epoch">Avanzamento epoca</string>
     <string name="events_avg_block">Tempo medio di blocco</string>
-    <string name="events_retarget">Prossimo retarget (blocchi rimanenti)</string>
+    <string name="events_retarget">Prossimo retarget</string>
     <string name="events_projection">Difficoltà prevista</string>
     <string name="export_saved">Il file è stato salvato.</string>
     <string name="confirm_stop_title">Fermare il nodo?</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">Gli screenshot sono attivi</string>
     <string name="settings_language">Lingua</string>
     <string name="settings_language_system">Lingua di sistema</string>
+    <string name="events_to_retarget">Blocchi al retarget</string>
 </resources>

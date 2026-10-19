@@ -665,9 +665,9 @@
     <string name="events_halving">अगला हाल्विंग</string>
     <string name="events_to_halving">हाल्विंग तक ब्लॉक</string>
     <string name="events_reward">ब्लॉक रिवॉर्ड</string>
-    <string name="events_epoch">डिफिकल्टी अवधि (ब्लॉक)</string>
+    <string name="events_epoch">एपॉक प्रगति</string>
     <string name="events_avg_block">औसत ब्लॉक समय</string>
-    <string name="events_retarget">अगला रीटार्गेट (बचे ब्लॉक)</string>
+    <string name="events_retarget">अगला रिटार्गेट</string>
     <string name="events_projection">अनुमानित डिफिकल्टी</string>
     <string name="export_saved">फ़ाइल सेव हो गई।</string>
     <string name="confirm_stop_title">नोड बंद करें?</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">स्क्रीनशॉट चालू हैं</string>
     <string name="settings_language">भाषा</string>
     <string name="settings_language_system">सिस्टम भाषा</string>
+    <string name="events_to_retarget">रिटार्गेट तक ब्लॉक</string>
 </resources>

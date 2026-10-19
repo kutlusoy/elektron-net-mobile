@@ -665,9 +665,9 @@
     <string name="events_halving">التنصيف القادم</string>
     <string name="events_to_halving">الكتل المتبقية للتنصيف</string>
     <string name="events_reward">مكافأة الكتلة</string>
-    <string name="events_epoch">فترة الصعوبة (كتل)</string>
+    <string name="events_epoch">تقدم الحقبة</string>
     <string name="events_avg_block">متوسط زمن الكتلة</string>
-    <string name="events_retarget">إعادة ضبط الصعوبة القادمة (الكتل المتبقية)</string>
+    <string name="events_retarget">إعادة الضبط التالية</string>
     <string name="events_projection">الصعوبة المتوقعة</string>
     <string name="export_saved">تم حفظ الملف.</string>
     <string name="confirm_stop_title">إيقاف العقدة؟</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">لقطات الشاشة مفعّلة</string>
     <string name="settings_language">اللغة</string>
     <string name="settings_language_system">لغة النظام</string>
+    <string name="events_to_retarget">الكتل حتى إعادة الضبط</string>
 </resources>

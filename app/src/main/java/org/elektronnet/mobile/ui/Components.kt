@@ -83,7 +83,13 @@ fun PillNavBar(items: List<Triple<String, androidx.compose.ui.graphics.vector.Im
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 androidx.compose.material3.Icon(icon, contentDescription = null, modifier = Modifier.size(22.dp), tint = if (active) primary else MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(label, style = MaterialTheme.typography.labelMedium, color = if (active) primary else MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    label,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (active) primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                )
             }
         }
     }

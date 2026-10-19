@@ -665,9 +665,9 @@
     <string name="events_halving">Lần halving tiếp theo</string>
     <string name="events_to_halving">Số khối đến halving</string>
     <string name="events_reward">Phần thưởng khối</string>
-    <string name="events_epoch">Chu kỳ độ khó (khối)</string>
+    <string name="events_epoch">Tiến độ epoch</string>
     <string name="events_avg_block">Thời gian khối trung bình</string>
-    <string name="events_retarget">Lần điều chỉnh tiếp theo (số khối còn lại)</string>
+    <string name="events_retarget">Retarget tiếp theo</string>
     <string name="events_projection">Độ khó dự kiến</string>
     <string name="export_saved">Đã lưu tệp.</string>
     <string name="confirm_stop_title">Dừng nút?</string>
@@ -684,4 +684,5 @@
     <string name="screenshot_banner">Chụp màn hình đang bật</string>
     <string name="settings_language">Ngôn ngữ</string>
     <string name="settings_language_system">Ngôn ngữ hệ thống</string>
+    <string name="events_to_retarget">Số khối đến retarget</string>
 </resources>
