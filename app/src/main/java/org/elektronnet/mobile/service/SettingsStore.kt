@@ -65,6 +65,10 @@ class SettingsStore(context: Context) {
         prefs.edit().putString(THEME_KEY, ui.themeKey).putString(THEME_MODE, ui.mode.name).putString(EFFECTS, ui.effects.name).apply()
     }
 
+    var biometricLock: Boolean
+        get() = prefs.getBoolean(BIOMETRIC, false)
+        set(value) = prefs.edit().putBoolean(BIOMETRIC, value).apply()
+
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
 
     fun setUserStopped(value: Boolean) = prefs.edit().putBoolean(USER_STOPPED, value).apply()
@@ -105,6 +109,7 @@ class SettingsStore(context: Context) {
         const val THEME_KEY = "theme_key"
         const val THEME_MODE = "theme_mode"
         const val EFFECTS = "effects"
+        const val BIOMETRIC = "biometric_lock"
         const val RESCAN_PENDING = "rescan_pending"
         const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"

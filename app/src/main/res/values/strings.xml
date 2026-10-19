@@ -66,6 +66,14 @@
     <string name="settings_charging_only_hint">The node pauses when the charger is unplugged.</string>
     <string name="settings_background">Run in the background</string>
     <string name="settings_background_hint">Keeps the node running when the app is closed. You can stop it from the notification.</string>
+    <string name="settings_security">Security</string>
+    <string name="settings_biometric">Lock the app</string>
+    <string name="settings_biometric_hint">Ask for your fingerprint, face or screen lock when the app opens. Sending still needs your wallet passphrase.</string>
+    <string name="lock_title">Elektron is locked</string>
+    <string name="lock_unlock">Unlock</string>
+    <string name="lock_prompt">Unlock Elektron</string>
+    <string name="lock_cancel">Cancel</string>
+    <string name="lock_unavailable">Set up a fingerprint, face or screen lock in your phone settings first.</string>
     <string name="settings_appearance">Appearance</string>
     <string name="settings_theme">Color theme</string>
     <string name="settings_mode">Light or dark</string>

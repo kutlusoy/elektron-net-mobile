@@ -59,7 +59,7 @@ private enum class Tab(val label: Int, val icon: ImageVector) {
 }
 
 @Composable
-fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit) {
+fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit, onBiometric: (Boolean) -> Unit) {
     var tab by rememberSaveable { mutableStateOf(Tab.Wallet.ordinal) }
     var showSoon by remember { mutableStateOf(false) }
     var showReceive by rememberSaveable { mutableStateOf(false) }
@@ -216,6 +216,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
                 Tab.Settings -> SettingsScreen(
                     settings = settings,
+                    biometric = org.elektronnet.mobile.ui.security.AppLockState.enabled,
+                    onBiometric = onBiometric,
                     ui = UiState.settings,
                     onUi = {
                         store?.saveUi(it)

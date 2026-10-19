@@ -47,6 +47,8 @@ fun SettingsScreen(
     onChargingOnly: (Boolean) -> Unit,
     onBackground: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    biometric: Boolean = false,
+    onBiometric: (Boolean) -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -59,6 +61,8 @@ fun SettingsScreen(
         ToggleRow(R.string.settings_mobile_data, R.string.settings_mobile_data_hint, settings.allowMetered, onAllowMetered)
         ToggleRow(R.string.settings_charging_only, R.string.settings_charging_only_hint, settings.chargingOnly, onChargingOnly)
         ToggleRow(R.string.settings_background, R.string.settings_background_hint, settings.backgroundEnabled, onBackground)
+        Text(stringResource(R.string.settings_security), style = MaterialTheme.typography.titleMedium)
+        ToggleRow(R.string.settings_biometric, R.string.settings_biometric_hint, biometric, onBiometric)
         Text(stringResource(R.string.settings_appearance), style = MaterialTheme.typography.titleMedium)
         AppearanceSection(ui, onUi)
         Text(stringResource(R.string.settings_about), style = MaterialTheme.typography.titleMedium)

@@ -4,7 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.setContent
 import android.graphics.Color
 import android.os.PowerManager
@@ -17,10 +17,13 @@ import androidx.core.content.ContextCompat
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.service.NodeService
 import org.elektronnet.mobile.ui.AppRoot
+import org.elektronnet.mobile.ui.security.AppLockState
+import org.elektronnet.mobile.ui.security.Biometric
+import org.elektronnet.mobile.ui.security.LockScreen
 import org.elektronnet.mobile.ui.theme.ElektronTheme
 import org.elektronnet.mobile.ui.theme.UiState
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         startNode()
     }
@@ -29,6 +32,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val settings = NodeHost.init(this)
+        AppLockState.startOnce(settings.biometricLock && Biometric.available(this))
         NodeHost.incomingUri = intent?.dataString
         setContent {
             val ui = UiState.settings
@@ -43,12 +47,17 @@ class MainActivity : ComponentActivity() {
                 dark = dark,
                 effects = UiState.effectLevel(ui.effectiveEffects(saver)),
             ) {
-                AppRoot(
-                    onStart = ::requestStart,
-                    onStop = { NodeService.send(this, NodeService.ACTION_STOP) },
-                    onPause = { NodeService.send(this, NodeService.ACTION_PAUSE) },
-                    onResume = { NodeService.send(this, NodeService.ACTION_RESUME) },
-                )
+                if (AppLockState.locked) {
+                    LockScreen(onUnlock = ::unlock)
+                } else {
+                    AppRoot(
+                        onBiometric = ::setBiometric,
+                        onStart = ::requestStart,
+                        onStop = { NodeService.send(this, NodeService.ACTION_STOP) },
+                        onPause = { NodeService.send(this, NodeService.ACTION_PAUSE) },
+                        onResume = { NodeService.send(this, NodeService.ACTION_RESUME) },
+                    )
+                }
             }
         }
         if (!settings.load().userStopped) requestStart()
@@ -62,9 +71,41 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         NodeHost.appVisible = true
+        AppLockState.onStarted()
+    }
+
+    private fun unlock() {
+        Biometric.authenticate(
+            this,
+            title = getString(R.string.lock_prompt),
+            negative = getString(R.string.lock_cancel),
+            onSuccess = AppLockState::unlock,
+        )
+    }
+
+    private fun setBiometric(enable: Boolean) {
+        if (!enable) {
+            NodeHost.store?.biometricLock = false
+            AppLockState.setEnabled(false)
+            return
+        }
+        if (!Biometric.available(this)) {
+            android.widget.Toast.makeText(this, R.string.lock_unavailable, android.widget.Toast.LENGTH_LONG).show()
+            return
+        }
+        Biometric.authenticate(
+            this,
+            title = getString(R.string.lock_prompt),
+            negative = getString(R.string.lock_cancel),
+            onSuccess = {
+                NodeHost.store?.biometricLock = true
+                AppLockState.setEnabled(true)
+            },
+        )
     }
 
     override fun onStop() {
+        AppLockState.onStopped()
         NodeHost.appVisible = false
         NodeHost.lockWallet()
         super.onStop()
