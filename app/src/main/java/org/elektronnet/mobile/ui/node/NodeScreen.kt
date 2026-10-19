@@ -148,6 +148,7 @@ fun NodeScreen(
                 OutlinedButton(onClick = onOpenConsole) { Text(stringResource(R.string.node_expert_open)) }
             }
         }
+        MaintenanceCard(onRestart = onStart)
         if (model.details != null) {
             TelemetrySection(model.details, telemetry)
             PeerSection(peers, showGeoCredit)
@@ -245,8 +246,14 @@ private fun LogSection(show: Boolean, onShow: (Boolean) -> Unit, lines: List<Str
                         }
                     }
                     if (lines.isNotEmpty()) {
-                        TextButton(onClick = { clipboard.setText(androidx.compose.ui.text.AnnotatedString(lines.joinToString("\n"))) }) {
-                            Text(stringResource(R.string.node_log_copy))
+                        val context = androidx.compose.ui.platform.LocalContext.current
+                        Row {
+                            TextButton(onClick = { clipboard.setText(androidx.compose.ui.text.AnnotatedString(org.elektronnet.mobile.node.LogSanitizer.clean(lines))) }) {
+                                Text(stringResource(R.string.node_log_copy))
+                            }
+                            TextButton(onClick = { org.elektronnet.mobile.ui.tools.shareText(context, org.elektronnet.mobile.node.LogSanitizer.clean(lines)) }) {
+                                Text(stringResource(R.string.node_log_share))
+                            }
                         }
                     }
                 }
@@ -438,4 +445,33 @@ private fun hint(model: NodeTabModel): String? = when (model.state) {
         },
     )
     else -> null
+}
+
+@Composable
+private fun MaintenanceCard(onRestart: () -> Unit) {
+    var confirming by remember { mutableStateOf(false) }
+    var failed by remember { mutableStateOf(false) }
+    GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.node_reset_title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.node_reset_body), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            OutlinedButton(onClick = { confirming = true }) { Text(stringResource(R.string.node_reset_action)) }
+            if (failed) Text(stringResource(R.string.node_reset_failed), color = MaterialTheme.colorScheme.error)
+        }
+    }
+    if (confirming) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { confirming = false },
+            title = { Text(stringResource(R.string.node_reset_title)) },
+            text = { Text(stringResource(R.string.node_reset_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirming = false
+                    failed = !NodeHost.resetChainData()
+                    if (!failed) onRestart()
+                }) { Text(stringResource(R.string.node_reset_action), color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = { OutlinedButton(onClick = { confirming = false }) { Text(stringResource(R.string.action_cancel)) } },
+        )
+    }
 }

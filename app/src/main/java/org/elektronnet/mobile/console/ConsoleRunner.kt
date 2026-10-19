@@ -141,6 +141,13 @@ class ConsoleRunner(
         return ExecResult(formatted.text, formatted.truncated, plan.sensitive, error = false, needsPassphraseFor = needs)
     }
 
+    fun abortable(plan: Plan.Ready): Boolean = plan.method in ABORTS
+
+    fun abort(plan: Plan.Ready): Boolean {
+        val method = ABORTS[plan.method] ?: return false
+        return runCatching { rpc.call(method, emptyList<Any?>(), plan.wallet) == true }.getOrDefault(false)
+    }
+
     private fun isSensitive(command: ParsedCommand): Boolean = when (command.method) {
         "listdescriptors" -> ArgNames.valueOf(command, "private")?.toString() == "true"
         "gethdkeys" -> ((ArgNames.valueOf(command, "options") as? Map<*, *>)?.get("private")?.toString() == "true")
@@ -161,5 +168,6 @@ class ConsoleRunner(
 
     private companion object {
         const val DUMP_MARGIN = 200L * 1024 * 1024
+        val ABORTS = mapOf("rescanblockchain" to "abortrescan")
     }
 }

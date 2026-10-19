@@ -64,6 +64,7 @@ fun WalletSwitcher(
     onSweep: () -> Unit,
     onTools: () -> Unit,
     onWallets: () -> Unit,
+    onContacts: () -> Unit,
 ) {
     var open by remember { mutableStateOf(false) }
     val active = NodeHost.wallets.firstOrNull { it.name == NodeHost.activeWallet }
@@ -77,6 +78,7 @@ fun WalletSwitcher(
             item(R.string.wallet_menu_coins, onCoins)
             item(R.string.msg_title, onMessages)
             item(R.string.sweep_title, onSweep)
+            item(R.string.contacts_title, onContacts)
             item(R.string.wallet_menu_tools, onTools)
             HorizontalDivider()
             item(R.string.wallet_menu_others, onWallets)
@@ -129,6 +131,7 @@ fun WalletDetailsScreen(onBack: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.details_export)) }
         Hint(stringResource(R.string.details_export_hint))
+        ExportSection()
         Hint(stringResource(R.string.details_hint))
     }
 }

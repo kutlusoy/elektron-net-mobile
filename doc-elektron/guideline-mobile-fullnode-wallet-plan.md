@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.16 (draft)
+- **Version:** 0.17 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
@@ -447,6 +447,16 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 - Every wallet has its own recovery phrase, passphrase, descriptors and receive address. Adding a wallet uses the same create or restore flow as the first run, without the network and notification steps, and the same deferred setup that waits for the node (§8.3).
 - **Removing a wallet** needs the wallet's own passphrase and a confirmation that the user has its recovery phrase. The app checks the passphrase with a short unlock, unloads the wallet with `load_on_startup=false` and deletes its directory. Removing the last wallet returns the app to the first-run screens.
 
+### 8.9 Wallet tools
+
+- **CPFP:** for a payment that is still waiting in the mempool and pays to the wallet, the user can send a child payment that spends one of the waiting coins back to a fresh own address. The child fee is computed so that the whole package reaches the chosen target rate (`getmempoolentry` ancestor fee and size, 111 vB for the child), the PSBT is created with exact amounts, reviewed (one input, one own output, fee equal to the plan), signed under one short unlock and broadcast. RBF bump (§8.4) remains the tool for the sender side.
+- **Address book:** contacts (name and address, up to 500) live in the app's private storage in `contacts.json`, are shared by all wallets, never reach the node and are validated with the same address check as the send screen. The send screen offers a picker.
+- **Public descriptor export:** `listdescriptors` without private keys, shared as text. The export refuses to produce text if any descriptor contains private key material.
+- **Encrypted wallet file:** `backupwallet` writes into the private `exports/wallets/` folder and the user copies it out through the Storage Access Framework. It is only offered for passphrase-protected wallets, the temporary copy is deleted right after saving and housekeeping removes leftovers after 7 days.
+- **Cleaned node log:** copy and share of the node log pass through a sanitizer that replaces IP addresses, onion and I2P names, wallet addresses and device paths.
+- **Chain data reset:** removes blocks, chainstate, indexes, peers, mempool and fee estimates from the data folder and restarts the sync. Wallet files, `datadir.version` and the configuration stay.
+- **Incoming payment notification:** off by default. The service compares the newest transactions of the active wallet with the ones seen before (the first run only records them) and posts one notification with a hidden public version, so the amount does not show on the lock screen.
+
 ## 9. Security Requirements
 
 | # | Requirement | Level |
@@ -622,7 +632,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 ### Phase 4: Hardening and polish
 
 - [x] Bump fee (RBF), address labels, history export as CSV, app lock with biometrics
-- [ ] CPFP, address book, descriptor export, encrypted wallet file export
+- [x] CPFP for incoming payments, address book, public descriptor export, encrypted wallet file export, cleaned node log, guided chain data reset, optional incoming payment notification (§8.9). Screens are unbuilt on a device, the logic is tested against a real node
 - [ ] Localization completion, accessibility
 - [ ] Reproducible build, hash publication. The signed release pipeline exists
 - [ ] Native speaker review of the security and trust model texts in every shipped language (§3.5)

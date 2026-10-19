@@ -307,6 +307,12 @@ object NodeHost {
 
     fun feeBumper(): org.elektronnet.mobile.wallet.FeeBumper? = runningSupervisor()?.let { org.elektronnet.mobile.wallet.FeeBumper(it.rpc.asWalletRpc(), activeWallet) }
 
+    fun cpfp(): org.elektronnet.mobile.wallet.Cpfp? = runningSupervisor()?.let { org.elektronnet.mobile.wallet.Cpfp(it.rpc.asWalletRpc(), activeWallet) }
+
+    fun walletExport(): org.elektronnet.mobile.wallet.WalletExport? = runningSupervisor()?.let { org.elektronnet.mobile.wallet.WalletExport(it.rpc.asWalletRpc(), activeWallet) }
+
+    fun addressBook(): org.elektronnet.mobile.wallet.AddressBook? = appContext?.let { org.elektronnet.mobile.wallet.AddressBook(File(it.filesDir, "contacts.json"), addressCheck) }
+
     fun coinControl(wallet: String = activeWallet): CoinControl? = runningSupervisor()?.let { CoinControl(it.rpc.asWalletRpc(), wallet) }
 
     fun lockWallet() {
@@ -362,6 +368,12 @@ object NodeHost {
 
     fun clearCrash() {
         controller?.clearCrash()
+    }
+
+    fun resetChainData(): Boolean {
+        val dir = datadir ?: return false
+        controller?.shutdown()
+        return runCatching { org.elektronnet.mobile.node.DatadirReset.perform(dir) }.isSuccess
     }
 
     fun stopNow() {

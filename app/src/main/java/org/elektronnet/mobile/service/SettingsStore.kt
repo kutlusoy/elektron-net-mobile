@@ -95,6 +95,15 @@ class SettingsStore(context: Context) {
         get() = org.elektronnet.mobile.explorer.ExplorerList.parse(prefs.getString(EXPLORERS, null))
         set(value) = prefs.edit().putString(EXPLORERS, org.elektronnet.mobile.explorer.ExplorerList.serialize(value)).apply()
 
+    var notifyIncoming: Boolean
+        get() = prefs.getBoolean(NOTIFY_INCOMING, false)
+        set(value) = prefs.edit().putBoolean(NOTIFY_INCOMING, value).apply()
+
+    fun seenIncoming(wallet: String): List<String>? = prefs.getString("$SEEN_INCOMING.$wallet", null)?.split(',')?.filter { it.isNotEmpty() }
+
+    fun setSeenIncoming(wallet: String, value: List<String>?) =
+        prefs.edit().apply { if (value == null) remove("$SEEN_INCOMING.$wallet") else putString("$SEEN_INCOMING.$wallet", value.joinToString(",")) }.apply()
+
     var consoleRetentionDays: Int
         get() = prefs.getInt(CONSOLE_RETENTION, 90)
         set(value) = prefs.edit().putInt(CONSOLE_RETENTION, value).apply()
@@ -162,6 +171,8 @@ class SettingsStore(context: Context) {
         const val RESCAN_PENDING = "rescan_pending"
         const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"
+        const val NOTIFY_INCOMING = "notify_incoming"
+        const val SEEN_INCOMING = "seen_incoming"
         const val BUDGET_MONTH = "budget_month"
         const val BUDGET_USED = "budget_used"
     }

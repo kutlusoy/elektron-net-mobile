@@ -24,7 +24,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import org.elektronnet.mobile.service.NodeHost
 import androidx.compose.ui.platform.LocalContext
 import org.elektronnet.mobile.service.CoreManifestLoader
 import androidx.compose.ui.Alignment
@@ -98,6 +102,11 @@ fun SettingsScreen(
         ExplorerSection(explorers, onExplorers)
         Text(stringResource(R.string.settings_security), style = MaterialTheme.typography.titleMedium)
         ToggleRow(R.string.settings_biometric, R.string.settings_biometric_hint, biometric, onBiometric)
+        var notifyIncoming by remember { mutableStateOf(NodeHost.store?.notifyIncoming == true) }
+        ToggleRow(R.string.notify_incoming_setting, R.string.notify_incoming_hint, notifyIncoming) {
+            notifyIncoming = it
+            NodeHost.store?.notifyIncoming = it
+        }
         Text(stringResource(R.string.settings_appearance), style = MaterialTheme.typography.titleMedium)
         AppearanceSection(ui, onUi)
         Text(stringResource(R.string.settings_about), style = MaterialTheme.typography.titleMedium)

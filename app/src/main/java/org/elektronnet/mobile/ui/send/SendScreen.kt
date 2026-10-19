@@ -89,6 +89,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var noteFromLink by remember { mutableStateOf<String?>(null) }
     var exportedPsbt by remember { mutableStateOf<String?>(null) }
     var scanning by remember { mutableStateOf(false) }
+    var picking by remember { mutableStateOf(false) }
     var selectedCoins by remember { mutableStateOf<List<org.elektronnet.mobile.wallet.Coin>>(emptyList()) }
     var pickCoins by remember { mutableStateOf(false) }
     var subtractFee by remember { mutableStateOf(false) }
@@ -165,6 +166,12 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
         }
     }
 
+    if (picking) {
+        org.elektronnet.mobile.ui.wallets.ContactPickerDialog(
+            onPick = { recipientText = it.address; legacyOk = false; picking = false },
+            onDismiss = { picking = false },
+        )
+    }
     if (scanning) {
         QrScannerScreen(
             onResult = { recipientText = it; legacyOk = false; scanning = false },
@@ -217,6 +224,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     OutlinedButton(onClick = { recipientText = clipboardText(context) }) { Text(stringResource(R.string.send_paste)) }
                     OutlinedButton(onClick = { scanning = true }) { Text(stringResource(R.string.scan_button)) }
+                    OutlinedButton(onClick = { picking = true }) { Text(stringResource(R.string.contacts_title)) }
                 }
                 RecipientMessage(resolved.state, resolved.address, legacyOk) { legacyOk = it }
                 Button(

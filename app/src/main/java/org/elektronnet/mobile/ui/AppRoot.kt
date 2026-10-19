@@ -41,6 +41,7 @@ import org.elektronnet.mobile.ui.console.ConsoleRoot
 import org.elektronnet.mobile.ui.tools.ToolsPage
 import org.elektronnet.mobile.ui.tools.ToolsScreen
 import org.elektronnet.mobile.ui.wallets.CoinsScreen
+import org.elektronnet.mobile.ui.wallets.ContactsScreen
 import org.elektronnet.mobile.ui.wallets.WalletDetailsScreen
 import org.elektronnet.mobile.ui.wallets.WalletSwitcher
 import org.elektronnet.mobile.ui.wallets.WalletsScreen
@@ -60,7 +61,7 @@ import org.elektronnet.mobile.ui.wallet.WalletScreen
 
 private data class WalletData(val balances: Balances, val items: List<TxItem>)
 
-private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet, Console }
+private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet, Console, Contacts }
 
 private const val RECENT_COUNT = 8
 
@@ -219,6 +220,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     onCancel = { show(Overlay.Wallets) },
                 )
                 Overlay.Console -> ConsoleRoot(onClose = { show(Overlay.None) })
+                Overlay.Contacts -> ContactsScreen(onBack = { show(Overlay.None) })
                 Overlay.None -> Unit
             }
             if (overlay != Overlay.None) return@Box
@@ -234,6 +236,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         onSweep = { show(Overlay.Sweep) },
                         onTools = { show(Overlay.Tools) },
                         onWallets = { show(Overlay.Wallets) },
+                        onContacts = { show(Overlay.Contacts) },
                     )
                     SetupBanner(
                         status = setup,

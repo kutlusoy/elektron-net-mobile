@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Expert Mode and Node Console Guideline
 
-- **Version:** 0.4 (draft)
+- **Version:** 0.5 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, security reviewers, translators of the app
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/rpc/` and `src/wallet/rpc/` (RPC surface), `src/init.cpp` (RPC arguments), treat the node's `help` output as ground truth for command names and arguments
@@ -150,11 +150,11 @@ None. The questions of the first draft are decided (§1.1). The exact texts and 
 - [x] Contract check reports unclassified commands (warning in dev, failure in release), enforces invariants and verifies the guards (`createwallet` passphrase, encrypted-only backups, path arguments, auto delete)
 - [x] Expert mode gating (risk confirmation, device authentication once per session, 30 minute timeout, explicit "End session")
 - [x] Danger switch (typed token) and per-command confirmation dialog with a delayed run button
-- [x] Console UI with autocomplete from the classification, extra key row, paste, wallet selector, output limit and copy (heavy-command cancel is open)
+- [x] Console UI with autocomplete from the classification, extra key row, paste, wallet selector, output limit and copy, and a Stop action (server side abort for `rescanblockchain` through `abortrescan`, other commands are detached and their result is discarded)
 - [x] Persistent encrypted history (Android Keystore AES-GCM, secrets masked) with retention (off, 7, 30, 90 days), delete and rotation
 - [x] File commands with path confinement to the private `exports/` folder, the passphrase guard for `backupwallet`, `dumptxoutset` limited to `type=latest` with a free-space check and housekeeping of manual dumps after 7 days, `createwallet` refused without a passphrase, a restored unencrypted wallet forces a passphrase dialog
 - [x] Secrets handling and relock: masked history, key-revealing results are not kept after leaving the screen, `FLAG_SECURE`, `walletlock` for every wallet when leaving the console or the app
-- [ ] Localization of all console texts in the launch locales
+- [x] Localization of all console texts in the shipped locales (first drafts, native review open)
 - [ ] Security review of the console before it ships
 
-**Implementation notes (v0.4):** the console logic is plain Kotlin in `console/` (parser, tiers, session gating, file confinement, masking, history) and is tested on the JVM and against a real regtest node (`ConsoleRunnerIntegrationTest`: blocked and refused commands never reach the node, backups need an encrypted wallet, restore round trip, snapshot dump folder). The classification file `native-build/contract/console-tiers.json` is copied into the app assets at build time, so the app and the contract check always use the same file. The Compose screens are in `ui/console/` and have not been run on a device yet.
+**Implementation notes (v0.5):** the console logic is plain Kotlin in `console/` (parser, tiers, session gating, file confinement, masking, history) and is tested on the JVM and against a real regtest node (`ConsoleRunnerIntegrationTest`: blocked and refused commands never reach the node, backups need an encrypted wallet, restore round trip, snapshot dump folder). The classification file `native-build/contract/console-tiers.json` is copied into the app assets at build time, so the app and the contract check always use the same file. The Compose screens are in `ui/console/` and have not been run on a device yet.

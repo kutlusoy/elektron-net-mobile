@@ -18,11 +18,13 @@ class NodeService : Service() {
     private val worker = Executors.newSingleThreadScheduledExecutor()
     private var next: ScheduledFuture<*>? = null
     private lateinit var settings: SettingsStore
+    private lateinit var incoming: IncomingNotifier
 
     override fun onCreate() {
         super.onCreate()
         settings = NodeHost.init(this)
         NodeNotification.createChannel(this)
+        incoming = IncomingNotifier(this, settings)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -63,6 +65,10 @@ class NodeService : Service() {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val state = settings.load()
             manager.notify(NodeNotification.ID, NodeNotification.build(this, snapshot.headline, state.userPaused))
+            runCatching {
+                val wallet = NodeHost.activeWallet
+                NodeHost.walletReader()?.transactions(INCOMING_WINDOW)?.let { incoming.check(wallet, it) }
+            }
             if (snapshot.headline is Headline.Stopped && state.userStopped) {
                 stopSelf()
                 return
@@ -93,6 +99,7 @@ class NodeService : Service() {
         const val ACTION_PAUSE = "org.elektronnet.mobile.action.PAUSE"
         const val ACTION_RESUME = "org.elektronnet.mobile.action.RESUME"
         private const val RETRY_AFTER_ERROR_MS = 30_000L
+        private const val INCOMING_WINDOW = 25
 
         fun start(context: Context) {
             ContextCompat.startForegroundService(context, Intent(context, NodeService::class.java))

@@ -148,6 +148,7 @@ fun TxDetailsScreen(item: TxItem, onClose: () -> Unit, onBumped: (String) -> Uni
             }
         }
         if (item.kind == TxKind.Sent && item.status == TxStatus.Pending) BumpSection(item.txid, onBumped)
+        if (item.kind == TxKind.Received && item.status == TxStatus.Pending) CpfpSection(item.txid, onBumped)
     }
 }
 

@@ -138,6 +138,8 @@ private fun ConsoleScreen(onClose: () -> Unit) {
     var wallet by remember { mutableStateOf<String?>(NodeHost.activeWallet) }
     var walletMenu by remember { mutableStateOf(false) }
     var running by remember { mutableStateOf(false) }
+    var activePlan by remember { mutableStateOf<Plan.Ready?>(null) }
+    var runId by remember { mutableStateOf(0) }
     var pending by remember { mutableStateOf<Plan.Ready?>(null) }
     var showDangerSwitch by remember { mutableStateOf(false) }
     var showHistory by remember { mutableStateOf(false) }
@@ -186,11 +188,14 @@ private fun ConsoleScreen(onClose: () -> Unit) {
     fun execute(plan: Plan.Ready) {
         val runner = NodeHost.consoleRunner() ?: run { add(plan.display, context.getString(R.string.console_node_off), null, true); return }
         running = true
+        activePlan = plan
+        val id = ++runId
         scope.launch {
             val result = withContext(Dispatchers.IO) {
                 runCatching { ConsoleStore.history(context).add(plan.display) }
                 runner.execute(plan)
             }
+            if (id != runId) return@launch
             running = false
             add(plan.display, result.text, plan.tier, result.error, result.truncated, result.sensitive)
             result.needsPassphraseFor?.let { needsPassphrase = it }
@@ -251,7 +256,20 @@ private fun ConsoleScreen(onClose: () -> Unit) {
         LazyColumn(state = listState, modifier = Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             if (entries.isEmpty()) item { Hint(stringResource(R.string.console_empty)) }
             items(entries) { entry -> EntryView(entry, onCopy = { copyText(context, "result", entry.text) }) }
-            if (running) item { Text(stringResource(R.string.console_running), color = MaterialTheme.colorScheme.primary) }
+            if (running) item {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.console_running), color = MaterialTheme.colorScheme.primary, modifier = Modifier.weight(1f))
+                    TextButton(onClick = {
+                        val plan = activePlan ?: return@TextButton
+                        runId++
+                        running = false
+                        scope.launch {
+                            val stopped = withContext(Dispatchers.IO) { NodeHost.consoleRunner()?.abort(plan) == true }
+                            add(plan.display, context.getString(if (stopped) R.string.console_stopped else R.string.console_discarded), plan.tier, !stopped)
+                        }
+                    }) { Text(stringResource(R.string.console_stop)) }
+                }
+            }
         }
         val first = input.trim().substringBefore(' ')
         val suggestions = if (!input.contains(' ') && first.isNotEmpty() && tiers != null) tiers.names.filter { it.startsWith(first) && it != first }.take(6) else emptyList()

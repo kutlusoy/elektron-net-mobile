@@ -88,11 +88,12 @@ object ExportsHousekeeping {
     const val DUMP_DAYS = 7
 
     fun cleanup(exports: File, nowMs: Long, days: Int = DUMP_DAYS): List<String> {
-        val dumps = File(exports, "dumps")
         val cutoff = nowMs - days * ConsoleHistory.DAY_MS
         val removed = mutableListOf<String>()
-        dumps.listFiles()?.forEach { f ->
-            if (f.isFile && f.lastModified() < cutoff && f.delete()) removed.add(f.name)
+        for (sub in listOf("dumps", "wallets")) {
+            File(exports, sub).listFiles()?.forEach { f ->
+                if (f.isFile && f.lastModified() < cutoff && f.delete()) removed.add(f.name)
+            }
         }
         return removed
     }

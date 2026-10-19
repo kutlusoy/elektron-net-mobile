@@ -143,4 +143,14 @@ class ConsoleRunnerIntegrationTest {
         val named = ready(env.runner.prepare("getblockhash height=1", null))
         assertEquals(mapOf<String, Any?>("height" to 1L), named.params)
     }
+
+    @Test
+    fun onlyRescansCanBeStoppedOnTheNode() = withEnv(29152) { env ->
+        val rescan = ready(env.runner.prepare("rescanblockchain", "elektron"))
+        assertTrue(env.runner.abortable(rescan))
+        assertFalse(env.runner.abort(rescan))
+        val count = ready(env.runner.prepare("getblockcount", null))
+        assertFalse(env.runner.abortable(count))
+        assertFalse(env.runner.abort(count))
+    }
 }
