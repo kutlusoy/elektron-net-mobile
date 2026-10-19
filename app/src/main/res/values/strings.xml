@@ -550,7 +550,7 @@
     <string name="setup_enter_passphrase">Enter passphrase to finish restoring</string>
     <string name="setup_pass_title">Finish restoring</string>
     <string name="setup_pass_body">Your passphrase unlocks the wallet for the search of your coins. It is not stored.</string>
-    <string name="brand_tagline">Your own node. Your own keys.</string>
+    <string name="brand_tagline">Your node. Your keys.</string>
     <string name="fr_welcome_title">Welcome</string>
     <string name="fr_welcome_body">Your own wallet with your own copy of the network. No account, no server.</string>
     <string name="fr_create">Create new wallet</string>
@@ -661,4 +661,8 @@
     <string name="details_used_hint">These coins sit on an address that was already spent from. The wallet does not spend them automatically, so your payments cannot be linked. Select them in Coins to spend them on purpose.</string>
     <string name="details_noreuse">Address reuse protection is on: every receive and change address is used once, and coins on a reused address stay out of automatic spending.</string>
     <string name="coins_reused">Reused address</string>
+    <string name="about_slogan" translatable="false">Elektron Net the stoic cyberpunk blockchain.</string>
+    <string name="about_link_repo" translatable="false">Repository (app)</string>
+    <string name="about_link_node" translatable="false">Repository (node)</string>
+    <string name="about_link_whitepaper" translatable="false">Whitepaper</string>
 </resources>

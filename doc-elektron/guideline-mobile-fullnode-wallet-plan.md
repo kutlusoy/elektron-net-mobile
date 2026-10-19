@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.19 (draft)
+- **Version:** 0.20 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
@@ -533,6 +533,7 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 | S28 | Enabling server access needs device authentication and an explicit risk confirmation, and a visible banner shows while it is on (§3.7) | MUST |
 | S29 | Node only mode holds no key material until the user creates a wallet, and adding a wallet needs no node restart (§3.7) | MUST |
 
+| S30 | Cleartext traffic is refused app wide except to `127.0.0.1`, `localhost` and onion hosts (network security config), so the local RPC works and no other http request can leave the app | MUST |
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 
 ## 10. Repository Layout (proposal)

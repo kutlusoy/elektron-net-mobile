@@ -66,7 +66,7 @@ fun PillNavBar(items: List<Triple<String, androidx.compose.ui.graphics.vector.Im
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.92f))
             .navigationBarsPadding()
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .padding(horizontal = 12.dp, vertical = 6.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items.forEach { (label, icon, index) ->
@@ -79,10 +79,10 @@ fun PillNavBar(items: List<Triple<String, androidx.compose.ui.graphics.vector.Im
                     .background(if (active) primary.copy(alpha = 0.18f) else Color.Transparent)
                     .border(1.dp, if (active) primary.copy(alpha = 0.75f) else Color.Transparent, shape)
                     .selectable(selected = active, role = Role.Tab, onClick = { onSelect(index) })
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                androidx.compose.material3.Icon(icon, contentDescription = null, tint = if (active) primary else MaterialTheme.colorScheme.onSurfaceVariant)
+                androidx.compose.material3.Icon(icon, contentDescription = null, modifier = Modifier.size(22.dp), tint = if (active) primary else MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(label, style = MaterialTheme.typography.labelMedium, color = if (active) primary else MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }

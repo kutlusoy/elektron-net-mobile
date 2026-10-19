@@ -550,7 +550,7 @@
     <string name="setup_enter_passphrase">Passphrase eingeben, um die Wiederherstellung abzuschließen</string>
     <string name="setup_pass_title">Wiederherstellung abschließen</string>
     <string name="setup_pass_body">Deine Passphrase entsperrt die Wallet für die Suche nach deinen Coins. Sie wird nicht gespeichert.</string>
-    <string name="brand_tagline">Deine eigene Node. Deine eigenen Schlüssel.</string>
+    <string name="brand_tagline">Dein Node, deine Keys</string>
     <string name="fr_welcome_title">Willkommen</string>
     <string name="fr_welcome_body">Deine eigene Wallet mit deiner eigenen Kopie des Netzwerks. Kein Konto, kein Server.</string>
     <string name="fr_create">Neue Wallet erstellen</string>

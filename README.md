@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.23 (draft)
+- **Version:** 0.24 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -137,7 +137,7 @@ doc-elektron/              guidelines and reports
 
 ## 8. Security summary
 
-- Node RPC is bound to loopback and authenticated with a cookie file in the app-private data directory that the node recreates at every start; no password is stored anywhere.
+- Cleartext HTTP is refused app wide except to the loopback node, localhost and onion hosts. Node RPC is bound to loopback and authenticated with a cookie file in the app-private data directory that the node recreates at every start; no password is stored anywhere.
 - Wallet unlock is short-lived and always followed by a lock.
 - Sensitive screens block screenshots and recent-app previews.
 - Android backup of app data is disabled.

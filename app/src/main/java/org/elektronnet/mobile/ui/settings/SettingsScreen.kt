@@ -121,6 +121,16 @@ fun SettingsScreen(
         manifest?.libSha256?.let { Text(stringResource(R.string.settings_node_hash, it), color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
         val fingerprint = remember { SigningInfo.fingerprint(context) }
         fingerprint?.let { Text(stringResource(R.string.settings_signing, it), color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
+        Text(stringResource(R.string.about_slogan), color = MaterialTheme.colorScheme.onSurfaceVariant, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
+        listOf(
+            R.string.about_link_repo to "https://github.com/kutlusoy/elektron-net-mobile",
+            R.string.about_link_node to "https://github.com/kutlusoy/elektron-net",
+            R.string.about_link_whitepaper to "https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md",
+        ).forEach { (label, url) ->
+            androidx.compose.material3.TextButton(onClick = { context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))) }) {
+                Text(stringResource(label))
+            }
+        }
         Text(stringResource(R.string.settings_copyright), color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
