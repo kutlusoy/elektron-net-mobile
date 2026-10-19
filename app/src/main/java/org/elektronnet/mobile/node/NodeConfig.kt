@@ -26,6 +26,7 @@ data class NodeConfig(
             "-rpcallowip=127.0.0.1",
             "-rpcport=$rpcPort",
             "-rpccookiefile=${cookieFile.absolutePath}",
+            "-rpcpassword=",
             "-port=$p2pPort",
             "-printtoconsole=1",
             "-natpmp=0",

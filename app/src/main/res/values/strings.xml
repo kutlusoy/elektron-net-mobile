@@ -41,6 +41,7 @@
     <string name="node_explainer">Your node is your own copy of the network. It checks every payment itself, so you do not have to trust a server.</string>
     <string name="diag_peers">Connected to %1$d peers</string>
     <string name="diag_no_peers">Not connected to any peer yet</string>
+    <string name="diag_rpc_problem">The app cannot reach the node yet: %1$s</string>
     <string name="diag_elapsed">Starting for %1$s</string>
     <string name="diag_last_log">Last node message %1$s ago</string>
     <string name="health_silent">The node has been silent for a while. It may be busy or stuck. Switch on the live log below to see what it does.</string>

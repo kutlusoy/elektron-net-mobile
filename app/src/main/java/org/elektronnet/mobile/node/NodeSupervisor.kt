@@ -26,6 +26,10 @@ class NodeSupervisor(
         private set
 
     @Volatile
+    var rpcProblem: String? = null
+        private set
+
+    @Volatile
     var state: NodeState = NodeState.Stopped
         private set
 
@@ -140,6 +144,7 @@ class NodeSupervisor(
                     return
                 }
             } catch (e: IOException) {
+                rpcProblem = e.message ?: e.javaClass.simpleName
             }
             Thread.sleep(pollIntervalMs)
         }
@@ -149,6 +154,7 @@ class NodeSupervisor(
         synchronized(lock) {
             if (process === started && state == NodeState.Starting) {
                 warmup = null
+                rpcProblem = null
                 setState(NodeState.Running)
             }
         }

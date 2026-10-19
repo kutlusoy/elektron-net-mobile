@@ -117,6 +117,7 @@ fun NodeScreen(
                     elapsed = diag?.takeIf { it.startedAt > 0 }?.let { now - it.startedAt },
                     sinceLog = diag?.takeIf { it.lastLogAt > 0 }?.let { now - it.lastLogAt },
                     warmup = diag?.warmup,
+                    rpcProblem = diag?.rpcProblem,
                     health = health,
                 )
             }
@@ -146,7 +147,7 @@ fun NodeScreen(
 }
 
 @Composable
-private fun DiagnosticsBlock(starting: Boolean, peers: Long?, elapsed: Long?, sinceLog: Long?, warmup: String?, health: NodeHealth) {
+private fun DiagnosticsBlock(starting: Boolean, peers: Long?, elapsed: Long?, sinceLog: Long?, warmup: String?, rpcProblem: String?, health: NodeHealth) {
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
     val small = MaterialTheme.typography.bodySmall
     if (peers != null) {
@@ -157,6 +158,7 @@ private fun DiagnosticsBlock(starting: Boolean, peers: Long?, elapsed: Long?, si
         )
     }
     if (starting && !warmup.isNullOrBlank()) Text(warmup, color = muted, style = small)
+    if (starting && !rpcProblem.isNullOrBlank()) Text(stringResource(R.string.diag_rpc_problem, rpcProblem), color = MaterialTheme.colorScheme.error, style = small)
     if (elapsed != null && starting) Text(stringResource(R.string.diag_elapsed, NodeHealthRules.clock(elapsed)), color = muted, style = small)
     if (sinceLog != null) Text(stringResource(R.string.diag_last_log, NodeHealthRules.clock(sinceLog)), color = muted, style = small)
     val warning = when (health) {

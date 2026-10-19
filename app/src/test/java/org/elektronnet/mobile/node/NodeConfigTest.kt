@@ -61,4 +61,9 @@ class NodeConfigTest {
         assertEquals(Chain.Main, Chain.fromBuildName("main"))
         assertEquals(Chain.Testnet, Chain.fromBuildName("testnet"))
     }
+
+    @Test
+    fun cookieAuthSurvivesCredentialsInTheDefaultConfFile() {
+        assertTrue(config(Chain.Main).arguments().contains("-rpcpassword="))
+    }
 }
