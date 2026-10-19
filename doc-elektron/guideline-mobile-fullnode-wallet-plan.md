@@ -113,7 +113,7 @@ The app has two sections. Both are one tap away from each other at all times.
 
 - A compact node status chip (sync state, peer count) sits in the Wallet header and opens the Node section. While the node is not synchronized, the Wallet shows a banner that balances and history may be incomplete, instead of a bare zero.
 - Primary navigation is a bottom bar. The reviewed team screenshots use four tabs (Wallet, Network, History, Debug). The final grouping into the two sections above is a design decision for Phase 1, the requirement is only that every Node screen is reachable without digging through settings.
-- Visual direction: cyberpunk but calm, dark theme with neon accent and controlled glow, rounded cards, one hero card per screen. The app ships no artwork. The colors come from the ten Osclass themes of `elektron-net-wp`, and effects never impair readability. The full specification is [`guideline-ui-design-system.md`](./guideline-ui-design-system.md). The helmet artwork in the reviewed screenshots MUST NOT be copied into this repository.
+- Visual direction: calm and flat, translucent rounded cards on a quiet texture, one hero card per screen, no glow. The app ships no artwork. Five color themes (Teal, Blue, Rust, Red, Matrix) derived from the Osclass themes of `elektron-net-wp`, each in a dark and a light mode, one readable system font, and a contrast gate in CI. The full specification is [`guideline-ui-design-system.md`](./guideline-ui-design-system.md). The helmet artwork in the reviewed screenshots MUST NOT be copied into this repository.
 
 ### 3.4 Node transparency
 
@@ -512,7 +512,7 @@ elektron-net-mobile/
     contract-check.py, contract/        interface check against the built node (§11.2)
     docker/                             builder image and in-container build script
     tests/                              tests of the build scripts
-  design/                               palettes.json (Osclass themes), check-contrast.py, gen-theme.py
+  design/                               palettes.json (five themes), check-contrast.py, gen-theme.py
   tools/                                check-locales.py
   build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml
   doc-elektron/                         guidelines and reports (this file)
@@ -732,7 +732,7 @@ All questions of the first drafts are answered. Decisions of October 18, 2026 ar
 | Q10 | `-fastprune` default | On by default, opt-out in settings | §3.2, `core-source.env` |
 | Q11 | Ticker | ELEK only | all texts |
 | Q12 | Languages | English plus the most widespread languages in two tiers (Chinese, Arabic, Japanese, Korean and more) | §3.5 |
-| Q13 | Artwork | None, design only, Osclass color themes, cyberpunk with glow and neon that never impairs reading | §3.3, design system guideline |
+| Q13 | Artwork | None, design only, five reduced color themes with dark and light mode, no glow, readability first | §3.3, design system guideline |
 | Q14 | Expert console | Danger tier in the first release, device authentication once per session, persistent history with 90 days retention, console in all builds, file commands with passphrase-protected wallets only, manual dumps deleted after 7 days, `createwallet` forbidden without a passphrase | `guideline-expert-console.md` §1.1 |
 
 Remaining open items live in the distribution guideline (§9, D2 to D5): the Play account type, the Play signing key choice, F-Droid native build and the foreground service type. D1 (testnet chain) is resolved: `testnet`.
