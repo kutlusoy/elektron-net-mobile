@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.12 (draft)
+- **Version:** 0.13 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -54,7 +54,7 @@ The goal is familiarity with these conventions, not a copy of any product. Scree
 
 ## 4. Navigation
 
-Bottom bar with three items, always visible except during Send and the onboarding:
+Bottom bar with three items, visible on every screen except the onboarding. Tapping a tab always leaves the page that is open (Send, Receive, Tools, details) and shows that tab:
 
 | Tab | Content |
 |---|---|
@@ -66,6 +66,8 @@ Bottom bar with three items, always visible except during Send and the onboardin
 - Receive and Send open as full screens with a back arrow. They never nest more than one level deep.
 - Android back always goes one step back. From the home screen it leaves the app and the node keeps running (foreground service).
 - The testnet flavor shows its permanent bar above all of this (design system §6).
+- **Several wallets:** the Wallet tab starts with the name of the active wallet and a menu: Wallet details, Addresses and coins, Sign and verify messages, Sweep keys, Escrow and PSBT tools, and Other wallets. "Other wallets" lists all wallets, switches the active one, renames them and adds a new one (create or restore, same flow as the first run without the network and notification steps). Each wallet has its own recovery phrase, passphrase and receive address. Balance, history, Receive and Send always use the active wallet.
+- **Coin control:** "Addresses and coins" lists every coin with its amount, address and confirmations, and a Frozen switch (a frozen coin is never selected automatically and stays frozen after a restart), plus the used addresses with label, received amount and transaction count. In the Send amount step "Choose coins" restricts the payment to the chosen coins, "Max" then spends exactly those coins, and a too small selection fails instead of pulling in other coins.
 
 ## 5. First Run
 

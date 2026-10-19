@@ -17,6 +17,7 @@ data class SendRequest(
     val max: Boolean,
     val feeRate: BigDecimal,
     val allowLegacy: Boolean = false,
+    val coins: List<Coin> = emptyList(),
 )
 
 data class Review(
@@ -57,15 +58,20 @@ class SendEngine(
         val address = addresses.normalized(request.address)
         val floor = guard { FeeSource(rpc).floor() }
         if (request.feeRate < floor) throw SendException(SendFailure.FeeTooLow)
-        val gross = if (request.max) spendableLep().also { if (it <= 0) throw SendException(SendFailure.InsufficientFunds) } else request.amountLep ?: 0L
+        val gross = if (request.max) {
+            (if (request.coins.isEmpty()) spendableLep() else request.coins.sumOf { it.amountLep }).also { if (it <= 0) throw SendException(SendFailure.InsufficientFunds) }
+        } else {
+            request.amountLep ?: 0L
+        }
         if (gross <= 0) throw SendException(SendFailure.InvalidAmount)
         val options = linkedMapOf<String, Any?>("fee_rate" to request.feeRate, "replaceable" to true)
+        if (request.coins.isNotEmpty()) options["add_inputs"] = false
         if (request.max) options["subtractFeeFromOutputs"] = listOf(0)
         val created = guard {
             rpc.call(
                 "walletcreatefundedpsbt",
                 linkedMapOf(
-                    "inputs" to emptyList<Any?>(),
+                    "inputs" to request.coins.map { linkedMapOf("txid" to it.txid, "vout" to it.vout) },
                     "outputs" to listOf(linkedMapOf(address to BigDecimal(gross).movePointLeft(8))),
                     "locktime" to 0,
                     "options" to options,
@@ -85,6 +91,10 @@ class SendEngine(
         val outputs = (tx["vout"] as? List<*>)?.map { it as Map<*, *> } ?: throw SendException(SendFailure.PsbtMismatch)
         val inputRows = (decoded["inputs"] as? List<*>)?.map { it as Map<*, *> } ?: throw SendException(SendFailure.PsbtMismatch)
         if (inputRows.isEmpty() || outputs.isEmpty() || inputRows.size != (tx["vin"] as? List<*>)?.size) throw SendException(SendFailure.PsbtMismatch)
+        if (prepared.request.coins.isNotEmpty()) {
+            val used = (tx["vin"] as List<*>).map { (it as Map<*, *>)["txid"].toString() + ":" + (it["vout"] as Number).toInt() }.toSet()
+            if (used != prepared.request.coins.map { it.id }.toSet()) throw SendException(SendFailure.PsbtMismatch)
+        }
         val sumIn = inputRows.sumOf { row ->
             val utxo = row["witness_utxo"] as? Map<*, *> ?: throw SendException(SendFailure.PsbtMismatch)
             WalletReader.lep(utxo["amount"])
@@ -182,7 +192,8 @@ class SendEngine(
     private fun map(e: RpcException): SendException = SendException(
         when {
             e.inWarmup -> SendFailure.NodeNotReady
-            e.code == INSUFFICIENT_FUNDS || (e.message ?: "").contains("Insufficient funds", ignoreCase = true) -> SendFailure.InsufficientFunds
+            e.code == INSUFFICIENT_FUNDS || (e.message ?: "").contains("Insufficient funds", ignoreCase = true) ||
+                (e.message ?: "").contains("preselected coins", ignoreCase = true) -> SendFailure.InsufficientFunds
             (e.message ?: "").contains("too small", ignoreCase = true) -> SendFailure.AmountTooSmall
             e.code == VERIFY_REJECTED || e.code == VERIFY_ERROR -> SendFailure.Rejected
             else -> SendFailure.Unknown

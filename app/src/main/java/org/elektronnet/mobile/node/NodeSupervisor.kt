@@ -108,7 +108,7 @@ class NodeSupervisor(
 
     fun telemetry(): Telemetry {
         fun call(method: String) = try { rpc.call(method, timeoutMs = 5_000) } catch (e: RpcException) { null }
-        return Telemetry.parse(call("getblockchaininfo"), call("getmininginfo"), call("getmempoolinfo"))
+        return Telemetry.parse(call("getblockchaininfo"), call("getmininginfo"), call("getmempoolinfo"), call("getnetworkinfo"))
     }
 
     fun peers(): List<PeerInfo> = PeerInfo.parse(rpc.call("getpeerinfo", timeoutMs = 5_000))

@@ -64,4 +64,14 @@ class FirstRunFlowTest {
         assertEquals(FirstRunStep.PassphraseRestore, restore.step)
         assertEquals(BootstrapFailure.Unknown, restore.failure)
     }
+
+    @Test
+    fun addWalletSkipsTheNetworkAndNotificationSteps() {
+        val add = FirstRunState(addWallet = true)
+        assertEquals(FirstRunStep.PhraseIntro, FirstRunFlow.next(add).step)
+        assertEquals(FirstRunStep.RestoreEnter, FirstRunFlow.next(add.copy(restore = true)).step)
+        assertEquals(FirstRunStep.Welcome, FirstRunFlow.back(FirstRunState(step = FirstRunStep.PhraseIntro, addWallet = true))!!.step)
+        assertEquals(FirstRunStep.Welcome, FirstRunFlow.back(FirstRunState(step = FirstRunStep.RestoreEnter, addWallet = true, restore = true))!!.step)
+        assertNull(FirstRunFlow.back(add))
+    }
 }

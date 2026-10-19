@@ -27,7 +27,10 @@ import org.elektronnet.mobile.wallet.WalletSetup
 import org.elektronnet.mobile.wallet.SendEngine
 import org.elektronnet.mobile.wallet.SweepEngine
 import org.elektronnet.mobile.wallet.WalletReader
+import org.elektronnet.mobile.wallet.CoinControl
+import org.elektronnet.mobile.wallet.OwnWallet
 import org.elektronnet.mobile.wallet.WalletBootstrap
+import org.elektronnet.mobile.wallet.WalletRegistry
 import org.elektronnet.mobile.wallet.asWalletRpc
 
 object NodeHost {
@@ -47,7 +50,35 @@ object NodeHost {
     private var datadir: File? = null
     private var appContext: Context? = null
 
-    private val walletSetup = WalletSetup { appContext?.let(::bootstrap) }
+    private val walletSetup = WalletSetup { name -> appContext?.let { bootstrap(it, name) } }
+
+    private var registry: WalletRegistry? = null
+
+    var activeWallet: String by mutableStateOf(WalletBootstrap.DEFAULT_WALLET)
+        private set
+
+    var wallets: List<OwnWallet> by mutableStateOf(emptyList())
+        private set
+
+    private fun refreshWallets() {
+        val reg = registry ?: return
+        wallets = reg.wallets()
+        activeWallet = reg.active().name
+    }
+
+    fun switchWallet(name: String) {
+        registry?.setActive(name)
+        refreshWallets()
+    }
+
+    fun renameWallet(name: String, label: String) {
+        registry?.rename(name, label)
+        refreshWallets()
+    }
+
+    fun walletNames(): List<String> = (registry?.wallets().orEmpty().map { it.name } + WalletBootstrap.DEFAULT_WALLET).distinct()
+
+    fun nextWalletName(): String = registry?.nextName() ?: WalletBootstrap.DEFAULT_WALLET
 
     var setupStatus: SetupStatus by mutableStateOf(SetupStatus.None)
         private set
@@ -58,8 +89,12 @@ object NodeHost {
         val app = context.applicationContext
         appContext = app
         val store = SettingsStore(app)
+        val reg = WalletRegistry(store.walletRegistryStore())
+        if (store.walletReady()) reg.ensureDefault()
+        registry = reg
+        refreshWallets()
         if (store.walletReady() && store.rescanPending) {
-            walletSetup.markRescanPending()
+            walletSetup.markRescanPending(store.rescanWallet)
             setupStatus = walletSetup.status
         }
         val datadir = File(app.filesDir, ChainConfig.datadirName)
@@ -97,7 +132,8 @@ object NodeHost {
         return snapshot
     }
 
-    fun beginSetup(request: SetupRequest) {
+    fun beginSetup(request: SetupRequest, label: String = "") {
+        registry?.add(request.walletName, label)
         walletSetup.begin(request)
         setupStatus = walletSetup.status
     }
@@ -108,7 +144,13 @@ object NodeHost {
     }
 
     fun cancelSetup() {
+        val name = walletSetup.walletName
+        val before = walletSetup.status
         walletSetup.cancel()
+        if (name != WalletBootstrap.DEFAULT_WALLET && (before == SetupStatus.Waiting || before is SetupStatus.Failed)) {
+            registry?.remove(name)
+            refreshWallets()
+        }
         settings?.rescanPending = false
         setupStatus = walletSetup.status
     }
@@ -128,17 +170,22 @@ object NodeHost {
             is SetupStatus.Ready -> {
                 store?.setWalletReady(true)
                 store?.rescanPending = false
+                registry?.setActive(walletSetup.walletName)
+                refreshWallets()
             }
             SetupStatus.NeedsRescan, SetupStatus.Rescanning -> {
                 store?.setWalletReady(true)
                 store?.rescanPending = true
+                store?.rescanWallet = walletSetup.walletName
+                registry?.setActive(walletSetup.walletName)
+                refreshWallets()
             }
             else -> Unit
         }
         setupStatus = status
     }
 
-    fun bootstrap(context: Context): WalletBootstrap? {
+    fun bootstrap(context: Context, walletName: String = WalletBootstrap.DEFAULT_WALLET): WalletBootstrap? {
         val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
         val root = datadir ?: return null
         val chain = Chain.fromBuildName(ChainConfig.chain)
@@ -148,27 +195,30 @@ object NodeHost {
             bip39 = Bip39(words),
             testnet = ChainConfig.isTestnet,
             removeWalletFiles = { name -> File(root, "${chain.subdir}/wallets/$name").deleteRecursively() },
+            walletName = walletName,
         )
     }
 
     fun receiveWallet(): ReceiveWallet? {
         val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
         val store = settings ?: return null
+        val wallet = activeWallet
         return ReceiveWallet(
             rpc = supervisor.rpc.asWalletRpc(),
             store = object : AddressStore {
                 override var current: String?
-                    get() = store.receiveAddress
+                    get() = store.receiveAddressFor(wallet)
                     set(value) {
-                        store.receiveAddress = value
+                        store.setReceiveAddressFor(wallet, value)
                     }
             },
+            walletName = wallet,
         )
     }
 
     fun walletReader(): WalletReader? {
         val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
-        return WalletReader(supervisor.rpc.asWalletRpc())
+        return WalletReader(supervisor.rpc.asWalletRpc(), activeWallet)
     }
 
     var incomingUri: String? by mutableStateOf(null)
@@ -177,7 +227,7 @@ object NodeHost {
 
     private val addressCheck: AddressCheck get() = AddressCheck(ChainConfig.isTestnet)
 
-    fun sendEngine(wallet: String = WalletBootstrap.DEFAULT_WALLET): SendEngine? =
+    fun sendEngine(wallet: String = activeWallet): SendEngine? =
         runningSupervisor()?.let { SendEngine(it.rpc.asWalletRpc(), addressCheck, wallet) }
 
     fun escrowManager(): EscrowManager? {
@@ -197,18 +247,20 @@ object NodeHost {
         val supervisor = runningSupervisor() ?: return null
         val store = settings ?: return null
         return PsbtTools(supervisor.rpc.asWalletRpc()) {
-            listOf(WalletBootstrap.DEFAULT_WALLET) + store.escrowStore().load().filter { it.phase == org.elektronnet.mobile.wallet.EscrowPhase.Active }.map { it.walletName }
+            walletNames() + store.escrowStore().load().filter { it.phase == org.elektronnet.mobile.wallet.EscrowPhase.Active }.map { it.walletName }
         }
     }
 
     fun sweepEngine(): SweepEngine? =
         runningSupervisor()?.let { SweepEngine(it.rpc.asWalletRpc(timeoutMs = SCAN_TIMEOUT_MS), ChainConfig.isTestnet, addressCheck) }
 
-    fun messageTools(): MessageTools? = runningSupervisor()?.let { MessageTools(it.rpc.asWalletRpc(), addressCheck) }
+    fun messageTools(): MessageTools? = runningSupervisor()?.let { MessageTools(it.rpc.asWalletRpc(), addressCheck, activeWallet) }
+
+    fun coinControl(wallet: String = activeWallet): CoinControl? = runningSupervisor()?.let { CoinControl(it.rpc.asWalletRpc(), wallet) }
 
     fun lockWallet() {
         val supervisor = runningSupervisor() ?: return
-        val names = listOf(WalletBootstrap.DEFAULT_WALLET) + (settings?.escrowStore()?.load().orEmpty()).map { it.walletName }
+        val names = walletNames() + (settings?.escrowStore()?.load().orEmpty()).map { it.walletName }
         Thread { names.forEach { runCatching { supervisor.rpc.call("walletlock", emptyList<Any?>(), wallet = it) } } }.start()
     }
 

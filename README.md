@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.18 (draft)
+- **Version:** 0.19 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -22,7 +22,7 @@
 - True entropy for the recovery phrase: at least 128 bits, health-checked system generators, no weak fallback, an optional step where you draw on the screen for extra randomness, and a mode where you roll your own dice (50 rolls for 12 words).
 - Non-custodial wallet on the node's own descriptor wallet: native SegWit (`be1q...`) addresses, BIP-39 recovery phrase, SLIP-44 coin type 1370 plus legacy path recovery.
 - Escrow wallets (M of N multisig, for example 2 of 3 with an arbiter), PSBT tools to check, sign, combine and send payment files, key sweep like in Electrum, and message signing and verification.
-- Review-before-sign transaction flow (PSBT), fee policy re-check before signing, coin control, QR receive and scan.
+- Several wallets with a quick switch, review-before-sign transaction flow (PSBT), fee policy re-check before signing, coin control (choose and freeze coins), QR receive and scan.
 - Node dashboard: sync phase, height, peers with country (offline DB-IP Country Lite lookup, addresses never leave the phone), disk usage, prune height, snapshot state.
 - Simple everyday wallet following common mobile wallet conventions (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node.
 - Storage saver (`-fastprune`) on by default with an opt-out; phone nodes serve snapshots only on Wi-Fi while charging.

@@ -89,10 +89,13 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var noteFromLink by remember { mutableStateOf<String?>(null) }
     var exportedPsbt by remember { mutableStateOf<String?>(null) }
     var scanning by remember { mutableStateOf(false) }
-    val walletName = escrow?.walletName ?: org.elektronnet.mobile.wallet.WalletBootstrap.DEFAULT_WALLET
+    var selectedCoins by remember { mutableStateOf<List<org.elektronnet.mobile.wallet.Coin>>(emptyList()) }
+    var pickCoins by remember { mutableStateOf(false) }
+    val walletName = escrow?.walletName ?: NodeHost.activeWallet
 
     val resolved = SendInput.recipient(recipientText, NodeHost.paymentUri, org.elektronnet.mobile.wallet.AddressCheck(ChainConfig.isTestnet), ChainConfig.uriScheme)
-    val amountState = SendInput.amount(amountText, available ?: 0L)
+    val spendable = if (selectedCoins.isNotEmpty()) selectedCoins.sumOf { it.amountLep } else available ?: 0L
+    val amountState = SendInput.amount(amountText, spendable)
     val customFee = SendInput.customFee(customText, floor)
 
     SecureWindow(step == Step.Review || step == Step.Confirm || step == Step.Working)
@@ -120,7 +123,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     fun request(): SendRequest {
         val rate = if (custom) (customFee as? FeeInput.Ok)?.rate ?: BigDecimal.ONE else options.first { it.level == level }.lepPerVb
         val lep = (amountState as? AmountState.Ok)?.lep
-        return SendRequest(resolved.address.orEmpty(), if (max) null else lep, max, rate, allowLegacy = legacyOk)
+        return SendRequest(resolved.address.orEmpty(), if (max) null else lep, max, rate, allowLegacy = legacyOk, coins = selectedCoins)
     }
 
     fun prepare() {
@@ -175,6 +178,14 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
         }
         return
     }
+    if (pickCoins) {
+        org.elektronnet.mobile.ui.wallets.CoinPickerDialog(
+            wallet = walletName,
+            selected = selectedCoins,
+            onDone = { selectedCoins = it; pickCoins = false },
+            onDismiss = { pickCoins = false },
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -215,11 +226,18 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             }
             Step.Amount -> {
                 Text(stringResource(R.string.send_amount_title), style = MaterialTheme.typography.headlineSmall)
-                available?.let {
-                    Text(stringResource(R.string.send_available, Amount.format(it), stringResource(R.string.balance_unit)), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (available != null) {
+                    Text(stringResource(R.string.send_available, Amount.format(spendable), stringResource(R.string.balance_unit)), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(onClick = { pickCoins = true }) { Text(stringResource(R.string.coinpick_action)) }
+                    if (selectedCoins.isNotEmpty()) {
+                        Text(stringResource(R.string.coinpick_selected, selectedCoins.size), color = MaterialTheme.colorScheme.primary)
+                        TextButton(onClick = { selectedCoins = emptyList() }) { Text(stringResource(R.string.coinpick_clear)) }
+                    }
                 }
                 OutlinedTextField(
-                    value = if (max) available?.let(Amount::format).orEmpty() else amountText,
+                    value = if (max) Amount.format(spendable) else amountText,
                     onValueChange = { amountText = it; max = false },
                     label = { Text(stringResource(R.string.receive_amount, stringResource(R.string.balance_unit))) },
                     enabled = !max,
@@ -244,7 +262,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     onClick = {
                         step = Step.Fee
                     },
-                    enabled = max && (available ?: 0L) > 0 || amountState is AmountState.Ok,
+                    enabled = max && spendable > 0 || amountState is AmountState.Ok,
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.fr_continue)) }
             }

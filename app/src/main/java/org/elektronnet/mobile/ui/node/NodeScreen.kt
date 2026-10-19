@@ -268,6 +268,22 @@ private fun TelemetrySection(details: NodeDetails, telemetry: org.elektronnet.mo
         }
         GlassCard {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.net_card), style = MaterialTheme.typography.titleMedium)
+                TelemetryRow(stringResource(R.string.net_type), stringResource(R.string.net_type_value))
+                TelemetryRow(stringResource(R.string.detail_version), details.version)
+                TelemetryRow(stringResource(R.string.net_protocol), telemetry?.protocolVersion?.toString() ?: dash)
+                TelemetryRow(
+                    stringResource(R.string.detail_peers),
+                    if (telemetry?.connectionsIn != null) stringResource(R.string.net_connections_value, details.peers, telemetry.connectionsIn, telemetry.connectionsOut ?: 0L) else details.peers.toString(),
+                )
+                TelemetryRow(stringResource(R.string.net_active), telemetry?.networkActive?.let { stringResource(if (it) R.string.yes else R.string.no) } ?: dash)
+                TelemetryRow(stringResource(R.string.net_ibd), telemetry?.initialBlockDownload?.let { stringResource(if (it) R.string.yes else R.string.no) } ?: dash)
+                TelemetryRow(stringResource(R.string.net_p2p), org.elektronnet.mobile.ChainConfig.p2pPort.toString())
+                TelemetryRow(stringResource(R.string.net_rpc), "127.0.0.1:" + org.elektronnet.mobile.ChainConfig.rpcPort)
+            }
+        }
+        GlassCard {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.telemetry_prune_card), style = MaterialTheme.typography.titleMedium)
                 TelemetryRow(stringResource(R.string.telemetry_keep), schedule.keepBlocks.toString())
                 TelemetryRow(stringResource(R.string.detail_pruned), details.pruneHeight?.toString() ?: dash)

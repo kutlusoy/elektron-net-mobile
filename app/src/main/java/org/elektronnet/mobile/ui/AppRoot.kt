@@ -34,7 +34,12 @@ import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.node.NodeScreen
 import org.elektronnet.mobile.ui.receive.ReceiveScreen
 import org.elektronnet.mobile.ui.send.SendScreen
+import org.elektronnet.mobile.ui.tools.ToolsPage
 import org.elektronnet.mobile.ui.tools.ToolsScreen
+import org.elektronnet.mobile.ui.wallets.CoinsScreen
+import org.elektronnet.mobile.ui.wallets.WalletDetailsScreen
+import org.elektronnet.mobile.ui.wallets.WalletSwitcher
+import org.elektronnet.mobile.ui.wallets.WalletsScreen
 import org.elektronnet.mobile.ui.wallet.TxDetailsScreen
 import java.time.ZoneId
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +55,8 @@ import org.elektronnet.mobile.ui.wallet.WalletScreen
 
 private data class WalletData(val balances: Balances, val items: List<TxItem>)
 
+private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet }
+
 private enum class Tab(val label: Int, val icon: ImageVector) {
     Wallet(R.string.tab_wallet, Icons.Filled.Home),
     Node(R.string.tab_node, Icons.Filled.Refresh),
@@ -60,9 +67,11 @@ private enum class Tab(val label: Int, val icon: ImageVector) {
 fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit, onBiometric: (Boolean) -> Unit) {
     var tab by rememberSaveable { mutableStateOf(Tab.Wallet.ordinal) }
     var showSoon by remember { mutableStateOf(false) }
-    var showReceive by rememberSaveable { mutableStateOf(false) }
-    var showSend by rememberSaveable { mutableStateOf(false) }
-    var showTools by rememberSaveable { mutableStateOf(false) }
+    var overlayName by rememberSaveable { mutableStateOf(Overlay.None.name) }
+    val overlay = runCatching { Overlay.valueOf(overlayName) }.getOrDefault(Overlay.None)
+    fun show(next: Overlay) {
+        overlayName = next.name
+    }
     var refreshTick by remember { mutableStateOf(0) }
     var openTx by rememberSaveable { mutableStateOf<String?>(null) }
     var walletData by remember { mutableStateOf<WalletData?>(null) }
@@ -81,7 +90,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         }
     }
 
-    LaunchedEffect(walletReady, refreshTick) {
+    LaunchedEffect(NodeHost.activeWallet) { walletData = null }
+    LaunchedEffect(walletReady, refreshTick, NodeHost.activeWallet) {
         while (walletReady) {
             if (NodeHost.appVisible) {
                 val fresh = withContext(Dispatchers.IO) {
@@ -117,7 +127,12 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             if (walletReady) PillNavBar(
                 items = Tab.entries.map { Triple(stringResource(it.label), it.icon, it.ordinal) },
                 selected = tab,
-                onSelect = { tab = it },
+                onSelect = {
+                    tab = it
+                    overlayName = Overlay.None.name
+                    openTx = null
+                    NodeHost.incomingUri = null
+                },
             )
         },
     ) { padding ->
@@ -138,36 +153,50 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 return@Box
             }
             val incoming = NodeHost.incomingUri
-            if (incoming != null && walletReady) showSend = true
-            if (showTools) {
-                ToolsScreen(onClose = { showTools = false })
-                return@Box
-            }
-            if (showSend) {
-                SendScreen(
+            if (incoming != null && walletReady) show(Overlay.Send)
+            when (overlay) {
+                Overlay.Tools -> ToolsScreen(onClose = { show(Overlay.None) })
+                Overlay.Messages -> ToolsScreen(onClose = { show(Overlay.None) }, start = ToolsPage.Messages)
+                Overlay.Sweep -> ToolsScreen(onClose = { show(Overlay.None) }, start = ToolsPage.Sweep)
+                Overlay.Send -> SendScreen(
                     initialUri = incoming,
                     onClose = {
                         NodeHost.incomingUri = null
-                        showSend = false
+                        show(Overlay.None)
                     },
                     onDone = { id ->
                         NodeHost.incomingUri = null
-                        showSend = false
+                        show(Overlay.None)
                         refreshTick++
                         openTx = id
                     },
                 )
-                return@Box
+                Overlay.Receive -> ReceiveScreen(onClose = { show(Overlay.None) })
+                Overlay.Details -> WalletDetailsScreen(onBack = { show(Overlay.None) })
+                Overlay.Coins -> CoinsScreen(onBack = { show(Overlay.None) })
+                Overlay.Wallets -> WalletsScreen(onBack = { show(Overlay.None) }, onAdd = { show(Overlay.AddWallet) })
+                Overlay.AddWallet -> FirstRunScreen(
+                    onAllowMetered = {},
+                    onFinished = { show(Overlay.None) },
+                    addWallet = true,
+                    onCancel = { show(Overlay.Wallets) },
+                )
+                Overlay.None -> Unit
             }
-            if (showReceive) {
-                ReceiveScreen(onClose = { showReceive = false })
-                return@Box
-            }
+            if (overlay != Overlay.None) return@Box
             Column {
             BrandHeader(compact = true, showTagline = true)
             Box(modifier = Modifier.weight(1f)) {
             when (Tab.entries[tab]) {
                 Tab.Wallet -> Column {
+                    WalletSwitcher(
+                        onDetails = { show(Overlay.Details) },
+                        onCoins = { show(Overlay.Coins) },
+                        onMessages = { show(Overlay.Messages) },
+                        onSweep = { show(Overlay.Sweep) },
+                        onTools = { show(Overlay.Tools) },
+                        onWallets = { show(Overlay.Wallets) },
+                    )
                     SetupBanner(
                         status = setup,
                         needsPassphrase = NodeHost.needsRescanPassphrase,
@@ -184,10 +213,10 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     ),
                     days = HistoryModel.days(walletData?.items.orEmpty(), ZoneId.systemDefault()),
                     onOpenTx = { openTx = it },
-                    onOpenTools = { showTools = true },
+                    onOpenTools = { show(Overlay.Tools) },
                     onOpenNode = { tab = Tab.Node.ordinal },
-                    onReceive = { showReceive = true },
-                    onSend = { showSend = true },
+                    onReceive = { show(Overlay.Receive) },
+                    onSend = { show(Overlay.Send) },
                 )
                 }
                 Tab.Node -> NodeScreen(

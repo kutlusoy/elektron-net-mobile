@@ -77,10 +77,12 @@ import org.elektronnet.mobile.wallet.PassphraseStrength
 import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
-fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
+fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, addWallet: Boolean = false, onCancel: () -> Unit = {}) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var state by remember { mutableStateOf(FirstRunState()) }
+    var state by remember { mutableStateOf(FirstRunState(addWallet = addWallet)) }
+    var walletLabel by remember { mutableStateOf("") }
+    val walletName = remember { if (addWallet) NodeHost.nextWalletName() else org.elektronnet.mobile.wallet.WalletBootstrap.DEFAULT_WALLET }
     var passphrase by remember { mutableStateOf("") }
     var strength by remember { mutableStateOf(PhraseStrength.Words12) }
     var entropyError by remember { mutableStateOf(false) }
@@ -95,10 +97,10 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
     )
     SecureWindow(secureStep)
 
-    BackHandler(enabled = FirstRunFlow.back(state) != null) { FirstRunFlow.back(state)?.let { state = it } }
+    BackHandler(enabled = FirstRunFlow.back(state) != null || addWallet) { FirstRunFlow.back(state)?.let { state = it } ?: onCancel() }
 
     fun submit(recover: Boolean) {
-        NodeHost.beginSetup(SetupRequest(state.phrase, passphrase, recover))
+        NodeHost.beginSetup(SetupRequest(state.phrase, passphrase, recover, walletName), walletLabel)
         passphrase = ""
         state = state.copy(step = FirstRunStep.Done, phrase = emptyList())
         onFinished()
@@ -117,8 +119,17 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         when (state.step) {
             FirstRunStep.Welcome -> {
-                Text(stringResource(R.string.fr_welcome_title), style = MaterialTheme.typography.headlineMedium)
-                Text(stringResource(R.string.fr_welcome_body))
+                Text(stringResource(if (addWallet) R.string.add_wallet_title else R.string.fr_welcome_title), style = MaterialTheme.typography.headlineMedium)
+                Text(stringResource(if (addWallet) R.string.add_wallet_body else R.string.fr_welcome_body))
+                if (addWallet) {
+                    androidx.compose.material3.OutlinedTextField(
+                        value = walletLabel,
+                        onValueChange = { walletLabel = it.take(32) },
+                        label = { Text(stringResource(R.string.wallets_name_label)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
                 Button(
                     onClick = { state = FirstRunFlow.next(state.copy(restore = false)) },
                     modifier = Modifier.fillMaxWidth(),
@@ -127,8 +138,12 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit) {
                     onClick = { state = FirstRunFlow.next(state.copy(restore = true)) },
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.fr_restore)) }
-                TextButton(onClick = { state = state.copy(step = FirstRunStep.HowItWorks) }) {
-                    Text(stringResource(R.string.fr_how_link))
+                if (addWallet) {
+                    TextButton(onClick = onCancel) { Text(stringResource(R.string.action_cancel)) }
+                } else {
+                    TextButton(onClick = { state = state.copy(step = FirstRunStep.HowItWorks) }) {
+                        Text(stringResource(R.string.fr_how_link))
+                    }
                 }
             }
             FirstRunStep.HowItWorks -> {

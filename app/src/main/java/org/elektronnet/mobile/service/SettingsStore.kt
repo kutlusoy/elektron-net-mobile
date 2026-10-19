@@ -7,6 +7,8 @@ import org.elektronnet.mobile.ui.model.UiSettings
 import org.elektronnet.mobile.node.NodeProfile
 import org.elektronnet.mobile.wallet.EscrowRecord
 import org.elektronnet.mobile.wallet.EscrowStore
+import org.elektronnet.mobile.wallet.WalletBootstrap
+import org.elektronnet.mobile.wallet.WalletRegistryStore
 import org.elektronnet.mobile.policy.MonthlyDataBudget
 import org.elektronnet.mobile.policy.PolicySettings
 import org.elektronnet.mobile.policy.ScheduleWindow
@@ -42,6 +44,26 @@ class SettingsStore(context: Context) {
     var receiveAddress: String?
         get() = prefs.getString(RECEIVE_ADDRESS, null)
         set(value) = prefs.edit().putString(RECEIVE_ADDRESS, value).apply()
+
+    fun receiveAddressFor(wallet: String): String? =
+        if (wallet == WalletBootstrap.DEFAULT_WALLET) receiveAddress else prefs.getString("$RECEIVE_ADDRESS.$wallet", null)
+
+    fun setReceiveAddressFor(wallet: String, value: String?) {
+        if (wallet == WalletBootstrap.DEFAULT_WALLET) receiveAddress = value else prefs.edit().putString("$RECEIVE_ADDRESS.$wallet", value).apply()
+    }
+
+    fun walletRegistryStore(): WalletRegistryStore = object : WalletRegistryStore {
+        override var json: String?
+            get() = prefs.getString(WALLETS, null)
+            set(value) = prefs.edit().putString(WALLETS, value).apply()
+        override var active: String?
+            get() = prefs.getString(ACTIVE_WALLET, null)
+            set(value) = prefs.edit().putString(ACTIVE_WALLET, value).apply()
+    }
+
+    var rescanWallet: String
+        get() = prefs.getString(RESCAN_WALLET, null) ?: WalletBootstrap.DEFAULT_WALLET
+        set(value) = prefs.edit().putString(RESCAN_WALLET, value).apply()
 
     fun escrowStore(): EscrowStore = object : EscrowStore {
         override fun load(): List<EscrowRecord> {
@@ -109,6 +131,9 @@ class SettingsStore(context: Context) {
         const val THEME_KEY = "theme_key"
         const val THEME_MODE = "theme_mode"
         const val BIOMETRIC = "biometric_lock"
+        const val WALLETS = "wallets"
+        const val ACTIVE_WALLET = "active_wallet"
+        const val RESCAN_WALLET = "rescan_wallet"
         const val RESCAN_PENDING = "rescan_pending"
         const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"

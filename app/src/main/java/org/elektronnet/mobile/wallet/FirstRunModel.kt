@@ -11,11 +11,18 @@ data class FirstRunState(
     val restore: Boolean = false,
     val phrase: List<String> = emptyList(),
     val failure: BootstrapFailure? = null,
+    val addWallet: Boolean = false,
 )
 
 object FirstRunFlow {
     fun next(state: FirstRunState): FirstRunState = when (state.step) {
-        FirstRunStep.Welcome -> state.copy(step = FirstRunStep.Network)
+        FirstRunStep.Welcome -> state.copy(
+            step = when {
+                !state.addWallet -> FirstRunStep.Network
+                state.restore -> FirstRunStep.RestoreEnter
+                else -> FirstRunStep.PhraseIntro
+            },
+        )
         FirstRunStep.HowItWorks -> state.copy(step = FirstRunStep.Welcome)
         FirstRunStep.Network -> state.copy(step = FirstRunStep.Notifications)
         FirstRunStep.Notifications -> state.copy(step = if (state.restore) FirstRunStep.RestoreEnter else FirstRunStep.PhraseIntro)
@@ -35,12 +42,12 @@ object FirstRunFlow {
         FirstRunStep.HowItWorks -> state.copy(step = FirstRunStep.Welcome)
         FirstRunStep.Network -> state.copy(step = FirstRunStep.Welcome, restore = false)
         FirstRunStep.Notifications -> state.copy(step = FirstRunStep.Network)
-        FirstRunStep.PhraseIntro -> state.copy(step = FirstRunStep.Notifications)
+        FirstRunStep.PhraseIntro -> state.copy(step = if (state.addWallet) FirstRunStep.Welcome else FirstRunStep.Notifications)
         FirstRunStep.PhraseDice, FirstRunStep.PhraseTouch -> state.copy(step = FirstRunStep.PhraseIntro)
         FirstRunStep.PhraseShow -> state.copy(step = FirstRunStep.PhraseIntro, phrase = emptyList())
         FirstRunStep.PhraseQuiz -> state.copy(step = FirstRunStep.PhraseShow)
         FirstRunStep.PassphraseNew -> state.copy(step = FirstRunStep.PhraseQuiz)
-        FirstRunStep.RestoreEnter -> state.copy(step = FirstRunStep.Notifications)
+        FirstRunStep.RestoreEnter -> state.copy(step = if (state.addWallet) FirstRunStep.Welcome else FirstRunStep.Notifications)
         FirstRunStep.PassphraseRestore -> state.copy(step = FirstRunStep.RestoreEnter, phrase = emptyList())
     }
 
