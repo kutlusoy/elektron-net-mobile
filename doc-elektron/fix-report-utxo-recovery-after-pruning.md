@@ -1,4 +1,4 @@
-# Elektron Net — `elektron-net-mobile` UTXO Recovery After Pruning Fix Report
+# Elektron Net - `elektron-net-mobile` UTXO Recovery After Pruning Fix Report
 
 - **Version:** 0.1 (draft)
 - **Date:** October 20, 2026
