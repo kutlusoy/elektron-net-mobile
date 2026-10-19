@@ -38,7 +38,7 @@
     <string name="send_needs_sync">Sending needs a synchronized node. Open the Node tab to see the progress.</string>
     <string name="history_empty">No payments yet. Tap Receive to get your first address.</string>
     <string name="history_limit">Payments older than about 137 days are not stored on the network.</string>
-    <string name="node_title_up_to_date">Your node is 100% synced.</string>
+    <string name="node_title_up_to_date">Your node is 100%% synced.</string>
     <string name="node_title_catching_up">Syncing: %1$d%%</string>
     <string name="node_title_paused">Node paused</string>
     <string name="node_title_starting">Node starting</string>

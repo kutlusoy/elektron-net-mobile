@@ -38,7 +38,7 @@
     <string name="send_needs_sync">Zum Senden muss die Node synchron sein. Öffne den Tab Node, um den Fortschritt zu sehen.</string>
     <string name="history_empty">Noch keine Zahlungen. Tippe auf Empfangen, um deine erste Adresse zu erhalten.</string>
     <string name="history_limit">Zahlungen, die älter als etwa 137 Tage sind, werden im Netzwerk nicht gespeichert.</string>
-    <string name="node_title_up_to_date">Deine Node ist 100% synchron.</string>
+    <string name="node_title_up_to_date">Deine Node ist 100%% synchron.</string>
     <string name="node_title_catching_up">Synchronisiere: %1$d%%</string>
     <string name="node_title_paused">Node pausiert</string>
     <string name="node_title_starting">Node startet</string>

@@ -61,6 +61,14 @@ for q, tag in wanted.items():
 for q in sorted(present - set(wanted)):
     errors.append(f"values-{q} exists but the locale is not shipped")
 
+stray = re.compile(r"%(?!%|\d\$[sd]|[sd])")
+for name in sorted(os.listdir(RES)):
+    path = os.path.join(RES, name, "strings.xml")
+    if name.startswith("values") and os.path.isfile(path):
+        for m in re.finditer(r'<string name="([^"]+)"[^>]*>(.*?)</string>', open(path, encoding="utf-8").read(), re.S):
+            if stray.search(m.group(2).replace("%%", "")):
+                errors.append(f"{name}/{m.group(1)}: a literal percent sign must be written %%")
+
 for message in errors:
     print("FAIL", message)
 print("locales ok" if not errors else f"{len(errors)} problems")
