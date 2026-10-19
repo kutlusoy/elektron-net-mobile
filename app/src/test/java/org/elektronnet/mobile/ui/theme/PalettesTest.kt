@@ -8,8 +8,8 @@ import org.junit.Test
 class PalettesTest {
     @Test
     fun hasTenThemes() {
-        assertEquals(11, Palettes.all.size)
-        assertEquals(11, Palettes.all.map { it.key }.toSet().size)
+        assertEquals(5, Palettes.all.size)
+        assertEquals(5, Palettes.all.map { it.key }.toSet().size)
     }
 
     @Test

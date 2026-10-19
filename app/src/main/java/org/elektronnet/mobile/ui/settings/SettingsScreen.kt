@@ -3,7 +3,6 @@ package org.elektronnet.mobile.ui.settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
@@ -12,7 +11,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.RadioButton
 import androidx.compose.ui.semantics.Role
-import org.elektronnet.mobile.ui.model.EffectSetting
 import org.elektronnet.mobile.ui.model.ThemeMode
 import org.elektronnet.mobile.ui.theme.Palette
 import org.elektronnet.mobile.ui.theme.Palettes
@@ -92,8 +90,7 @@ private fun ToggleRow(title: Int, hint: Int, checked: Boolean, onChange: (Boolea
 
 @Composable
 private fun AppearanceSection(ui: UiSettings, onUi: (UiSettings) -> Unit) {
-    val systemDark = isSystemInDarkTheme()
-    val dark = ui.isDark(systemDark)
+    val dark = ui.dark
     val selectedKey = ui.themeKey ?: BuildConfig.DEFAULT_THEME
     Text(stringResource(R.string.settings_theme), style = MaterialTheme.typography.labelLarge)
     Palettes.all.forEach { palette ->
@@ -121,15 +118,6 @@ private fun AppearanceSection(ui: UiSettings, onUi: (UiSettings) -> Unit) {
     ThemeMode.entries.forEach { mode ->
         ChoiceRow(ui.mode == mode, { onUi(ui.copy(mode = mode)) }, stringResource(modeLabel(mode)), null) {}
     }
-    Text(stringResource(R.string.settings_effects), style = MaterialTheme.typography.labelLarge)
-    EffectSetting.entries.forEach { effect ->
-        ChoiceRow(ui.effects == effect, { onUi(ui.copy(effects = effect)) }, stringResource(effectLabel(effect)), stringResource(effectHint(effect))) {}
-    }
-    Text(
-        stringResource(R.string.settings_effects_note),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
 }
 
 @Composable
@@ -184,19 +172,6 @@ private fun ThemePreview(palette: Palette, dark: Boolean) {
 }
 
 private fun modeLabel(mode: ThemeMode): Int = when (mode) {
-    ThemeMode.System -> R.string.settings_mode_system
     ThemeMode.Dark -> R.string.settings_mode_dark
     ThemeMode.Light -> R.string.settings_mode_light
-}
-
-private fun effectLabel(effect: EffectSetting): Int = when (effect) {
-    EffectSetting.Off -> R.string.settings_effects_off
-    EffectSetting.Subtle -> R.string.settings_effects_subtle
-    EffectSetting.Full -> R.string.settings_effects_full
-}
-
-private fun effectHint(effect: EffectSetting): Int = when (effect) {
-    EffectSetting.Off -> R.string.settings_effects_off_hint
-    EffectSetting.Subtle -> R.string.settings_effects_subtle_hint
-    EffectSetting.Full -> R.string.settings_effects_full_hint
 }

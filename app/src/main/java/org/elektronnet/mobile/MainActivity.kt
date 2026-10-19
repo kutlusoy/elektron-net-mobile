@@ -7,10 +7,8 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.setContent
 import android.graphics.Color
-import android.os.PowerManager
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -20,6 +18,7 @@ import org.elektronnet.mobile.ui.AppRoot
 import org.elektronnet.mobile.ui.security.AppLockState
 import org.elektronnet.mobile.ui.security.Biometric
 import org.elektronnet.mobile.ui.security.LockScreen
+import org.elektronnet.mobile.ui.theme.EffectLevel
 import org.elektronnet.mobile.ui.theme.ElektronTheme
 import org.elektronnet.mobile.ui.theme.UiState
 
@@ -36,8 +35,7 @@ class MainActivity : FragmentActivity() {
         NodeHost.incomingUri = intent?.dataString
         setContent {
             val ui = UiState.settings
-            val dark = ui.isDark(isSystemInDarkTheme())
-            val saver = (getSystemService(POWER_SERVICE) as PowerManager).isPowerSaveMode
+            val dark = ui.dark
             LaunchedEffect(dark) {
                 val style = if (dark) SystemBarStyle.dark(Color.TRANSPARENT) else SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
                 enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
@@ -45,7 +43,7 @@ class MainActivity : FragmentActivity() {
             ElektronTheme(
                 paletteKey = ui.themeKey ?: BuildConfig.DEFAULT_THEME,
                 dark = dark,
-                effects = UiState.effectLevel(ui.effectiveEffects(saver)),
+                effects = EffectLevel.Off,
             ) {
                 if (AppLockState.locked) {
                     LockScreen(onUnlock = ::unlock)
@@ -86,7 +84,7 @@ class MainActivity : FragmentActivity() {
     private fun setBiometric(enable: Boolean) {
         if (!enable) {
             NodeHost.store?.biometricLock = false
-            AppLockState.setEnabled(false)
+            AppLockState.applyEnabled(false)
             return
         }
         if (!Biometric.available(this)) {
@@ -99,7 +97,7 @@ class MainActivity : FragmentActivity() {
             negative = getString(R.string.lock_cancel),
             onSuccess = {
                 NodeHost.store?.biometricLock = true
-                AppLockState.setEnabled(true)
+                AppLockState.applyEnabled(true)
             },
         )
     }

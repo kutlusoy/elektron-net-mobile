@@ -33,7 +33,7 @@ object AppLockState {
         sync()
     }
 
-    fun setEnabled(value: Boolean) {
+    fun applyEnabled(value: Boolean) {
         model.setEnabled(value)
         sync()
     }
