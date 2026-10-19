@@ -73,7 +73,7 @@ fun WalletSwitcher(
             Text(walletTitle(active) + "  ▾", style = MaterialTheme.typography.titleMedium)
         }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
-            fun item(label: Int, action: () -> Unit) = DropdownMenuItem(text = { Text(stringResource(label)) }, onClick = { open = false; action() })
+            @Composable fun item(label: Int, action: () -> Unit) = DropdownMenuItem(text = { Text(stringResource(label)) }, onClick = { open = false; action() })
             item(R.string.wallet_menu_details, onDetails)
             item(R.string.wallet_menu_coins, onCoins)
             item(R.string.msg_title, onMessages)

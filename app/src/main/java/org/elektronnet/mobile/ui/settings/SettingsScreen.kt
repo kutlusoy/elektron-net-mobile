@@ -29,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.service.SigningInfo
 import androidx.compose.ui.platform.LocalContext
 import org.elektronnet.mobile.service.CoreManifestLoader
 import androidx.compose.ui.Alignment
