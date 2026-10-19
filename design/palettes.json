@@ -13,6 +13,33 @@
     }
   },
   "palettes": {
+    "teal": {
+      "name": "Elektron Teal",
+      "dark": {
+        "accent": "#20d9f1",
+        "hover": "#66dffc",
+        "accent-2": "#b9f3ff",
+        "on-accent": "#00161e",
+        "bg": "#061824",
+        "surface": "#082535",
+        "surface-2": "#0c3042",
+        "border": "#2c7696",
+        "text": "#f4fbff",
+        "muted": "#bfeaf4",
+        "link": "#66dffc"
+      },
+      "light": {
+        "accent": "#0a8fa3",
+        "on-accent": "#ffffff",
+        "bg": "#f1fafc",
+        "surface": "#ffffff",
+        "surface-2": "#e3f4f8",
+        "border": "#bddde6",
+        "text": "#061824",
+        "muted": "#3f5f6b",
+        "link": "#066b7b"
+      }
+    },
     "blue": {
       "name": "Elektron Blue",
       "dark": {
@@ -38,87 +65,6 @@
         "text": "#0b1220",
         "muted": "#46566e",
         "link": "#0a67b4"
-      }
-    },
-    "neon": {
-      "name": "Neon Grid",
-      "dark": {
-        "accent": "#00f0ff",
-        "hover": "#5cf6ff",
-        "accent-2": "#ff2a6d",
-        "on-accent": "#00131a",
-        "bg": "#07070d",
-        "surface": "#0e0e1a",
-        "surface-2": "#151528",
-        "border": "#2a2a4a",
-        "text": "#e9f1ff",
-        "muted": "#a2a9c6",
-        "link": "#35f3ff"
-      },
-      "light": {
-        "accent": "#00f0ff",
-        "on-accent": "#ffffff",
-        "bg": "#f4f4fb",
-        "surface": "#ffffff",
-        "surface-2": "#ebeaf8",
-        "border": "#d4d2ee",
-        "text": "#120f24",
-        "muted": "#4b4868",
-        "link": "#00717d"
-      }
-    },
-    "synthwave": {
-      "name": "Synthwave",
-      "dark": {
-        "accent": "#ff3cac",
-        "hover": "#ff6fc4",
-        "accent-2": "#ffb347",
-        "on-accent": "#1a0620",
-        "bg": "#140a2a",
-        "surface": "#1d1040",
-        "surface-2": "#281759",
-        "border": "#3d2a7a",
-        "text": "#f6ecff",
-        "muted": "#b9a8e0",
-        "link": "#ff7ad0"
-      },
-      "light": {
-        "accent": "#ff3cac",
-        "on-accent": "#ffffff",
-        "bg": "#fbf4ff",
-        "surface": "#ffffff",
-        "surface-2": "#f3e6ff",
-        "border": "#e2cdf5",
-        "text": "#1c0b33",
-        "muted": "#5a4676",
-        "link": "#a3167a"
-      }
-    },
-    "matrix": {
-      "name": "Matrix",
-      "dark": {
-        "accent": "#00ff88",
-        "hover": "#5cffaa",
-        "accent-2": "#b6ff00",
-        "on-accent": "#00160a",
-        "bg": "#020a06",
-        "surface": "#07140d",
-        "surface-2": "#0c2016",
-        "border": "#14402a",
-        "text": "#d8ffe9",
-        "muted": "#8bc4a4",
-        "link": "#3dffa0"
-      },
-      "light": {
-        "accent": "#00ff88",
-        "on-accent": "#ffffff",
-        "bg": "#f0faf4",
-        "surface": "#ffffff",
-        "surface-2": "#e1f5e9",
-        "border": "#c2e3cf",
-        "text": "#07200f",
-        "muted": "#3d5c4a",
-        "link": "#0a7a3c"
       }
     },
     "rust": {
@@ -148,60 +94,6 @@
         "link": "#a8420a"
       }
     },
-    "iron": {
-      "name": "Iron",
-      "dark": {
-        "accent": "#9db7cf",
-        "hover": "#b7cde1",
-        "accent-2": "#ffb020",
-        "on-accent": "#0a1118",
-        "bg": "#0b0e12",
-        "surface": "#12171d",
-        "surface-2": "#1a212a",
-        "border": "#2c3744",
-        "text": "#e6ebf0",
-        "muted": "#9fabb8",
-        "link": "#b4cde4"
-      },
-      "light": {
-        "accent": "#9db7cf",
-        "on-accent": "#ffffff",
-        "bg": "#f1f3f6",
-        "surface": "#ffffff",
-        "surface-2": "#e4e8ed",
-        "border": "#ccd3db",
-        "text": "#10151b",
-        "muted": "#4b5764",
-        "link": "#35566f"
-      }
-    },
-    "violet": {
-      "name": "Violet Night",
-      "dark": {
-        "accent": "#bd93f9",
-        "hover": "#d0b0ff",
-        "accent-2": "#ff79c6",
-        "on-accent": "#170b2b",
-        "bg": "#1b1c2a",
-        "surface": "#242536",
-        "surface-2": "#2d2e44",
-        "border": "#44456a",
-        "text": "#f3f3fb",
-        "muted": "#b2b4d0",
-        "link": "#cfb0ff"
-      },
-      "light": {
-        "accent": "#bd93f9",
-        "on-accent": "#ffffff",
-        "bg": "#f6f3fc",
-        "surface": "#ffffff",
-        "surface-2": "#ece6fa",
-        "border": "#d9d0f0",
-        "text": "#1a1330",
-        "muted": "#55496f",
-        "link": "#5b2fb8"
-      }
-    },
     "red": {
       "name": "Hacker Red",
       "dark": {
@@ -229,85 +121,31 @@
         "link": "#b0122c"
       }
     },
-    "frost": {
-      "name": "Frost",
+    "matrix": {
+      "name": "Matrix",
       "dark": {
-        "accent": "#9be7ff",
-        "hover": "#bff0ff",
-        "accent-2": "#d5f3ff",
-        "on-accent": "#04141c",
-        "bg": "#081018",
-        "surface": "#0e1a24",
-        "surface-2": "#14242f",
-        "border": "#25414f",
-        "text": "#eaf6fb",
-        "muted": "#a5bfcc",
-        "link": "#b4ecff"
+        "accent": "#00ff88",
+        "hover": "#5cffaa",
+        "accent-2": "#b6ff00",
+        "on-accent": "#00160a",
+        "bg": "#020a06",
+        "surface": "#07140d",
+        "surface-2": "#0c2016",
+        "border": "#14402a",
+        "text": "#d8ffe9",
+        "muted": "#8bc4a4",
+        "link": "#3dffa0"
       },
       "light": {
-        "accent": "#9be7ff",
+        "accent": "#00ff88",
         "on-accent": "#ffffff",
-        "bg": "#f1f9fd",
+        "bg": "#f0faf4",
         "surface": "#ffffff",
-        "surface-2": "#e1f2fa",
-        "border": "#c5e1ee",
-        "text": "#0a1c26",
-        "muted": "#476474",
-        "link": "#0b6e99"
-      }
-    },
-    "terminal": {
-      "name": "Terminal",
-      "dark": {
-        "accent": "#5af78e",
-        "hover": "#86ffab",
-        "accent-2": "#ffb86c",
-        "on-accent": "#04120a",
-        "bg": "#0b0c0d",
-        "surface": "#121415",
-        "surface-2": "#1a1d1f",
-        "border": "#2c3235",
-        "text": "#d8dee0",
-        "muted": "#8b979b",
-        "link": "#7dffa5"
-      },
-      "light": {
-        "accent": "#5af78e",
-        "on-accent": "#ffffff",
-        "bg": "#f4f6f5",
-        "surface": "#ffffff",
-        "surface-2": "#e6ebe8",
-        "border": "#cdd6d1",
-        "text": "#101412",
-        "muted": "#4c5a54",
-        "link": "#0a6b32"
-      }
-    },
-    "teal": {
-      "name": "Elektron Teal",
-      "dark": {
-        "accent": "#20d9f1",
-        "hover": "#66dffc",
-        "accent-2": "#b9f3ff",
-        "on-accent": "#00161e",
-        "bg": "#061824",
-        "surface": "#082535",
-        "surface-2": "#0c3042",
-        "border": "#2c7696",
-        "text": "#f4fbff",
-        "muted": "#bfeaf4",
-        "link": "#66dffc"
-      },
-      "light": {
-        "accent": "#0a8fa3",
-        "on-accent": "#ffffff",
-        "bg": "#f1fafc",
-        "surface": "#ffffff",
-        "surface-2": "#e3f4f8",
-        "border": "#bddde6",
-        "text": "#061824",
-        "muted": "#3f5f6b",
-        "link": "#066b7b"
+        "surface-2": "#e1f5e9",
+        "border": "#c2e3cf",
+        "text": "#07200f",
+        "muted": "#3d5c4a",
+        "link": "#0a7a3c"
       }
     }
   }

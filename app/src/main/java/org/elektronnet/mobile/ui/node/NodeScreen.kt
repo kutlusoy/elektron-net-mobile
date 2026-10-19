@@ -26,6 +26,8 @@ import org.elektronnet.mobile.ui.NodeChipRow
 import org.elektronnet.mobile.ui.StatTile
 import org.elektronnet.mobile.ui.model.HomeUiModel
 import org.elektronnet.mobile.ui.model.NodeChip
+import org.elektronnet.mobile.ui.model.PruneSchedule
+import org.elektronnet.mobile.ui.model.TelemetryFormat
 import org.elektronnet.mobile.ui.model.NodeDetails
 import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.model.NodeTabState
@@ -34,6 +36,7 @@ import org.elektronnet.mobile.ui.model.NodeTabState
 fun NodeScreen(
     model: NodeTabModel,
     peers: List<NodeHost.PeerRow> = emptyList(),
+    telemetry: org.elektronnet.mobile.node.Telemetry? = null,
     showGeoCredit: Boolean = false,
     onPause: () -> Unit,
     onResume: () -> Unit,
@@ -73,7 +76,55 @@ fun NodeScreen(
         }
         Text(stringResource(R.string.node_explainer), color = MaterialTheme.colorScheme.onSurfaceVariant)
         model.details?.let { StatGrid(it) }
-        if (model.details != null) PeerSection(peers, showGeoCredit)
+        if (model.details != null) {
+            TelemetrySection(model.details, telemetry)
+            PeerSection(peers, showGeoCredit)
+        }
+    }
+}
+
+@Composable
+private fun TelemetrySection(details: NodeDetails, telemetry: org.elektronnet.mobile.node.Telemetry?) {
+    val dash = "-"
+    val schedule = PruneSchedule.of(details.blocks, System.currentTimeMillis())
+    val date = schedule.estimatedMs?.let { java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM).format(java.util.Date(it)) }
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(stringResource(R.string.telemetry_title), style = MaterialTheme.typography.titleLarge)
+        GlassCard {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.telemetry_chain_card), style = MaterialTheme.typography.titleMedium)
+                TelemetryRow(stringResource(R.string.detail_chain), details.chain)
+                TelemetryRow(stringResource(R.string.telemetry_difficulty), telemetry?.difficulty?.let(TelemetryFormat::difficulty) ?: dash)
+                TelemetryRow(stringResource(R.string.telemetry_hashrate), telemetry?.hashPerSecond?.let(TelemetryFormat::hashRate) ?: dash)
+                TelemetryRow(
+                    stringResource(R.string.telemetry_mempool),
+                    if (telemetry?.mempoolTx != null) stringResource(R.string.telemetry_mempool_value, telemetry.mempoolTx, TelemetryFormat.bytes(telemetry.mempoolBytes ?: 0L)) else dash,
+                )
+                TelemetryRow(stringResource(R.string.telemetry_storage), telemetry?.sizeOnDisk?.let(TelemetryFormat::bytes) ?: dash)
+            }
+        }
+        GlassCard {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.telemetry_prune_card), style = MaterialTheme.typography.titleMedium)
+                TelemetryRow(stringResource(R.string.telemetry_keep), schedule.keepBlocks.toString())
+                TelemetryRow(stringResource(R.string.detail_pruned), details.pruneHeight?.toString() ?: dash)
+                if (date != null) {
+                    TelemetryRow(stringResource(R.string.telemetry_remaining), schedule.remainingBlocks.toString())
+                    TelemetryRow(stringResource(R.string.telemetry_estimate), "~$date")
+                    Text(stringResource(R.string.telemetry_estimate_note), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                } else {
+                    Text(stringResource(R.string.telemetry_pruning_active), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TelemetryRow(label: String, value: String) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, modifier = Modifier.padding(start = 12.dp))
     }
 }
 

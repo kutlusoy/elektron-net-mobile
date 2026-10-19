@@ -235,6 +235,11 @@ object NodeHost {
         return org.elektronnet.mobile.geo.GeoIp(reader).also { geoIp = it }
     }
 
+    fun telemetry(): org.elektronnet.mobile.node.Telemetry? {
+        val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
+        return runCatching { supervisor.telemetry() }.getOrNull()
+    }
+
     fun peers(): List<PeerRow>? {
         val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
         val geo = geo()

@@ -10,8 +10,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,7 +57,7 @@ private enum class Tab(val label: Int, val icon: ImageVector) {
 }
 
 @Composable
-fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit) {
+fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit, onBiometric: (Boolean) -> Unit) {
     var tab by rememberSaveable { mutableStateOf(Tab.Wallet.ordinal) }
     var showSoon by remember { mutableStateOf(false) }
     var showReceive by rememberSaveable { mutableStateOf(false) }
@@ -97,11 +95,14 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     }
 
     var peers by remember { mutableStateOf<List<NodeHost.PeerRow>>(emptyList()) }
+    var telemetry by remember { mutableStateOf<org.elektronnet.mobile.node.Telemetry?>(null) }
     LaunchedEffect(tab, walletReady) {
         while (walletReady && tab == Tab.Node.ordinal) {
             if (NodeHost.appVisible) {
                 val fresh = withContext(Dispatchers.IO) { NodeHost.peers() }
                 if (fresh != null) peers = fresh
+                val stats = withContext(Dispatchers.IO) { NodeHost.telemetry() }
+                if (stats != null) telemetry = stats
             }
             delay(5_000)
         }
@@ -113,21 +114,11 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = { if (ChainConfig.isTestnet) TestnetBar() },
         bottomBar = {
-            if (walletReady) NavigationBar(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)) {
-                Tab.entries.forEach { entry ->
-                    NavigationBarItem(
-                        selected = tab == entry.ordinal,
-                        onClick = { tab = entry.ordinal },
-                        icon = { Icon(entry.icon, contentDescription = null) },
-                        label = { Text(stringResource(entry.label)) },
-                        colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
-                        ),
-                    )
-                }
-            }
+            if (walletReady) PillNavBar(
+                items = Tab.entries.map { Triple(stringResource(it.label), it.icon, it.ordinal) },
+                selected = tab,
+                onSelect = { tab = it },
+            )
         },
     ) { padding ->
         Box(modifier = Modifier.padding(padding)) {
@@ -202,6 +193,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 Tab.Node -> NodeScreen(
                     model = NodeTabModel.from(snapshot, settings.userPaused),
                     peers = peers,
+                    telemetry = telemetry,
                     showGeoCredit = NodeHost.geoAvailable,
                     onPause = {
                         onPause()
@@ -216,6 +208,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
                 Tab.Settings -> SettingsScreen(
                     settings = settings,
+                    biometric = org.elektronnet.mobile.ui.security.AppLockState.enabled,
+                    onBiometric = onBiometric,
                     ui = UiState.settings,
                     onUi = {
                         store?.saveUi(it)

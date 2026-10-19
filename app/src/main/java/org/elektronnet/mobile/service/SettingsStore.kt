@@ -59,11 +59,15 @@ class SettingsStore(context: Context) {
         set(value) = prefs.edit().putBoolean(RESCAN_PENDING, value).apply()
 
     fun loadUi(validKeys: Set<String>): UiSettings =
-        UiSettings.restore(prefs.getString(THEME_KEY, null), prefs.getString(THEME_MODE, null), prefs.getString(EFFECTS, null), validKeys)
+        UiSettings.restore(prefs.getString(THEME_KEY, null), prefs.getString(THEME_MODE, null), validKeys)
 
     fun saveUi(ui: UiSettings) {
-        prefs.edit().putString(THEME_KEY, ui.themeKey).putString(THEME_MODE, ui.mode.name).putString(EFFECTS, ui.effects.name).apply()
+        prefs.edit().putString(THEME_KEY, ui.themeKey).putString(THEME_MODE, ui.mode.name).apply()
     }
+
+    var biometricLock: Boolean
+        get() = prefs.getBoolean(BIOMETRIC, false)
+        set(value) = prefs.edit().putBoolean(BIOMETRIC, value).apply()
 
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
 
@@ -104,7 +108,7 @@ class SettingsStore(context: Context) {
         const val WALLET_READY = "wallet_ready"
         const val THEME_KEY = "theme_key"
         const val THEME_MODE = "theme_mode"
-        const val EFFECTS = "effects"
+        const val BIOMETRIC = "biometric_lock"
         const val RESCAN_PENDING = "rescan_pending"
         const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"

@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +55,37 @@ fun HeroCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
             .padding(20.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) { content() }
+    }
+}
+
+@Composable
+fun PillNavBar(items: List<Triple<String, androidx.compose.ui.graphics.vector.ImageVector, Int>>, selected: Int, onSelect: (Int) -> Unit) {
+    val primary = MaterialTheme.colorScheme.primary
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.92f))
+            .navigationBarsPadding()
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items.forEach { (label, icon, index) ->
+            val active = index == selected
+            val shape = RoundedCornerShape(22.dp)
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(shape)
+                    .background(if (active) primary.copy(alpha = 0.18f) else Color.Transparent)
+                    .border(1.dp, if (active) primary.copy(alpha = 0.75f) else Color.Transparent, shape)
+                    .selectable(selected = active, role = Role.Tab, onClick = { onSelect(index) })
+                    .padding(vertical = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                androidx.compose.material3.Icon(icon, contentDescription = null, tint = if (active) primary else MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(label, style = MaterialTheme.typography.labelMedium, color = if (active) primary else MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
     }
 }
 
