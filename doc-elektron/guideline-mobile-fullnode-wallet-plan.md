@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.17 (draft)
+- **Version:** 0.18 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
@@ -430,9 +430,16 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 
 ### 8.6 Local data, labels and privacy
 
-- Address labels are stored in the node wallet (`setlabel`) and shown in the coin and address lists. A dedicated address book is still open. Nothing is sent anywhere.
+- Address labels are stored in the node wallet (`setlabel`) and shown in the coin and address lists. The address book is described in §8.9. Nothing is sent anywhere.
 - GeoIP for peer country uses a local MMDB, no remote lookup.
 - No analytics SDKs, no crash reporting that transmits data by default.
+
+### 8.6.1 No address reuse (default)
+
+- Every wallet is created with the node's `avoid_reuse` flag (`createwallet avoid_reuse=true`). Wallets created by earlier versions get the flag on first use (`setwalletflag`, checked before every send and when the receive screen opens).
+- Receiving: the receive screen shows one address and switches to a fresh one as soon as it has received a payment. A new address can be requested at any time. Change always goes to a fresh internal address (descriptor wallet behavior).
+- Sending: once an address has been spent from, it is marked used. Coins that arrive later on such an address are listed separately (`used` in `getbalances`, `reused` in `listunspent`), are not part of the spendable balance and are never picked by automatic selection or "send max". The wallet details show their sum with an explanation, the Coins list tags them, and the user can still spend them deliberately by selecting them.
+- Effect: payments cannot be linked through a shared address, and the partial-spend leak (one address funding several inputs) cannot happen unnoticed. Tested against a real node (`CoinControlIntegrationTest`).
 
 ### 8.7 Block explorer (optional web requests)
 
@@ -485,6 +492,7 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 | S22 | Single imported private keys are not added to the wallet | MUST |
 | S23 | Web requests go only to explorers the user can see and edit in Settings, only over https (plain http for localhost and onion), carry no addresses, keys or balances, and stop completely when the list is empty (§8.7) | MUST |
 | S24 | Removing a wallet needs that wallet's passphrase and an explicit confirmation, and never touches another wallet (§8.8) | MUST |
+| S25 | Address reuse protection is on for every wallet; coins on a reused address are never spent automatically (§8.6.1) | MUST |
 
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 

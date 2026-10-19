@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.21 (draft)
+- **Version:** 0.22 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -23,6 +23,7 @@
 - Non-custodial wallet on the node's own descriptor wallet: native SegWit (`be1q...`) addresses, BIP-39 recovery phrase, SLIP-44 coin type 1370 plus legacy path recovery.
 - Escrow wallets (M of N multisig, for example 2 of 3 with an arbiter), PSBT tools to check, sign, combine and send payment files, key sweep like in Electrum, and message signing and verification.
 - Several wallets with a quick switch and removal only with that wallet's passphrase, review-before-sign transaction flow (PSBT), fee policy re-check before signing, optional "subtract fee from amount", coin control (choose and freeze coins), address labels, QR receive and scan.
+- No address reuse by default: fresh receive and change addresses, and coins that arrive on an already spent address are kept out of automatic spending (shown separately, spendable on purpose).
 - Complete transaction history per wallet with search, filters and CSV export; speed up a waiting payment with fee bump (RBF) when you sent it, or with CPFP when it is incoming.
 - Address book (local, shared by all wallets), public descriptor export and an encrypted wallet file export through the system file picker.
 - Fee estimates come from the node with a fallback to a mempool explorer; the explorer list (default `https://mempool.elektron-net.org`) can be edited and is also used for transaction links.

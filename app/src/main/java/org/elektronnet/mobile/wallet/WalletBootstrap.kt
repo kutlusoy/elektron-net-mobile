@@ -67,6 +67,7 @@ class WalletBootstrap(
                     "blank" to true,
                     "passphrase" to passphrase,
                     "descriptors" to true,
+                    "avoid_reuse" to true,
                     "load_on_startup" to true,
                 ),
                 null,

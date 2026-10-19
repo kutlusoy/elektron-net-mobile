@@ -657,4 +657,8 @@
     <string name="console_stop">Stop</string>
     <string name="console_stopped">The command was stopped on the node.</string>
     <string name="console_discarded">The node cannot stop this command. It keeps working in the background and its result is discarded.</string>
+    <string name="details_used">On reused addresses</string>
+    <string name="details_used_hint">These coins sit on an address that was already spent from. The wallet does not spend them automatically, so your payments cannot be linked. Select them in Coins to spend them on purpose.</string>
+    <string name="details_noreuse">Address reuse protection is on: every receive and change address is used once, and coins on a reused address stay out of automatic spending.</string>
+    <string name="coins_reused">Reused address</string>
 </resources>

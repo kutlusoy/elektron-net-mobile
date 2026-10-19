@@ -657,4 +657,8 @@
     <string name="console_stop">Stopp</string>
     <string name="console_stopped">Der Befehl wurde auf dem Node gestoppt.</string>
     <string name="console_discarded">Der Node kann diesen Befehl nicht stoppen. Er läuft im Hintergrund weiter und sein Ergebnis wird verworfen.</string>
+    <string name="details_used">Auf wiederverwendeten Adressen</string>
+    <string name="details_used_hint">Diese Coins liegen auf einer Adresse, von der bereits ausgegeben wurde. Die Wallet gibt sie nicht automatisch aus, damit deine Zahlungen nicht verknüpft werden können. Wähle sie unter Coins aus, um sie gezielt auszugeben.</string>
+    <string name="details_noreuse">Schutz vor Adresswiederverwendung ist aktiv: Jede Empfangs- und Wechselgeldadresse wird nur einmal verwendet, und Coins auf einer wiederverwendeten Adresse bleiben von der automatischen Auswahl ausgeschlossen.</string>
+    <string name="coins_reused">Wiederverwendete Adresse</string>
 </resources>

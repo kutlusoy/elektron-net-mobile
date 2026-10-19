@@ -114,6 +114,10 @@ fun WalletDetailsScreen(onBack: () -> Unit) {
                     InfoRow(stringResource(R.string.details_balance), Amount.format(it.trustedLep) + " " + stringResource(R.string.balance_unit))
                     InfoRow(stringResource(R.string.details_pending), Amount.format(it.pendingLep) + " " + stringResource(R.string.balance_unit))
                     InfoRow(stringResource(R.string.details_immature), Amount.format(it.immatureLep) + " " + stringResource(R.string.balance_unit))
+                    if (it.usedLep > 0) {
+                        InfoRow(stringResource(R.string.details_used), Amount.format(it.usedLep) + " " + stringResource(R.string.balance_unit))
+                        Hint(stringResource(R.string.details_used_hint))
+                    }
                 }
                 InfoRow(stringResource(R.string.details_derivation), stringResource(R.string.details_derivation_value, coinType))
             }
@@ -132,6 +136,7 @@ fun WalletDetailsScreen(onBack: () -> Unit) {
         ) { Text(stringResource(R.string.details_export)) }
         Hint(stringResource(R.string.details_export_hint))
         ExportSection()
+        Hint(stringResource(R.string.details_noreuse))
         Hint(stringResource(R.string.details_hint))
     }
 }
@@ -191,6 +196,7 @@ fun CoinsScreen(onBack: () -> Unit) {
                             Hint(
                                 if (coin.confirmations <= 0) stringResource(R.string.coins_unconfirmed) else stringResource(R.string.coins_conf, coin.confirmations),
                             )
+                            if (coin.reused) Text(stringResource(R.string.coins_reused), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Switch(

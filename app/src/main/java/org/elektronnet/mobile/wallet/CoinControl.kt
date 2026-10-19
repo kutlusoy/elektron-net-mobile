@@ -10,6 +10,7 @@ data class Coin(
     val confirmations: Int,
     val label: String?,
     val frozen: Boolean,
+    val reused: Boolean = false,
 ) {
     val id: String get() = "$txid:$vout"
 }
@@ -28,6 +29,7 @@ class CoinControl(private val rpc: WalletRpc, private val walletName: String = W
                 confirmations = (row["confirmations"] as? Number)?.toInt() ?: 0,
                 label = row["label"]?.toString()?.takeIf { it.isNotEmpty() },
                 frozen = false,
+                reused = row["reused"] == true,
             )
         }
         val frozen = (rpc.call("listlockunspent", emptyList<Any?>(), walletName) as List<*>).mapNotNull { entry ->

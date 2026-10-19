@@ -657,4 +657,8 @@
     <string name="console_stop">Parar</string>
     <string name="console_stopped">O comando foi parado no nó.</string>
     <string name="console_discarded">O nó não consegue parar este comando. Ele continua em segundo plano e o resultado é descartado.</string>
+    <string name="details_used">Em endereços reutilizados</string>
+    <string name="details_used_hint">Estas moedas estão em um endereço do qual já se gastou. A carteira não as gasta automaticamente, para que seus pagamentos não possam ser vinculados. Selecione-as em Moedas para gastá-las de propósito.</string>
+    <string name="details_noreuse">A proteção contra reutilização de endereços está ativada: cada endereço de recebimento e de troco é usado uma única vez, e as moedas em um endereço reutilizado ficam fora do gasto automático.</string>
+    <string name="coins_reused">Endereço reutilizado</string>
 </resources>

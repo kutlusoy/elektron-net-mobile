@@ -12,6 +12,7 @@ class ReceiveWallet(
     private val walletName: String = WalletBootstrap.DEFAULT_WALLET,
 ) {
     fun currentAddress(): String {
+        AddressReuse.ensure(rpc, walletName)
         store.current?.let { stored -> if (!hasReceived(stored)) return stored }
         return newAddress()
     }

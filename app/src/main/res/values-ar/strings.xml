@@ -657,4 +657,8 @@
     <string name="console_stop">إيقاف</string>
     <string name="console_stopped">تم إيقاف الأمر على العقدة.</string>
     <string name="console_discarded">لا تستطيع العقدة إيقاف هذا الأمر. يواصل العمل في الخلفية وسيتم تجاهل نتيجته.</string>
+    <string name="details_used">على عناوين أُعيد استخدامها</string>
+    <string name="details_used_hint">هذه العملات موجودة على عنوان سبق الإنفاق منه. لا تنفقها المحفظة تلقائيا، حتى لا يمكن ربط مدفوعاتك ببعضها. حددها في العملات لإنفاقها عن قصد.</string>
+    <string name="details_noreuse">حماية إعادة استخدام العناوين مفعلة: يُستخدم كل عنوان استلام وعنوان باقي مرة واحدة فقط، وتبقى العملات الموجودة على عنوان أُعيد استخدامه خارج الإنفاق التلقائي.</string>
+    <string name="coins_reused">عنوان أُعيد استخدامه</string>
 </resources>
