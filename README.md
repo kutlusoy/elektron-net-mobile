@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.19 (draft)
+- **Version:** 0.20 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -12,13 +12,13 @@
 
 `elektron-net-mobile` is a non-custodial Android wallet for Elektron Net (ELEK) that runs its own complete node. There is no server, no Electrum backend and no third-party indexer in the path: the phone validates the chain itself and signs with keys that never leave the device.
 
-**Status:** planning phase. The complete plan lives in [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md). This README describes the target behavior and the intended build flow. Items are implemented step by step following the roadmap in that document.
+**Status:** early alpha. The app runs the bundled node on a phone (headers, snapshot and tip verified on mainnet), creates and restores several wallets, receives, sends with coin control and fee bump, and has escrow, PSBT, sweep and message tools. Open: translations, the Expert console, CPFP and address book, the device test matrix and an external security review. The complete plan lives in [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md). This README describes the target behavior and the intended build flow. Items are implemented step by step following the roadmap in that document.
 
 ## 2. Features (target)
 
 - Full validating node (`elektrond`) bundled in the app: header and block validation, per-block UTXO attestation checks, mempool, transaction relay, mandatory pruning.
 - Automatic checkpoint snapshots and P2P snapshot bootstrap, as implemented by the Elektron Net node itself.
-- Background operation as a foreground service with resource profiles, battery, network and storage limits. The user can pause or stop the node at any time.
+- Background operation as a foreground service with resource profiles, battery, network and storage limits. The user can pause or stop the node at any time, and sees what the node is doing (progress, peers, telemetry, optional live log).
 - True entropy for the recovery phrase: at least 128 bits, health-checked system generators, no weak fallback, an optional step where you draw on the screen for extra randomness, and a mode where you roll your own dice (50 rolls for 12 words).
 - Non-custodial wallet on the node's own descriptor wallet: native SegWit (`be1q...`) addresses, BIP-39 recovery phrase, SLIP-44 coin type 1370 plus legacy path recovery.
 - Escrow wallets (M of N multisig, for example 2 of 3 with an arbiter), PSBT tools to check, sign, combine and send payment files, key sweep like in Electrum, and message signing and verification.

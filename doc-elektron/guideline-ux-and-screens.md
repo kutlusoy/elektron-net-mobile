@@ -1,7 +1,7 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.13 (draft)
-- **Date:** October 18, 2026
+- **Version:** 0.14 (draft)
+- **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (the project's light wallet; only its address safety wording is kept consistent, no code or screens are taken)
@@ -130,15 +130,15 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 
 ### 6.4 Transaction details
 
-- Status line at the top ("Waiting for confirmation" / "Confirmed, 12 confirmations"), amount, date, address(es), network fee, transaction id with Copy, and "Open in explorer" only if the explorer link setting is on (plan X7).
-- "Speed up" (fee bump) for own pending outgoing transactions arrives in Phase 4.
+- Status line at the top ("Waiting for confirmation" / "Confirmed, 12 confirmations"), amount, date, address(es), network fee, transaction id with Copy, "Open in explorer" (opens the first explorer of the Settings list in the browser) and, for an own pending payment, "Speed up" (fee bump, one passphrase prompt).
 
 ### 6.5 Node tab
 
 - **Hero card:** one sentence of state in plain words and a status dot. Examples: "Your node is up to date." / "Catching up: 62 percent, about 20 minutes left." / "Paused: waiting for the charger." / "Stopped." / "Something went wrong. Tap to fix."
+- **Startup and problems:** while the node starts, the card shows a progress bar, the node's own warm-up message, the time since start and the time since the last node message. After two minutes of silence, a slow start or one minute without peers it shows a plain warning that points to the live log. If the app cannot reach the node, it says why.
 - **Buttons:** Pause or Resume, Stop or Start. Actions that change cost (use mobile data) say so.
 - **Why paused?** The first reason from the policy engine is shown in words (plan §7), with a link to the matching setting.
-- **Details** (collapsed): block height and known headers, peers, disk used, retained window, last checkpoint snapshot, whether this phone is serving snapshots, version and Core tag. Live log and console are not here, they are under Settings, Advanced.
+- **Details** (always visible): tiles for validated blocks, known headers, peers, progress and prune height, then the cards Network (type, version, protocol, connections in and out, network active, initial download, ports), Blockchain and mining (difficulty, hash rate, mempool, storage) and Pruning (blocks kept, blocks until pruning starts, estimated date). Below them the connected peers: tap a peer for its details (ID, network, country, connection type, transport, protocol, synced headers and blocks, minimum ping, bytes received and sent, time offset, local binding). An optional live log (off by default) follows the node output and can be copied.
 - **Explainer link** "What is my node?" repeats the Welcome explainer.
 
 ### 6.6 Settings
@@ -146,10 +146,12 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 | Group | Items (plain labels) | Maps to |
 |---|---|---|
 | Security | Change passphrase, Fingerprint or face unlock, Check my backup (the user types the phrase from paper, the app never stores or shows it again) | plan §8.1, S16 |
-| Network and battery | "Use mobile data" (off), "Allow roaming" (off, only shown when mobile data is on), "Monthly mobile data limit", "Only while charging", "Run in the background" (on), "Active hours" | `PolicySettings` fields |
-| Sharing | "Help other phones sync (Wi-Fi and charging only)" | `serveSnapshots`, plan §5.2 |
-| Appearance | Theme, Light or dark, Glow effects (Off, Subtle, Full), Language | design system §2, §3, plan §3.5 |
-| About | Version, Core version and commit, signing fingerprint, licenses, links | distribution guideline §8 |
+| Network and battery | "Use mobile data" (off), "Allow roaming" (off, only shown when mobile data is on), "Monthly mobile data limit" (no limit, 1, 2, 5, 10 GB), "Only while charging", "Only at night" (22:00 to 06:00), "Run in the background" (on), "How much the node may use" (while the app is open, balanced, always on) | `PolicySettings`, plan §7 |
+| Sharing | "Accept incoming connections", "Share snapshots (Wi-Fi and charging only)" | `allowInbound`, `serveSnapshots`, plan §5.2 |
+| Storage | "Storage saver" (fast pruning, applies at the next node start), "Stop the node when free space is below" (1, 2, 5 GB) | `fastprune`, `storageFloorBytes`, plan §3.2 |
+| Block explorer | Add, edit, reorder and remove explorer addresses (default `https://mempool.elektron-net.org`), with the privacy sentence | plan §8.7, S23 |
+| Appearance | Theme (five themes with swatches and a live preview), Light or dark | design system §2 |
+| About | Version, wallet version, node version, node commit, node library hash, signing key fingerprint, copyright | distribution guideline §8 |
 | Advanced | Storage saver, Resource profile, Expert mode and console, Live log, Address list, Export descriptors, Rescan, Reset | plan §3.2, §3.6 |
 
 - Each toggle has a one-line description in plain words beneath it.
@@ -217,7 +219,7 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 | U2 | Sending while not synchronized | Not allowed in v1, with a clear explanation and a link to progress. |
 | U3 | Restore while syncing: keep the entered phrase in memory to auto-restore, or ask again later? | Ask again later by default (the phrase is never stored). Offer "Restore automatically when ready" only as an explicit opt-in that keeps the phrase in memory while the app is open. |
 | U4 | Fiat value display | Out of scope for v1 (plan §1). If added later, opt-in, with a note that it contacts a price service. |
-| U5 | Address book and labels in the everyday flow | Labels appear in Receive notes and transaction rows. A dedicated address book is Phase 4. |
+| U5 | Address book and labels in the everyday flow | Address labels can be set in the Addresses list and are shown there and on coins. A dedicated address book is Phase 4. |
 
 ## 13. Checklist
 
@@ -226,9 +228,9 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 - [x] First-run flow with explainer, backup quiz and passphrase (logic and screens in place, app lock in Settings, restore waits for X1)
 - [x] Receive with `elek:` QR, fresh address per visit, optional amount and note (screen unbuilt on device, logic tested)
 - [x] Send flow with inline validation, fee choices, review, authentication, done (logic tested against a real node, screens unbuilt on device; QR scanning and biometric confirmation still open)
-- [x] Transaction details (explorer link and fee bump still open)
-- [ ] Node tab in plain language with details collapsed
-- [ ] Settings groups mapped to policy settings, defaults recommended
+- [x] Transaction details with explorer link and fee bump (screen unbuilt on device, logic tested against a real node)
+- [x] Node tab with progress, estimate, peers, telemetry, warnings and optional live log (screen unbuilt on device)
+- [x] Settings groups mapped to policy settings, defaults recommended (screen unbuilt on device)
 - [ ] Error and state table implemented, no raw RPC text
 - [ ] Previews and screenshot tests per state, theme and longest locale
 - [ ] Two usability rounds done and findings applied

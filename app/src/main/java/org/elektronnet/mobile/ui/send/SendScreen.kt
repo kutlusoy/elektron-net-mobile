@@ -298,6 +298,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         }
                     }
                     if (options.none { it.estimated }) Text(stringResource(R.string.send_fee_no_estimate), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (options.any { it.fromExplorer }) Text(stringResource(R.string.send_fee_from_explorer), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Switch(checked = custom, onCheckedChange = { custom = it })
                         Text(stringResource(R.string.send_fee_custom), modifier = Modifier.padding(start = 12.dp))

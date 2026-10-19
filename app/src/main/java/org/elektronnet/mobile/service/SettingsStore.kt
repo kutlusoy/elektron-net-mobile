@@ -91,7 +91,26 @@ class SettingsStore(context: Context) {
         get() = prefs.getBoolean(BIOMETRIC, false)
         set(value) = prefs.edit().putBoolean(BIOMETRIC, value).apply()
 
+    var explorers: List<String>
+        get() = org.elektronnet.mobile.explorer.ExplorerList.parse(prefs.getString(EXPLORERS, null))
+        set(value) = prefs.edit().putString(EXPLORERS, org.elektronnet.mobile.explorer.ExplorerList.serialize(value)).apply()
+
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
+
+    fun setFastprune(value: Boolean) = prefs.edit().putBoolean(FASTPRUNE, value).apply()
+
+    fun savePolicy(settings: PolicySettings) {
+        prefs.edit()
+            .putString(PROFILE, settings.profile.name)
+            .putBoolean(ALLOW_ROAMING, settings.allowRoaming)
+            .putLong(CAP, settings.monthlyCellularCapBytes ?: -1)
+            .putBoolean(ALLOW_INBOUND, settings.allowInbound)
+            .putBoolean(SERVE_SNAPSHOTS, settings.serveSnapshots)
+            .putLong(STORAGE_FLOOR, settings.storageFloorBytes)
+            .putInt(SCHEDULE_START, settings.schedule?.startMinute ?: -1)
+            .putInt(SCHEDULE_END, settings.schedule?.endMinute ?: -1)
+            .apply()
+    }
 
     fun setUserStopped(value: Boolean) = prefs.edit().putBoolean(USER_STOPPED, value).apply()
 
@@ -131,6 +150,7 @@ class SettingsStore(context: Context) {
         const val THEME_KEY = "theme_key"
         const val THEME_MODE = "theme_mode"
         const val BIOMETRIC = "biometric_lock"
+        const val EXPLORERS = "explorers"
         const val WALLETS = "wallets"
         const val ACTIVE_WALLET = "active_wallet"
         const val RESCAN_WALLET = "rescan_wallet"

@@ -61,6 +61,17 @@ class MultiWalletIntegrationTest {
                 assertEquals(SendFailure.WrongPassphrase, e.failure)
             }
             assertEquals(64, engine.send(prepared, "second passphrase!").length)
+
+            val walletDir = File(dir, "regtest/wallets/elektron_2")
+            assertTrue(walletDir.exists())
+            val remover = WalletRemover(rpc) { File(dir, "regtest/wallets/$it").deleteRecursively() }
+            assertEquals(RemoveFailure.WrongPassphrase, remover.remove("elektron_2", "first passphrase!"))
+            assertTrue((rpc.call("listwallets", emptyList<Any?>(), null) as List<*>).contains("elektron_2"))
+            assertTrue(walletDir.exists())
+            assertEquals(null, remover.remove("elektron_2", "second passphrase!"))
+            assertTrue(!(rpc.call("listwallets", emptyList<Any?>(), null) as List<*>).contains("elektron_2"))
+            assertTrue(!walletDir.exists())
+            assertTrue((rpc.call("listwallets", emptyList<Any?>(), null) as List<*>).contains(WalletBootstrap.DEFAULT_WALLET))
         } finally {
             supervisor.stop()
             dir.deleteRecursively()

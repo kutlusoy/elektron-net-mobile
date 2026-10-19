@@ -5,18 +5,18 @@ import java.math.RoundingMode
 
 enum class FeeLevel(val targetBlocks: Int) { Slow(30), Normal(5), Fast(1) }
 
-data class FeeOption(val level: FeeLevel, val lepPerVb: BigDecimal, val estimated: Boolean)
+data class FeeOption(val level: FeeLevel, val lepPerVb: BigDecimal, val estimated: Boolean, val fromExplorer: Boolean = false)
 
 object FeePresets {
     val STEP: BigDecimal = BigDecimal("0.1")
 
-    fun derive(estimates: Map<FeeLevel, BigDecimal?>, floor: BigDecimal): List<FeeOption> {
+    fun derive(estimates: Map<FeeLevel, BigDecimal?>, floor: BigDecimal, external: Set<FeeLevel> = emptySet()): List<FeeOption> {
         var previous = floor
         return FeeLevel.entries.map { level ->
             val raw = estimates[level]
             val value = (raw ?: previous).max(previous).max(floor).setScale(1, RoundingMode.UP)
             previous = value
-            FeeOption(level, value, estimated = raw != null)
+            FeeOption(level, value, estimated = raw != null, fromExplorer = raw != null && level in external)
         }
     }
 
@@ -30,7 +30,7 @@ object FeePresets {
     fun btcPerKvb(lepPerVb: BigDecimal): BigDecimal = lepPerVb.movePointLeft(5)
 }
 
-class FeeSource(private val rpc: WalletRpc) {
+class FeeSource(private val rpc: WalletRpc, private val fallback: (() -> org.elektronnet.mobile.explorer.RecommendedFees?)? = null) {
     private companion object {
         val WALLET_MIN: BigDecimal = BigDecimal.ONE
     }
@@ -47,6 +47,17 @@ class FeeSource(private val rpc: WalletRpc) {
             val result = runCatching { rpc.call("estimatesmartfee", listOf(level.targetBlocks), null) as? Map<*, *> }.getOrNull()
             if (result == null || result["errors"] != null) null else FeePresets.lepPerVbFromBtcPerKvb(result["feerate"])
         }
-        return FeePresets.derive(estimates, floor())
+        val missing = estimates.filterValues { it == null }.keys
+        val explorer = if (missing.isEmpty()) null else runCatching { fallback?.invoke() }.getOrNull()
+        val merged = estimates.mapValues { (level, value) ->
+            value ?: explorer?.let {
+                when (level) {
+                    FeeLevel.Slow -> it.hour
+                    FeeLevel.Normal -> it.halfHour
+                    FeeLevel.Fast -> it.fastest
+                }
+            }
+        }
+        return FeePresets.derive(merged, floor(), if (explorer == null) emptySet() else missing)
     }
 }

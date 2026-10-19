@@ -73,6 +73,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         overlayName = next.name
     }
     var refreshTick by remember { mutableStateOf(0) }
+    var explorers by remember { mutableStateOf(NodeHost.store?.explorers ?: emptyList()) }
+    var fastprune by remember { mutableStateOf(NodeHost.store?.fastprune() ?: true) }
     var openTx by rememberSaveable { mutableStateOf<String?>(null) }
     var walletData by remember { mutableStateOf<WalletData?>(null) }
     val store = NodeHost.store
@@ -80,7 +82,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     val snapshot = NodeHost.latest
     var storeReady by remember { mutableStateOf(store?.walletReady() ?: false) }
     val setup = NodeHost.setupStatus
-    val walletReady = storeReady || setup != SetupStatus.None
+    val walletReady = (storeReady && NodeHost.wallets.isNotEmpty()) || setup != SetupStatus.None
 
     LaunchedEffect(setup) {
         if (setup is SetupStatus.Ready || setup == SetupStatus.NeedsRescan || setup == SetupStatus.Rescanning) storeReady = true
@@ -149,7 +151,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             }
             val detail = openTx?.let { id -> walletData?.items?.firstOrNull { it.txid == id } }
             if (detail != null) {
-                TxDetailsScreen(detail, onClose = { openTx = null })
+                TxDetailsScreen(detail, onClose = { openTx = null }, onBumped = { refreshTick++ })
                 return@Box
             }
             val incoming = NodeHost.incomingUri
@@ -237,6 +239,20 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
                 Tab.Settings -> SettingsScreen(
                     settings = settings,
+                    onPolicy = {
+                        store?.savePolicy(it)
+                        settings = it
+                    },
+                    explorers = explorers,
+                    onExplorers = {
+                        store?.explorers = it
+                        explorers = it
+                    },
+                    fastprune = fastprune,
+                    onFastprune = {
+                        store?.setFastprune(it)
+                        fastprune = it
+                    },
                     biometric = org.elektronnet.mobile.ui.security.AppLockState.enabled,
                     onBiometric = onBiometric,
                     ui = UiState.settings,

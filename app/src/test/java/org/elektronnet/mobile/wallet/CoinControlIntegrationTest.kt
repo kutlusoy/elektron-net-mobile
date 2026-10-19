@@ -102,4 +102,45 @@ class CoinControlIntegrationTest {
             assertEquals(SendFailure.InsufficientFunds, e.failure)
         }
     }
+
+    @Test
+    fun labelsStickToAddresses() = withEnv(28982) { env ->
+        env.coins.setLabel(env.own, " Alice ")
+        assertEquals("Alice", env.coins.addresses().first { it.address == env.own }.label)
+    }
+
+    @Test
+    fun feeBumpReplacesAPendingPayment() = withEnv(28992) { env ->
+        val prepared = env.send.prepare(SendRequest(env.miner, 100_000_000L, false, rate(env)))
+        val oldTxid = env.send.send(prepared, pass)
+        val bumper = FeeBumper(env.rpc)
+        val suggested = bumper.suggestedRate(oldTxid)
+        assertTrue(suggested > bumper.currentRate(oldTxid))
+        val (oldFee, estimated) = bumper.estimate(oldTxid, suggested)
+        assertTrue(estimated > oldFee)
+        val newTxid = bumper.bump(oldTxid, suggested, pass)
+        val pool = env.rpc.call("getrawmempool", emptyList<Any?>(), null) as List<*>
+        assertTrue(pool.contains(newTxid))
+        assertFalse(pool.contains(oldTxid))
+        try {
+            bumper.bump(newTxid, bumper.currentRate(newTxid), pass)
+            throw AssertionError("expected FeeTooLow")
+        } catch (e: BumpException) {
+            assertEquals(BumpFailure.FeeTooLow, e.failure)
+        }
+        assertTrue((env.rpc.call("getwalletinfo", emptyList<Any?>(), "elektron") as Map<*, *>)["unlocked_until"] == 0L)
+    }
+
+    @Test
+    fun feeBumpNeedsTheRightPassphrase() = withEnv(29002) { env ->
+        val oldTxid = env.send.send(env.send.prepare(SendRequest(env.miner, 100_000_000L, false, rate(env))), pass)
+        val bumper = FeeBumper(env.rpc)
+        try {
+            bumper.bump(oldTxid, bumper.suggestedRate(oldTxid), "wrong passphrase!")
+            throw AssertionError("expected WrongPassphrase")
+        } catch (e: BumpException) {
+            assertEquals(BumpFailure.WrongPassphrase, e.failure)
+        }
+        assertTrue((env.rpc.call("getrawmempool", emptyList<Any?>(), null) as List<*>).contains(oldTxid))
+    }
 }

@@ -50,6 +50,7 @@
     "rescanblockchain": {"args": ["start_height"]},
     "listunspent": {"args": ["minconf", "addresses"]},
     "listlockunspent": {},
+    "setlabel": {"args": ["address", "label"]},
     "lockunspent": {"args": ["unlock", "transactions", "persistent"]},
     "gettxout": {"args": ["txid", "n"]},
     "listreceivedbyaddress": {"args": ["minconf", "include_empty"]},

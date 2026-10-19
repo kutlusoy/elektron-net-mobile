@@ -116,6 +116,19 @@ fun WalletDetailsScreen(onBack: () -> Unit) {
                 InfoRow(stringResource(R.string.details_derivation), stringResource(R.string.details_derivation_value, coinType))
             }
         }
+        var rescanning by remember { mutableStateOf(false) }
+        OutlinedButton(onClick = { rescanning = true }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.rescan_action)) }
+        Hint(stringResource(R.string.rescan_hint))
+        if (rescanning) RescanDialog(onDismiss = { rescanning = false })
+        val context = LocalContext.current
+        OutlinedButton(
+            onClick = {
+                val items = NodeHost.walletReader()?.let { runCatching { it.transactions(EXPORT_LIMIT) }.getOrNull() }
+                if (items != null) org.elektronnet.mobile.ui.tools.shareText(context, org.elektronnet.mobile.wallet.HistoryExport.csv(items))
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(stringResource(R.string.details_export)) }
+        Hint(stringResource(R.string.details_export_hint))
         Hint(stringResource(R.string.details_hint))
     }
 }
@@ -138,6 +151,7 @@ fun CoinsScreen(onBack: () -> Unit) {
     var addresses by remember { mutableStateOf<List<AddressRow>?>(null) }
     var failed by remember { mutableStateOf(false) }
     var tick by remember { mutableStateOf(0) }
+    var labelFor by remember { mutableStateOf<AddressRow?>(null) }
     LaunchedEffect(NodeHost.activeWallet, tick) {
         val result = withContext(Dispatchers.IO) {
             runCatching { NodeHost.coinControl()?.let { it.coins() to it.addresses() } }.getOrNull()
@@ -195,22 +209,51 @@ fun CoinsScreen(onBack: () -> Unit) {
             if (addresses != null && rows.isEmpty()) Text(stringResource(R.string.addr_empty))
             rows.forEach { row ->
                 GlassCard {
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.clickable { copyText(context, "address", row.address) }) {
-                        Text(row.address, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
-                        row.label?.let { Text(it, color = MaterialTheme.colorScheme.primary) }
-                        Hint(stringResource(R.string.addr_received, Amount.format(row.receivedLep) + " " + stringResource(R.string.balance_unit)) + "  ·  " + stringResource(R.string.addr_tx, row.txCount))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(modifier = Modifier.weight(1f).clickable { copyText(context, "address", row.address) }, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            Text(row.address, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
+                            row.label?.let { Text(it, color = MaterialTheme.colorScheme.primary) }
+                            Hint(stringResource(R.string.addr_received, Amount.format(row.receivedLep) + " " + stringResource(R.string.balance_unit)) + "  ·  " + stringResource(R.string.addr_tx, row.txCount))
+                        }
+                        TextButton(onClick = { labelFor = row }) { Text(stringResource(R.string.addr_label)) }
                     }
                 }
             }
             Hint(stringResource(R.string.addr_copy_hint))
         }
     }
+    labelFor?.let { row ->
+        LabelDialog(
+            row = row,
+            onSave = { text ->
+                labelFor = null
+                scope.launch {
+                    withContext(Dispatchers.IO) { runCatching { NodeHost.coinControl()?.setLabel(row.address, text) } }
+                    tick++
+                }
+            },
+            onDismiss = { labelFor = null },
+        )
+    }
+}
+
+@Composable
+private fun LabelDialog(row: AddressRow, onSave: (String) -> Unit, onDismiss: () -> Unit) {
+    var text by remember(row) { mutableStateOf(row.label.orEmpty()) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.addr_label)) },
+        text = { OutlinedTextField(value = text, onValueChange = { text = it.take(MAX_LABEL * 2) }, singleLine = true, label = { Text(stringResource(R.string.addr_label_hint)) }) },
+        confirmButton = { TextButton(onClick = { onSave(text) }) { Text(stringResource(R.string.action_save)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
+    )
 }
 
 @Composable
 fun WalletsScreen(onBack: () -> Unit, onAdd: () -> Unit) {
     BackHandler(onBack = onBack)
     var renaming by remember { mutableStateOf<OwnWallet?>(null) }
+    var removing by remember { mutableStateOf<OwnWallet?>(null) }
     ToolPage(stringResource(R.string.wallets_title), onBack) {
         NodeHost.wallets.forEach { wallet ->
             GlassCard {
@@ -221,12 +264,14 @@ fun WalletsScreen(onBack: () -> Unit, onAdd: () -> Unit) {
                         Hint(wallet.name)
                     }
                     TextButton(onClick = { renaming = wallet }) { Text(stringResource(R.string.wallets_rename)) }
+                    TextButton(onClick = { removing = wallet }) { Text(stringResource(R.string.wallets_remove), color = MaterialTheme.colorScheme.error) }
                 }
             }
         }
         Button(onClick = onAdd, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.wallets_add)) }
         Hint(stringResource(R.string.wallets_hint))
     }
+    removing?.let { wallet -> RemoveWalletDialog(wallet, onDismiss = { removing = null }) }
     renaming?.let { wallet ->
         var text by remember(wallet) { mutableStateOf(wallet.label) }
         AlertDialog(
@@ -247,6 +292,7 @@ fun WalletsScreen(onBack: () -> Unit, onAdd: () -> Unit) {
 }
 
 private const val MAX_LABEL = 32
+private const val EXPORT_LIMIT = 1000
 
 @Composable
 fun CoinPickerDialog(wallet: String, selected: List<Coin>, onDone: (List<Coin>) -> Unit, onDismiss: () -> Unit) {
@@ -289,5 +335,128 @@ fun CoinPickerDialog(wallet: String, selected: List<Coin>, onDone: (List<Coin>) 
             TextButton(onClick = { onDone(coins.orEmpty().filter { it.id in chosen }) }) { Text(stringResource(R.string.coinpick_use)) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
+    )
+}
+
+@Composable
+private fun RemoveWalletDialog(wallet: OwnWallet, onDismiss: () -> Unit) {
+    val scope = rememberCoroutineScope()
+    var passphrase by remember { mutableStateOf("") }
+    var confirmed by remember { mutableStateOf(false) }
+    var busy by remember { mutableStateOf(false) }
+    var failure by remember { mutableStateOf<org.elektronnet.mobile.wallet.RemoveFailure?>(null) }
+    AlertDialog(
+        onDismissRequest = { if (!busy) onDismiss() },
+        title = { Text(stringResource(R.string.wallets_remove_title, walletTitle(wallet))) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(stringResource(R.string.wallets_remove_body))
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { confirmed = !confirmed }) {
+                    androidx.compose.material3.Checkbox(checked = confirmed, onCheckedChange = null)
+                    Text(stringResource(R.string.wallets_remove_confirm), modifier = Modifier.padding(start = 8.dp))
+                }
+                OutlinedTextField(
+                    value = passphrase,
+                    onValueChange = { passphrase = it },
+                    label = { Text(stringResource(R.string.fr_pass_label)) },
+                    singleLine = true,
+                    visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Password),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                failure?.let {
+                    ErrorText(
+                        stringResource(
+                            when (it) {
+                                org.elektronnet.mobile.wallet.RemoveFailure.WrongPassphrase -> R.string.send_err_passphrase
+                                org.elektronnet.mobile.wallet.RemoveFailure.NodeNotReady -> R.string.fr_err_node
+                                org.elektronnet.mobile.wallet.RemoveFailure.Unknown -> R.string.wallets_remove_failed
+                            },
+                        ),
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                enabled = confirmed && passphrase.isNotEmpty() && !busy,
+                onClick = {
+                    val pass = passphrase
+                    passphrase = ""
+                    failure = null
+                    busy = true
+                    scope.launch {
+                        val result = withContext(Dispatchers.IO) { runCatching { NodeHost.removeWallet(wallet.name, pass) }.getOrDefault(org.elektronnet.mobile.wallet.RemoveFailure.Unknown) }
+                        busy = false
+                        if (result == null) onDismiss() else failure = result
+                    }
+                },
+            ) { Text(stringResource(R.string.wallets_remove), color = MaterialTheme.colorScheme.error) }
+        },
+        dismissButton = { TextButton(onClick = onDismiss, enabled = !busy) { Text(stringResource(R.string.action_cancel)) } },
+    )
+}
+
+@Composable
+private fun RescanDialog(onDismiss: () -> Unit) {
+    val scope = rememberCoroutineScope()
+    var passphrase by remember { mutableStateOf("") }
+    var busy by remember { mutableStateOf(false) }
+    var result by remember { mutableStateOf<org.elektronnet.mobile.wallet.RescanOutcome?>(null) }
+    val synced = NodeHost.latest?.headline is org.elektronnet.mobile.runtime.Headline.Synchronized
+    AlertDialog(
+        onDismissRequest = { if (!busy) onDismiss() },
+        title = { Text(stringResource(R.string.rescan_action)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                val outcome = result
+                when {
+                    outcome is org.elektronnet.mobile.wallet.RescanOutcome.Full -> Text(stringResource(R.string.rescan_done_full))
+                    outcome is org.elektronnet.mobile.wallet.RescanOutcome.Partial -> Text(stringResource(R.string.rescan_done_partial))
+                    else -> {
+                        Text(stringResource(if (synced) R.string.rescan_body else R.string.rescan_needs_sync))
+                        if (busy) androidx.compose.material3.LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        OutlinedTextField(
+                            value = passphrase,
+                            onValueChange = { passphrase = it },
+                            label = { Text(stringResource(R.string.fr_pass_label)) },
+                            singleLine = true,
+                            enabled = synced && !busy,
+                            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
+                            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Password),
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        if (outcome is org.elektronnet.mobile.wallet.RescanOutcome.Failed) {
+                            ErrorText(
+                                stringResource(if (outcome.reason == org.elektronnet.mobile.wallet.BootstrapFailure.WrongPassphrase) R.string.send_err_passphrase else R.string.rescan_failed),
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            if (result is org.elektronnet.mobile.wallet.RescanOutcome.Full || result is org.elektronnet.mobile.wallet.RescanOutcome.Partial) {
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_ok)) }
+            } else {
+                TextButton(
+                    enabled = synced && passphrase.isNotEmpty() && !busy,
+                    onClick = {
+                        val pass = passphrase
+                        passphrase = ""
+                        busy = true
+                        scope.launch {
+                            result = withContext(Dispatchers.IO) {
+                                runCatching { NodeHost.rescanActiveWallet(pass) }.getOrDefault(org.elektronnet.mobile.wallet.RescanOutcome.Failed(org.elektronnet.mobile.wallet.BootstrapFailure.Unknown))
+                            }
+                            busy = false
+                        }
+                    },
+                ) { Text(stringResource(R.string.rescan_start)) }
+            }
+        },
+        dismissButton = {
+            if (result == null || result is org.elektronnet.mobile.wallet.RescanOutcome.Failed) TextButton(onClick = onDismiss, enabled = !busy) { Text(stringResource(R.string.action_cancel)) }
+        },
     )
 }

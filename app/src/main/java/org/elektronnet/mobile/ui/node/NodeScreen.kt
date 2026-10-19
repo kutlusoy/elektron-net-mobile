@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
@@ -320,8 +321,9 @@ private fun PeerSection(peers: List<NodeHost.PeerRow>, showGeoCredit: Boolean) {
 @Composable
 private fun PeerCard(row: NodeHost.PeerRow) {
     val peer = row.peer
+    var open by rememberSaveable(peer.id) { mutableStateOf(false) }
     GlassCard {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.clickable { open = !open }) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(peer.address, fontFamily = org.elektronnet.mobile.ui.theme.ElektronMono, modifier = Modifier.weight(1f))
                 Text(
@@ -335,7 +337,24 @@ private fun PeerCard(row: NodeHost.PeerRow) {
             row.country?.let { Text("${it.flag} ${it.name}", color = MaterialTheme.colorScheme.primary) }
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 peer.pingMs?.let { Text(stringResource(R.string.peer_ping, it.toInt()), style = MaterialTheme.typography.bodySmall) }
-                peer.startingHeight?.takeIf { it >= 0 }?.let { Text(stringResource(R.string.peer_height, it), style = MaterialTheme.typography.bodySmall) }
+                (peer.syncedBlocks?.takeIf { it >= 0 } ?: peer.startingHeight?.takeIf { it >= 0 })?.let { Text(stringResource(R.string.peer_height, it), style = MaterialTheme.typography.bodySmall) }
+            }
+            if (open) {
+                androidx.compose.material3.HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
+                val dash = "-"
+                TelemetryRow(stringResource(R.string.peer_id), peer.id.toString())
+                TelemetryRow(stringResource(R.string.peer_network), peer.network.ifEmpty { dash })
+                row.country?.let { TelemetryRow(stringResource(R.string.peer_country), "${it.flag} ${it.name} (${it.code})") }
+                TelemetryRow(stringResource(R.string.peer_connection_type), peer.connectionType.ifEmpty { dash })
+                TelemetryRow(stringResource(R.string.peer_transport), peer.transport.ifEmpty { dash })
+                TelemetryRow(stringResource(R.string.net_protocol), peer.version?.toString() ?: dash)
+                TelemetryRow(stringResource(R.string.peer_synced_headers), peer.syncedHeaders?.takeIf { it >= 0 }?.toString() ?: dash)
+                TelemetryRow(stringResource(R.string.peer_synced_blocks), peer.syncedBlocks?.takeIf { it >= 0 }?.toString() ?: dash)
+                TelemetryRow(stringResource(R.string.peer_min_ping), peer.minPingMs?.let { stringResource(R.string.peer_ms, it.toInt()) } ?: dash)
+                TelemetryRow(stringResource(R.string.peer_received), peer.bytesRecv?.let(TelemetryFormat::bytes) ?: dash)
+                TelemetryRow(stringResource(R.string.peer_sent), peer.bytesSent?.let(TelemetryFormat::bytes) ?: dash)
+                TelemetryRow(stringResource(R.string.peer_time_offset), peer.timeOffset?.let { "$it s" } ?: dash)
+                if (peer.localBind.isNotEmpty()) TelemetryRow(stringResource(R.string.peer_local_bind), peer.localBind)
             }
         }
     }

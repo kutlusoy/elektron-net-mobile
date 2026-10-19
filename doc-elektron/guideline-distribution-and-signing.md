@@ -1,7 +1,7 @@
 # Elektron Net: `elektron-net-mobile` Distribution, Signing and Flavors
 
-- **Version:** 0.6 (draft)
-- **Date:** October 18, 2026
+- **Version:** 0.7 (draft)
+- **Date:** October 19, 2026
 - **Audience:** Release engineers, Android developers, maintainers who operate store accounts and signing keys
 - **Reference implementation:** `app/build.gradle.kts` product flavors and `native-build/` in this repository (to be created), [F-Droid Build Metadata Reference](https://f-droid.org/docs/Build_Metadata_Reference/), [Reproducible Builds](https://f-droid.org/docs/Reproducible_Builds/)
 - **Related repositories:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) (node source), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum)
@@ -80,6 +80,9 @@ Two product flavors from one code base. The testnet flavor is named `tnet` becau
 
 - Tagged releases carry the signed APK of both flavors (`mainnet` and `tnet`), checksums, signature, the build manifest and release notes.
 - Nightly builds (`main` Core) are published separately as pre-releases, never as the latest release.
+- **Pipeline as built:** the release workflow has a `native` job (Docker, pinned NDK, the `rescanutxoset` patch and its wallet fix from `native-build/patches`, the contract check on a host build, then the arm64-v8a and x86_64 libraries) and an `apk` job. The jobs pass `jniLibs` and the build manifest as one `native.tar`, and both check that `libelektrond.so` is present before the APKs are built. Without release key secrets the APKs are signed with a temporary key and carry the `.nightly` application ID, so they never replace a release install.
+- **Peer country database:** `tools/fetch-geoip.sh` downloads DB-IP Country Lite (CC BY 4.0) before the APK build. A failed download only produces a warning, peers then show no country.
+- **Release key and secrets** are created by the maintainer (`ELEKTRON_KEYSTORE_BASE64`, `ELEKTRON_KEYSTORE_PASSWORD`, `ELEKTRON_KEY_ALIAS`, `ELEKTRON_KEY_PASSWORD`). The NDK checksum in `native-build/core-source.env` is still to be pinned after comparing it with Google's published value.
 
 #### Release workflow
 

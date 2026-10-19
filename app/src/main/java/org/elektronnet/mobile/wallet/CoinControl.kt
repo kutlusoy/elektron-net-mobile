@@ -58,6 +58,10 @@ class CoinControl(private val rpc: WalletRpc, private val walletName: String = W
         rpc.call("lockunspent", if (frozen) listOf(false, outputs, true) else listOf(true, outputs), walletName)
     }
 
+    fun setLabel(address: String, label: String) {
+        rpc.call("setlabel", listOf(address, label.trim()), walletName)
+    }
+
     fun addresses(): List<AddressRow> =
         (rpc.call("listreceivedbyaddress", listOf(0, true), walletName) as List<*>).map { entry ->
             val row = entry as Map<*, *>

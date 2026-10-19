@@ -45,6 +45,7 @@ class NodeSupervisor(
                 check(config.binary.exists()) { "node binary is missing: ${config.binary}" }
                 check(config.binary.canExecute()) { "node binary is not executable: ${config.binary}" }
                 NodeConfigFile.ensure(config)
+                DatadirVersion.ensure(config.datadir)
                 config.cookieFile.delete()
                 val builder = ProcessBuilder(listOf(config.binary.absolutePath) + config.arguments())
                     .directory(config.datadir)

@@ -76,6 +76,32 @@ object NodeHost {
         refreshWallets()
     }
 
+    fun removeWallet(name: String, passphrase: String): org.elektronnet.mobile.wallet.RemoveFailure? {
+        val supervisor = runningSupervisor() ?: return org.elektronnet.mobile.wallet.RemoveFailure.NodeNotReady
+        val root = datadir ?: return org.elektronnet.mobile.wallet.RemoveFailure.Unknown
+        val chain = Chain.fromBuildName(ChainConfig.chain)
+        val failure = org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) { wallet ->
+            File(root, "${chain.subdir}/wallets/$wallet").deleteRecursively()
+        }.remove(name, passphrase)
+        if (failure != null) return failure
+        registry?.remove(name)
+        settings?.setReceiveAddressFor(name, null)
+        refreshWallets()
+        if (wallets.isEmpty()) {
+            walletSetup.cancel()
+            setupStatus = walletSetup.status
+            settings?.setWalletReady(false)
+            settings?.rescanPending = false
+        }
+        return null
+    }
+
+    fun rescanActiveWallet(passphrase: String): org.elektronnet.mobile.wallet.RescanOutcome {
+        val context = appContext ?: return org.elektronnet.mobile.wallet.RescanOutcome.Failed(org.elektronnet.mobile.wallet.BootstrapFailure.NodeNotReady)
+        val node = bootstrap(context, activeWallet) ?: return org.elektronnet.mobile.wallet.RescanOutcome.Failed(org.elektronnet.mobile.wallet.BootstrapFailure.NodeNotReady)
+        return node.rescan(passphrase)
+    }
+
     fun walletNames(): List<String> = (registry?.wallets().orEmpty().map { it.name } + WalletBootstrap.DEFAULT_WALLET).distinct()
 
     fun nextWalletName(): String = registry?.nextName() ?: WalletBootstrap.DEFAULT_WALLET
@@ -227,8 +253,22 @@ object NodeHost {
 
     private val addressCheck: AddressCheck get() = AddressCheck(ChainConfig.isTestnet)
 
+    private var cachedFees: Pair<Long, org.elektronnet.mobile.explorer.RecommendedFees>? = null
+
+    fun explorerFees(): org.elektronnet.mobile.explorer.RecommendedFees? {
+        val urls = settings?.explorers.orEmpty()
+        if (urls.isEmpty()) return null
+        val now = System.currentTimeMillis()
+        cachedFees?.let { if (now - it.first < FEE_CACHE_MS) return it.second }
+        val fresh = org.elektronnet.mobile.explorer.ExplorerClient().fees(urls) ?: return null
+        cachedFees = now to fresh
+        return fresh
+    }
+
+    fun explorerTxUrl(txid: String): String? = settings?.explorers?.firstOrNull()?.let { org.elektronnet.mobile.explorer.ExplorerList.txUrl(it, txid) }
+
     fun sendEngine(wallet: String = activeWallet): SendEngine? =
-        runningSupervisor()?.let { SendEngine(it.rpc.asWalletRpc(), addressCheck, wallet) }
+        runningSupervisor()?.let { SendEngine(it.rpc.asWalletRpc(), addressCheck, wallet, ::explorerFees) }
 
     fun escrowManager(): EscrowManager? {
         val supervisor = runningSupervisor() ?: return null
@@ -256,6 +296,8 @@ object NodeHost {
 
     fun messageTools(): MessageTools? = runningSupervisor()?.let { MessageTools(it.rpc.asWalletRpc(), addressCheck, activeWallet) }
 
+    fun feeBumper(): org.elektronnet.mobile.wallet.FeeBumper? = runningSupervisor()?.let { org.elektronnet.mobile.wallet.FeeBumper(it.rpc.asWalletRpc(), activeWallet) }
+
     fun coinControl(wallet: String = activeWallet): CoinControl? = runningSupervisor()?.let { CoinControl(it.rpc.asWalletRpc(), wallet) }
 
     fun lockWallet() {
@@ -263,6 +305,8 @@ object NodeHost {
         val names = walletNames() + (settings?.escrowStore()?.load().orEmpty()).map { it.walletName }
         Thread { names.forEach { runCatching { supervisor.rpc.call("walletlock", emptyList<Any?>(), wallet = it) } } }.start()
     }
+
+    private const val FEE_CACHE_MS = 60_000L
 
     val paymentUri: PaymentUri = PaymentUri(ChainConfig.uriScheme, AddressCheck(ChainConfig.isTestnet))
 

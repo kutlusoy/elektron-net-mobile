@@ -41,8 +41,9 @@ class SendEngine(
     private val rpc: WalletRpc,
     private val addresses: AddressCheck,
     private val walletName: String = WalletBootstrap.DEFAULT_WALLET,
+    private val feeFallback: (() -> org.elektronnet.mobile.explorer.RecommendedFees?)? = null,
 ) {
-    fun feeOptions(): List<FeeOption> = guard { FeeSource(rpc).options() }
+    fun feeOptions(): List<FeeOption> = guard { FeeSource(rpc, feeFallback).options() }
 
     fun feeFloor(): BigDecimal = guard { FeeSource(rpc).floor() }
 
