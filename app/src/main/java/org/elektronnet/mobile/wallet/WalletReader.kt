@@ -2,7 +2,7 @@ package org.elektronnet.mobile.wallet
 
 import java.math.BigDecimal
 
-data class Balances(val trustedLep: Long, val pendingLep: Long, val immatureLep: Long)
+data class Balances(val trustedLep: Long, val pendingLep: Long, val immatureLep: Long, val usedLep: Long = 0L)
 
 enum class TxKind { Received, Sent, Moved, Mined }
 
@@ -37,7 +37,7 @@ data class TxItem(
 class WalletReader(private val rpc: WalletRpc, private val walletName: String = WalletBootstrap.DEFAULT_WALLET) {
     fun balances(): Balances {
         val mine = (rpc.call("getbalances", emptyList<Any?>(), walletName) as Map<*, *>)["mine"] as Map<*, *>
-        return Balances(lep(mine["trusted"]), lep(mine["untrusted_pending"]), lep(mine["immature"]))
+        return Balances(lep(mine["trusted"]), lep(mine["untrusted_pending"]), lep(mine["immature"]), lep(mine["used"]))
     }
 
     fun transactions(limit: Int = DEFAULT_LIMIT): List<TxItem> {

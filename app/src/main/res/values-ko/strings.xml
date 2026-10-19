@@ -657,4 +657,8 @@
     <string name="console_stop">중지</string>
     <string name="console_stopped">노드에서 명령이 중지되었습니다.</string>
     <string name="console_discarded">노드가 이 명령을 중지할 수 없습니다. 백그라운드에서 계속 실행되며 결과는 버려집니다.</string>
+    <string name="details_used">재사용된 주소에</string>
+    <string name="details_used_hint">이 코인은 이미 사용한 적이 있는 주소에 있습니다. 지갑은 결제가 서로 연결되지 않도록 이 코인을 자동으로 사용하지 않습니다. 직접 사용하려면 코인에서 선택하세요.</string>
+    <string name="details_noreuse">주소 재사용 방지가 켜져 있습니다. 모든 수신 주소와 잔돈 주소는 한 번만 사용되며, 재사용된 주소의 코인은 자동 사용에서 제외됩니다.</string>
+    <string name="coins_reused">재사용된 주소</string>
 </resources>

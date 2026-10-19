@@ -657,4 +657,8 @@
     <string name="console_stop">停止</string>
     <string name="console_stopped">コマンドをノード上で停止しました。</string>
     <string name="console_discarded">ノードはこのコマンドを停止できません。バックグラウンドで処理が続き、結果は破棄されます。</string>
+    <string name="details_used">再利用されたアドレス上</string>
+    <string name="details_used_hint">このコインは、すでに使用済みのアドレスにあります。ウォレットは自動では使用しないので、支払いが紐付けられることはありません。意図して使うには、コインで選択してください。</string>
+    <string name="details_noreuse">アドレス再利用保護がオンです。受取用とおつり用のアドレスはすべて一度だけ使われ、再利用されたアドレス上のコインは自動の支払いから除外されます。</string>
+    <string name="coins_reused">再利用されたアドレス</string>
 </resources>

@@ -550,7 +550,7 @@
     <string name="setup_enter_passphrase">Passphrase eingeben, um die Wiederherstellung abzuschließen</string>
     <string name="setup_pass_title">Wiederherstellung abschließen</string>
     <string name="setup_pass_body">Deine Passphrase entsperrt die Wallet für die Suche nach deinen Coins. Sie wird nicht gespeichert.</string>
-    <string name="brand_tagline">Deine eigene Node. Deine eigenen Schlüssel.</string>
+    <string name="brand_tagline">Dein Node, deine Keys</string>
     <string name="fr_welcome_title">Willkommen</string>
     <string name="fr_welcome_body">Deine eigene Wallet mit deiner eigenen Kopie des Netzwerks. Kein Konto, kein Server.</string>
     <string name="fr_create">Neue Wallet erstellen</string>
@@ -657,4 +657,8 @@
     <string name="console_stop">Stopp</string>
     <string name="console_stopped">Der Befehl wurde auf dem Node gestoppt.</string>
     <string name="console_discarded">Der Node kann diesen Befehl nicht stoppen. Er läuft im Hintergrund weiter und sein Ergebnis wird verworfen.</string>
+    <string name="details_used">Auf wiederverwendeten Adressen</string>
+    <string name="details_used_hint">Diese Coins liegen auf einer Adresse, von der bereits ausgegeben wurde. Die Wallet gibt sie nicht automatisch aus, damit deine Zahlungen nicht verknüpft werden können. Wähle sie unter Coins aus, um sie gezielt auszugeben.</string>
+    <string name="details_noreuse">Schutz vor Adresswiederverwendung ist aktiv: Jede Empfangs- und Wechselgeldadresse wird nur einmal verwendet, und Coins auf einer wiederverwendeten Adresse bleiben von der automatischen Auswahl ausgeschlossen.</string>
+    <string name="coins_reused">Wiederverwendete Adresse</string>
 </resources>

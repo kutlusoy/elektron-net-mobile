@@ -657,4 +657,8 @@
     <string name="console_stop">停止</string>
     <string name="console_stopped">该命令已在节点上停止。</string>
     <string name="console_discarded">节点无法停止此命令。它会在后台继续运行，其结果将被丢弃。</string>
+    <string name="details_used">位于重复使用的地址</string>
+    <string name="details_used_hint">这些币所在的地址之前已经花费过。钱包不会自动花费它们，这样你的付款就无法被关联。请在“币”中选择它们，以便有意识地花费。</string>
+    <string name="details_noreuse">地址重复使用保护已开启：每个收款地址和找零地址只使用一次，重复使用地址上的币不会被自动花费。</string>
+    <string name="coins_reused">重复使用的地址</string>
 </resources>

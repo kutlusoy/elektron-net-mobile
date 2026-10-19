@@ -657,4 +657,8 @@
     <string name="console_stop">Dừng</string>
     <string name="console_stopped">Lệnh đã bị dừng trên nút.</string>
     <string name="console_discarded">Nút không thể dừng lệnh này. Lệnh vẫn chạy nền và kết quả sẽ bị loại bỏ.</string>
+    <string name="details_used">Trên địa chỉ được dùng lại</string>
+    <string name="details_used_hint">Các coin này nằm trên một địa chỉ đã từng được chi tiêu. Ví không tự động chi tiêu chúng, nên các khoản thanh toán của bạn không thể bị liên kết. Hãy chọn chúng trong Coin để chủ động chi tiêu.</string>
+    <string name="details_noreuse">Bảo vệ chống dùng lại địa chỉ đang bật: mỗi địa chỉ nhận và địa chỉ nhận tiền thừa chỉ được dùng một lần, và coin trên địa chỉ được dùng lại sẽ không bị chi tiêu tự động.</string>
+    <string name="coins_reused">Địa chỉ được dùng lại</string>
 </resources>

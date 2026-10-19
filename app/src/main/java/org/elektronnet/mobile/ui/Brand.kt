@@ -136,11 +136,11 @@ fun BrandHeader(compact: Boolean, showTagline: Boolean = false) {
         androidx.compose.foundation.layout.Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 8.dp),
         ) {
             ElektronLogo(if (showTagline) 52.dp else 36.dp)
             Column {
-                Text(name, fontWeight = FontWeight.Bold, fontSize = if (showTagline) 22.sp else 18.sp, letterSpacing = 3.sp, color = MaterialTheme.colorScheme.onBackground)
+                Text(name, fontWeight = FontWeight.Bold, fontSize = if (showTagline) 22.sp else 18.sp, letterSpacing = 1.5.sp, color = MaterialTheme.colorScheme.onBackground)
                 if (showTagline) Text(stringResource(R.string.brand_tagline), color = LocalTokens.current.accent, style = MaterialTheme.typography.bodyMedium)
             }
         }

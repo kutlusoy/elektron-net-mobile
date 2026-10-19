@@ -53,6 +53,7 @@ class SendEngine(
     fun spendableLep(): Long = WalletReader(rpc, walletName).balances().trustedLep
 
     fun prepare(request: SendRequest): PreparedSend {
+        AddressReuse.ensure(rpc, walletName)
         when (val kind = addresses.classify(request.address)) {
             AddressKind.Native -> Unit
             AddressKind.LegacyBase58 -> if (!request.allowLegacy) throw SendException(SendFailure.LegacyNotConfirmed)

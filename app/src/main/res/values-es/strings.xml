@@ -657,4 +657,8 @@
     <string name="console_stop">Detener</string>
     <string name="console_stopped">El comando se detuvo en el nodo.</string>
     <string name="console_discarded">El nodo no puede detener este comando. Sigue funcionando en segundo plano y su resultado se descarta.</string>
+    <string name="details_used">En direcciones reutilizadas</string>
+    <string name="details_used_hint">Estas monedas están en una dirección de la que ya se gastó. La billetera no las gasta automáticamente, para que tus pagos no se puedan vincular. Selecciónalas en Monedas para gastarlas a propósito.</string>
+    <string name="details_noreuse">La protección contra reutilización de direcciones está activada: cada dirección de recepción y de cambio se usa una sola vez, y las monedas en una dirección reutilizada quedan fuera del gasto automático.</string>
+    <string name="coins_reused">Dirección reutilizada</string>
 </resources>

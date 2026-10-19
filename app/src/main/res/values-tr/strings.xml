@@ -657,4 +657,8 @@
     <string name="console_stop">Durdur</string>
     <string name="console_stopped">Komut düğümde durduruldu.</string>
     <string name="console_discarded">Düğüm bu komutu durduramıyor. Arka planda çalışmaya devam eder ve sonucu atılır.</string>
+    <string name="details_used">Yeniden kullanılan adreslerde</string>
+    <string name="details_used_hint">Bu coinler, daha önce harcama yapılmış bir adreste duruyor. Cüzdan bunları otomatik olarak harcamaz, böylece ödemeleriniz birbirine bağlanamaz. Bilerek harcamak için Coinler bölümünden seçin.</string>
+    <string name="details_noreuse">Adres yeniden kullanım koruması açık: her alma ve para üstü adresi yalnızca bir kez kullanılır, yeniden kullanılan bir adresteki coinler otomatik harcamanın dışında kalır.</string>
+    <string name="coins_reused">Yeniden kullanılan adres</string>
 </resources>

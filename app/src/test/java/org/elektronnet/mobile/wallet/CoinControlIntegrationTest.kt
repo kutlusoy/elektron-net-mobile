@@ -158,4 +158,36 @@ class CoinControlIntegrationTest {
         assertEquals(listOf(TxKind.Sent, TxKind.Sent, TxKind.Sent), paged.filter { it.kind == TxKind.Sent }.map { it.kind })
         assertEquals(paged.map { it.timeSeconds }.sortedDescending(), paged.map { it.timeSeconds })
     }
+
+    @Test
+    fun newWalletsAvoidAddressReuse() = withEnv(29022) { env ->
+        val info = env.rpc.call("getwalletinfo", emptyList<Any?>(), "elektron") as Map<*, *>
+        assertEquals(true, info["avoid_reuse"])
+        assertTrue(AddressReuse.ensure(env.rpc, "elektron"))
+    }
+
+    @Test
+    fun existingWalletsGetTheFlagOnFirstUse() = withEnv(29032) { env ->
+        env.rpc.call("setwalletflag", listOf("avoid_reuse", false), "elektron")
+        assertEquals(false, (env.rpc.call("getwalletinfo", emptyList<Any?>(), "elektron") as Map<*, *>)["avoid_reuse"])
+        env.send.prepare(SendRequest(env.miner, 10_000_000L, false, rate(env)))
+        assertEquals(true, (env.rpc.call("getwalletinfo", emptyList<Any?>(), "elektron") as Map<*, *>)["avoid_reuse"])
+    }
+
+    @Test
+    fun coinsOnAReusedAddressStayOutOfAutomaticSpending() = withEnv(29042) { env ->
+        env.send.send(env.send.prepare(SendRequest(env.miner, 100_000_000L, false, rate(env))), pass)
+        env.rpc.call("generatetoaddress", listOf(1, env.miner), "miner")
+        env.rpc.call("sendtoaddress", linkedMapOf("address" to env.own, "amount" to 1.5, "fee_rate" to 10), "miner")
+        env.rpc.call("generatetoaddress", listOf(1, env.miner), "miner")
+        val balances = WalletReader(env.rpc).balances()
+        assertEquals(150_000_000L, balances.usedLep)
+        val coin = env.coins.coins().first { it.reused }
+        assertEquals(150_000_000L, coin.amountLep)
+        assertEquals(env.own, coin.address)
+        val prepared = env.send.prepare(SendRequest(env.miner, null, true, rate(env)))
+        assertEquals(balances.trustedLep, prepared.review.amountLep + prepared.review.feeLep)
+        val manual = env.send.prepare(SendRequest(env.miner, null, true, rate(env), coins = listOf(coin)))
+        assertEquals(coin.amountLep, manual.review.amountLep + manual.review.feeLep)
+    }
 }

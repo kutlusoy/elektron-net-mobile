@@ -657,4 +657,8 @@
     <string name="console_stop">Hentikan</string>
     <string name="console_stopped">Perintah dihentikan di node.</string>
     <string name="console_discarded">Node tidak dapat menghentikan perintah ini. Perintah tetap berjalan di latar belakang dan hasilnya dibuang.</string>
+    <string name="details_used">Pada alamat yang dipakai ulang</string>
+    <string name="details_used_hint">Koin ini berada di alamat yang sudah pernah dibelanjakan. Dompet tidak membelanjakannya secara otomatis, sehingga pembayaranmu tidak bisa dihubungkan. Pilih di Koin untuk membelanjakannya dengan sengaja.</string>
+    <string name="details_noreuse">Perlindungan pemakaian ulang alamat aktif: setiap alamat penerimaan dan alamat kembalian hanya dipakai sekali, dan koin pada alamat yang dipakai ulang tidak ikut dibelanjakan otomatis.</string>
+    <string name="coins_reused">Alamat dipakai ulang</string>
 </resources>
