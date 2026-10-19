@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import org.elektronnet.mobile.ui.model.NodeHealth
+import org.elektronnet.mobile.ui.model.NodeHealthRules
 import org.elektronnet.mobile.ui.model.NodeLogPhase
 import org.elektronnet.mobile.ui.model.NodePhase
 import org.elektronnet.mobile.ui.model.SyncEta
@@ -68,6 +70,28 @@ fun NodeScreen(
             delay(2_000)
         }
     }
+    var diag by remember { mutableStateOf<NodeHost.Diagnostics?>(null) }
+    var now by remember { mutableStateOf(System.currentTimeMillis()) }
+    var noPeersSince by remember { mutableStateOf<Long?>(null) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            diag = withContext(Dispatchers.IO) { NodeHost.diagnostics() }
+            now = System.currentTimeMillis()
+            delay(1_000)
+        }
+    }
+    val peerCount = model.details?.peers
+    LaunchedEffect(peerCount) { noPeersSince = if (peerCount == 0L) System.currentTimeMillis() else null }
+    val running = model.details != null
+    val starting = model.state == NodeTabState.Starting
+    val health = NodeHealthRules.assess(
+        starting = starting,
+        running = running,
+        elapsedMs = diag?.let { if (it.startedAt > 0) now - it.startedAt else 0 } ?: 0,
+        silentMs = diag?.let { if (it.lastLogAt > 0) now - it.lastLogAt else 0 } ?: 0,
+        peers = peerCount ?: -1,
+        noPeersForMs = noPeersSince?.let { now - it } ?: 0,
+    )
     val phase = NodeLogPhase.of(log)
     val eta = remember { SyncEta() }
     val details = model.details
@@ -86,6 +110,16 @@ fun NodeScreen(
             hint(model)?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             model.detail?.let { Text(it, style = MaterialTheme.typography.bodySmall.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)) }
             ProgressBlock(model, phase, etaText)
+            if (starting || running) {
+                DiagnosticsBlock(
+                    starting = starting,
+                    peers = peerCount,
+                    elapsed = diag?.takeIf { it.startedAt > 0 }?.let { now - it.startedAt },
+                    sinceLog = diag?.takeIf { it.lastLogAt > 0 }?.let { now - it.lastLogAt },
+                    warmup = diag?.warmup,
+                    health = health,
+                )
+            }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
             if (model.canPause) {
@@ -109,6 +143,29 @@ fun NodeScreen(
             PeerSection(peers, showGeoCredit)
         }
     }
+}
+
+@Composable
+private fun DiagnosticsBlock(starting: Boolean, peers: Long?, elapsed: Long?, sinceLog: Long?, warmup: String?, health: NodeHealth) {
+    val muted = MaterialTheme.colorScheme.onSurfaceVariant
+    val small = MaterialTheme.typography.bodySmall
+    if (peers != null) {
+        Text(
+            if (peers > 0) stringResource(R.string.diag_peers, peers) else stringResource(R.string.diag_no_peers),
+            color = if (peers > 0) MaterialTheme.colorScheme.primary else muted,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        )
+    }
+    if (starting && !warmup.isNullOrBlank()) Text(warmup, color = muted, style = small)
+    if (elapsed != null && starting) Text(stringResource(R.string.diag_elapsed, NodeHealthRules.clock(elapsed)), color = muted, style = small)
+    if (sinceLog != null) Text(stringResource(R.string.diag_last_log, NodeHealthRules.clock(sinceLog)), color = muted, style = small)
+    val warning = when (health) {
+        NodeHealth.Silent -> R.string.health_silent
+        NodeHealth.SlowStart -> R.string.health_slow_start
+        NodeHealth.NoPeers -> R.string.health_no_peers
+        NodeHealth.Ok -> null
+    }
+    warning?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error, style = small) }
 }
 
 @Composable
