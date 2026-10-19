@@ -638,7 +638,16 @@ Verified on a host build of the branch with our patch set: the `rescanutxoset` p
 
 The D1 and D2 defects of the UTXO recovery (`fix-report-utxo-recovery-after-pruning.md`, X11) are fixed on `elektron-net` branch `4.0.6` (wallet code only, activation height 500000 unchanged). They stay open for any older node source until `v4.0.6` is released.
 
-**How to use it:** until the tag `v4.0.6` exists, run the release workflow by hand with `build_type` dev or nightly and `core_ref` `4.0.6`. Once the tag is pushed, release builds with version `v4.0.6-m<wallet version>` pick it up through the normal tag flow (§11.1).
+**How to use it:** until the tag `v4.0.6` exists, run the release workflow by hand with `build_type` dev or nightly and `core_ref` `4.0.6`. Once the tag is pushed, tag the app `v4.0.6-m0.1.0` (version code 400060100, checked by `tools/version.py --selftest`). The release workflow then builds node `v4.0.6` through the normal tag flow (§11.1), the build patch `rescanutxoset.py` is a no-op on it (verified), and the contract check passes 151 of 151.
+
+**Running the same app on v4.0.5:** the app only talks JSON-RPC, so a build from tag `v4.0.5-m0.1.0` works. The build patch then adds `rescanutxoset` and the D1 fix (verified to apply on `v4.0.5`). D2 stays open there: balances are right after a restore, but coins recovered only from the UTXO set cannot be spent through the normal send flow. A v4.0.5 node also forks off at mainnet height 500,000, so it is only a bridge.
+
+**Release checklist for v4.0.6:**
+
+- [ ] Tag `v4.0.6` in `elektron-net`
+- [ ] Set `app/mobile-version.txt` as intended and tag the app `v4.0.6-m<wallet version>`
+- [ ] Run the release workflow and confirm the manifest shows `v4.0.6` and the contract check passes
+- [ ] Install on a device and run a seed restore on a pruned node
 
 ## 12. Cross-Repo Impact
 

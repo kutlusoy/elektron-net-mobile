@@ -32,12 +32,13 @@ def selftest():
         "4.0.4-m0.1.1": 400040101,
         "4.0.4-m0.2.0": 400040200,
         "4.0.5-m0.1.0": 400050100,
+        "4.0.6-m0.1.0": 400060100,
         "4.1.0-m0.1.0": 401000100,
         "5.0.0-m1.0.0": 500001000,
     }
     for version, code in cases.items():
         assert int(parse(version)["version_code"]) == code, (version, code)
-    ordered = ["4.0.4-m0.1.0", "4.0.4-m0.1.1", "4.0.4-m0.2.0", "4.0.5-m0.1.0", "4.1.0-m0.1.0", "5.0.0-m0.1.0"]
+    ordered = ["4.0.4-m0.1.0", "4.0.4-m0.1.1", "4.0.4-m0.2.0", "4.0.5-m0.1.0", "4.0.6-m0.1.0", "4.1.0-m0.1.0", "5.0.0-m0.1.0"]
     codes = [int(parse(v)["version_code"]) for v in ordered]
     assert codes == sorted(codes) and len(set(codes)) == len(codes)
     assert max(codes) < 2_100_000_000
