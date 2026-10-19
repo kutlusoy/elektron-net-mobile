@@ -198,7 +198,7 @@ private fun BumpSection(txid: String, onBumped: (String) -> Unit) {
         keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal),
         modifier = Modifier.fillMaxWidth(),
     )
-    androidx.compose.material3.SecretField(
+    SecretField(
         value = passphrase,
         onValueChange = { passphrase = it },
         label = { Text(stringResource(R.string.fr_pass_label)) },

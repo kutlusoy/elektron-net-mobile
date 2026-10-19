@@ -29,6 +29,7 @@ import org.elektronnet.mobile.node.UpdateCheck
 import org.elektronnet.mobile.node.UpdateFetch
 import org.elektronnet.mobile.node.UpdateResult
 import org.elektronnet.mobile.ui.theme.UnitState
+import org.elektronnet.mobile.wallet.Amount
 import org.elektronnet.mobile.wallet.AmountUnit
 import androidx.compose.material3.Slider
 import kotlin.math.roundToInt
