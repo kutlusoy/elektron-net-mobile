@@ -296,6 +296,15 @@ object NodeHost {
 
     fun messageTools(): MessageTools? = runningSupervisor()?.let { MessageTools(it.rpc.asWalletRpc(), addressCheck, activeWallet) }
 
+    fun consoleRunner(): org.elektronnet.mobile.console.ConsoleRunner? {
+        val supervisor = runningSupervisor() ?: return null
+        val context = appContext ?: return null
+        val floor = settings?.load()?.storageFloorBytes ?: 0L
+        return ConsoleStore.runner(context, supervisor.rpc, floor)
+    }
+
+    fun consoleRpc(): org.elektronnet.mobile.wallet.WalletRpc? = runningSupervisor()?.rpc?.asWalletRpc(timeoutMs = 120_000)
+
     fun feeBumper(): org.elektronnet.mobile.wallet.FeeBumper? = runningSupervisor()?.let { org.elektronnet.mobile.wallet.FeeBumper(it.rpc.asWalletRpc(), activeWallet) }
 
     fun coinControl(wallet: String = activeWallet): CoinControl? = runningSupervisor()?.let { CoinControl(it.rpc.asWalletRpc(), wallet) }

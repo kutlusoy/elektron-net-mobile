@@ -597,7 +597,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [x] Datadir versioning (§5.4): schema marker that refuses data from a newer app. The guided reset is still open
 - [ ] Localization: string resources only, parity and hard-coded-string gates are in place. German, Spanish, French and Italian translations are still open (§3.5)
 - [x] Wallet and Node sections with the node transparency elements of §3.4
-- [ ] Developer console in debug builds, Open tier only (§3.6)
+- [x] Console: built as the full Expert console of Phase 3 instead of a debug-only one (§3.6)
 - [x] Snapshot bootstrap verified end to end on mainnet on a real phone: headers, snapshot activation and the tip were reached. Testnet is still open
 
 ### Phase 2: Wallet core
@@ -616,7 +616,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [ ] Profiles and benchmark-driven tuning
 - [ ] Optional boot start, guided battery-optimization flow
 - [ ] Evaluate RPC over Unix socket (§4.4)
-- [ ] Expert mode with console, all four tiers including Danger, persistent history and file commands (§3.6, `guideline-expert-console.md`)
+- [x] Expert mode with console, all four tiers including Danger, persistent history and file commands (§3.6, `guideline-expert-console.md`). Screens are unbuilt on a device, the logic is tested against a real node
 
 ### Phase 4: Hardening and polish
 
@@ -696,7 +696,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [ ] Security requirements S1 to S16 verified
 - [ ] All user-visible text localized in the shipped locales (tier A at launch, tier B after native review), lint gate green
 - [x] Wallet and Node sections implemented, live log (sanitized export is open)
-- [ ] Expert console implemented per `guideline-expert-console.md`, security reviewed
+- [ ] Expert console implemented per `guideline-expert-console.md` (implemented, security review open)
 - [ ] Recovery matrix and resilience tests passed
 - [ ] Upstream items X1 to X4 filed or resolved in `elektron-net`
 - [ ] Release pipeline with signed artifacts and published hashes (pipeline built, release key and hash publication open)

@@ -95,6 +95,10 @@ class SettingsStore(context: Context) {
         get() = org.elektronnet.mobile.explorer.ExplorerList.parse(prefs.getString(EXPLORERS, null))
         set(value) = prefs.edit().putString(EXPLORERS, org.elektronnet.mobile.explorer.ExplorerList.serialize(value)).apply()
 
+    var consoleRetentionDays: Int
+        get() = prefs.getInt(CONSOLE_RETENTION, 90)
+        set(value) = prefs.edit().putInt(CONSOLE_RETENTION, value).apply()
+
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
 
     fun setFastprune(value: Boolean) = prefs.edit().putBoolean(FASTPRUNE, value).apply()
@@ -150,6 +154,7 @@ class SettingsStore(context: Context) {
         const val THEME_KEY = "theme_key"
         const val THEME_MODE = "theme_mode"
         const val BIOMETRIC = "biometric_lock"
+        const val CONSOLE_RETENTION = "console_retention_days"
         const val EXPLORERS = "explorers"
         const val WALLETS = "wallets"
         const val ACTIVE_WALLET = "active_wallet"

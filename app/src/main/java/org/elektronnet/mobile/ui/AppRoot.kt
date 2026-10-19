@@ -1,7 +1,9 @@
 package org.elektronnet.mobile.ui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -35,6 +37,7 @@ import org.elektronnet.mobile.ui.model.NodeTabModel
 import org.elektronnet.mobile.ui.node.NodeScreen
 import org.elektronnet.mobile.ui.receive.ReceiveScreen
 import org.elektronnet.mobile.ui.send.SendScreen
+import org.elektronnet.mobile.ui.console.ConsoleRoot
 import org.elektronnet.mobile.ui.tools.ToolsPage
 import org.elektronnet.mobile.ui.tools.ToolsScreen
 import org.elektronnet.mobile.ui.wallets.CoinsScreen
@@ -57,7 +60,7 @@ import org.elektronnet.mobile.ui.wallet.WalletScreen
 
 private data class WalletData(val balances: Balances, val items: List<TxItem>)
 
-private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet }
+private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet, Console }
 
 private const val RECENT_COUNT = 8
 
@@ -141,7 +144,22 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     Scaffold(
         containerColor = androidx.compose.ui.graphics.Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
-        topBar = { if (ChainConfig.isTestnet) TestnetBar() },
+        topBar = {
+            Column {
+                if (ChainConfig.isTestnet) TestnetBar()
+                if (org.elektronnet.mobile.service.ConsoleState.expertActive) {
+                    androidx.compose.material3.Text(
+                        androidx.compose.ui.res.stringResource(if (org.elektronnet.mobile.service.ConsoleState.dangerActive) R.string.expert_banner_danger else R.string.expert_banner),
+                        color = MaterialTheme.colorScheme.onError,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(if (org.elektronnet.mobile.service.ConsoleState.dangerActive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary.copy(alpha = 0.85f))
+                            .padding(horizontal = 12.dp, vertical = 3.dp),
+                    )
+                }
+            }
+        },
         bottomBar = {
             if (walletReady) PillNavBar(
                 items = Tab.entries.map { Triple(stringResource(it.label), it.icon, it.ordinal) },
@@ -200,6 +218,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     addWallet = true,
                     onCancel = { show(Overlay.Wallets) },
                 )
+                Overlay.Console -> ConsoleRoot(onClose = { show(Overlay.None) })
                 Overlay.None -> Unit
             }
             if (overlay != Overlay.None) return@Box
@@ -250,6 +269,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     peers = peers,
                     telemetry = telemetry,
                     showGeoCredit = NodeHost.geoAvailable,
+                    onOpenConsole = { show(Overlay.Console) },
                     onPause = {
                         onPause()
                         settings = settings.copy(userPaused = true)

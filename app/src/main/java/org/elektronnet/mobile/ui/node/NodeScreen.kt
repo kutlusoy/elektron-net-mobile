@@ -56,6 +56,7 @@ fun NodeScreen(
     peers: List<NodeHost.PeerRow> = emptyList(),
     telemetry: org.elektronnet.mobile.node.Telemetry? = null,
     showGeoCredit: Boolean = false,
+    onOpenConsole: () -> Unit = {},
     onPause: () -> Unit,
     onResume: () -> Unit,
     onStop: () -> Unit,
@@ -140,6 +141,13 @@ fun NodeScreen(
         Text(stringResource(R.string.node_explainer), color = MaterialTheme.colorScheme.onSurfaceVariant)
         model.details?.let { StatGrid(it) }
         LogSection(showLog, { showLog = it }, log)
+        GlassCard {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.node_expert_title), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.node_expert_body), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                OutlinedButton(onClick = onOpenConsole) { Text(stringResource(R.string.node_expert_open)) }
+            }
+        }
         if (model.details != null) {
             TelemetrySection(model.details, telemetry)
             PeerSection(peers, showGeoCredit)
