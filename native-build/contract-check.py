@@ -131,7 +131,20 @@ class Node:
             self.log.close()
             self.log = None
 
+    def report_if_crashed(self):
+        code = self.proc.poll() if self.proc else None
+        if code in (None, 0):
+            return
+        print(f"\nelektrond exited with code {code}, last log lines:")
+        for name in ("stdout.log",):
+            try:
+                with open(os.path.join(self.datadir, name), errors="replace") as f:
+                    print("".join(f.readlines()[-40:]))
+            except OSError:
+                pass
+
     def cleanup(self):
+        self.report_if_crashed()
         self.stop()
         shutil.rmtree(self.datadir, ignore_errors=True)
 

@@ -5,6 +5,18 @@ from pathlib import Path
 if len(sys.argv) != 2:
     raise SystemExit("usage: rescanutxoset.py /path/to/elektron-net")
 root = Path(sys.argv[1])
+# Partial transactions of equal outputs (same script, value and index) hash alike, so a second
+# coin collided with the first and tripped an assertion in AddToWallet. A dummy input naming the
+# outpoint keeps every partial transaction distinct.
+wallet_path = root / "src" / "wallet" / "wallet.cpp"
+wallet_text = wallet_path.read_text(encoding="utf-8")
+marker = "    CMutableTransaction mtx;\n    mtx.vout.resize(outpoint.n + 1);\n    mtx.vout[outpoint.n] = coin.out;\n    const uint256 block_hash"
+fixed = "    CMutableTransaction mtx;\n    mtx.vin.emplace_back(outpoint);\n    mtx.vout.resize(outpoint.n + 1);\n    mtx.vout[outpoint.n] = coin.out;\n    const uint256 block_hash"
+if "mtx.vin.emplace_back(outpoint);" not in wallet_text:
+    if marker not in wallet_text:
+        raise SystemExit(f"patch anchor not found in {wallet_path}: CreditUTXOFromChain")
+    wallet_path.write_text(wallet_text.replace(marker, fixed, 1), encoding="utf-8")
+
 path = root / "src" / "wallet" / "rpc" / "wallet.cpp"
 text = path.read_text(encoding="utf-8")
 
@@ -60,4 +72,5 @@ if '{"wallet", &rescanutxoset},' not in text:
     text = text.replace(command_anchor, '        {"wallet", &rescanutxoset},\n' + command_anchor, 1)
 
 path.write_text(text, encoding="utf-8")
+
 print(f"Applied the rescanutxoset wallet RPC patch to {path}")
