@@ -195,19 +195,29 @@ fun SettingsScreen(
 
 @Composable
 private fun UnitPicker() {
-    val current = UnitState.current
-    val context = LocalContext.current
-    AmountUnit.entries.forEach { unit ->
-        ChoiceRow(
-            selected = unit == current,
-            onSelect = {
-                UnitState.current = unit
-                NodeHost.store?.amountUnit = unit
-            },
-            label = stringResource(unitLabel(unit)),
-            hint = null,
-        ) {}
+    val saved = UnitState.current
+    var position by remember(saved) { mutableStateOf(saved.ordinal.toFloat()) }
+    val shown = AmountUnit.entries[position.roundToInt().coerceIn(0, AmountUnit.entries.lastIndex)]
+    val number = java.text.NumberFormat.getIntegerInstance()
+    Text(stringResource(unitLabel(shown)), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+    Slider(
+        value = position,
+        onValueChange = { position = it },
+        onValueChangeFinished = {
+            UnitState.current = shown
+            NodeHost.store?.amountUnit = shown
+        },
+        valueRange = 0f..AmountUnit.entries.lastIndex.toFloat(),
+        steps = AmountUnit.entries.size - 2,
+    )
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        AmountUnit.entries.forEach { Text(it.symbol, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
     }
+    Text(
+        "1 ELEK = " + number.format(Amount.formatIn(shown, Amount.LEP_PER_ELEK).toLong()) + " " + shown.symbol,
+        style = MaterialTheme.typography.headlineSmall,
+        fontFamily = ElektronMono,
+    )
     Text(stringResource(R.string.units_rates), fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
     Hint(stringResource(R.string.units_hint))
 }
