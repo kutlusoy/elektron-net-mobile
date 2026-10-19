@@ -89,11 +89,14 @@ fun BrandBackground(modifier: Modifier = Modifier, content: @Composable () -> Un
 
 private val grainTile: ImageBitmap by lazy {
     val side = 192
-    val random = java.util.Random(7)
     val pixels = IntArray(side * side)
+    var state = 0x2F6E2B1
     for (i in pixels.indices) {
-        val v = random.nextGaussian()
-        val alpha = (kotlin.math.abs(v) * 22).toInt().coerceIn(0, 70)
+        state = state xor (state shl 13)
+        state = state xor (state ushr 17)
+        state = state xor (state shl 5)
+        val v = (state and 0xFF) - 128
+        val alpha = (kotlin.math.abs(v) / 3).coerceIn(0, 40)
         pixels[i] = if (v > 0) android.graphics.Color.argb(alpha, 255, 255, 255) else android.graphics.Color.argb(alpha, 0, 0, 0)
     }
     android.graphics.Bitmap.createBitmap(pixels, side, side, android.graphics.Bitmap.Config.ARGB_8888).asImageBitmap()
