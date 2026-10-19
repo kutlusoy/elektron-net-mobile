@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UX and Screen Guideline
 
-- **Version:** 0.15 (draft)
+- **Version:** 0.16 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, usability testers
 - **Reference implementation:** this repository `app/src/main/java/org/elektronnet/mobile/ui/` (screens), `app/src/main/java/org/elektronnet/mobile/runtime/` (status headline) and `policy/` (reasons shown to the user)
@@ -147,15 +147,19 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 
 | Group | Items (plain labels) | Maps to |
 |---|---|---|
-| Security | Change passphrase, Fingerprint or face unlock, Check my backup (the user types the phrase from paper, the app never stores or shows it again) | plan §8.1, S16 |
-| Network and battery | "Use mobile data" (off), "Allow roaming" (off, only shown when mobile data is on), "Monthly mobile data limit" (no limit, 1, 2, 5, 10 GB), "Only while charging", "Only at night" (22:00 to 06:00), "Run in the background" (on), "How much the node may use" (while the app is open, balanced, always on) | `PolicySettings`, plan §7 |
+| Security | Change passphrase, Fingerprint or face unlock with a slider for the lock delay (immediately to 30 minutes), notification for incoming payments, "Allow screenshots" (temporary, red banner while on, ends when the app is closed or locked), Check my backup (the user types the phrase from paper, the app never stores or shows it again) | plan §8.1, S16 |
+| Network and battery | "Use mobile data" (off), "Allow roaming" (off, only shown when mobile data is on), "Monthly mobile data limit" (slider from 1 GB to No limit), "Only while charging", "Only at night" (22:00 to 06:00), "Run in the background" (on), "How much the node may use" (while the app is open, balanced, always on) | `PolicySettings`, plan §7 |
 | Sharing | "Accept incoming connections", "Share snapshots (Wi-Fi and charging only)" | `allowInbound`, `serveSnapshots`, plan §5.2 |
-| Storage | "Storage saver" (fast pruning, applies at the next node start), "Stop the node when free space is below" (1, 2, 5 GB) | `fastprune`, `storageFloorBytes`, plan §3.2 |
+| Storage | "Storage saver" (fast pruning, applies at the next node start), "Stop the node when free space is below" (slider, 1 to 20 GB) | `fastprune`, `storageFloorBytes`, plan §3.2 |
 | Block explorer | Add, edit, reorder and remove explorer addresses (default `https://mempool.elektron-net.org`), with the privacy sentence | plan §8.7, S23 |
+| Language | System language or any of the 15 shipped languages, each in its own name, applied at once | plan §3.5 |
 | Appearance | Theme (five themes with swatches and a live preview), Light or dark | design system §2 |
 | About | Version, wallet version, node version, node commit, node library hash, signing key fingerprint, copyright | distribution guideline §8 |
 | Advanced | Storage saver, Resource profile, Expert mode and console, Live log, Address list, Export descriptors, Rescan, Reset | plan §3.2, §3.6 |
 
+- Settings are grouped in tiles (cards), one per group, so the page can be scanned at a glance.
+- Limits are sliders with discrete steps, the current value is shown beside the title and a limit that means "none" sits at the far end.
+- Stopping or pausing the node asks for confirmation first, so a stray tap cannot switch the node off.
 - Each toggle has a one-line description in plain words beneath it.
 - Defaults are the recommended ones, so most users never open Network and battery.
 

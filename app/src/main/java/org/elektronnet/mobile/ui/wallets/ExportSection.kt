@@ -28,6 +28,7 @@ import org.elektronnet.mobile.ui.tools.Hint
 import org.elektronnet.mobile.ui.tools.shareText
 import org.elektronnet.mobile.wallet.ExportException
 import org.elektronnet.mobile.wallet.ExportFailure
+import org.elektronnet.mobile.wallet.HistoryExport
 import org.elektronnet.mobile.wallet.WalletExport
 
 @Composable
@@ -47,7 +48,34 @@ fun ExportSection() {
             saved = ok
         }
     }
+    var csv by remember { mutableStateOf<String?>(null) }
+    val csvLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri: Uri? ->
+        val text = csv
+        csv = null
+        if (uri != null && text != null) {
+            scope.launch(Dispatchers.IO) {
+                saved = runCatching { context.contentResolver.openOutputStream(uri)?.use { it.write(text.toByteArray(Charsets.UTF_8)) } }.isSuccess
+            }
+        }
+    }
     Column {
+        OutlinedButton(
+            onClick = {
+                failure = null
+                saved = false
+                scope.launch {
+                    val items = withContext(Dispatchers.IO) { runCatching { NodeHost.walletReader()?.allTransactions() }.getOrNull() }
+                    if (items == null) {
+                        failure = ExportFailure.NodeNotReady
+                    } else {
+                        csv = HistoryExport.csv(items)
+                        csvLauncher.launch("${NodeHost.activeWallet}-history.csv")
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(stringResource(R.string.details_export)) }
+        Hint(stringResource(R.string.details_export_hint))
         OutlinedButton(
             onClick = {
                 failure = null
@@ -74,7 +102,7 @@ fun ExportSection() {
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.export_file)) }
         Hint(stringResource(R.string.export_file_hint))
-        if (saved) Hint(stringResource(R.string.export_file_saved))
+        if (saved) Hint(stringResource(R.string.export_saved))
         failure?.let { ErrorText(stringResource(exportError(it))) }
     }
 }

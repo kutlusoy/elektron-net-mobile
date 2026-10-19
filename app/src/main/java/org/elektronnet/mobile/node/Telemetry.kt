@@ -11,6 +11,7 @@ data class Telemetry(
     val connectionsOut: Long? = null,
     val networkActive: Boolean? = null,
     val initialBlockDownload: Boolean? = null,
+    val schedule: ChainSchedule? = null,
 ) {
     companion object {
         fun parse(chain: Any?, mining: Any?, mempool: Any?, network: Any? = null): Telemetry {

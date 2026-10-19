@@ -190,4 +190,23 @@ class CoinControlIntegrationTest {
         val manual = env.send.prepare(SendRequest(env.miner, null, true, rate(env), coins = listOf(coin)))
         assertEquals(coin.amountLep, manual.review.amountLep + manual.review.feeLep)
     }
+
+    @Test
+    fun reusedCoinsAreSpentFirstAndChangeGoesToANewAddress() = withEnv(29052) { env ->
+        env.send.send(env.send.prepare(SendRequest(env.miner, 100_000_000L, false, rate(env))), pass)
+        env.rpc.call("generatetoaddress", listOf(1, env.miner), "miner")
+        env.rpc.call("sendtoaddress", linkedMapOf("address" to env.own, "amount" to 1.5, "fee_rate" to 10), "miner")
+        env.rpc.call("generatetoaddress", listOf(1, env.miner), "miner")
+        val reused = env.coins.coins().first { it.reused }
+        val prepared = env.send.prepare(SendRequest(env.miner, 50_000_000L, false, rate(env)))
+        assertEquals(1, prepared.review.inputs)
+        val decoded = env.rpc.call("decodepsbt", listOf(prepared.psbt), null) as Map<*, *>
+        val vin = ((decoded["tx"] as Map<*, *>)["vin"] as List<*>).single() as Map<*, *>
+        assertEquals(reused.txid, vin["txid"])
+        val outputs = ((decoded["tx"] as Map<*, *>)["vout"] as List<*>).map { ((it as Map<*, *>)["scriptPubKey"] as Map<*, *>)["address"] }
+        assertTrue(outputs.none { it == env.own })
+        val tooBig = env.send.prepare(SendRequest(env.miner, 200_000_000L, false, rate(env)))
+        assertTrue(tooBig.review.inputs >= 1)
+        assertFalse(env.rpc.call("decodepsbt", listOf(tooBig.psbt), null).toString().contains(reused.txid) && tooBig.review.inputs == 1)
+    }
 }

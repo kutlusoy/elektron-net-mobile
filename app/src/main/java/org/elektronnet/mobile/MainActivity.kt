@@ -20,23 +20,44 @@ import org.elektronnet.mobile.ui.security.Biometric
 import org.elektronnet.mobile.ui.security.LockScreen
 import org.elektronnet.mobile.ui.theme.EffectLevel
 import org.elektronnet.mobile.ui.theme.ElektronTheme
+import org.elektronnet.mobile.ui.ScreenshotMode
+import org.elektronnet.mobile.ui.theme.Palettes
 import org.elektronnet.mobile.ui.theme.UiState
+import org.elektronnet.mobile.service.AppLanguage
+import org.elektronnet.mobile.service.SettingsStore
 
 class MainActivity : FragmentActivity() {
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         startNode()
     }
 
+    override fun attachBaseContext(newBase: android.content.Context) {
+        super.attachBaseContext(AppLanguage.wrap(newBase))
+    }
+
+    private fun splashTheme(key: String?, dark: Boolean): Int =
+        resources.getIdentifier("Theme_Elektron_Splash_${key ?: BuildConfig.DEFAULT_THEME}_${if (dark) "dark" else "light"}", "style", packageName)
+
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun rememberSplashTheme(style: Int) {
+        splashScreen.setSplashScreenTheme(style)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val saved = SettingsStore(this).loadUi(Palettes.all.map { it.key }.toSet())
+        splashTheme(saved.themeKey, saved.dark).takeIf { it != 0 }?.let { setTheme(it) }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val settings = NodeHost.init(this)
-        AppLockState.startOnce(settings.biometricLock && Biometric.available(this))
+        AppLockState.startOnce(settings.biometricLock && Biometric.available(this), settings.lockGraceMs)
         NodeHost.incomingUri = intent?.dataString
         setContent {
             val ui = UiState.settings
             val dark = ui.dark
-            LaunchedEffect(dark) {
+            LaunchedEffect(ui.themeKey, dark) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    splashTheme(ui.themeKey, dark).takeIf { it != 0 }?.let(::rememberSplashTheme)
+                }
                 val style = if (dark) SystemBarStyle.dark(Color.TRANSPARENT) else SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
                 enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
             }
@@ -100,6 +121,11 @@ class MainActivity : FragmentActivity() {
                 AppLockState.applyEnabled(true)
             },
         )
+    }
+
+    override fun onDestroy() {
+        if (isFinishing) ScreenshotMode.allowed = false
+        super.onDestroy()
     }
 
     override fun onStop() {

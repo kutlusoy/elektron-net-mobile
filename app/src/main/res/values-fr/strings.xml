@@ -661,4 +661,27 @@
     <string name="details_used_hint">Ces pièces se trouvent sur une adresse dont des fonds ont déjà été dépensés. Le portefeuille ne les dépense pas automatiquement, afin que vos paiements ne puissent pas être reliés. Sélectionnez-les dans Pièces pour les dépenser volontairement.</string>
     <string name="details_noreuse">La protection contre la réutilisation d\'adresses est activée : chaque adresse de réception et de monnaie rendue n\'est utilisée qu\'une fois, et les pièces sur une adresse réutilisée sont exclues de la dépense automatique.</string>
     <string name="coins_reused">Adresse réutilisée</string>
+    <string name="events_title">Prochains événements de la chaîne</string>
+    <string name="events_halving">Prochain halving</string>
+    <string name="events_to_halving">Blocs avant le halving</string>
+    <string name="events_reward">Récompense de bloc</string>
+    <string name="events_epoch">Époque de difficulté (blocs)</string>
+    <string name="events_avg_block">Temps de bloc moyen</string>
+    <string name="events_retarget">Prochain retarget (blocs restants)</string>
+    <string name="events_projection">Difficulté projetée</string>
+    <string name="export_saved">Le fichier a été enregistré.</string>
+    <string name="confirm_stop_title">Arrêter le nœud ?</string>
+    <string name="confirm_stop_body">Sans nœud en marche, ton portefeuille ne voit pas les nouveaux paiements et ne peut pas envoyer. Relance-le depuis ici.</string>
+    <string name="confirm_pause_title">Mettre le nœud en pause ?</string>
+    <string name="confirm_pause_body">La synchronisation s\'arrête jusqu\'à la reprise. Ton solde peut être obsolète entre-temps.</string>
+    <string name="settings_lock_delay">Verrouiller après</string>
+    <string name="settings_lock_delay_hint">Durée pendant laquelle l\'app peut rester en arrière-plan avant de redemander l\'accès.</string>
+    <string name="settings_lock_now">Immédiatement</string>
+    <string name="settings_seconds">%1$d s</string>
+    <string name="settings_minutes">%1$d min</string>
+    <string name="settings_screenshots">Autoriser les captures d\'écran</string>
+    <string name="settings_screenshots_hint">Temporaire, pour les tutoriels. Prend fin quand l\'app est fermée ou verrouillée. Les mots de récupération deviennent capturables, sois prudent.</string>
+    <string name="screenshot_banner">Les captures d\'écran sont activées</string>
+    <string name="settings_language">Langue</string>
+    <string name="settings_language_system">Langue du système</string>
 </resources>

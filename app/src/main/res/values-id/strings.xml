@@ -661,4 +661,27 @@
     <string name="details_used_hint">Koin ini berada di alamat yang sudah pernah dibelanjakan. Dompet tidak membelanjakannya secara otomatis, sehingga pembayaranmu tidak bisa dihubungkan. Pilih di Koin untuk membelanjakannya dengan sengaja.</string>
     <string name="details_noreuse">Perlindungan pemakaian ulang alamat aktif: setiap alamat penerimaan dan alamat kembalian hanya dipakai sekali, dan koin pada alamat yang dipakai ulang tidak ikut dibelanjakan otomatis.</string>
     <string name="coins_reused">Alamat dipakai ulang</string>
+    <string name="events_title">Peristiwa rantai mendatang</string>
+    <string name="events_halving">Halving berikutnya</string>
+    <string name="events_to_halving">Blok menuju halving</string>
+    <string name="events_reward">Hadiah blok</string>
+    <string name="events_epoch">Periode kesulitan (blok)</string>
+    <string name="events_avg_block">Rata-rata waktu blok</string>
+    <string name="events_retarget">Penyesuaian berikutnya (sisa blok)</string>
+    <string name="events_projection">Perkiraan kesulitan</string>
+    <string name="export_saved">File telah disimpan.</string>
+    <string name="confirm_stop_title">Hentikan node?</string>
+    <string name="confirm_stop_body">Tanpa node yang berjalan, dompet Anda tidak bisa melihat pembayaran baru atau mengirim. Jalankan lagi dari sini.</string>
+    <string name="confirm_pause_title">Jeda node?</string>
+    <string name="confirm_pause_body">Sinkronisasi berhenti sampai dilanjutkan. Saldo Anda mungkin belum terbaru untuk sementara.</string>
+    <string name="settings_lock_delay">Kunci setelah</string>
+    <string name="settings_lock_delay_hint">Berapa lama aplikasi boleh berada di latar belakang sebelum meminta lagi.</string>
+    <string name="settings_lock_now">Segera</string>
+    <string name="settings_seconds">%1$d dtk</string>
+    <string name="settings_minutes">%1$d mnt</string>
+    <string name="settings_screenshots">Izinkan tangkapan layar</string>
+    <string name="settings_screenshots_hint">Sementara, untuk tutorial. Berakhir saat aplikasi ditutup atau dikunci. Kata pemulihan jadi bisa ditangkap, jadi berhati-hatilah.</string>
+    <string name="screenshot_banner">Tangkapan layar aktif</string>
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_language_system">Bahasa sistem</string>
 </resources>

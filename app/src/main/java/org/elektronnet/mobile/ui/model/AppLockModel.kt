@@ -1,6 +1,6 @@
 package org.elektronnet.mobile.ui.model
 
-class AppLockModel(private val graceMs: Long = GRACE_MS) {
+class AppLockModel(var graceMs: Long = GRACE_MS) {
     var enabled: Boolean = false
         private set
     var locked: Boolean = false
@@ -34,5 +34,6 @@ class AppLockModel(private val graceMs: Long = GRACE_MS) {
 
     companion object {
         const val GRACE_MS = 30_000L
+        val CHOICES_MS = listOf(0L, 15_000L, 30_000L, 60_000L, 120_000L, 300_000L, 900_000L, 1_800_000L)
     }
 }

@@ -21,6 +21,9 @@ class NodeSupervisorIntegrationTest {
         assertEquals(NodeState.Running, node.state)
         val status = node.status()
         assertEquals("regtest", status.chain)
+        val schedule = node.telemetry().schedule
+        assertTrue(schedule != null)
+        assertEquals(0L, schedule!!.height)
         assertTrue(status.pruned)
         assertTrue(node.stop())
         val stopEnd = System.currentTimeMillis() + 10_000

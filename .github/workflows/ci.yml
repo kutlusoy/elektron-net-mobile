@@ -40,3 +40,6 @@ jobs:
         run: gradle --no-daemon :app:assembleMainnetDebug :app:assembleTnetDebug
       - name: Unit tests and lint for both flavors
         run: gradle --no-daemon :app:testMainnetDebugUnitTest :app:testTnetDebugUnitTest :app:lintMainnetDebug :app:lintTnetDebug
+      - name: Lint details
+        if: failure()
+        run: grep -h -A3 "Error:" app/build/reports/lint-results-*.txt app/build/intermediates/lint_intermediate_text_report/*/*/lint-results-*.txt 2>/dev/null | head -150 || true

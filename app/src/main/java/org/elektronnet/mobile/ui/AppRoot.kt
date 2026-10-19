@@ -22,6 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -150,6 +152,14 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         topBar = {
             Column(modifier = if (ChainConfig.isTestnet) Modifier else Modifier.statusBarsPadding()) {
                 if (ChainConfig.isTestnet) TestnetBar()
+                if (org.elektronnet.mobile.ui.ScreenshotMode.allowed) {
+                    androidx.compose.material3.Text(
+                        androidx.compose.ui.res.stringResource(R.string.screenshot_banner),
+                        color = MaterialTheme.colorScheme.onError,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.error).padding(horizontal = 12.dp, vertical = 3.dp),
+                    )
+                }
                 if (org.elektronnet.mobile.service.ConsoleState.expertActive) {
                     androidx.compose.material3.Text(
                         androidx.compose.ui.res.stringResource(if (org.elektronnet.mobile.service.ConsoleState.dangerActive) R.string.expert_banner_danger else R.string.expert_banner),
@@ -176,7 +186,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             )
         },
     ) { padding ->
-        Box(modifier = Modifier.padding(padding)) {
+        Box(modifier = Modifier.padding(padding).consumeWindowInsets(padding).imePadding()) {
             if (!walletReady) {
                 FirstRunScreen(
                     onAllowMetered = {

@@ -64,6 +64,7 @@ fun NodeScreen(
     modifier: Modifier = Modifier,
 ) {
     var showLog by rememberSaveable { mutableStateOf(false) }
+    var confirm by remember { mutableStateOf<Confirm?>(null) }
     var log by remember { mutableStateOf(emptyList<String>()) }
     val watching = showLog || model.state == NodeTabState.Starting
     LaunchedEffect(watching) {
@@ -126,7 +127,7 @@ fun NodeScreen(
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
             if (model.canPause) {
-                OutlinedButton(onClick = onPause, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.action_pause)) }
+                OutlinedButton(onClick = { confirm = Confirm.Pause }, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.action_pause)) }
             }
             if (model.canResume) {
                 Button(onClick = onResume, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.action_resume)) }
@@ -135,8 +136,22 @@ fun NodeScreen(
                 Button(onClick = onStart, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.action_start)) }
             }
             if (model.canStop) {
-                OutlinedButton(onClick = onStop, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.action_stop)) }
+                OutlinedButton(onClick = { confirm = Confirm.Stop }, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.action_stop)) }
             }
+        }
+        confirm?.let { pending ->
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = { confirm = null },
+                title = { Text(stringResource(if (pending == Confirm.Stop) R.string.confirm_stop_title else R.string.confirm_pause_title)) },
+                text = { Text(stringResource(if (pending == Confirm.Stop) R.string.confirm_stop_body else R.string.confirm_pause_body)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirm = null
+                        if (pending == Confirm.Stop) onStop() else onPause()
+                    }) { Text(stringResource(if (pending == Confirm.Stop) R.string.action_stop else R.string.action_pause)) }
+                },
+                dismissButton = { OutlinedButton(onClick = { confirm = null }) { Text(stringResource(R.string.action_cancel)) } },
+            )
         }
         Text(stringResource(R.string.node_explainer), color = MaterialTheme.colorScheme.onSurfaceVariant)
         model.details?.let { StatGrid(it) }
@@ -298,6 +313,7 @@ private fun TelemetrySection(details: NodeDetails, telemetry: org.elektronnet.mo
                 TelemetryRow(stringResource(R.string.net_rpc), "127.0.0.1:" + org.elektronnet.mobile.ChainConfig.rpcPort)
             }
         }
+        telemetry?.schedule?.let { ChainEventsCard(it, telemetry.difficulty) }
         GlassCard {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.telemetry_prune_card), style = MaterialTheme.typography.titleMedium)
@@ -475,3 +491,34 @@ private fun MaintenanceCard(onRestart: () -> Unit) {
         )
     }
 }
+
+@Composable
+private fun ChainEventsCard(schedule: org.elektronnet.mobile.node.ChainSchedule, difficulty: Double?) {
+    val dash = "-"
+    val unit = stringResource(R.string.balance_unit)
+    val date = java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM)
+    val number = java.text.NumberFormat.getIntegerInstance()
+    fun day(ms: Long) = date.format(java.util.Date(ms))
+    GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.events_title), style = MaterialTheme.typography.titleMedium)
+            TelemetryRow(stringResource(R.string.events_halving), "~" + day(schedule.halvingAtMs))
+            TelemetryRow(stringResource(R.string.events_to_halving), number.format(schedule.blocksToHalving))
+            TelemetryRow(
+                stringResource(R.string.events_reward),
+                org.elektronnet.mobile.wallet.Amount.format(schedule.rewardNowLep) + " \u2192 " + org.elektronnet.mobile.wallet.Amount.format(schedule.rewardNextLep) + " " + unit,
+            )
+            TelemetryRow(stringResource(R.string.events_epoch), number.format(schedule.epochBlocksMined) + " / " + number.format(schedule.epochLength))
+            TelemetryRow(stringResource(R.string.events_avg_block), schedule.avgBlockSeconds?.let { String.format(java.util.Locale.getDefault(), "%.1f s", it) } ?: dash)
+            TelemetryRow(stringResource(R.string.events_retarget), "~" + day(schedule.retargetAtMs) + " (" + number.format(schedule.retargetBlocksLeft) + ")")
+            val projected = schedule.projectedDifficulty
+            val factor = schedule.difficultyFactor
+            TelemetryRow(
+                stringResource(R.string.events_projection),
+                if (projected != null && factor != null) TelemetryFormat.difficulty(projected) + String.format(java.util.Locale.getDefault(), " (%+.1f%%)", (factor - 1) * 100) else dash,
+            )
+        }
+    }
+}
+
+private enum class Confirm { Stop, Pause }

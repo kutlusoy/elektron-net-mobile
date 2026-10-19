@@ -661,4 +661,27 @@
     <string name="details_used_hint">هذه العملات موجودة على عنوان سبق الإنفاق منه. لا تنفقها المحفظة تلقائيا، حتى لا يمكن ربط مدفوعاتك ببعضها. حددها في العملات لإنفاقها عن قصد.</string>
     <string name="details_noreuse">حماية إعادة استخدام العناوين مفعلة: يُستخدم كل عنوان استلام وعنوان باقي مرة واحدة فقط، وتبقى العملات الموجودة على عنوان أُعيد استخدامه خارج الإنفاق التلقائي.</string>
     <string name="coins_reused">عنوان أُعيد استخدامه</string>
+    <string name="events_title">أحداث السلسلة القادمة</string>
+    <string name="events_halving">التنصيف القادم</string>
+    <string name="events_to_halving">الكتل المتبقية للتنصيف</string>
+    <string name="events_reward">مكافأة الكتلة</string>
+    <string name="events_epoch">فترة الصعوبة (كتل)</string>
+    <string name="events_avg_block">متوسط زمن الكتلة</string>
+    <string name="events_retarget">إعادة ضبط الصعوبة القادمة (الكتل المتبقية)</string>
+    <string name="events_projection">الصعوبة المتوقعة</string>
+    <string name="export_saved">تم حفظ الملف.</string>
+    <string name="confirm_stop_title">إيقاف العقدة؟</string>
+    <string name="confirm_stop_body">بدون عقدة قيد التشغيل لا تستطيع محفظتك رؤية الدفعات الجديدة أو الإرسال. يمكنك تشغيلها مجددًا من هنا.</string>
+    <string name="confirm_pause_title">إيقاف العقدة مؤقتًا؟</string>
+    <string name="confirm_pause_body">تتوقف المزامنة حتى تستأنفها. قد يكون رصيدك غير محدّث في هذه الأثناء.</string>
+    <string name="settings_lock_delay">القفل بعد</string>
+    <string name="settings_lock_delay_hint">المدة التي يمكن أن يبقى فيها التطبيق في الخلفية قبل أن يطلب التحقق مجددًا.</string>
+    <string name="settings_lock_now">فورًا</string>
+    <string name="settings_seconds">%1$d ث</string>
+    <string name="settings_minutes">%1$d د</string>
+    <string name="settings_screenshots">السماح بلقطات الشاشة</string>
+    <string name="settings_screenshots_hint">مؤقت، للشروحات. ينتهي عند إغلاق التطبيق أو قفله. ستصبح كلمات الاسترداد قابلة للالتقاط، فاحرص على الحذر.</string>
+    <string name="screenshot_banner">لقطات الشاشة مفعّلة</string>
+    <string name="settings_language">اللغة</string>
+    <string name="settings_language_system">لغة النظام</string>
 </resources>

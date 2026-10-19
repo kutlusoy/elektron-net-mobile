@@ -54,6 +54,28 @@ class SendEngine(
 
     fun prepare(request: SendRequest): PreparedSend {
         AddressReuse.ensure(rpc, walletName)
+        if (request.coins.isEmpty() && !request.max) {
+            for (group in reusedGroups(request.amountLep ?: 0L)) {
+                try {
+                    return prepareWith(request.copy(coins = group))
+                } catch (e: SendException) {
+                    if (e.failure != SendFailure.InsufficientFunds) throw e
+                }
+            }
+        }
+        return prepareWith(request)
+    }
+
+    private fun reusedGroups(amount: Long): List<List<Coin>> = runCatching {
+        CoinControl(rpc, walletName).coins()
+            .filter { it.reused && !it.frozen && it.confirmations > 0 && it.address != null }
+            .groupBy { it.address }
+            .values
+            .filter { group -> group.sumOf { it.amountLep } >= amount }
+            .sortedBy { group -> group.sumOf { it.amountLep } }
+    }.getOrDefault(emptyList())
+
+    private fun prepareWith(request: SendRequest): PreparedSend {
         when (val kind = addresses.classify(request.address)) {
             AddressKind.Native -> Unit
             AddressKind.LegacyBase58 -> if (!request.allowLegacy) throw SendException(SendFailure.LegacyNotConfirmed)

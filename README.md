@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.24 (draft)
+- **Version:** 0.25 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -30,8 +30,10 @@
 - Node dashboard: sync phase, height, peers with country (offline DB-IP Country Lite lookup, addresses never leave the phone), disk usage, prune height, snapshot state.
 - Simple everyday wallet following common mobile wallet conventions (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node (four risk tiers, confirmation dialogs, encrypted history, file commands confined to a private folder).
 - Storage saver (`-fastprune`) on by default with an opt-out; phone nodes serve snapshots only on Wi-Fi while charging.
-- Optional biometric unlock, `elek:` payment links, QR scan (CameraX and ZXing, no Google services) and receive, and an optional notification for incoming payments that hides the amount on the lock screen.
+- Optional biometric unlock with an adjustable lock delay, a temporary screenshot switch for tutorials, confirmation before the node is stopped or paused, `elek:` payment links, QR scan (CameraX and ZXing, no Google services) and receive, and an optional notification for incoming payments that hides the amount on the lock screen.
+- Node dashboard also shows upcoming chain events: next halving with date and block reward, difficulty epoch progress and the projected difficulty at the next retarget.
 - Node tools: sync progress, optional live node log with a cleaned copy and share (IP addresses, onion names, addresses and paths removed), peer details with country on tap, and a guided reset of the downloaded chain data that keeps your wallets.
+- Language follows the system and can be switched in Settings to any shipped language.
 - Fifteen languages ship as drafts: English, German, Spanish, French, Italian, Chinese (Simplified), Arabic, Japanese, Korean, Hindi, Portuguese (Brazil), Russian, Turkish, Indonesian and Vietnamese. All except English await native-speaker review of the security texts before a store release.
 - Calm design without glow: five color themes (Teal, Blue, Rust, Red and Matrix), each in a dark and a light mode, one readable system font for all themes, a contrast check in CI, no artwork. The ticker is ELEK.
 - Separate testnet build (`org.elektronnet.mobiletestnet`, chain `testnet`) next to the mainnet app (`org.elektronnet.mobile`).

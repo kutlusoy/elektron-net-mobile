@@ -87,6 +87,10 @@ class SettingsStore(context: Context) {
         prefs.edit().putString(THEME_KEY, ui.themeKey).putString(THEME_MODE, ui.mode.name).apply()
     }
 
+    var lockGraceMs: Long
+        get() = prefs.getLong(LOCK_GRACE, 30_000L)
+        set(value) = prefs.edit().putLong(LOCK_GRACE, value).apply()
+
     var biometricLock: Boolean
         get() = prefs.getBoolean(BIOMETRIC, false)
         set(value) = prefs.edit().putBoolean(BIOMETRIC, value).apply()
@@ -171,6 +175,7 @@ class SettingsStore(context: Context) {
         const val RESCAN_PENDING = "rescan_pending"
         const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"
+        const val LOCK_GRACE = "lock_grace_ms"
         const val NOTIFY_INCOMING = "notify_incoming"
         const val SEEN_INCOMING = "seen_incoming"
         const val BUDGET_MONTH = "budget_month"

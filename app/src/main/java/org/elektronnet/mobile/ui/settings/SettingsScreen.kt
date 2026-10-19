@@ -22,6 +22,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Slider
+import kotlin.math.roundToInt
+import org.elektronnet.mobile.service.AppLanguage
+import org.elektronnet.mobile.ui.GlassCard
+import org.elektronnet.mobile.ui.ScreenshotMode
+import org.elektronnet.mobile.ui.model.AppLockModel
+import org.elektronnet.mobile.ui.model.LanguageChoices
+import org.elektronnet.mobile.ui.security.AppLockState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,6 +70,7 @@ fun SettingsScreen(
     explorers: List<String> = emptyList(),
     onExplorers: (List<String>) -> Unit = {},
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -69,75 +78,174 @@ fun SettingsScreen(
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Text(stringResource(R.string.settings_network_battery), style = MaterialTheme.typography.titleMedium)
-        ToggleRow(R.string.settings_mobile_data, R.string.settings_mobile_data_hint, settings.allowMetered, onAllowMetered)
-        ToggleRow(R.string.settings_charging_only, R.string.settings_charging_only_hint, settings.chargingOnly, onChargingOnly)
-        ToggleRow(R.string.settings_background, R.string.settings_background_hint, settings.backgroundEnabled, onBackground)
-        if (settings.allowMetered) {
-            ToggleRow(R.string.settings_roaming, R.string.settings_roaming_hint, settings.allowRoaming) { onPolicy(settings.copy(allowRoaming = it)) }
-            Text(stringResource(R.string.settings_cap), style = MaterialTheme.typography.labelLarge)
-            CAP_CHOICES.forEach { gb ->
-                val bytes = gb?.let { it * GIB }
-                ChoiceRow(settings.monthlyCellularCapBytes == bytes, { onPolicy(settings.copy(monthlyCellularCapBytes = bytes)) }, if (gb == null) stringResource(R.string.settings_cap_none) else stringResource(R.string.settings_cap_gb, gb), null) {}
+        SettingsCard(R.string.settings_network_battery) {
+            ToggleRow(R.string.settings_mobile_data, R.string.settings_mobile_data_hint, settings.allowMetered, onAllowMetered)
+            if (settings.allowMetered) {
+                ToggleRow(R.string.settings_roaming, R.string.settings_roaming_hint, settings.allowRoaming) { onPolicy(settings.copy(allowRoaming = it)) }
+                val capBytes = settings.monthlyCellularCapBytes
+                val capIndex = if (capBytes == null) CAP_CHOICES.lastIndex else CAP_CHOICES.indexOfFirst { gb -> gb != null && gb * GIB >= capBytes }.let { if (it < 0) CAP_CHOICES.lastIndex else it }
+                StepSlider(
+                    title = R.string.settings_cap,
+                    steps = CAP_CHOICES.size,
+                    index = capIndex,
+                    label = CAP_CHOICES[capIndex]?.let { stringResource(R.string.settings_cap_gb, it) } ?: stringResource(R.string.settings_cap_none),
+                    labelFor = { i -> CAP_CHOICES[i]?.let { context.getString(R.string.settings_cap_gb, it) } ?: context.getString(R.string.settings_cap_none) },
+                    onCommit = { i -> onPolicy(settings.copy(monthlyCellularCapBytes = CAP_CHOICES[i]?.let { it * GIB })) },
+                )
+            }
+            ToggleRow(R.string.settings_charging_only, R.string.settings_charging_only_hint, settings.chargingOnly, onChargingOnly)
+            ToggleRow(R.string.settings_background, R.string.settings_background_hint, settings.backgroundEnabled, onBackground)
+            ToggleRow(R.string.settings_night, R.string.settings_night_hint, settings.schedule != null) {
+                onPolicy(settings.copy(schedule = if (it) ScheduleWindow(NIGHT_START, NIGHT_END) else null))
+            }
+            if (settings.backgroundEnabled) {
+                Text(stringResource(R.string.settings_profile), style = MaterialTheme.typography.labelLarge)
+                NodeProfile.entries.forEach { profile ->
+                    ChoiceRow(settings.profile == profile, { onPolicy(settings.copy(profile = profile)) }, stringResource(profileLabel(profile)), stringResource(profileHint(profile))) {}
+                }
             }
         }
-        ToggleRow(R.string.settings_night, R.string.settings_night_hint, settings.schedule != null) {
-            onPolicy(settings.copy(schedule = if (it) ScheduleWindow(NIGHT_START, NIGHT_END) else null))
+        SettingsCard(R.string.settings_sharing) {
+            ToggleRow(R.string.settings_inbound, R.string.settings_inbound_hint, settings.allowInbound) { onPolicy(settings.copy(allowInbound = it)) }
+            ToggleRow(R.string.settings_serve, R.string.settings_serve_hint, settings.serveSnapshots) { onPolicy(settings.copy(serveSnapshots = it)) }
         }
-        if (settings.backgroundEnabled) {
-            Text(stringResource(R.string.settings_profile), style = MaterialTheme.typography.labelLarge)
-            NodeProfile.entries.forEach { profile ->
-                ChoiceRow(settings.profile == profile, { onPolicy(settings.copy(profile = profile)) }, stringResource(profileLabel(profile)), stringResource(profileHint(profile))) {}
+        SettingsCard(R.string.settings_storage) {
+            ToggleRow(R.string.settings_fastprune, R.string.settings_fastprune_hint, fastprune, onFastprune)
+            val floorGb = settings.storageFloorBytes / GIB
+            val floorIndex = FLOOR_CHOICES.indexOfFirst { it >= floorGb }.let { if (it < 0) FLOOR_CHOICES.lastIndex else it }
+            StepSlider(
+                title = R.string.settings_floor,
+                steps = FLOOR_CHOICES.size,
+                index = floorIndex,
+                label = stringResource(R.string.settings_cap_gb, FLOOR_CHOICES[floorIndex]),
+                labelFor = { i -> context.getString(R.string.settings_cap_gb, FLOOR_CHOICES[i]) },
+                onCommit = { i -> onPolicy(settings.copy(storageFloorBytes = FLOOR_CHOICES[i] * GIB)) },
+            )
+            Hint(stringResource(R.string.settings_floor_hint))
+        }
+        GlassCard {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) { ExplorerSection(explorers, onExplorers) }
+        }
+        SettingsCard(R.string.settings_security) {
+            ToggleRow(R.string.settings_biometric, R.string.settings_biometric_hint, biometric, onBiometric)
+            if (biometric) {
+                val grace = AppLockState.graceChoice
+                val lockIndex = AppLockModel.CHOICES_MS.indexOfFirst { it >= grace }.let { if (it < 0) AppLockModel.CHOICES_MS.lastIndex else it }
+                StepSlider(
+                    title = R.string.settings_lock_delay,
+                    steps = AppLockModel.CHOICES_MS.size,
+                    index = lockIndex,
+                    label = lockLabel(AppLockModel.CHOICES_MS[lockIndex]),
+                    labelFor = { i -> lockLabel(AppLockModel.CHOICES_MS[i], context) },
+                    onCommit = { i ->
+                        NodeHost.store?.lockGraceMs = AppLockModel.CHOICES_MS[i]
+                        AppLockState.applyGrace(AppLockModel.CHOICES_MS[i])
+                    },
+                )
+                Hint(stringResource(R.string.settings_lock_delay_hint))
             }
-        }
-        Text(stringResource(R.string.settings_sharing), style = MaterialTheme.typography.titleMedium)
-        ToggleRow(R.string.settings_inbound, R.string.settings_inbound_hint, settings.allowInbound) { onPolicy(settings.copy(allowInbound = it)) }
-        ToggleRow(R.string.settings_serve, R.string.settings_serve_hint, settings.serveSnapshots) { onPolicy(settings.copy(serveSnapshots = it)) }
-        Text(stringResource(R.string.settings_storage), style = MaterialTheme.typography.titleMedium)
-        ToggleRow(R.string.settings_fastprune, R.string.settings_fastprune_hint, fastprune, onFastprune)
-        Text(stringResource(R.string.settings_floor), style = MaterialTheme.typography.labelLarge)
-        FLOOR_CHOICES.forEach { gb ->
-            ChoiceRow(settings.storageFloorBytes == gb * GIB, { onPolicy(settings.copy(storageFloorBytes = gb * GIB)) }, stringResource(R.string.settings_cap_gb, gb), null) {}
-        }
-        Hint(stringResource(R.string.settings_floor_hint))
-        ExplorerSection(explorers, onExplorers)
-        Text(stringResource(R.string.settings_security), style = MaterialTheme.typography.titleMedium)
-        ToggleRow(R.string.settings_biometric, R.string.settings_biometric_hint, biometric, onBiometric)
-        var notifyIncoming by remember { mutableStateOf(NodeHost.store?.notifyIncoming == true) }
-        ToggleRow(R.string.notify_incoming_setting, R.string.notify_incoming_hint, notifyIncoming) {
-            notifyIncoming = it
-            NodeHost.store?.notifyIncoming = it
-        }
-        Text(stringResource(R.string.settings_appearance), style = MaterialTheme.typography.titleMedium)
-        AppearanceSection(ui, onUi)
-        Text(stringResource(R.string.settings_about), style = MaterialTheme.typography.titleMedium)
-        val context = LocalContext.current
-        val node = remember { CoreManifestLoader.load(context)?.label() ?: BuildConfig.NODE_VERSION }
-        Text(stringResource(R.string.settings_version, BuildConfig.VERSION_NAME), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(stringResource(R.string.settings_wallet_version, BuildConfig.MOBILE_VERSION), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(stringResource(R.string.settings_node_version, node), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        val manifest = remember { CoreManifestLoader.load(context) }
-        manifest?.commit?.let { Text(stringResource(R.string.settings_node_commit, it), color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
-        manifest?.libSha256?.let { Text(stringResource(R.string.settings_node_hash, it), color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
-        val fingerprint = remember { SigningInfo.fingerprint(context) }
-        fingerprint?.let { Text(stringResource(R.string.settings_signing, it), color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
-        Text(stringResource(R.string.about_slogan), color = MaterialTheme.colorScheme.onSurfaceVariant, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
-        listOf(
-            R.string.about_link_repo to "https://github.com/kutlusoy/elektron-net-mobile",
-            R.string.about_link_node to "https://github.com/kutlusoy/elektron-net",
-            R.string.about_link_whitepaper to "https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md",
-        ).forEach { (label, url) ->
-            androidx.compose.material3.TextButton(onClick = { context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))) }) {
-                Text(stringResource(label))
+            var notifyIncoming by remember { mutableStateOf(NodeHost.store?.notifyIncoming == true) }
+            ToggleRow(R.string.notify_incoming_setting, R.string.notify_incoming_hint, notifyIncoming) {
+                notifyIncoming = it
+                NodeHost.store?.notifyIncoming = it
             }
+            ToggleRow(R.string.settings_screenshots, R.string.settings_screenshots_hint, ScreenshotMode.allowed) { ScreenshotMode.allowed = it }
         }
-        Text(stringResource(R.string.settings_copyright), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        SettingsCard(R.string.settings_language) { LanguagePicker() }
+        SettingsCard(R.string.settings_appearance) { AppearanceSection(ui, onUi) }
+        SettingsCard(R.string.settings_about) {
+            val node = remember { CoreManifestLoader.load(context)?.label() ?: BuildConfig.NODE_VERSION }
+            val muted = MaterialTheme.colorScheme.onSurfaceVariant
+            Text(stringResource(R.string.settings_version, BuildConfig.VERSION_NAME), color = muted)
+            Text(stringResource(R.string.settings_wallet_version, BuildConfig.MOBILE_VERSION), color = muted)
+            Text(stringResource(R.string.settings_node_version, node), color = muted)
+            val manifest = remember { CoreManifestLoader.load(context) }
+            manifest?.commit?.let { Text(stringResource(R.string.settings_node_commit, it), color = muted, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
+            manifest?.libSha256?.let { Text(stringResource(R.string.settings_node_hash, it), color = muted, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
+            val fingerprint = remember { SigningInfo.fingerprint(context) }
+            fingerprint?.let { Text(stringResource(R.string.settings_signing, it), color = muted, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
+            Text(stringResource(R.string.about_slogan), color = muted, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
+            listOf(
+                R.string.about_link_repo to "https://github.com/kutlusoy/elektron-net-mobile",
+                R.string.about_link_node to "https://github.com/kutlusoy/elektron-net",
+                R.string.about_link_whitepaper to "https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md",
+            ).forEach { (label, url) ->
+                androidx.compose.material3.TextButton(onClick = { context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))) }) {
+                    Text(stringResource(label))
+                }
+            }
+            Text(stringResource(R.string.settings_copyright), color = muted)
+        }
     }
 }
 
+@Composable
+private fun SettingsCard(title: Int, content: @Composable () -> Unit) {
+    GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(stringResource(title), style = MaterialTheme.typography.titleMedium)
+            content()
+        }
+    }
+}
+
+@Composable
+private fun StepSlider(title: Int, steps: Int, index: Int, label: String, labelFor: (Int) -> String, onCommit: (Int) -> Unit) {
+    var position by remember(index) { mutableStateOf(index.toFloat()) }
+    val shown = position.roundToInt().coerceIn(0, steps - 1)
+    Column {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(stringResource(title), modifier = Modifier.weight(1f))
+            Text(if (shown == index) label else labelFor(shown), color = MaterialTheme.colorScheme.primary)
+        }
+        Slider(
+            value = position,
+            onValueChange = { position = it },
+            onValueChangeFinished = { onCommit(shown) },
+            valueRange = 0f..(steps - 1).toFloat(),
+            steps = (steps - 2).coerceAtLeast(0),
+        )
+    }
+}
+
+@Composable
+private fun lockLabel(ms: Long): String = lockLabel(ms, LocalContext.current)
+
+private fun lockLabel(ms: Long, context: android.content.Context): String = when {
+    ms == 0L -> context.getString(R.string.settings_lock_now)
+    ms < 60_000L -> context.getString(R.string.settings_seconds, (ms / 1000).toInt())
+    else -> context.getString(R.string.settings_minutes, (ms / 60_000).toInt())
+}
+
+@Composable
+private fun LanguagePicker() {
+    val context = LocalContext.current
+    var open by remember { mutableStateOf(false) }
+    val current = AppLanguage.stored(context)
+    val name = LanguageChoices.choices.firstOrNull { it.tag == current }?.nativeName ?: stringResource(R.string.settings_language_system)
+    Box {
+        androidx.compose.material3.OutlinedButton(onClick = { open = true }, modifier = Modifier.fillMaxWidth()) { Text(name + "  \u25be") }
+        androidx.compose.material3.DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+            androidx.compose.material3.DropdownMenuItem(
+                text = { Text(stringResource(R.string.settings_language_system)) },
+                onClick = { open = false; applyLanguage(context, null) },
+            )
+            LanguageChoices.choices.forEach { choice ->
+                androidx.compose.material3.DropdownMenuItem(text = { Text(choice.nativeName) }, onClick = { open = false; applyLanguage(context, choice.tag) })
+            }
+        }
+    }
+}
+
+private fun applyLanguage(context: android.content.Context, tag: String?) {
+    if (AppLanguage.stored(context) == tag) return
+    AppLanguage.store(context, tag)
+    (context as? android.app.Activity)?.recreate()
+}
+
 private const val GIB = 1024L * 1024 * 1024
-private val CAP_CHOICES = listOf<Long?>(null, 1L, 2L, 5L, 10L)
-private val FLOOR_CHOICES = listOf(1L, 2L, 5L)
+private val CAP_CHOICES = listOf<Long?>(1L, 2L, 5L, 10L, 20L, 50L, null)
+private val FLOOR_CHOICES = listOf(1L, 2L, 3L, 5L, 10L, 20L)
 private const val NIGHT_START = 22 * 60
 private const val NIGHT_END = 6 * 60
 

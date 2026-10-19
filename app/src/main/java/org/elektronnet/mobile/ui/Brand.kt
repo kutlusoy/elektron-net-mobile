@@ -19,14 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.ImageShader
-import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.painterResource
@@ -46,6 +42,7 @@ import org.elektronnet.mobile.ui.theme.accentGlow
 fun BrandBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val tokens = LocalTokens.current
     val level = LocalEffectLevel.current
+    val darkTheme = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val glow = when (level) {
         EffectLevel.Off -> 0f
         EffectLevel.Subtle -> 0.22f
@@ -54,7 +51,17 @@ fun BrandBackground(modifier: Modifier = Modifier, content: @Composable () -> Un
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(tokens.bg, lerp(tokens.bg, tokens.accent, 0.08f), tokens.bg)))
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(
+                        lerp(tokens.bg, tokens.accent, if (darkTheme) 0.11f else 0.07f),
+                        tokens.bg,
+                        lerp(tokens.bg, tokens.accent2, if (darkTheme) 0.08f else 0.05f),
+                    ),
+                    start = Offset(0f, 0f),
+                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY),
+                ),
+            )
             .drawBehind {
                 if (glow > 0f) {
                     drawRect(
@@ -79,26 +86,10 @@ fun BrandBackground(modifier: Modifier = Modifier, content: @Composable () -> Un
             contentDescription = null,
             modifier = Modifier.align(Alignment.Center).fillMaxWidth(0.92f).alpha(0.07f),
         )
-        Box(modifier = Modifier.fillMaxSize().drawBehind { drawRect(ShaderBrush(ImageShader(grainTile, TileMode.Repeated)), alpha = 0.5f) })
         androidx.compose.runtime.CompositionLocalProvider(
             androidx.compose.material3.LocalContentColor provides MaterialTheme.colorScheme.onBackground,
         ) { content() }
     }
-}
-
-private val grainTile: ImageBitmap by lazy {
-    val side = 192
-    val pixels = IntArray(side * side)
-    var state = 0x2F6E2B1
-    for (i in pixels.indices) {
-        state = state xor (state shl 13)
-        state = state xor (state ushr 17)
-        state = state xor (state shl 5)
-        val v = (state and 0xFF) - 128
-        val alpha = (kotlin.math.abs(v) / 3).coerceIn(0, 40)
-        pixels[i] = if (v > 0) android.graphics.Color.argb(alpha, 255, 255, 255) else android.graphics.Color.argb(alpha, 0, 0, 0)
-    }
-    android.graphics.Bitmap.createBitmap(pixels, side, side, android.graphics.Bitmap.Config.ARGB_8888).asImageBitmap()
 }
 
 @Composable
@@ -136,7 +127,7 @@ fun BrandHeader(compact: Boolean, showTagline: Boolean = false) {
         androidx.compose.foundation.layout.Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
         ) {
             ElektronLogo(if (showTagline) 52.dp else 36.dp)
             Column {
