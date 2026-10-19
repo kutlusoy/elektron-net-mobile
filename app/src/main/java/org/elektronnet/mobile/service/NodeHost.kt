@@ -246,6 +246,8 @@ object NodeHost {
         return runCatching { supervisor.peers().map { PeerRow(it, geo.lookup(it.address)) } }.getOrNull()
     }
 
+    fun logTail(count: Int): List<String> = controller?.current?.output?.tail(count).orEmpty()
+
     fun clearCrash() {
         controller?.clearCrash()
     }
