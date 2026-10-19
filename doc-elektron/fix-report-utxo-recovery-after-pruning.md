@@ -11,12 +11,12 @@
 
 ## 1. Summary
 
-A wallet restored from its recovery phrase on a pruned node recovers outputs that are still inside the retained blocks through `rescanblockchain`. Outputs created before the pruning boundary are recovered from the current UTXO set by `CWallet::ScanUTXOSet()`. Two defects were found in that second path. The first is fixed by a build patch. The second is open in the node and is the reason this report exists.
+A wallet restored from its recovery phrase on a pruned node recovers outputs that are still inside the retained blocks through `rescanblockchain`. Outputs created before the pruning boundary are recovered from the current UTXO set by `CWallet::ScanUTXOSet()`. Two defects were found in that second path. Both are fixed in the node source on branch `4.0.6` of `elektron-net` (wallet code only, no consensus change, activation height 500000 unchanged). Builds against an older node source keep the first fix through a build patch, and the second through the PSBT path below.
 
 | # | Defect | Status |
 |---|---|---|
-| D1 | `CreditUTXOFromChain()` builds a partial transaction that holds only the recovered output. Two recovered outputs with the same script, value and index produce the same partial transaction, so the second `AddToWallet()` trips `TxStateSerializedBlockHash(wtx.m_state) == TxStateSerializedBlockHash(state)`. | Fixed in our native build by `rescanutxoset.py` (a dummy input naming the outpoint keeps every partial transaction distinct). Still present in the node source. |
-| D2 | The partial transaction cannot have the original txid, so the wallet lists the recovered coin under a synthetic outpoint. The balance is correct, but a payment built from that coin spends an outpoint that does not exist in the UTXO set and is not accepted by the mempool. | Open in the node. Worked around in the app by a PSBT path that uses the real outpoints (section 4). |
+| D1 | `CreditUTXOFromChain()` builds a partial transaction that holds only the recovered output. Two recovered outputs with the same script, value and index produce the same partial transaction, so the second `AddToWallet()` trips `TxStateSerializedBlockHash(wtx.m_state) == TxStateSerializedBlockHash(state)`. | Fixed in the node source (`4.0.6`). Older sources get the same fix from `rescanutxoset.py`, which is a no-op once the source contains it. |
+| D2 | The partial transaction cannot have the original txid, so the wallet lists the recovered coin under a synthetic outpoint. The balance is correct, but a payment built from that coin spends an outpoint that does not exist in the UTXO set and is not accepted by the mempool. | Fixed in the node source (`4.0.6`): the recovered output is listed, selected and signed under its real outpoint. Older sources are worked around by a PSBT path that uses the real outpoints (section 4). |
 
 ## 2. Reproduction (regtest, verified against the patched native build)
 
@@ -34,7 +34,7 @@ Control: `scantxoutset` with the public descriptors of `w1` returns exactly the 
 | Component | Affected | Why |
 |---|---|---|
 | Node (`elektrond`, Elektron-Qt) | Yes, D1 and D2 | `ScanUTXOSet()` runs automatically at wallet load and after a snapshot (`AttachChain`, `MaybeRescanUTXOSetAfterSnapshot`) and creates the same synthetic entries. The `rescanutxoset` RPC is only an additional trigger from our build. |
-| This mobile wallet | D2 for coins that are only recoverable from the UTXO set | It ships the node with the D1 patch. Balances are right after a restore, spending those coins through the normal send flow does not work until the PSBT recovery path is built. Coins inside the retained window are not affected. |
+| This mobile wallet | D2 for coins that are only recoverable from the UTXO set | It ships the node with the D1 patch. Balances are right after a restore, spending those coins through the normal send flow does not work until the PSBT recovery path is built or the node source contains the fix. Coins inside the retained window are not affected. |
 | Other wallets built on the same node source | Yes | Same code path. |
 
 ## 4. Working recovery path (tested)
@@ -49,19 +49,20 @@ Control: `scantxoutset` with the public descriptors of `w1` returns exactly the 
 
 The same flow is the planned recovery spend in the app. Rules: outputs already spent or in the mempool are rechecked against the UTXO set and not counted twice, the passphrase is entered once and the wallet is locked again at the end, and the result is shown in the normal review screen with fee and destination.
 
-## 5. Proposal for the node
+## 5. Node fix
 
-- **MUST:** `CreditUTXOFromChain()` stops inserting a fabricated transaction under a foreign txid.
-- **SHOULD:** a persistent record for a recovered output (outpoint, amount, script, height, derivation) that takes part in the balance, coin selection, PSBT creation and spent tracking, stored in `wallet.dat` next to the normal transactions. The spent state follows the chainstate.
-- **MAY:** until then, `ScanUTXOSet()` could skip wallet insertion and only report the outputs, so no misleading balance appears.
+`CreditUTXOFromChain()` stores the recovered output in a partial transaction with a marker version and one input naming the real outpoint. `RefreshTXOsFromTx()` registers the output in `m_txos` under the real outpoint, `GetWalletTxByOutpoint()` resolves it for balance, trust checks and size estimation, and the entry is stored as confirmed at position 0 so it survives a wallet reload. Details: `fix-report-wallet-utxo-recovery-real-outpoints.md` in `elektron-net`.
+
+`UtxoRecoveryIntegrationTest` covers it end to end: balance, real outpoints, repeated scan, reload, PSBT and a normal `sendtoaddress` that lands in the mempool with the real inputs.
 
 ## 6. Checklist
 
 - [x] D1 fixed in the native build, regression covered by the contract check
 - [x] D2 reproduced and documented, test added
 - [ ] Recovery spend through PSBT built in the app (review screen, passphrase, re-check against the UTXO set)
-- [ ] Node issue filed with the reproduction above and the proposal in section 5
-- [ ] Remove the build patch and the known-defect assertion of the test when the node keys recovered outputs by their real outpoint
+- [x] Node fix on `elektron-net` branch `4.0.6` with the reproduction above as test
+- [ ] Release `v4.0.6` and point the release workflow `core_ref` at it
+- [ ] Remove the build patch when `v4.0.6` is the minimum node source
 
 ## 7. Open Questions
 

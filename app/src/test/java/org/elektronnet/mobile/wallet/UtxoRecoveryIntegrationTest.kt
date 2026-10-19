@@ -12,8 +12,13 @@ import org.junit.Assume.assumeTrue
 import org.junit.Test
 
 class UtxoRecoveryIntegrationTest {
+    private fun feeOf(rpc: WalletRpc, txid: String): Long {
+        val entry = rpc.call("gettransaction", listOf(txid), "w2") as Map<*, *>
+        return Math.abs(WalletReader.lep(entry["fee"]))
+    }
+
     @Test
-    fun prunedRecoveryCreditsTheBalanceButSpendingNeedsTheRealOutpoints() {
+    fun outputsRecoveredFromThePrunedUtxoSetKeepTheirRealOutpointAndAreSpendable() {
         val binary = System.getenv("ELEKTROND_BIN")
         assumeTrue("ELEKTROND_BIN not set", binary != null && File(binary).canExecute())
         val dir = Files.createTempDirectory("recovery-it").toFile()
@@ -46,29 +51,33 @@ class UtxoRecoveryIntegrationTest {
             assertTrue(imported.all { (it as Map<*, *>)["success"] == true })
 
             rpc.call("rescanutxoset", emptyList<Any?>(), "w2")
-            val bal = WalletReader.lep(((rpc.call("getbalances", emptyList<Any?>(), "w2") as Map<*, *>)["mine"] as Map<*, *>)["trusted"])
-            val recovered = (rpc.call("listunspent", emptyList<Any?>(), "w2") as List<*>).map { (it as Map<*, *>)["txid"].toString() + ":" + (it["vout"] as Number).toInt() }.toSet()
-            assertEquals(1_000_000_000L, bal)
-            val credited = (rpc.call("listunspent", emptyList<Any?>(), "w2") as List<*>).map { (it as Map<*, *>)["txid"].toString() + ":" + (it["vout"] as Number).toInt() }.toSet()
-            assertTrue("known defect: recovered outputs carry synthetic txids, update this test when the node keys them by the real txid", credited != real)
-            val publicDescs = ((rpc.call("listdescriptors", listOf(false), "w1") as Map<*, *>)["descriptors"] as List<*>).map { it as Map<*, *> }.filter { it["internal"] != true }.map { it["desc"].toString() }
-            val scan = rpc.call("scantxoutset", listOf("start", publicDescs.map { linkedMapOf("desc" to it, "range" to 20) }), null) as Map<*, *>
-            val found = (scan["unspents"] as List<*>).map { it as Map<*, *> }
-            assertEquals(real, found.map { it["txid"].toString() + ":" + (it["vout"] as Number).toInt() }.toSet())
-            assertEquals(1_000_000_000L, WalletReader.lep(scan["total_amount"]))
+            fun outpoints(wallet: String) = (rpc.call("listunspent", emptyList<Any?>(), wallet) as List<*>).map { (it as Map<*, *>)["txid"].toString() + ":" + (it["vout"] as Number).toInt() }.toSet()
+            fun trusted(wallet: String) = WalletReader.lep(((rpc.call("getbalances", emptyList<Any?>(), wallet) as Map<*, *>)["mine"] as Map<*, *>)["trusted"])
+            assertEquals(1_000_000_000L, trusted("w2"))
+            assertEquals(real, outpoints("w2"))
 
-            val pick = found.first()
-            val amount = WalletReader.lep(pick["amount"])
-            val out = java.math.BigDecimal(amount - 10_000L).movePointLeft(8)
-            val psbt = rpc.call("createpsbt", listOf(listOf(linkedMapOf("txid" to pick["txid"], "vout" to pick["vout"])), listOf(linkedMapOf(miner to out))), null).toString()
-            val updated = (rpc.call("utxoupdatepsbt", listOf(psbt, publicDescs.map { linkedMapOf("desc" to it, "range" to 20) }), null)).toString()
-            val signed = (rpc.call("walletprocesspsbt", listOf(updated, true, "ALL", true, false), "w2") as Map<*, *>)["psbt"].toString()
-            val finalized = rpc.call("finalizepsbt", listOf(signed, true), null) as Map<*, *>
-            assertEquals(true, finalized["complete"])
-            val accept = (rpc.call("testmempoolaccept", listOf(listOf(finalized["hex"].toString())), null) as List<*>).single() as Map<*, *>
-            assertEquals(true, accept["allowed"])
-            val broadcast = rpc.call("sendrawtransaction", listOf(finalized["hex"].toString()), null).toString()
-            assertEquals(64, broadcast.length)
+            rpc.call("rescanutxoset", emptyList<Any?>(), "w2")
+            assertEquals(1_000_000_000L, trusted("w2"))
+            assertEquals(real, outpoints("w2"))
+
+            rpc.call("unloadwallet", listOf("w2"), null)
+            rpc.call("loadwallet", listOf("w2"), null)
+            assertEquals(1_000_000_000L, trusted("w2"))
+            assertEquals(real, outpoints("w2"))
+
+            val funded = rpc.call("walletcreatefundedpsbt", listOf(emptyList<Any?>(), listOf(linkedMapOf(miner to 1.0)), 0, linkedMapOf("fee_rate" to 10)), "w2") as Map<*, *>
+            val processed = rpc.call("walletprocesspsbt", listOf(funded["psbt"], true, "ALL", true, true), "w2") as Map<*, *>
+            assertEquals(true, processed["complete"])
+            val accepted = (rpc.call("testmempoolaccept", listOf(listOf(processed["hex"].toString())), null) as List<*>).single() as Map<*, *>
+            assertEquals(true, accepted["allowed"])
+
+            val txid = rpc.call("sendtoaddress", linkedMapOf("address" to miner, "amount" to 1.0, "fee_rate" to 10), "w2").toString()
+            assertTrue((rpc.call("getrawmempool", emptyList<Any?>(), null) as List<*>).contains(txid))
+            val spent = ((rpc.call("getrawtransaction", listOf(txid, true), null) as Map<*, *>)["vin"] as List<*>).map { (it as Map<*, *>)["txid"].toString() + ":" + (it["vout"] as Number).toInt() }
+            assertTrue(spent.all { it in real })
+            rpc.call("generatetoaddress", listOf(1, miner), "miner")
+            assertEquals(1_000_000_000L - 100_000_000L, trusted("w2") + feeOf(rpc, txid))
+            assertTrue(real.none { it in outpoints("w2") && spent.contains(it) })
         } finally {
             supervisor.stop()
             dir.deleteRecursively()

@@ -636,7 +636,7 @@ Verified on a host build of the branch with our patch set: the `rescanutxoset` p
 | Default config file is now `elektron.conf` for fresh datadirs, an existing `bitcoin.conf` is preferred, RPC server is commented out in the generated template | No effect: the app creates `bitcoin.conf` itself before the first start and passes `-server=1`, the loopback bind, the cookie file and the empty `-rpcpassword=` explicitly. |
 | macOS datadir note, documentation | None. |
 
-Not changed in 4.0.6 and therefore still open: the D1 and D2 defects of the UTXO recovery (`fix-report-utxo-recovery-after-pruning.md`, X11).
+The D1 and D2 defects of the UTXO recovery (`fix-report-utxo-recovery-after-pruning.md`, X11) are fixed on `elektron-net` branch `4.0.6` (wallet code only, activation height 500000 unchanged). They stay open for any older node source until `v4.0.6` is released.
 
 **How to use it:** until the tag `v4.0.6` exists, run the release workflow by hand with `build_type` dev or nightly and `core_ref` `4.0.6`. Once the tag is pushed, release builds with version `v4.0.6-m<wallet version>` pick it up through the normal tag flow (§11.1).
 
@@ -645,7 +645,7 @@ Not changed in 4.0.6 and therefore still open: the D1 and D2 defects of the UTXO
 | ID | Repo | Item | Required? |
 |---|---|---|---|
 | X1 | `elektron-net` | Upstream a `rescanutxoset` wallet RPC wrapping `CWallet::ScanUTXOSet()`; remove the mobile-only patch afterwards. Also doc it in `BITCOIN_CORE_DIFF.md` | MUST, without it a restored wallet cannot see coins from pruned blocks (verified by the contract check) |
-| X11 | `elektron-net` | Key coins recovered by `ScanUTXOSet()` by their real outpoint (persistent recovered-output record) instead of a fabricated partial transaction, and drop the D1 build patch. Details and reproduction: [`fix-report-utxo-recovery-after-pruning.md`](./fix-report-utxo-recovery-after-pruning.md) | MUST, without it recovered coins are shown but cannot be spent through the normal send flow |
+| X11 | `elektron-net` | Key coins recovered by `ScanUTXOSet()` by their real outpoint instead of a fabricated txid. Done on `4.0.6`, including the `rescanutxoset` RPC (X1); the build patch becomes a no-op. Details and reproduction: [`fix-report-utxo-recovery-after-pruning.md`](./fix-report-utxo-recovery-after-pruning.md) | MUST, fixed on `elektron-net` branch `4.0.6` (open until `v4.0.6` is released and the release workflow uses it) |
 | X2 | `elektron-net` | A clean runtime switch to stop advertising and serving `NODE_SNAPSHOT` (for example a `-snapshotserve=0` flag or an RPC, **verify existing args first**), needed because phones serve only on Wi-Fi while charging | MUST (the hold-directory workaround in §5.2 is the interim) |
 | X3 | `elektron-net` | Persist snapshot download progress across restarts (audit §4.8, currently "accepted") so cellular and unstable mobile links do not re-download | MAY, strongly useful |
 | X4 | `elektron-net` | Add an Android/NDK target (toolchain file and docs) so the mobile build does not carry a private fork of the build system | SHOULD |
