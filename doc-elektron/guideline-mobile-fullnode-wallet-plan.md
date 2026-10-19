@@ -434,7 +434,7 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 
 | # | Requirement | Level |
 |---|---|---|
-| S1 | RPC bound to loopback (`-rpcbind=127.0.0.1`, `-rpcallowip=127.0.0.1`) with cookie authentication, the cookie file lives in the app-private datadir. No `-rpcuser` or `-rpcpassword` arguments | MUST |
+| S1 | RPC bound to loopback (`-rpcbind=127.0.0.1`, `-rpcallowip=127.0.0.1`) with cookie authentication, the cookie file lives in the app-private datadir. No `-rpcuser` argument and no secret in `-rpcpassword`: the node writes a default `bitcoin.conf` with `rpcuser` and `rpcpassword` on its first start, which would disable the cookie, so the app passes an empty `-rpcpassword=` to keep cookie authentication | MUST |
 | S2 | `android:allowBackup="false"` and no data extraction rules that include the datadir | MUST |
 | S3 | `FLAG_SECURE` on seed, passphrase, send-review and signing screens | MUST |
 | S4 | Unlock window at most 10 s, `walletlock` in a `finally` path. The recovery rescan is the only exception (§8.3) | MUST |

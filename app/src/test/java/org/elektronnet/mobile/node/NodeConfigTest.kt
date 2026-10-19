@@ -28,9 +28,10 @@ class NodeConfigTest {
     }
 
     @Test
-    fun neverUsesRpcPasswordArguments() {
+    fun neverPutsSecretsInArguments() {
         val args = config(Chain.Main).arguments()
-        assertFalse(args.any { it.startsWith("-rpcuser") || it.startsWith("-rpcpassword") })
+        assertFalse(args.any { it.startsWith("-rpcuser") })
+        assertTrue(args.filter { it.startsWith("-rpcpassword") } == listOf("-rpcpassword="))
     }
 
     @Test
