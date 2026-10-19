@@ -157,6 +157,7 @@ val checkSplash by tasks.registering(Exec::class) {
     inputs.file(designDir.resolve("palettes.json"))
     inputs.file(rootProject.file("tools/gen-splash.py"))
     inputs.file("src/main/res/values/themes_splash.xml")
+    inputs.file("src/main/res/values-v31/themes_splash.xml")
     commandLine("python3", "-I", rootProject.file("tools/gen-splash.py").path, "--check")
 }
 

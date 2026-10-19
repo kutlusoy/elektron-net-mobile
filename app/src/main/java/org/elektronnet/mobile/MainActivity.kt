@@ -38,6 +38,11 @@ class MainActivity : FragmentActivity() {
     private fun splashTheme(key: String?, dark: Boolean): Int =
         resources.getIdentifier("Theme_Elektron_Splash_${key ?: BuildConfig.DEFAULT_THEME}_${if (dark) "dark" else "light"}", "style", packageName)
 
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun rememberSplashTheme(style: Int) {
+        splashScreen.setSplashScreenTheme(style)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val saved = SettingsStore(this).loadUi(Palettes.all.map { it.key }.toSet())
         splashTheme(saved.themeKey, saved.dark).takeIf { it != 0 }?.let { setTheme(it) }
@@ -51,7 +56,7 @@ class MainActivity : FragmentActivity() {
             val dark = ui.dark
             LaunchedEffect(ui.themeKey, dark) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    splashTheme(ui.themeKey, dark).takeIf { it != 0 }?.let { splashScreen.setSplashScreenTheme(it) }
+                    splashTheme(ui.themeKey, dark).takeIf { it != 0 }?.let(::rememberSplashTheme)
                 }
                 val style = if (dark) SystemBarStyle.dark(Color.TRANSPARENT) else SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
                 enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)

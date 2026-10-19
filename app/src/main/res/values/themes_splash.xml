@@ -3,42 +3,32 @@
 <resources>
     <style name="Theme.Elektron.Splash.teal.dark" parent="Theme.Elektron">
         <item name="android:windowBackground">#061824</item>
-        <item name="android:windowSplashScreenBackground">#061824</item>
     </style>
     <style name="Theme.Elektron.Splash.teal.light" parent="Theme.Elektron">
         <item name="android:windowBackground">#f1fafc</item>
-        <item name="android:windowSplashScreenBackground">#f1fafc</item>
     </style>
     <style name="Theme.Elektron.Splash.blue.dark" parent="Theme.Elektron">
         <item name="android:windowBackground">#0b1220</item>
-        <item name="android:windowSplashScreenBackground">#0b1220</item>
     </style>
     <style name="Theme.Elektron.Splash.blue.light" parent="Theme.Elektron">
         <item name="android:windowBackground">#f4f8fd</item>
-        <item name="android:windowSplashScreenBackground">#f4f8fd</item>
     </style>
     <style name="Theme.Elektron.Splash.rust.dark" parent="Theme.Elektron">
         <item name="android:windowBackground">#120b08</item>
-        <item name="android:windowSplashScreenBackground">#120b08</item>
     </style>
     <style name="Theme.Elektron.Splash.rust.light" parent="Theme.Elektron">
         <item name="android:windowBackground">#faf3ec</item>
-        <item name="android:windowSplashScreenBackground">#faf3ec</item>
     </style>
     <style name="Theme.Elektron.Splash.red.dark" parent="Theme.Elektron">
         <item name="android:windowBackground">#0a0405</item>
-        <item name="android:windowSplashScreenBackground">#0a0405</item>
     </style>
     <style name="Theme.Elektron.Splash.red.light" parent="Theme.Elektron">
         <item name="android:windowBackground">#fdf3f4</item>
-        <item name="android:windowSplashScreenBackground">#fdf3f4</item>
     </style>
     <style name="Theme.Elektron.Splash.matrix.dark" parent="Theme.Elektron">
         <item name="android:windowBackground">#020a06</item>
-        <item name="android:windowSplashScreenBackground">#020a06</item>
     </style>
     <style name="Theme.Elektron.Splash.matrix.light" parent="Theme.Elektron">
         <item name="android:windowBackground">#f0faf4</item>
-        <item name="android:windowSplashScreenBackground">#f0faf4</item>
     </style>
 </resources>
