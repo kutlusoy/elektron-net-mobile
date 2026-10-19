@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.18 (draft)
+- **Version:** 0.19 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
@@ -165,6 +165,41 @@ Expert mode gives advanced users a console to the node, comparable to the debug 
 - `backupwallet`, `restorewallet` and `dumptxoutset` are supported. File arguments are confined to the app's private `exports/` directory, existing files are never overwritten, and only wallets protected by a passphrase are backed up. `dumptxoutset` with `type=rollback` is blocked. Dumps made by hand are deleted after 7 days, the automatic checkpoint snapshots of the node are never touched. `createwallet` is refused without a passphrase.
 - Command names, arguments and node output stay in English. All console chrome, the risk texts and the error hints are localized (§3.5).
 - Phase 1 ships a read-only developer console in debug builds for the team. User-facing Expert mode comes in Phase 3.
+
+### 3.7 Node-only mode and server mode (planned, next milestone)
+
+Status: planning only, nothing of this is built. It comes right after the current wallet work.
+
+**Goal.** The app can run as a plain Elektron Net node on Android: start it without ever creating a wallet, and optionally make the node reachable from other machines on the same network, for example as the backend of a mining pool or a solo miner (`getblocktemplate` and `submitblock`, see `mining-pool-integration.md` of the node repository).
+
+**Two independent switches.**
+
+1. *App mode:* "Wallet and node" (today's default) or "Node only". The first-run screen gets a third choice next to Create and Restore: "Use as node only". The choice can be changed later (Settings, Node), and a wallet can be added at any time without touching the synchronized data. In node only mode the Wallet and History tabs are replaced by a short card that explains the mode and offers to create a wallet, the Node tab becomes the home screen, and the foreground service, policy engine, telemetry, peers and log work as they do today.
+2. *Server access:* off by default. When on, the node accepts RPC connections from the local network. It is a separate section of the Node settings and works in both app modes.
+
+**Node only mode, technical points.**
+
+- The wallet gate in the app (`walletReady` in `AppRoot`, in `MainActivity` and `NodeService`) becomes an app mode value. Starting the node and the foreground service no longer depends on a wallet.
+- In node only mode the node starts with `-disablewallet=1`, which saves memory and removes the wallet attack surface. Switching to wallet mode restarts the node once without it. The data folder is shared, so no resync is needed.
+- The notification permission request and the battery guidance run in the first-run flow of both modes.
+- Mining oriented defaults are offered as a profile, not forced: keep running in the background, stay awake only while charging, Wi-Fi only, thermal limits stay active.
+
+**Server access, technical points.**
+
+- *Bind and allow list.* Levels: Off (`127.0.0.1` only, today), Local network (bind to the Wi-Fi or Ethernet address of the phone, never `0.0.0.0` by default, `-rpcallowip` restricted to the detected private subnet, user can narrow it to single addresses). No option binds to a public address. Remote access from outside is described as "use a VPN such as WireGuard", not offered by the app.
+- *Credentials.* The local app keeps using the cookie file. For external clients the app creates one or more RPC users with `-rpcauth=user:salt$hash` (HMAC-SHA256 as in Core's `share/rpcauth`), generates a long random password, shows it once together with a ready connection string and QR code, and stores only the salted hash. No `-rpcpassword` in plain text anywhere. Users can be listed, renamed and revoked, and "Revoke all" removes access in one step. The mandatory empty `-rpcpassword=` override (see the node config test) MUST be verified together with `-rpcauth` in a spike, because the node's default configuration also sets `rpcuser` and `rpcpassword`.
+- *Method whitelist.* External users get `-rpcwhitelist` entries and `-rpcwhitelistdefault=1`, so they can only call what their role needs. Roles: *Mining* (`getblocktemplate`, `submitblock`, `getmininginfo`, `getblockchaininfo`, `getbestblockhash`, `getblockcount`, `getblockhash`, `getblockheader`, `getnetworkinfo`, `getmempoolinfo`, `getrawmempool`, `getdifficulty`, `validateaddress`, `getnetworkhashps`), *Read only* (the non-wallet read calls of the Open tier of the console classification), *Full* (everything except wallet and Blocked tier commands, Danger confirmation needed). Wallet and key calls are never available to external users. The role lists are derived from `native-build/contract/console-tiers.json` and verified by the contract check.
+- *Transport.* RPC is plain HTTP, so the app says clearly that it is meant for a trusted LAN. Optional later: an RPC onion service or a TLS front, not in the first step.
+- *Enable flow.* Enabling needs device authentication, a risk text (what is exposed, who can reach it), and shows a persistent banner while server access is on. Optional auto-off timer (1 hour, 24 hours, never). The node screen shows the connection card: reachable address(es), port, users, last connection time.
+- *Android networking.* The address changes with DHCP and Wi-Fi switches, so the card reads the current address live and the service re-binds on a network change (restart of the node RPC bind needs a node restart, shown as a short "applying" state). Optional local discovery through Android NSD (`_elektron-rpc._tcp`), off by default. Inbound P2P is a separate switch that already exists (Allow inbound connections); the card shows the inbound peer count and whether the P2P port looks reachable. UPnP and NAT-PMP stay off, port forwarding is the user's decision and is explained, not automated.
+- *Mining readiness checklist.* Synchronized (not in initial download), enough peers, a `getblocktemplate` self-test succeeds with a throwaway coinbase address, UTXO attestation fields present in the template. The card also generates the settings block for `elektron-net-pool` or for a GBT miner (host, port, user), without the password. In-node CPU mining on the phone is not offered (SHA-256d, battery); `generatetoaddress` stays available to the console on regtest and testnet.
+- *Persistence and logging.* The RPC users and the access level live in an app-private config include file that the app writes before every node start (not on the command line, so `ps` never shows them). RPC users are never logged, the cleaned log export (§8.9) hides addresses and paths and also drops `rpcauth` lines.
+
+**Security requirements.** S26: server access is off by default, binds only to local addresses, and never to a public interface. S27: no plain text RPC password is stored, external users are hashed `rpcauth` users with a method whitelist, and wallet and key calls are never exposed. S28: enabling needs device authentication and an explicit risk confirmation, and a visible banner shows while it is on. S29: node only mode starts the node with `-disablewallet=1` and holds no key material.
+
+**Tests.** Argument builder and config include writer (unit), `rpcauth` hash against Core's reference vectors, an integration test with the real regtest node: external user reaches only the whitelisted calls (`getblockcount` yes, `stop` and `getwalletinfo` no), cookie access keeps working, revoked user is refused, bind address is the configured one, and node only mode starts and later switches to wallet mode on the same data folder. Device lab: Wi-Fi change, doze, screen off, charging only, thermal pause, 24 hour soak as a pool backend.
+
+**Open questions.** N1: RPC over a Unix socket or onion for remote use. N2: foreground service type and Play policy wording for an app that exposes a local server (distribution guideline). N3: a separate "node only" flavor or APK, or only the mode switch. N4: IPv6 and dual stack. N5: whether the Full role is worth shipping in v1 or only Mining and Read only. N6: a dedicated pool health view (blocks submitted, template latency).
 
 ## 4. Architecture
 
@@ -493,6 +528,10 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 | S23 | Web requests go only to explorers the user can see and edit in Settings, only over https (plain http for localhost and onion), carry no addresses, keys or balances, and stop completely when the list is empty (§8.7) | MUST |
 | S24 | Removing a wallet needs that wallet's passphrase and an explicit confirmation, and never touches another wallet (§8.8) | MUST |
 | S25 | Address reuse protection is on for every wallet; coins on a reused address are never spent automatically (§8.6.1) | MUST |
+| S26 | Server access is off by default, binds only to local addresses and never to a public interface (§3.7) | MUST |
+| S27 | No plain text RPC password is stored, external users are hashed `rpcauth` users with a method whitelist, wallet and key calls are never exposed (§3.7) | MUST |
+| S28 | Enabling server access needs device authentication and an explicit risk confirmation, and a visible banner shows while it is on (§3.7) | MUST |
+| S29 | Node only mode starts the node with `-disablewallet=1` and holds no key material (§3.7) | MUST |
 
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 
@@ -646,6 +685,14 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [ ] Native speaker review of the security and trust model texts in every shipped language (§3.5)
 - [ ] External security review and fixes, including the Expert console and its Danger tier
 
+### Phase 4b: Node only mode and server access (next, §3.7)
+
+- [ ] App mode switch and first-run choice "Use as node only", node start without a wallet, `-disablewallet=1` in node only mode
+- [ ] Server access: local network bind, allow list, `rpcauth` users with salted hashes, method whitelists per role, connection card, banner, auto-off timer
+- [ ] Mining readiness checklist, pool settings block, `getblocktemplate` self-test
+- [ ] Spike: `-rpcauth` together with the cookie and the empty `-rpcpassword=` override on the real node
+- [ ] Tests and device lab runs listed in §3.7
+
 ### Phase 5: Public beta on mainnet with funds warning, then release candidate
 
 - [ ] Test-phase telemetry-free feedback channel (Telegram @elektronnet, issue tracker)
@@ -742,5 +789,6 @@ All questions of the first drafts are answered. Decisions of October 18, 2026 ar
 | Q12 | Languages | English plus the most widespread languages in two tiers (Chinese, Arabic, Japanese, Korean and more) | §3.5 |
 | Q13 | Artwork | None, design only, five reduced color themes with dark and light mode, no glow, readability first | §3.3, design system guideline |
 | Q14 | Expert console | Danger tier in the first release, device authentication once per session, persistent history with 90 days retention, console in all builds, file commands with passphrase-protected wallets only, manual dumps deleted after 7 days, `createwallet` forbidden without a passphrase | `guideline-expert-console.md` §1.1 |
+| Q15 | Node only and server mode | Planned as the next milestone: node without wallet, optional LAN RPC with hashed users and method whitelist, mining readiness | §3.7 |
 
 Remaining open items live in the distribution guideline (§9, D2 to D5): the Play account type, the Play signing key choice, F-Droid native build and the foreground service type. D1 (testnet chain) is resolved: `testnet`.

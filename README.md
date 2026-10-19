@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.22 (draft)
+- **Version:** 0.23 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -38,6 +38,8 @@
 - English is the default language; the app follows the system language and falls back to English.
 - Lightning is not part of v1, but the wallet layer keeps a pluggable path for it.
 - Local-only operation: no analytics, no remote geolocation, no remote QR services.
+
+**Next milestone (planned, not built):** a node only mode that starts without a wallet, and an optional server access for the local network (hashed RPC users, method whitelist, mining readiness) so a phone can serve as a pool or miner backend. See plan section 3.7.
 
 ## 3. How it works
 
