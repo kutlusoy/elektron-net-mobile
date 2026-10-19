@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.22 (draft)
+- **Version:** 0.23 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
@@ -630,6 +630,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 | ID | Repo | Item | Required? |
 |---|---|---|---|
 | X1 | `elektron-net` | Upstream a `rescanutxoset` wallet RPC wrapping `CWallet::ScanUTXOSet()`; remove the mobile-only patch afterwards. Also doc it in `BITCOIN_CORE_DIFF.md` | MUST, without it a restored wallet cannot see coins from pruned blocks (verified by the contract check) |
+| X11 | `elektron-net` | Key coins recovered by `ScanUTXOSet()` by their real outpoint (persistent recovered-output record) instead of a fabricated partial transaction, and drop the D1 build patch. Details and reproduction: [`fix-report-utxo-recovery-after-pruning.md`](./fix-report-utxo-recovery-after-pruning.md) | MUST, without it recovered coins are shown but cannot be spent through the normal send flow |
 | X2 | `elektron-net` | A clean runtime switch to stop advertising and serving `NODE_SNAPSHOT` (for example a `-snapshotserve=0` flag or an RPC, **verify existing args first**), needed because phones serve only on Wi-Fi while charging | MUST (the hold-directory workaround in §5.2 is the interim) |
 | X3 | `elektron-net` | Persist snapshot download progress across restarts (audit §4.8, currently "accepted") so cellular and unstable mobile links do not re-download | MAY, strongly useful |
 | X4 | `elektron-net` | Add an Android/NDK target (toolchain file and docs) so the mobile build does not carry a private fork of the build system | SHOULD |
@@ -679,6 +680,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - [x] Send with PSBT review, fee policy re-check, coin control, explorer fee fallback
 - [x] Several wallets with switching, adding and removing (§8.8)
 - [x] Escrow, PSBT tools, sweep keys, sign and verify messages
+- [ ] Recovery spend of coins that are only in the UTXO set (PSBT path with real outpoints, `fix-report-utxo-recovery-after-pruning.md`)
 - [ ] Recovery matrix passes (§14.2): create, restore and the UTXO rescan are tested on regtest, the device matrix is open
 
 ### Phase 3: Background operation and policy
