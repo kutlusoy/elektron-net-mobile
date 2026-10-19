@@ -24,7 +24,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.service.SigningInfo
 import androidx.compose.ui.platform.LocalContext
 import org.elektronnet.mobile.service.CoreManifestLoader
 import androidx.compose.ui.Alignment
@@ -33,7 +38,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.elektronnet.mobile.BuildConfig
 import org.elektronnet.mobile.R
+import org.elektronnet.mobile.node.NodeProfile
 import org.elektronnet.mobile.policy.PolicySettings
+import org.elektronnet.mobile.policy.ScheduleWindow
+import org.elektronnet.mobile.ui.theme.ElektronMono
+import org.elektronnet.mobile.ui.tools.Hint
 import org.elektronnet.mobile.ui.model.UiSettings
 
 @Composable
@@ -47,6 +56,11 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     biometric: Boolean = false,
     onBiometric: (Boolean) -> Unit = {},
+    onPolicy: (PolicySettings) -> Unit = {},
+    fastprune: Boolean = true,
+    onFastprune: (Boolean) -> Unit = {},
+    explorers: List<String> = emptyList(),
+    onExplorers: (List<String>) -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -59,8 +73,41 @@ fun SettingsScreen(
         ToggleRow(R.string.settings_mobile_data, R.string.settings_mobile_data_hint, settings.allowMetered, onAllowMetered)
         ToggleRow(R.string.settings_charging_only, R.string.settings_charging_only_hint, settings.chargingOnly, onChargingOnly)
         ToggleRow(R.string.settings_background, R.string.settings_background_hint, settings.backgroundEnabled, onBackground)
+        if (settings.allowMetered) {
+            ToggleRow(R.string.settings_roaming, R.string.settings_roaming_hint, settings.allowRoaming) { onPolicy(settings.copy(allowRoaming = it)) }
+            Text(stringResource(R.string.settings_cap), style = MaterialTheme.typography.labelLarge)
+            CAP_CHOICES.forEach { gb ->
+                val bytes = gb?.let { it * GIB }
+                ChoiceRow(settings.monthlyCellularCapBytes == bytes, { onPolicy(settings.copy(monthlyCellularCapBytes = bytes)) }, if (gb == null) stringResource(R.string.settings_cap_none) else stringResource(R.string.settings_cap_gb, gb), null) {}
+            }
+        }
+        ToggleRow(R.string.settings_night, R.string.settings_night_hint, settings.schedule != null) {
+            onPolicy(settings.copy(schedule = if (it) ScheduleWindow(NIGHT_START, NIGHT_END) else null))
+        }
+        if (settings.backgroundEnabled) {
+            Text(stringResource(R.string.settings_profile), style = MaterialTheme.typography.labelLarge)
+            NodeProfile.entries.forEach { profile ->
+                ChoiceRow(settings.profile == profile, { onPolicy(settings.copy(profile = profile)) }, stringResource(profileLabel(profile)), stringResource(profileHint(profile))) {}
+            }
+        }
+        Text(stringResource(R.string.settings_sharing), style = MaterialTheme.typography.titleMedium)
+        ToggleRow(R.string.settings_inbound, R.string.settings_inbound_hint, settings.allowInbound) { onPolicy(settings.copy(allowInbound = it)) }
+        ToggleRow(R.string.settings_serve, R.string.settings_serve_hint, settings.serveSnapshots) { onPolicy(settings.copy(serveSnapshots = it)) }
+        Text(stringResource(R.string.settings_storage), style = MaterialTheme.typography.titleMedium)
+        ToggleRow(R.string.settings_fastprune, R.string.settings_fastprune_hint, fastprune, onFastprune)
+        Text(stringResource(R.string.settings_floor), style = MaterialTheme.typography.labelLarge)
+        FLOOR_CHOICES.forEach { gb ->
+            ChoiceRow(settings.storageFloorBytes == gb * GIB, { onPolicy(settings.copy(storageFloorBytes = gb * GIB)) }, stringResource(R.string.settings_cap_gb, gb), null) {}
+        }
+        Hint(stringResource(R.string.settings_floor_hint))
+        ExplorerSection(explorers, onExplorers)
         Text(stringResource(R.string.settings_security), style = MaterialTheme.typography.titleMedium)
         ToggleRow(R.string.settings_biometric, R.string.settings_biometric_hint, biometric, onBiometric)
+        var notifyIncoming by remember { mutableStateOf(NodeHost.store?.notifyIncoming == true) }
+        ToggleRow(R.string.notify_incoming_setting, R.string.notify_incoming_hint, notifyIncoming) {
+            notifyIncoming = it
+            NodeHost.store?.notifyIncoming = it
+        }
         Text(stringResource(R.string.settings_appearance), style = MaterialTheme.typography.titleMedium)
         AppearanceSection(ui, onUi)
         Text(stringResource(R.string.settings_about), style = MaterialTheme.typography.titleMedium)
@@ -69,8 +116,31 @@ fun SettingsScreen(
         Text(stringResource(R.string.settings_version, BuildConfig.VERSION_NAME), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(stringResource(R.string.settings_wallet_version, BuildConfig.MOBILE_VERSION), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(stringResource(R.string.settings_node_version, node), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        val manifest = remember { CoreManifestLoader.load(context) }
+        manifest?.commit?.let { Text(stringResource(R.string.settings_node_commit, it), color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
+        manifest?.libSha256?.let { Text(stringResource(R.string.settings_node_hash, it), color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
+        val fingerprint = remember { SigningInfo.fingerprint(context) }
+        fingerprint?.let { Text(stringResource(R.string.settings_signing, it), color = MaterialTheme.colorScheme.onSurfaceVariant, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall) }
         Text(stringResource(R.string.settings_copyright), color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
+}
+
+private const val GIB = 1024L * 1024 * 1024
+private val CAP_CHOICES = listOf<Long?>(null, 1L, 2L, 5L, 10L)
+private val FLOOR_CHOICES = listOf(1L, 2L, 5L)
+private const val NIGHT_START = 22 * 60
+private const val NIGHT_END = 6 * 60
+
+private fun profileLabel(profile: NodeProfile): Int = when (profile) {
+    NodeProfile.Foreground -> R.string.profile_foreground
+    NodeProfile.Balanced -> R.string.profile_balanced
+    NodeProfile.AlwaysOn -> R.string.profile_always
+}
+
+private fun profileHint(profile: NodeProfile): Int = when (profile) {
+    NodeProfile.Foreground -> R.string.profile_foreground_hint
+    NodeProfile.Balanced -> R.string.profile_balanced_hint
+    NodeProfile.AlwaysOn -> R.string.profile_always_hint
 }
 
 @Composable

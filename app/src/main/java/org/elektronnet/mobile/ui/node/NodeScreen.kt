@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
@@ -55,6 +56,7 @@ fun NodeScreen(
     peers: List<NodeHost.PeerRow> = emptyList(),
     telemetry: org.elektronnet.mobile.node.Telemetry? = null,
     showGeoCredit: Boolean = false,
+    onOpenConsole: () -> Unit = {},
     onPause: () -> Unit,
     onResume: () -> Unit,
     onStop: () -> Unit,
@@ -117,6 +119,7 @@ fun NodeScreen(
                     elapsed = diag?.takeIf { it.startedAt > 0 }?.let { now - it.startedAt },
                     sinceLog = diag?.takeIf { it.lastLogAt > 0 }?.let { now - it.lastLogAt },
                     warmup = diag?.warmup,
+                    rpcProblem = diag?.rpcProblem,
                     health = health,
                 )
             }
@@ -138,6 +141,14 @@ fun NodeScreen(
         Text(stringResource(R.string.node_explainer), color = MaterialTheme.colorScheme.onSurfaceVariant)
         model.details?.let { StatGrid(it) }
         LogSection(showLog, { showLog = it }, log)
+        GlassCard {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.node_expert_title), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.node_expert_body), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                OutlinedButton(onClick = onOpenConsole) { Text(stringResource(R.string.node_expert_open)) }
+            }
+        }
+        MaintenanceCard(onRestart = onStart)
         if (model.details != null) {
             TelemetrySection(model.details, telemetry)
             PeerSection(peers, showGeoCredit)
@@ -146,7 +157,7 @@ fun NodeScreen(
 }
 
 @Composable
-private fun DiagnosticsBlock(starting: Boolean, peers: Long?, elapsed: Long?, sinceLog: Long?, warmup: String?, health: NodeHealth) {
+private fun DiagnosticsBlock(starting: Boolean, peers: Long?, elapsed: Long?, sinceLog: Long?, warmup: String?, rpcProblem: String?, health: NodeHealth) {
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
     val small = MaterialTheme.typography.bodySmall
     if (peers != null) {
@@ -157,6 +168,7 @@ private fun DiagnosticsBlock(starting: Boolean, peers: Long?, elapsed: Long?, si
         )
     }
     if (starting && !warmup.isNullOrBlank()) Text(warmup, color = muted, style = small)
+    if (starting && !rpcProblem.isNullOrBlank()) Text(stringResource(R.string.diag_rpc_problem, rpcProblem), color = MaterialTheme.colorScheme.error, style = small)
     if (elapsed != null && starting) Text(stringResource(R.string.diag_elapsed, NodeHealthRules.clock(elapsed)), color = muted, style = small)
     if (sinceLog != null) Text(stringResource(R.string.diag_last_log, NodeHealthRules.clock(sinceLog)), color = muted, style = small)
     val warning = when (health) {
@@ -234,8 +246,14 @@ private fun LogSection(show: Boolean, onShow: (Boolean) -> Unit, lines: List<Str
                         }
                     }
                     if (lines.isNotEmpty()) {
-                        TextButton(onClick = { clipboard.setText(androidx.compose.ui.text.AnnotatedString(lines.joinToString("\n"))) }) {
-                            Text(stringResource(R.string.node_log_copy))
+                        val context = androidx.compose.ui.platform.LocalContext.current
+                        Row {
+                            TextButton(onClick = { clipboard.setText(androidx.compose.ui.text.AnnotatedString(org.elektronnet.mobile.node.LogSanitizer.clean(lines))) }) {
+                                Text(stringResource(R.string.node_log_copy))
+                            }
+                            TextButton(onClick = { org.elektronnet.mobile.ui.tools.shareText(context, org.elektronnet.mobile.node.LogSanitizer.clean(lines)) }) {
+                                Text(stringResource(R.string.node_log_share))
+                            }
                         }
                     }
                 }
@@ -262,6 +280,22 @@ private fun TelemetrySection(details: NodeDetails, telemetry: org.elektronnet.mo
                     if (telemetry?.mempoolTx != null) stringResource(R.string.telemetry_mempool_value, telemetry.mempoolTx, TelemetryFormat.bytes(telemetry.mempoolBytes ?: 0L)) else dash,
                 )
                 TelemetryRow(stringResource(R.string.telemetry_storage), telemetry?.sizeOnDisk?.let(TelemetryFormat::bytes) ?: dash)
+            }
+        }
+        GlassCard {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.net_card), style = MaterialTheme.typography.titleMedium)
+                TelemetryRow(stringResource(R.string.net_type), stringResource(R.string.net_type_value))
+                TelemetryRow(stringResource(R.string.detail_version), details.version)
+                TelemetryRow(stringResource(R.string.net_protocol), telemetry?.protocolVersion?.toString() ?: dash)
+                TelemetryRow(
+                    stringResource(R.string.detail_peers),
+                    if (telemetry?.connectionsIn != null) stringResource(R.string.net_connections_value, details.peers, telemetry.connectionsIn, telemetry.connectionsOut ?: 0L) else details.peers.toString(),
+                )
+                TelemetryRow(stringResource(R.string.net_active), telemetry?.networkActive?.let { stringResource(if (it) R.string.yes else R.string.no) } ?: dash)
+                TelemetryRow(stringResource(R.string.net_ibd), telemetry?.initialBlockDownload?.let { stringResource(if (it) R.string.yes else R.string.no) } ?: dash)
+                TelemetryRow(stringResource(R.string.net_p2p), org.elektronnet.mobile.ChainConfig.p2pPort.toString())
+                TelemetryRow(stringResource(R.string.net_rpc), "127.0.0.1:" + org.elektronnet.mobile.ChainConfig.rpcPort)
             }
         }
         GlassCard {
@@ -302,8 +336,9 @@ private fun PeerSection(peers: List<NodeHost.PeerRow>, showGeoCredit: Boolean) {
 @Composable
 private fun PeerCard(row: NodeHost.PeerRow) {
     val peer = row.peer
+    var open by rememberSaveable(peer.id) { mutableStateOf(false) }
     GlassCard {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.clickable { open = !open }) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(peer.address, fontFamily = org.elektronnet.mobile.ui.theme.ElektronMono, modifier = Modifier.weight(1f))
                 Text(
@@ -317,7 +352,24 @@ private fun PeerCard(row: NodeHost.PeerRow) {
             row.country?.let { Text("${it.flag} ${it.name}", color = MaterialTheme.colorScheme.primary) }
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 peer.pingMs?.let { Text(stringResource(R.string.peer_ping, it.toInt()), style = MaterialTheme.typography.bodySmall) }
-                peer.startingHeight?.takeIf { it >= 0 }?.let { Text(stringResource(R.string.peer_height, it), style = MaterialTheme.typography.bodySmall) }
+                (peer.syncedBlocks?.takeIf { it >= 0 } ?: peer.startingHeight?.takeIf { it >= 0 })?.let { Text(stringResource(R.string.peer_height, it), style = MaterialTheme.typography.bodySmall) }
+            }
+            if (open) {
+                androidx.compose.material3.HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
+                val dash = "-"
+                TelemetryRow(stringResource(R.string.peer_id), peer.id.toString())
+                TelemetryRow(stringResource(R.string.peer_network), peer.network.ifEmpty { dash })
+                row.country?.let { TelemetryRow(stringResource(R.string.peer_country), "${it.flag} ${it.name} (${it.code})") }
+                TelemetryRow(stringResource(R.string.peer_connection_type), peer.connectionType.ifEmpty { dash })
+                TelemetryRow(stringResource(R.string.peer_transport), peer.transport.ifEmpty { dash })
+                TelemetryRow(stringResource(R.string.net_protocol), peer.version?.toString() ?: dash)
+                TelemetryRow(stringResource(R.string.peer_synced_headers), peer.syncedHeaders?.takeIf { it >= 0 }?.toString() ?: dash)
+                TelemetryRow(stringResource(R.string.peer_synced_blocks), peer.syncedBlocks?.takeIf { it >= 0 }?.toString() ?: dash)
+                TelemetryRow(stringResource(R.string.peer_min_ping), peer.minPingMs?.let { stringResource(R.string.peer_ms, it.toInt()) } ?: dash)
+                TelemetryRow(stringResource(R.string.peer_received), peer.bytesRecv?.let(TelemetryFormat::bytes) ?: dash)
+                TelemetryRow(stringResource(R.string.peer_sent), peer.bytesSent?.let(TelemetryFormat::bytes) ?: dash)
+                TelemetryRow(stringResource(R.string.peer_time_offset), peer.timeOffset?.let { "$it s" } ?: dash)
+                if (peer.localBind.isNotEmpty()) TelemetryRow(stringResource(R.string.peer_local_bind), peer.localBind)
             }
         }
     }
@@ -393,4 +445,33 @@ private fun hint(model: NodeTabModel): String? = when (model.state) {
         },
     )
     else -> null
+}
+
+@Composable
+private fun MaintenanceCard(onRestart: () -> Unit) {
+    var confirming by remember { mutableStateOf(false) }
+    var failed by remember { mutableStateOf(false) }
+    GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.node_reset_title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.node_reset_body), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            OutlinedButton(onClick = { confirming = true }) { Text(stringResource(R.string.node_reset_action)) }
+            if (failed) Text(stringResource(R.string.node_reset_failed), color = MaterialTheme.colorScheme.error)
+        }
+    }
+    if (confirming) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { confirming = false },
+            title = { Text(stringResource(R.string.node_reset_title)) },
+            text = { Text(stringResource(R.string.node_reset_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirming = false
+                    failed = !NodeHost.resetChainData()
+                    if (!failed) onRestart()
+                }) { Text(stringResource(R.string.node_reset_action), color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = { OutlinedButton(onClick = { confirming = false }) { Text(stringResource(R.string.action_cancel)) } },
+        )
+    }
 }

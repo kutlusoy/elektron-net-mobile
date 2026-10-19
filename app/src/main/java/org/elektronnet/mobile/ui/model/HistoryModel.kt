@@ -24,7 +24,21 @@ data class HistoryDay(val date: LocalDate, val rows: List<HistoryRow>)
 
 data class BalanceUi(val amountText: String?, val pendingText: String?, val waitingForSync: Boolean)
 
+enum class HistoryFilter { All, Received, Sent }
+
 object HistoryModel {
+    fun filter(items: List<TxItem>, filter: HistoryFilter, query: String): List<TxItem> {
+        val needle = query.trim().lowercase()
+        return items.filter { item ->
+            val kindOk = when (filter) {
+                HistoryFilter.All -> true
+                HistoryFilter.Received -> item.netLep > 0
+                HistoryFilter.Sent -> item.netLep < 0
+            }
+            kindOk && (needle.isEmpty() || listOfNotNull(item.txid, item.address, item.label).any { it.lowercase().contains(needle) })
+        }
+    }
+
     fun days(items: List<TxItem>, zone: ZoneId): List<HistoryDay> =
         items.map(::row).groupBy { Instant.ofEpochSecond(it.timeSeconds).atZone(zone).toLocalDate() }
             .map { (date, rows) -> HistoryDay(date, rows.sortedByDescending { it.timeSeconds }) }

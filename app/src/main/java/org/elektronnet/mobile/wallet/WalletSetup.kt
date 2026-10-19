@@ -1,6 +1,11 @@
 package org.elektronnet.mobile.wallet
 
-class SetupRequest(val phrase: List<String>, val passphrase: String, val restore: Boolean)
+class SetupRequest(
+    val phrase: List<String>,
+    val passphrase: String,
+    val restore: Boolean,
+    val walletName: String = WalletBootstrap.DEFAULT_WALLET,
+)
 
 sealed interface SetupStatus {
     data object None : SetupStatus
@@ -13,18 +18,21 @@ sealed interface SetupStatus {
     val inProgress: Boolean get() = this == Waiting || this == Rescanning
 }
 
-class WalletSetup(private val bootstrap: () -> WalletBootstrap?) {
+class WalletSetup(private val bootstrap: (String) -> WalletBootstrap?) {
     @Volatile
     var status: SetupStatus = SetupStatus.None
         private set
 
     private var request: SetupRequest? = null
+    var walletName: String = WalletBootstrap.DEFAULT_WALLET
+        private set
     private var rescanPassphrase: String? = null
 
     val hasRescanPassphrase: Boolean get() = rescanPassphrase != null
 
     fun begin(request: SetupRequest) {
         this.request = request
+        walletName = request.walletName
         rescanPassphrase = null
         status = SetupStatus.Waiting
     }
@@ -44,7 +52,8 @@ class WalletSetup(private val bootstrap: () -> WalletBootstrap?) {
         status = SetupStatus.NeedsRescan
     }
 
-    fun markRescanPending() {
+    fun markRescanPending(name: String = WalletBootstrap.DEFAULT_WALLET) {
+        walletName = name
         status = SetupStatus.NeedsRescan
     }
 
@@ -59,7 +68,7 @@ class WalletSetup(private val bootstrap: () -> WalletBootstrap?) {
 
     private fun createWallet() {
         val req = request ?: return
-        val node = bootstrap() ?: return
+        val node = bootstrap(req.walletName) ?: return
         when (val result = if (req.restore) node.recover(req.phrase, req.passphrase) else node.create(req.phrase, req.passphrase)) {
             is BootstrapResult.Created -> {
                 request = null
@@ -76,7 +85,7 @@ class WalletSetup(private val bootstrap: () -> WalletBootstrap?) {
 
     private fun rescan() {
         val pass = rescanPassphrase ?: return
-        val node = bootstrap() ?: return
+        val node = bootstrap(walletName) ?: return
         status = SetupStatus.Rescanning
         status = when (val outcome = node.rescan(pass)) {
             RescanOutcome.Full -> done()

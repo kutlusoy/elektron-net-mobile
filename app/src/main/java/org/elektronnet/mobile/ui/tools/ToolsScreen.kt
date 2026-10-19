@@ -19,28 +19,30 @@ import org.elektronnet.mobile.R
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.send.SendScreen
 import org.elektronnet.mobile.wallet.EscrowRecord
-import org.elektronnet.mobile.wallet.WalletBootstrap
 
-private enum class Page { Hub, Escrows, EscrowDetail, Psbt, Sweep, Messages }
+enum class ToolsPage { Hub, Escrows, EscrowDetail, Psbt, Sweep, Messages }
+
+private typealias Page = ToolsPage
 
 @Composable
-fun ToolsScreen(onClose: () -> Unit) {
-    var page by remember { mutableStateOf(Page.Hub) }
+fun ToolsScreen(onClose: () -> Unit, start: ToolsPage = ToolsPage.Hub) {
+    var page by remember { mutableStateOf(start) }
+    val backToHub = { if (start != ToolsPage.Hub && page == start) onClose() else page = Page.Hub }
     var escrowId by remember { mutableStateOf(0) }
     var paying by remember { mutableStateOf<EscrowRecord?>(null) }
-    var labels by remember { mutableStateOf(mapOf(WalletBootstrap.DEFAULT_WALLET to "")) }
+    var labels by remember { mutableStateOf(mapOf(NodeHost.activeWallet to "")) }
     val mainLabel = stringResource(R.string.tools_main_wallet)
 
     LaunchedEffect(page) {
         val records = withContext(Dispatchers.IO) { NodeHost.escrowManager()?.list().orEmpty() }
-        labels = mapOf(WalletBootstrap.DEFAULT_WALLET to mainLabel) + records.associate { it.walletName to it.name }
+        labels = NodeHost.wallets.associate { it.name to it.label.ifBlank { mainLabel } } + (NodeHost.activeWallet to NodeHost.wallets.firstOrNull { it.name == NodeHost.activeWallet }?.label.orEmpty().ifBlank { mainLabel }) + records.associate { it.walletName to it.name }
     }
     BackHandler {
         when {
             paying != null -> paying = null
             page == Page.Hub -> onClose()
             page == Page.EscrowDetail -> page = Page.Escrows
-            else -> page = Page.Hub
+            else -> backToHub()
         }
     }
 
@@ -61,9 +63,9 @@ fun ToolsScreen(onClose: () -> Unit) {
             onPay = { paying = it },
             onPsbt = { page = Page.Psbt },
         )
-        page == Page.Psbt -> PsbtScreen(labels, onBack = { page = Page.Hub })
-        page == Page.Sweep -> SweepScreen(onBack = { page = Page.Hub })
-        page == Page.Messages -> MessageScreen(onBack = { page = Page.Hub })
+        page == Page.Psbt -> PsbtScreen(labels, onBack = backToHub)
+        page == Page.Sweep -> SweepScreen(onBack = backToHub)
+        page == Page.Messages -> MessageScreen(onBack = backToHub)
     }
 }
 

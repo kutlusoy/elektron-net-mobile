@@ -45,7 +45,24 @@ class WalletReader(private val rpc: WalletRpc, private val walletName: String = 
         return group(entries.map { it as Map<*, *> }).reversed().sortedByDescending { it.timeSeconds }.take(limit)
     }
 
+    fun allTransactions(pageSize: Int = PAGE_SIZE): List<TxItem> {
+        val pages = ArrayList<List<Map<*, *>>>()
+        var skip = 0
+        repeat(MAX_PAGES) {
+            val page = (rpc.call("listtransactions", listOf("*", pageSize, skip), walletName) as List<*>).map { it as Map<*, *> }
+            pages.add(page)
+            if (page.size < pageSize) return build(pages)
+            skip += pageSize
+        }
+        return build(pages)
+    }
+
+    private fun build(pages: List<List<Map<*, *>>>): List<TxItem> =
+        group(pages.asReversed().flatten()).reversed().sortedByDescending { it.timeSeconds }
+
     companion object {
+        const val PAGE_SIZE = 500
+        private const val MAX_PAGES = 100
         const val DEFAULT_LIMIT = 100
         private const val ENTRY_WINDOW = 1000
 

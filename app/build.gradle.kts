@@ -45,7 +45,7 @@ android {
     }
 
     androidResources {
-        localeFilters += shippedLocales
+        localeFilters += shippedLocales.map { it.replace(Regex("^([a-z]+)-([A-Z]+)$"), "$1-r$2") }
     }
 
     compileOptions {
@@ -164,7 +164,14 @@ val checkRng by tasks.registering(Exec::class) {
     commandLine("python3", "-I", rootProject.file("tools/check-rng.py").path)
 }
 
-tasks.named("preBuild") { dependsOn(checkContrast, checkLocales, checkRng) }
+val copyConsoleTiers by tasks.registering(Copy::class) {
+    from(rootProject.file("native-build/contract/console-tiers.json"))
+    into(layout.buildDirectory.dir("generated/consoleAssets"))
+}
+
+android.sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/consoleAssets"))
+
+tasks.named("preBuild") { dependsOn(checkContrast, checkLocales, checkRng, copyConsoleTiers) }
 
 dependencies {
     implementation(platform(libs.compose.bom))

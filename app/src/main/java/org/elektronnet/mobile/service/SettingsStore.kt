@@ -7,6 +7,8 @@ import org.elektronnet.mobile.ui.model.UiSettings
 import org.elektronnet.mobile.node.NodeProfile
 import org.elektronnet.mobile.wallet.EscrowRecord
 import org.elektronnet.mobile.wallet.EscrowStore
+import org.elektronnet.mobile.wallet.WalletBootstrap
+import org.elektronnet.mobile.wallet.WalletRegistryStore
 import org.elektronnet.mobile.policy.MonthlyDataBudget
 import org.elektronnet.mobile.policy.PolicySettings
 import org.elektronnet.mobile.policy.ScheduleWindow
@@ -43,6 +45,26 @@ class SettingsStore(context: Context) {
         get() = prefs.getString(RECEIVE_ADDRESS, null)
         set(value) = prefs.edit().putString(RECEIVE_ADDRESS, value).apply()
 
+    fun receiveAddressFor(wallet: String): String? =
+        if (wallet == WalletBootstrap.DEFAULT_WALLET) receiveAddress else prefs.getString("$RECEIVE_ADDRESS.$wallet", null)
+
+    fun setReceiveAddressFor(wallet: String, value: String?) {
+        if (wallet == WalletBootstrap.DEFAULT_WALLET) receiveAddress = value else prefs.edit().putString("$RECEIVE_ADDRESS.$wallet", value).apply()
+    }
+
+    fun walletRegistryStore(): WalletRegistryStore = object : WalletRegistryStore {
+        override var json: String?
+            get() = prefs.getString(WALLETS, null)
+            set(value) = prefs.edit().putString(WALLETS, value).apply()
+        override var active: String?
+            get() = prefs.getString(ACTIVE_WALLET, null)
+            set(value) = prefs.edit().putString(ACTIVE_WALLET, value).apply()
+    }
+
+    var rescanWallet: String
+        get() = prefs.getString(RESCAN_WALLET, null) ?: WalletBootstrap.DEFAULT_WALLET
+        set(value) = prefs.edit().putString(RESCAN_WALLET, value).apply()
+
     fun escrowStore(): EscrowStore = object : EscrowStore {
         override fun load(): List<EscrowRecord> {
             val text = prefs.getString(ESCROWS, null) ?: return emptyList()
@@ -69,7 +91,39 @@ class SettingsStore(context: Context) {
         get() = prefs.getBoolean(BIOMETRIC, false)
         set(value) = prefs.edit().putBoolean(BIOMETRIC, value).apply()
 
+    var explorers: List<String>
+        get() = org.elektronnet.mobile.explorer.ExplorerList.parse(prefs.getString(EXPLORERS, null))
+        set(value) = prefs.edit().putString(EXPLORERS, org.elektronnet.mobile.explorer.ExplorerList.serialize(value)).apply()
+
+    var notifyIncoming: Boolean
+        get() = prefs.getBoolean(NOTIFY_INCOMING, false)
+        set(value) = prefs.edit().putBoolean(NOTIFY_INCOMING, value).apply()
+
+    fun seenIncoming(wallet: String): List<String>? = prefs.getString("$SEEN_INCOMING.$wallet", null)?.split(',')?.filter { it.isNotEmpty() }
+
+    fun setSeenIncoming(wallet: String, value: List<String>?) =
+        prefs.edit().apply { if (value == null) remove("$SEEN_INCOMING.$wallet") else putString("$SEEN_INCOMING.$wallet", value.joinToString(",")) }.apply()
+
+    var consoleRetentionDays: Int
+        get() = prefs.getInt(CONSOLE_RETENTION, 90)
+        set(value) = prefs.edit().putInt(CONSOLE_RETENTION, value).apply()
+
     fun fastprune(): Boolean = prefs.getBoolean(FASTPRUNE, true)
+
+    fun setFastprune(value: Boolean) = prefs.edit().putBoolean(FASTPRUNE, value).apply()
+
+    fun savePolicy(settings: PolicySettings) {
+        prefs.edit()
+            .putString(PROFILE, settings.profile.name)
+            .putBoolean(ALLOW_ROAMING, settings.allowRoaming)
+            .putLong(CAP, settings.monthlyCellularCapBytes ?: -1)
+            .putBoolean(ALLOW_INBOUND, settings.allowInbound)
+            .putBoolean(SERVE_SNAPSHOTS, settings.serveSnapshots)
+            .putLong(STORAGE_FLOOR, settings.storageFloorBytes)
+            .putInt(SCHEDULE_START, settings.schedule?.startMinute ?: -1)
+            .putInt(SCHEDULE_END, settings.schedule?.endMinute ?: -1)
+            .apply()
+    }
 
     fun setUserStopped(value: Boolean) = prefs.edit().putBoolean(USER_STOPPED, value).apply()
 
@@ -109,9 +163,16 @@ class SettingsStore(context: Context) {
         const val THEME_KEY = "theme_key"
         const val THEME_MODE = "theme_mode"
         const val BIOMETRIC = "biometric_lock"
+        const val CONSOLE_RETENTION = "console_retention_days"
+        const val EXPLORERS = "explorers"
+        const val WALLETS = "wallets"
+        const val ACTIVE_WALLET = "active_wallet"
+        const val RESCAN_WALLET = "rescan_wallet"
         const val RESCAN_PENDING = "rescan_pending"
         const val ESCROWS = "escrows"
         const val RECEIVE_ADDRESS = "receive_address"
+        const val NOTIFY_INCOMING = "notify_incoming"
+        const val SEEN_INCOMING = "seen_incoming"
         const val BUDGET_MONTH = "budget_month"
         const val BUDGET_USED = "budget_used"
     }

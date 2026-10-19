@@ -1,7 +1,7 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.18 (draft)
-- **Date:** October 18, 2026
+- **Version:** 0.21 (draft)
+- **Date:** October 19, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
 - **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md), [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
@@ -12,25 +12,29 @@
 
 `elektron-net-mobile` is a non-custodial Android wallet for Elektron Net (ELEK) that runs its own complete node. There is no server, no Electrum backend and no third-party indexer in the path: the phone validates the chain itself and signs with keys that never leave the device.
 
-**Status:** planning phase. The complete plan lives in [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md). This README describes the target behavior and the intended build flow. Items are implemented step by step following the roadmap in that document.
+**Status:** early alpha. The app runs the bundled node on a phone (headers, snapshot and tip verified on mainnet), creates and restores several wallets, receives, sends with coin control, fee bump and CPFP, keeps a per-wallet history and an address book, and has escrow, PSBT, sweep and message tools, an Expert console and draft translations in 15 languages. Open: the device test matrix (the screens are built in CI but not yet run on devices), native-speaker review of the translations, release keys and an external security review. The complete plan lives in [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md). This README describes the target behavior and the intended build flow. Items are implemented step by step following the roadmap in that document.
 
 ## 2. Features (target)
 
 - Full validating node (`elektrond`) bundled in the app: header and block validation, per-block UTXO attestation checks, mempool, transaction relay, mandatory pruning.
 - Automatic checkpoint snapshots and P2P snapshot bootstrap, as implemented by the Elektron Net node itself.
-- Background operation as a foreground service with resource profiles, battery, network and storage limits. The user can pause or stop the node at any time.
+- Background operation as a foreground service with resource profiles, battery, network and storage limits. The user can pause or stop the node at any time, and sees what the node is doing (progress, peers, telemetry, optional live log).
 - True entropy for the recovery phrase: at least 128 bits, health-checked system generators, no weak fallback, an optional step where you draw on the screen for extra randomness, and a mode where you roll your own dice (50 rolls for 12 words).
 - Non-custodial wallet on the node's own descriptor wallet: native SegWit (`be1q...`) addresses, BIP-39 recovery phrase, SLIP-44 coin type 1370 plus legacy path recovery.
 - Escrow wallets (M of N multisig, for example 2 of 3 with an arbiter), PSBT tools to check, sign, combine and send payment files, key sweep like in Electrum, and message signing and verification.
-- Review-before-sign transaction flow (PSBT), fee policy re-check before signing, coin control, QR receive and scan.
+- Several wallets with a quick switch and removal only with that wallet's passphrase, review-before-sign transaction flow (PSBT), fee policy re-check before signing, optional "subtract fee from amount", coin control (choose and freeze coins), address labels, QR receive and scan.
+- Complete transaction history per wallet with search, filters and CSV export; speed up a waiting payment with fee bump (RBF) when you sent it, or with CPFP when it is incoming.
+- Address book (local, shared by all wallets), public descriptor export and an encrypted wallet file export through the system file picker.
+- Fee estimates come from the node with a fallback to a mempool explorer; the explorer list (default `https://mempool.elektron-net.org`) can be edited and is also used for transaction links.
 - Node dashboard: sync phase, height, peers with country (offline DB-IP Country Lite lookup, addresses never leave the phone), disk usage, prune height, snapshot state.
-- Simple everyday wallet following common mobile wallet conventions (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node.
+- Simple everyday wallet following common mobile wallet conventions (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node (four risk tiers, confirmation dialogs, encrypted history, file commands confined to a private folder).
 - Storage saver (`-fastprune`) on by default with an opt-out; phone nodes serve snapshots only on Wi-Fi while charging.
-- Optional biometric unlock, `elek:` payment links, QR scan (CameraX and ZXing, no Google services) and receive.
-- Many languages from the start: English, German, Spanish, French, Italian, then Chinese, Arabic, Japanese, Korean, Hindi, Portuguese, Russian, Turkish, Indonesian, Vietnamese after native review.
-- Cyberpunk design with neon and glow, ten color themes from the Osclass theme, no artwork, readability first. The ticker is ELEK.
+- Optional biometric unlock, `elek:` payment links, QR scan (CameraX and ZXing, no Google services) and receive, and an optional notification for incoming payments that hides the amount on the lock screen.
+- Node tools: sync progress, optional live node log with a cleaned copy and share (IP addresses, onion names, addresses and paths removed), peer details with country on tap, and a guided reset of the downloaded chain data that keeps your wallets.
+- Fifteen languages ship as drafts: English, German, Spanish, French, Italian, Chinese (Simplified), Arabic, Japanese, Korean, Hindi, Portuguese (Brazil), Russian, Turkish, Indonesian and Vietnamese. All except English await native-speaker review of the security texts before a store release.
+- Calm design without glow: five color themes (Teal, Blue, Rust, Red and Matrix), each in a dark and a light mode, one readable system font for all themes, a contrast check in CI, no artwork. The ticker is ELEK.
 - Separate testnet build (`org.elektronnet.mobiletestnet`, chain `testnet`) next to the mainnet app (`org.elektronnet.mobile`).
-- English is the default language; the in-app language switch lists only reviewed translations.
+- English is the default language; the app follows the system language and falls back to English.
 - Lightning is not part of v1, but the wallet layer keeps a pluggable path for it.
 - Local-only operation: no analytics, no remote geolocation, no remote QR services.
 
@@ -74,14 +78,14 @@ Full specification: plan section 11.1.
 
 | Item | Value |
 |---|---|
-| Android | minSdk 28 (target to be confirmed in the plan, Phase 0) |
+| Android | minSdk 28, targetSdk 36 |
 | Release ABI | `arm64-v8a` |
 | Emulator/CI ABI | `x86_64` |
 | UI | Kotlin, Jetpack Compose |
 
 32-bit ARM is not supported.
 
-## 6. Building (planned flow)
+## 6. Building
 
 The storage saver default is set by `NODE_FASTPRUNE_DEFAULT` (default `1`). Prerequisites: `git`, `docker` (rootless), `python3`, `sha256sum`, Android Studio or a Gradle/JDK setup, Android NDK as defined in `native-build/core-source.env`.
 
@@ -106,23 +110,24 @@ Do not clear app data if you want to keep the synchronized node and wallet datab
 
 Signed APKs are published under Releases as "Elektron Mobile v<version>", built by `.github/workflows/release.yml` from a pushed tag or a manual run, with the node built fresh from `elektron-net` (see [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) §6.1). Each release has the mainnet APK, the testnet APK and `SHA256SUMS.txt`. Versions look like `v4.0.4-m0.1.0`: the Elektron Net node version, then `m` and the wallet version, so the wallet can be updated without a new node (distribution guideline §8.1).
 
-## 7. Repository structure (planned)
+## 7. Repository structure
 
 ```text
 build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml   Gradle project
 app/                       Android application
   src/main/java/org/elektronnet/mobile/
-    node/                  node supervisor, controller, RPC client
+    node/                  node supervisor, controller, RPC client, peers, telemetry
     policy/                policy engine (network, battery, thermal, storage)
     runtime/               tick loop and status headline
-    service/               foreground service, notification, device state
-    wallet/                bootstrap, send flow, recovery, descriptors
-    security/              keystore and secure window helpers
-    ui/                    Compose screens
+    service/               foreground service, notifications, settings, node host
+    wallet/                bootstrap, send flow, coin control, bump and CPFP, exports, address book
+    console/               Expert console logic (parser, tiers, file guard, history)
+    explorer/, geo/        explorer list and fee fallback, offline country lookup
+    ui/                    Compose screens, theme and view models
   src/main/jniLibs/        built libelektrond.so per ABI (generated)
 native-build/              fetch and build of elektrond (generated output not committed)
 design/                    palettes.json, check-contrast.py, gen-theme.py, logo/ and gen-logo.py
-tools/                     check-locales.py, check-rng.py
+tools/                     check-locales.py, check-rng.py, fetch-geoip.sh, version.py
 doc-elektron/              guidelines and reports
 .github/workflows/         CI
 ```
@@ -151,13 +156,18 @@ The full requirement list is in plan section 9.
 | [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) | Flavors, channels, signing, F-Droid, Play |
 | [`elektron-net` docs](https://github.com/kutlusoy/elektron-net/tree/main/doc-elektron) | Node behavior, pruning and snapshot audit, wallet integration |
 
-## 10. Links
+## 10. Credits
+
+- **Elektron Net Developers:** development of the app and the node integration.
+- **Milio (aka 1000io), X [@spiroflex](https://x.com/spiroflex) 🇪🇸 (Spain):** co-author and the originator of the idea for this successor app.
+
+## 11. Links
 
 - Website: https://elektron-net.org
 - X: @elektronnet, @kutlusoy
 - Telegram: @elektronnet
 - Node: https://github.com/kutlusoy/elektron-net
 
-## 11. License
+## 12. License
 
 Copyright © 2026 Elektron Net Developers. The app is called "Elektron" (mainnet) and "Elektron (T)" (testnet). This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries. Review the upstream licenses before redistribution. The license of this repository is not yet decided (see the plan, section 17, Q2).

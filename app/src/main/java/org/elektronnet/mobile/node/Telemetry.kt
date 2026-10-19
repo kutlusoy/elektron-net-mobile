@@ -6,18 +6,29 @@ data class Telemetry(
     val mempoolTx: Long?,
     val mempoolBytes: Long?,
     val sizeOnDisk: Long?,
+    val protocolVersion: Long? = null,
+    val connectionsIn: Long? = null,
+    val connectionsOut: Long? = null,
+    val networkActive: Boolean? = null,
+    val initialBlockDownload: Boolean? = null,
 ) {
     companion object {
-        fun parse(chain: Any?, mining: Any?, mempool: Any?): Telemetry {
+        fun parse(chain: Any?, mining: Any?, mempool: Any?, network: Any? = null): Telemetry {
             val c = chain as? Map<*, *>
             val m = mining as? Map<*, *>
             val p = mempool as? Map<*, *>
+            val n = network as? Map<*, *>
             return Telemetry(
                 difficulty = (c?.get("difficulty") as? Number)?.toDouble() ?: (m?.get("difficulty") as? Number)?.toDouble(),
                 hashPerSecond = (m?.get("networkhashps") as? Number)?.toDouble(),
                 mempoolTx = (p?.get("size") as? Number)?.toLong(),
                 mempoolBytes = (p?.get("bytes") as? Number)?.toLong(),
                 sizeOnDisk = (c?.get("size_on_disk") as? Number)?.toLong(),
+                protocolVersion = (n?.get("protocolversion") as? Number)?.toLong(),
+                connectionsIn = (n?.get("connections_in") as? Number)?.toLong(),
+                connectionsOut = (n?.get("connections_out") as? Number)?.toLong(),
+                networkActive = n?.get("networkactive") as? Boolean,
+                initialBlockDownload = c?.get("initialblockdownload") as? Boolean,
             )
         }
     }

@@ -20,6 +20,22 @@ class PeerInfoTest {
     }
 
     @Test
+    fun parsesTheDetailFields() {
+        val peer = PeerInfo.parse(
+            Json.parse(
+                """[{"id":4,"addr":"1.2.3.4:8333","transport_protocol_type":"v2","version":70017,"synced_headers":10,"synced_blocks":9,
+                    "minping":0.092,"bytesrecv":2900,"bytessent":5000,"timeoffset":-2,"addrbind":"192.168.1.2:55020"}]""",
+            ),
+        ).single()
+        assertEquals("v2", peer.transport)
+        assertEquals(70017L, peer.version)
+        assertEquals(9L, peer.syncedBlocks)
+        assertEquals(92.0, peer.minPingMs!!, 0.001)
+        assertEquals(-2L, peer.timeOffset)
+        assertEquals("192.168.1.2:55020", peer.localBind)
+    }
+
+    @Test
     fun missingPingStaysUnknown() {
         val peers = PeerInfo.parse(Json.parse("""[{"id":1,"addr":"1.2.3.4:8333"}]"""))
         assertNull(peers[0].pingMs)

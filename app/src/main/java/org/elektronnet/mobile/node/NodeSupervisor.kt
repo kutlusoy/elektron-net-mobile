@@ -26,6 +26,10 @@ class NodeSupervisor(
         private set
 
     @Volatile
+    var rpcProblem: String? = null
+        private set
+
+    @Volatile
     var state: NodeState = NodeState.Stopped
         private set
 
@@ -41,6 +45,7 @@ class NodeSupervisor(
                 check(config.binary.exists()) { "node binary is missing: ${config.binary}" }
                 check(config.binary.canExecute()) { "node binary is not executable: ${config.binary}" }
                 NodeConfigFile.ensure(config)
+                DatadirVersion.ensure(config.datadir)
                 config.cookieFile.delete()
                 val builder = ProcessBuilder(listOf(config.binary.absolutePath) + config.arguments())
                     .directory(config.datadir)
@@ -104,7 +109,7 @@ class NodeSupervisor(
 
     fun telemetry(): Telemetry {
         fun call(method: String) = try { rpc.call(method, timeoutMs = 5_000) } catch (e: RpcException) { null }
-        return Telemetry.parse(call("getblockchaininfo"), call("getmininginfo"), call("getmempoolinfo"))
+        return Telemetry.parse(call("getblockchaininfo"), call("getmininginfo"), call("getmempoolinfo"), call("getnetworkinfo"))
     }
 
     fun peers(): List<PeerInfo> = PeerInfo.parse(rpc.call("getpeerinfo", timeoutMs = 5_000))
@@ -140,6 +145,7 @@ class NodeSupervisor(
                     return
                 }
             } catch (e: IOException) {
+                rpcProblem = e.message ?: e.javaClass.simpleName
             }
             Thread.sleep(pollIntervalMs)
         }
@@ -149,6 +155,7 @@ class NodeSupervisor(
         synchronized(lock) {
             if (process === started && state == NodeState.Starting) {
                 warmup = null
+                rpcProblem = null
                 setState(NodeState.Running)
             }
         }

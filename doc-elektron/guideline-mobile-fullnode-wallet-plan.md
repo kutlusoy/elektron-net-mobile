@@ -1,7 +1,7 @@
 # Elektron Net: `elektron-net-mobile` Full Node Wallet Plan
 
-- **Version:** 0.15 (draft)
-- **Date:** October 18, 2026
+- **Version:** 0.17 (draft)
+- **Date:** October 19, 2026
 - **Audience:** Android/Kotlin developers, C++ developers working on `elektrond` builds, release engineers, security reviewers
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/validation.cpp` (`WriteAutomaticSnapshot()`, `PopulateAndValidateSnapshot()`), `src/init.cpp` (`MaybeActivateAutomaticSnapshot()`, `UpdateLocalSnapshotServices()`), `src/net_processing.cpp` (`MaybeRequestSnapshot()`), `src/wallet/wallet.cpp` (`ScanUTXOSet()`, `CreditUTXOFromChain()`, `AttachChain()`), `src/wallet/walletutil.cpp` (`GenerateWalletDescriptor()`), `src/kernel/chainparams.cpp` (treat these as ground truth)
 - **Related repositories:** [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum) (light wallet, source of branding, address safety UX and strings), [`elektron-net-mempool`](https://github.com/kutlusoy/elektron-net-mempool) (explorer, deep links only)
@@ -113,7 +113,7 @@ The app has two sections. Both are one tap away from each other at all times.
 
 - A compact node status chip (sync state, peer count) sits in the Wallet header and opens the Node section. While the node is not synchronized, the Wallet shows a banner that balances and history may be incomplete, instead of a bare zero.
 - Primary navigation is a bottom bar. The reviewed team screenshots use four tabs (Wallet, Network, History, Debug). The final grouping into the two sections above is a design decision for Phase 1, the requirement is only that every Node screen is reachable without digging through settings.
-- Visual direction: cyberpunk but calm, dark theme with neon accent and controlled glow, rounded cards, one hero card per screen. The app ships no artwork. The colors come from the ten Osclass themes of `elektron-net-wp`, and effects never impair readability. The full specification is [`guideline-ui-design-system.md`](./guideline-ui-design-system.md). The helmet artwork in the reviewed screenshots MUST NOT be copied into this repository.
+- Visual direction: calm and flat, translucent rounded cards on a quiet texture, one hero card per screen, no glow. The app ships no artwork. Five color themes (Teal, Blue, Rust, Red, Matrix) derived from the Osclass themes of `elektron-net-wp`, each in a dark and a light mode, one readable system font, and a contrast gate in CI. The full specification is [`guideline-ui-design-system.md`](./guideline-ui-design-system.md). The helmet artwork in the reviewed screenshots MUST NOT be copied into this repository.
 
 ### 3.4 Node transparency
 
@@ -142,6 +142,7 @@ Multi-language support is a core requirement, not a late polish item.
 - **MUST:** no user-visible text in code. All text lives in Android string resources, with plurals, positional format arguments and no concatenated sentences. A CI lint gate turns missing translations and hard-coded strings into errors for the supported locales.
 - **English is the default language** (decided October 18, 2026): `values/strings.xml` is English, every other locale is an overlay, and the app falls back to English whenever the system language is not shipped or a string is missing. The shipped locale list lives in `app/shipped-locales.txt` and always starts with `en`. `tools/check-locales.py` fails the build if English is not first, if `locales_config.xml` differs from the list, or if a shipped locale lacks keys.
 - **Locales:** English (source) plus the most widespread languages, in two tiers. Tier A at launch: German, Spanish, French, Italian (the four already used by the reviewed concept). Tier B: Simplified Chinese (`zh-Hans`), Traditional Chinese (`zh-Hant`), Arabic (`ar`, right-to-left), Japanese, Korean, Hindi, Brazilian Portuguese, Russian, Turkish, Indonesian, Vietnamese. A language ships only after a native speaker has reviewed the security texts (below). Until then it stays out of the release, so a partial or machine-only translation never carries a seed warning.
+- **Current status (October 19, 2026):** all fourteen overlays (de, es, fr, it, pt-BR, ru, tr, id, vi, zh, ja, ko, ar, hi) are in the tree and shipped in debug and test builds as first drafts. The native-speaker review of the seed backup warnings, the trust model text and the Base58 collision warning stays a release gate for every language; a language that has not passed it MUST be removed from `shipped-locales.txt` and `locales_config.xml` before a store release. Traditional Chinese is not yet included.
 - **Scripts:** amounts, block heights and addresses always use Latin digits and the node's address alphabet in every language. Addresses, hashes and console text are isolated as left-to-right runs inside right-to-left text. Non-Latin scripts use the system fonts (details in the design system guideline, §5).
 - **Translation workflow:** plain pull requests with string resource files, plus an optional self-hosted tool later. The `.tx` directory of the node repository is Core's Transifex setup and is not reused.
 - **In-app language switch** independent of the system language, using Android per-app language preferences (`LocaleManager` on Android 13 and later, AndroidX `AppCompatDelegate.setApplicationLocales` on older versions), declared with a `localeConfig` resource. Default follows the system locale.
@@ -380,7 +381,10 @@ walletcreatefundedpsbt -> decodepsbt -> validate (destination, amount, fee, chan
 
 - Policy re-check (`getnetworkinfo`, `getmempoolinfo`) immediately before unlock. If it changed, abort and re-review. The app never silently changes a user fee.
 - `walletlock` is also requested when the app leaves the foreground.
-- Coin control by address, UTXO list with labels, RBF on by default, CPFP/bump fee screen in Phase 4.
+- **Coin control (built):** the Addresses and coins page lists every coin with a Frozen switch (`lockunspent` with `persistent=true`, so frozen coins survive a restart and are skipped by automatic selection). In the Send amount step "Choose coins" restricts the payment to the chosen coins (`walletcreatefundedpsbt` with `inputs` and `add_inputs=false`). The review checks that the PSBT spends exactly the chosen coins, "Max" spends exactly those coins, and a too small selection fails instead of pulling in other coins.
+- **Fee bump (built):** payments are replaceable by default. For an own pending payment the transaction details offer "Speed up": `psbtbumpfee`, then the same checks as for a new payment (every non-change output unchanged, the fee only grows, the new rate is within the tolerance), one unlock of at most 10 s, sign, finalize, broadcast. CPFP for incoming payments is still open.
+- **Fee from the amount (built):** an optional switch in the fee step subtracts the fee from the entered amount (`subtractFeeFromOutputs`). The recipient then gets the amount minus the fee and the wallet pays exactly the entered amount. The review names the recipient's share, and the PSBT check expects exactly that share. "Max" always subtracts the fee.
+- **Fee suggestions:** the node's `estimatesmartfee` comes first. When it has no data for a level (young chain), the configured block explorer fills the missing levels (§8.7). The node's relay and mempool minimum remain the floor, and the app never changes a fee the user has reviewed.
 - Because the node is local, broadcast reaches the P2P network directly and is not routed through a server. Nothing is leaked to an indexer.
 
 ### 8.4.1 Payment URI (`elek:`)
@@ -426,15 +430,38 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 
 ### 8.6 Local data, labels and privacy
 
-- Labels and address book live in the app database (encrypted at rest with a Keystore-wrapped key), never sent anywhere.
+- Address labels are stored in the node wallet (`setlabel`) and shown in the coin and address lists. A dedicated address book is still open. Nothing is sent anywhere.
 - GeoIP for peer country uses a local MMDB, no remote lookup.
 - No analytics SDKs, no crash reporting that transmits data by default.
+
+### 8.7 Block explorer (optional web requests)
+
+- The app can talk to one or more block explorers of the Elektron Net mempool software. The default is `https://mempool.elektron-net.org`. In Settings the user can add, edit, reorder and remove explorers (at most five, https only, plain http only for `localhost` and `.onion`). An empty list means the app makes no web request at all.
+- **What is requested:** only `GET /api/v1/fees/precise` (decimal fee rates in lep/vB), falling back to `/api/v1/fees/recommended`, with a 5 second timeout and a 16 KB response limit, cached for 60 seconds. The first explorer that answers wins. Rates outside 0 to 10,000 lep/vB are discarded.
+- **What is never sent:** addresses, keys, balances, transactions. The explorer can see the phone's IP address, which the Settings text says. The explorer is also used to build the "Open in explorer" link (`<explorer>/tx/<txid>`), which opens in the browser only when the user taps it.
+- The explorer never replaces node data: it only fills fee levels the node cannot estimate.
+
+### 8.8 Several wallets and removing a wallet
+
+- The app keeps a list of its own wallets in the app preferences (name of the node wallet file and a user label). The first wallet is `elektron`, further ones `elektron_2`, `elektron_3` and so on. One wallet is active and used for balance, history, Receive, Send, coin control, signing and sweeping. Escrow wallets stay separate (`guideline-escrow-psbt-and-tools.md`).
+- Every wallet has its own recovery phrase, passphrase, descriptors and receive address. Adding a wallet uses the same create or restore flow as the first run, without the network and notification steps, and the same deferred setup that waits for the node (§8.3).
+- **Removing a wallet** needs the wallet's own passphrase and a confirmation that the user has its recovery phrase. The app checks the passphrase with a short unlock, unloads the wallet with `load_on_startup=false` and deletes its directory. Removing the last wallet returns the app to the first-run screens.
+
+### 8.9 Wallet tools
+
+- **CPFP:** for a payment that is still waiting in the mempool and pays to the wallet, the user can send a child payment that spends one of the waiting coins back to a fresh own address. The child fee is computed so that the whole package reaches the chosen target rate (`getmempoolentry` ancestor fee and size, 111 vB for the child), the PSBT is created with exact amounts, reviewed (one input, one own output, fee equal to the plan), signed under one short unlock and broadcast. RBF bump (§8.4) remains the tool for the sender side.
+- **Address book:** contacts (name and address, up to 500) live in the app's private storage in `contacts.json`, are shared by all wallets, never reach the node and are validated with the same address check as the send screen. The send screen offers a picker.
+- **Public descriptor export:** `listdescriptors` without private keys, shared as text. The export refuses to produce text if any descriptor contains private key material.
+- **Encrypted wallet file:** `backupwallet` writes into the private `exports/wallets/` folder and the user copies it out through the Storage Access Framework. It is only offered for passphrase-protected wallets, the temporary copy is deleted right after saving and housekeeping removes leftovers after 7 days.
+- **Cleaned node log:** copy and share of the node log pass through a sanitizer that replaces IP addresses, onion and I2P names, wallet addresses and device paths.
+- **Chain data reset:** removes blocks, chainstate, indexes, peers, mempool and fee estimates from the data folder and restarts the sync. Wallet files, `datadir.version` and the configuration stay.
+- **Incoming payment notification:** off by default. The service compares the newest transactions of the active wallet with the ones seen before (the first run only records them) and posts one notification with a hidden public version, so the amount does not show on the lock screen.
 
 ## 9. Security Requirements
 
 | # | Requirement | Level |
 |---|---|---|
-| S1 | RPC bound to loopback (`-rpcbind=127.0.0.1`, `-rpcallowip=127.0.0.1`) with cookie authentication, the cookie file lives in the app-private datadir. No `-rpcuser` or `-rpcpassword` arguments | MUST |
+| S1 | RPC bound to loopback (`-rpcbind=127.0.0.1`, `-rpcallowip=127.0.0.1`) with cookie authentication, the cookie file lives in the app-private datadir. No `-rpcuser` argument and no secret in `-rpcpassword`: the node writes a default `bitcoin.conf` with `rpcuser` and `rpcpassword` on its first start, which would disable the cookie, so the app passes an empty `-rpcpassword=` to keep cookie authentication | MUST |
 | S2 | `android:allowBackup="false"` and no data extraction rules that include the datadir | MUST |
 | S3 | `FLAG_SECURE` on seed, passphrase, send-review and signing screens | MUST |
 | S4 | Unlock window at most 10 s, `walletlock` in a `finally` path. The recovery rescan is the only exception (§8.3) | MUST |
@@ -456,6 +483,8 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 | S20 | Escrow setup shows a check code and the first deposit address and tells all participants to compare them before any deposit | MUST |
 | S21 | Sweep keys are never stored, logged or shown again, and the destination is always an own new address | MUST |
 | S22 | Single imported private keys are not added to the wallet | MUST |
+| S23 | Web requests go only to explorers the user can see and edit in Settings, only over https (plain http for localhost and onion), carry no addresses, keys or balances, and stop completely when the list is empty (§8.7) | MUST |
+| S24 | Removing a wallet needs that wallet's passphrase and an explicit confirmation, and never touches another wallet (§8.8) | MUST |
 
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 
@@ -483,7 +512,7 @@ elektron-net-mobile/
     contract-check.py, contract/        interface check against the built node (§11.2)
     docker/                             builder image and in-container build script
     tests/                              tests of the build scripts
-  design/                               palettes.json (Osclass themes), check-contrast.py, gen-theme.py
+  design/                               palettes.json (five themes), check-contrast.py, gen-theme.py
   tools/                                check-locales.py
   build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml
   doc-elektron/                         guidelines and reports (this file)
@@ -571,39 +600,41 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 
 ### Phase 1: Node host MVP
 
-- [x] Gradle project skeleton: flavors, theme generator, contrast and locale gates, CI workflow. Not yet built against the Android toolchain
-- [ ] First green Gradle build, release signing in the release pipeline
-- [x] Node supervisor core (start/stop/drain/readiness/graceful stop/failure classes), verified against the host node in regtest
-- [x] RPC with cookie authentication (no stored credentials)
-- [ ] Sync dashboard with all phases from §5.1
-- [ ] Datadir versioning (§5.4)
-- [ ] Localization scaffolding from the first screen on: string resources only, per-app language, lint gate, tier A locales (§3.5)
-- [ ] Wallet and Node sections with the node transparency elements of §3.4
-- [ ] Developer console in debug builds, Open tier only (§3.6)
-- [ ] Snapshot bootstrap verified end to end on testnet
+- [x] Gradle project skeleton: flavors, theme generator, contrast and locale gates, CI workflow. Debug build, unit tests and lint of both flavors are green in CI
+- [x] First green Gradle build. The release workflow builds both APKs, signs them with the release key when the secrets exist and otherwise with a temporary test key. Creating the real release key and secrets is the maintainer's task
+- [x] Node supervisor core (start/stop/drain/readiness/graceful stop/failure classes, start failures reported with details), verified against the host node in regtest
+- [x] RPC with cookie authentication (no stored credentials). The node writes a default `bitcoin.conf` with `rpcuser` and `rpcpassword` on its first start, which would disable the cookie, so the app passes an empty `-rpcpassword=`
+- [x] Sync dashboard: start phases from the node's warm-up message and log, progress bar with estimate, peers with country, network and telemetry cards, live log, warnings when the node is silent or finds no peers (§5.1 in part)
+- [x] Datadir versioning (§5.4): schema marker that refuses data from a newer app. The guided reset is still open
+- [ ] Localization: string resources only, parity and hard-coded-string gates are in place. German, Spanish, French and Italian translations are still open (§3.5)
+- [x] Wallet and Node sections with the node transparency elements of §3.4
+- [x] Console: built as the full Expert console of Phase 3 instead of a debug-only one (§3.6)
+- [x] Snapshot bootstrap verified end to end on mainnet on a real phone: headers, snapshot activation and the tip were reached. Testnet is still open
 
 ### Phase 2: Wallet core
 
-- [ ] Create, backup quiz, restore (dual coin type, §8.2/8.3)
-- [ ] Receive (QR, address list, labels)
-- [ ] Send with PSBT review, fee policy re-check, coin control
-- [ ] Recovery matrix passes (§14.2)
+- [x] Create, backup quiz, restore (dual coin type, §8.2/8.3), with a deferred setup that works while the node is still syncing
+- [x] Receive (QR, address list, labels)
+- [x] Send with PSBT review, fee policy re-check, coin control, explorer fee fallback
+- [x] Several wallets with switching, adding and removing (§8.8)
+- [x] Escrow, PSBT tools, sweep keys, sign and verify messages
+- [ ] Recovery matrix passes (§14.2): create, restore and the UTXO rescan are tested on regtest, the device matrix is open
 
 ### Phase 3: Background operation and policy
 
-- [x] Foreground service, notification, Stop action: written, not yet built or run on Android
-- [x] Policy engine (network, battery, thermal, storage, schedule): core done and tested, settings screen open
+- [x] Foreground service, notification, Stop action
+- [x] Policy engine (network, battery, thermal, storage, schedule) with a settings screen: mobile data, roaming, monthly cap, charging only, night schedule, profile, incoming connections, snapshot serving, storage saver, free-space floor
 - [ ] Profiles and benchmark-driven tuning
-- [ ] Snapshot serving settings (X2) and disk guard
 - [ ] Optional boot start, guided battery-optimization flow
 - [ ] Evaluate RPC over Unix socket (§4.4)
-- [ ] Expert mode with console, all four tiers including Danger, persistent history and file commands (§3.6, `guideline-expert-console.md`)
+- [x] Expert mode with console, all four tiers including Danger, persistent history and file commands (§3.6, `guideline-expert-console.md`). Screens are unbuilt on a device, the logic is tested against a real node
 
 ### Phase 4: Hardening and polish
 
-- [ ] Bump fee / CPFP, address book, descriptor export, encrypted wallet file export
+- [x] Bump fee (RBF), address labels, history export as CSV, app lock with biometrics
+- [x] CPFP for incoming payments, address book, public descriptor export, encrypted wallet file export, cleaned node log, guided chain data reset, optional incoming payment notification (§8.9). Screens are unbuilt on a device, the logic is tested against a real node
 - [ ] Localization completion, accessibility
-- [ ] Reproducible build, signed release pipeline, hash publication
+- [ ] Reproducible build, hash publication. The signed release pipeline exists
 - [ ] Native speaker review of the security and trust model texts in every shipped language (§3.5)
 - [ ] External security review and fixes, including the Expert console and its Danger tier
 
@@ -665,23 +696,23 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 
 - [ ] Phase 0 spikes completed and documented
 - [ ] Open items D2 to D5 of the distribution guideline answered
-- [ ] Native build fetches current Core on every build and records commit SHA and binary hash in the manifest
-- [ ] Core contract check (§11.2) enforced in CI
-- [ ] Node supervisor with graceful stop, drain and health classification
+- [x] Native build fetches current Core on every build and records commit SHA and binary hash in the manifest
+- [x] Core contract check (§11.2) enforced in CI
+- [x] Node supervisor with graceful stop, drain and health classification
 - [ ] Both bootstrap paths (IBD in window, snapshot) verified
 - [ ] Wallet create/recover with dual coin type verified against real seeds
-- [ ] PSBT review and fee re-check verified
-- [ ] Bech32-only defaults and Base58 warnings implemented
-- [ ] Background service with policy engine and user-visible stop
+- [x] PSBT review and fee re-check verified (against a real regtest node)
+- [x] Bech32-only defaults and Base58 warnings implemented
+- [x] Background service with policy engine and user-visible stop
 - [ ] Security requirements S1 to S16 verified
 - [ ] All user-visible text localized in the shipped locales (tier A at launch, tier B after native review), lint gate green
-- [ ] Wallet and Node sections implemented, live log with sanitized export
-- [ ] Expert console implemented per `guideline-expert-console.md`, security reviewed
+- [x] Wallet and Node sections implemented, live log (sanitized export is open)
+- [ ] Expert console implemented per `guideline-expert-console.md` (implemented, security review open)
 - [ ] Recovery matrix and resilience tests passed
 - [ ] Upstream items X1 to X4 filed or resolved in `elektron-net`
-- [ ] Release pipeline with signed artifacts and published hashes
-- [ ] Contrast gate (`design/check-contrast.py`) green in CI
-- [ ] Mainnet and testnet flavors build side by side
+- [ ] Release pipeline with signed artifacts and published hashes (pipeline built, release key and hash publication open)
+- [x] Contrast gate (`design/check-contrast.py`) green in CI
+- [x] Mainnet and testnet flavors build side by side
 
 ## 17. Open Questions and Decisions
 
@@ -701,7 +732,7 @@ All questions of the first drafts are answered. Decisions of October 18, 2026 ar
 | Q10 | `-fastprune` default | On by default, opt-out in settings | §3.2, `core-source.env` |
 | Q11 | Ticker | ELEK only | all texts |
 | Q12 | Languages | English plus the most widespread languages in two tiers (Chinese, Arabic, Japanese, Korean and more) | §3.5 |
-| Q13 | Artwork | None, design only, Osclass color themes, cyberpunk with glow and neon that never impairs reading | §3.3, design system guideline |
+| Q13 | Artwork | None, design only, five reduced color themes with dark and light mode, no glow, readability first | §3.3, design system guideline |
 | Q14 | Expert console | Danger tier in the first release, device authentication once per session, persistent history with 90 days retention, console in all builds, file commands with passphrase-protected wallets only, manual dumps deleted after 7 days, `createwallet` forbidden without a passphrase | `guideline-expert-console.md` §1.1 |
 
 Remaining open items live in the distribution guideline (§9, D2 to D5): the Play account type, the Play signing key choice, F-Droid native build and the foreground service type. D1 (testnet chain) is resolved: `testnet`.
