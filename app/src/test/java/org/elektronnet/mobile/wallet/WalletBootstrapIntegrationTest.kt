@@ -86,8 +86,10 @@ class WalletBootstrapIntegrationTest {
         val b = bootstrap(rpc, dir)
         assertEquals(BootstrapResult.Created("elektron"), b.recover(phrase, "correct horse battery"))
         assertEquals(listOf("elektron"), rpc.call("listwallets", emptyList<Any?>(), null))
+        rpc.call("createwallet", linkedMapOf("wallet_name" to "miner"), null)
+        rpc.call("generatetoaddress", listOf(1, rpc.call("getnewaddress", emptyList<Any?>(), "miner").toString()), "miner")
         val outcome = b.rescan("correct horse battery")
-        assertTrue(outcome is RescanOutcome.Full || outcome is RescanOutcome.Partial)
+        assertTrue("outcome $outcome", outcome is RescanOutcome.Full || outcome is RescanOutcome.Partial)
         assertEquals(RescanOutcome.Failed(BootstrapFailure.WrongPassphrase), b.rescan("wrong passphrase!"))
         val info = rpc.call("getwalletinfo", emptyList<Any?>(), "elektron") as Map<*, *>
         assertEquals(0L, info["unlocked_until"])
