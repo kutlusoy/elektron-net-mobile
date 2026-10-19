@@ -53,7 +53,6 @@ fun WalletScreen(
         HeroCard {
             Text(
                 stringResource(R.string.wallet_title).uppercase(),
-                fontFamily = org.elektronnet.mobile.ui.theme.ElektronDisplay,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                 letterSpacing = 3.sp,
                 color = MaterialTheme.colorScheme.primary,

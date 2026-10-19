@@ -1,6 +1,6 @@
 # Elektron Net: `elektron-net-mobile` UI Design System
 
-- **Version:** 0.7 (draft)
+- **Version:** 0.8 (draft)
 - **Date:** October 18, 2026
 - **Audience:** Android/Kotlin developers, UI designers, translators, security reviewers
 - **Reference implementation:** [`elektron-net-wp`](https://github.com/kutlusoy/elektron-net-wp) `osclass/osclasselektron/css/style.css` (palette source, commit `37aae603`), `design/palettes.json` and `design/check-contrast.py` in this repository (machine readable palettes and the legibility gate)
@@ -75,13 +75,11 @@ Further rules:
 
 ## 5. Typography and Scripts
 
-- **Implemented in v0.4:** Orbitron (Medium and Bold) for titles and the hero balance and Share Tech Mono for addresses, hashes and the log, bundled as TrueType in `res/font` (Latin subsets of the `@fontsource` packages 5.3.0, SIL Open Font License 1.1, license texts in `design/fonts`). Characters outside the Latin subset fall back to the system font.
-- Latin display (titles, hero balance): Orbitron or a similar geometric face, used sparingly. Technical text (addresses, hashes, log, console): Share Tech Mono or the system monospace. Both are open licensed fonts bundled with the app (licenses recorded in the repository).
+- **One typeface for every theme:** all text uses the system sans-serif font (Roboto, and Noto for other scripts) and addresses, hashes and the log use the system monospace. No decorative or display font is bundled, so text is equally readable in every theme and language. Hierarchy comes from size and weight (semi-bold titles, bold hero balance), never from a different face.
 - All other text and all non-Latin scripts use the system fonts (Noto on Android), so Chinese, Japanese, Korean, Arabic, Hindi and Cyrillic render correctly without bundled font weight.
-- The display face is applied only where the active language is Latin script. For other scripts the title style falls back to the system font with the same weight and letter spacing zero.
 - Amounts, heights and addresses always use Latin digits (0-9) and the node's address alphabet, in every language, to avoid ambiguity. Surrounding text follows the locale.
 - Right-to-left (Arabic): mirror layout through standard `start/end` attributes. Addresses, amounts, hashes and console text are wrapped in left-to-right isolates (Unicode FSI/PDI) so they never reorder.
-- The glow of an element never changes its layout size, so text expansion in German or French does not shift effects.
+- Layouts allow text expansion in German or French without clipping.
 
 ## 6. Flavors and Visual Distinction
 

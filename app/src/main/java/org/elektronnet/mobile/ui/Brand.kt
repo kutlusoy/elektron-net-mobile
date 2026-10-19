@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.ui.theme.EffectLevel
-import org.elektronnet.mobile.ui.theme.ElektronDisplay
 import org.elektronnet.mobile.ui.theme.LocalEffectLevel
 import org.elektronnet.mobile.ui.theme.LocalTokens
 import org.elektronnet.mobile.ui.theme.accentGlow
@@ -141,7 +140,7 @@ fun BrandHeader(compact: Boolean, showTagline: Boolean = false) {
         ) {
             ElektronLogo(if (showTagline) 52.dp else 36.dp)
             Column {
-                Text(name, fontFamily = ElektronDisplay, fontWeight = FontWeight.Bold, fontSize = if (showTagline) 22.sp else 18.sp, letterSpacing = 3.sp, color = MaterialTheme.colorScheme.onBackground)
+                Text(name, fontWeight = FontWeight.Bold, fontSize = if (showTagline) 22.sp else 18.sp, letterSpacing = 3.sp, color = MaterialTheme.colorScheme.onBackground)
                 if (showTagline) Text(stringResource(R.string.brand_tagline), color = LocalTokens.current.accent, style = MaterialTheme.typography.bodyMedium)
             }
         }
@@ -150,7 +149,6 @@ fun BrandHeader(compact: Boolean, showTagline: Boolean = false) {
             ElektronLogo(128.dp)
             Text(
                 name,
-                fontFamily = ElektronDisplay,
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp,
                 letterSpacing = 6.sp,
