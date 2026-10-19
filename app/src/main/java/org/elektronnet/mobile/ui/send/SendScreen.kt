@@ -91,6 +91,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var scanning by remember { mutableStateOf(false) }
     var selectedCoins by remember { mutableStateOf<List<org.elektronnet.mobile.wallet.Coin>>(emptyList()) }
     var pickCoins by remember { mutableStateOf(false) }
+    var subtractFee by remember { mutableStateOf(false) }
     val walletName = escrow?.walletName ?: NodeHost.activeWallet
 
     val resolved = SendInput.recipient(recipientText, NodeHost.paymentUri, org.elektronnet.mobile.wallet.AddressCheck(ChainConfig.isTestnet), ChainConfig.uriScheme)
@@ -123,7 +124,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     fun request(): SendRequest {
         val rate = if (custom) (customFee as? FeeInput.Ok)?.rate ?: BigDecimal.ONE else options.first { it.level == level }.lepPerVb
         val lep = (amountState as? AmountState.Ok)?.lep
-        return SendRequest(resolved.address.orEmpty(), if (max) null else lep, max, rate, allowLegacy = legacyOk, coins = selectedCoins)
+        return SendRequest(resolved.address.orEmpty(), if (max) null else lep, max, rate, allowLegacy = legacyOk, coins = selectedCoins, subtractFee = subtractFee && !max)
     }
 
     fun prepare() {
@@ -297,6 +298,15 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                             }
                         }
                     }
+                    if (!max) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Switch(checked = subtractFee, onCheckedChange = { subtractFee = it })
+                            Column(modifier = Modifier.padding(start = 12.dp)) {
+                                Text(stringResource(R.string.send_fee_subtract))
+                                Text(stringResource(R.string.send_fee_subtract_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                    }
                     if (options.none { it.estimated }) Text(stringResource(R.string.send_fee_no_estimate), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     if (options.any { it.fromExplorer }) Text(stringResource(R.string.send_fee_from_explorer), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -339,7 +349,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                             fontFamily = ElektronMono,
                         )
                     }
-                    ReviewLine(stringResource(R.string.send_review_amount)) { Text(elek(review.amountLep), style = MaterialTheme.typography.titleLarge) }
+                    ReviewLine(stringResource(if (prepared?.request?.subtracts == true) R.string.send_review_gets else R.string.send_review_amount)) { Text(elek(review.amountLep), style = MaterialTheme.typography.titleLarge) }
                     ReviewLine(stringResource(R.string.tx_fee)) {
                         Text(elek(review.feeLep) + "  (" + stringResource(R.string.send_fee_rate, review.feeRate.toPlainString()) + ")")
                     }

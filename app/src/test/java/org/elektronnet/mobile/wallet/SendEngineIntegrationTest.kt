@@ -103,6 +103,20 @@ class SendEngineIntegrationTest {
     }
 
     @Test
+    fun subtractFeeKeepsTheTotalAtTheEnteredAmount() = withEnv(28882) { env ->
+        val prepared = env.engine.prepare(SendRequest(env.minerAddress, 150_000_000L, false, rate(env), subtractFee = true))
+        val review = prepared.review
+        assertEquals(150_000_000L, review.totalLep)
+        assertEquals(150_000_000L, review.amountLep + review.feeLep)
+        assertTrue(review.amountLep < 150_000_000L && review.changeLep > 0)
+        assertEquals(5L * 100_000_000L, review.amountLep + review.feeLep + review.changeLep)
+        val txid = env.engine.send(prepared, pass)
+        assertEquals(64, txid.length)
+        val sent = WalletReader(env.rpc).transactions().first { it.txid == txid }
+        assertEquals(-150_000_000L, sent.netLep)
+    }
+
+    @Test
     fun wrongPassphraseSendsNothing() = withEnv(28842) { env ->
         val prepared = env.engine.prepare(SendRequest(env.minerAddress, 100_000_000L, false, rate(env)))
         assertEquals(SendFailure.WrongPassphrase, failure { env.engine.send(prepared, "wrong passphrase!") })

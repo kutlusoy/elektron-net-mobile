@@ -18,7 +18,10 @@ data class SendRequest(
     val feeRate: BigDecimal,
     val allowLegacy: Boolean = false,
     val coins: List<Coin> = emptyList(),
-)
+    val subtractFee: Boolean = false,
+) {
+    val subtracts: Boolean get() = max || subtractFee
+}
 
 data class Review(
     val address: String,
@@ -67,7 +70,7 @@ class SendEngine(
         if (gross <= 0) throw SendException(SendFailure.InvalidAmount)
         val options = linkedMapOf<String, Any?>("fee_rate" to request.feeRate, "replaceable" to true)
         if (request.coins.isNotEmpty()) options["add_inputs"] = false
-        if (request.max) options["subtractFeeFromOutputs"] = listOf(0)
+        if (request.subtracts) options["subtractFeeFromOutputs"] = listOf(0)
         val created = guard {
             rpc.call(
                 "walletcreatefundedpsbt",
@@ -112,7 +115,7 @@ class SendEngine(
         val destinations = rows.filter { it.first == prepared.request.address }
         if (destinations.size != 1) throw SendException(SendFailure.PsbtMismatch)
         val amount = destinations.single().second
-        val expected = if (prepared.request.max) prepared.grossLep - fee else prepared.grossLep
+        val expected = if (prepared.request.subtracts) prepared.grossLep - fee else prepared.grossLep
         if (amount != expected || amount <= 0) throw SendException(SendFailure.PsbtMismatch)
         val others = rows.filter { it.first != prepared.request.address }
         if (others.size > 1 || (prepared.request.max && others.isNotEmpty())) throw SendException(SendFailure.PsbtMismatch)
@@ -127,7 +130,7 @@ class SendEngine(
             amountLep = amount,
             feeLep = fee,
             changeLep = change,
-            totalLep = if (prepared.request.max) prepared.grossLep else amount + fee,
+            totalLep = if (prepared.request.subtracts) prepared.grossLep else amount + fee,
             feeRate = rate,
             inputs = inputRows.size,
         )

@@ -177,6 +177,8 @@
     <string name="explorer_err_insecure">Use https. Plain http is only allowed for localhost and onion addresses.</string>
     <string name="explorer_err_duplicate">This explorer is already in the list.</string>
     <string name="explorer_err_full">The list is full. Remove one first.</string>
+    <string name="send_fee_subtract">Subtract the fee from the amount</string>
+    <string name="send_fee_subtract_hint">The recipient gets the amount minus the fee. You pay exactly the amount you entered.</string>
     <string name="send_fee_from_explorer">Some suggestions come from your block explorer because the node has no estimate yet.</string>
     <string name="tx_open_explorer">Open in explorer</string>
     <string name="settings_security">Security</string>
@@ -270,6 +272,7 @@
     <string name="send_review_title">Check before you send</string>
     <string name="send_review_to">To</string>
     <string name="send_review_amount">Amount</string>
+    <string name="send_review_gets">The recipient gets (after the fee)</string>
     <string name="send_review_total">Total taken from your wallet</string>
     <string name="send_confirm_title">Confirm with your passphrase</string>
     <string name="send_confirm_body">Your wallet is unlocked only for a few seconds to sign this payment.</string>
