@@ -180,7 +180,7 @@ Status: planning only, nothing of this is built. It comes right after the curren
 **Node only mode, technical points.**
 
 - The wallet gate in the app (`walletReady` in `AppRoot`, in `MainActivity` and `NodeService`) becomes an app mode value. Starting the node and the foreground service no longer depends on a wallet.
-- In node only mode the node starts with `-disablewallet=1`, which saves memory and removes the wallet attack surface. Switching to wallet mode restarts the node once without it. The data folder is shared, so no resync is needed.
+- The wallet stays enabled in the node in every mode, so a wallet can be created or restored at any time without a restart, and node only mode never becomes an obstacle. `-disablewallet` is not used. Without a wallet the node simply has none loaded and holds no key material.
 - The notification permission request and the battery guidance run in the first-run flow of both modes.
 - Mining oriented defaults are offered as a profile, not forced: keep running in the background, stay awake only while charging, Wi-Fi only, thermal limits stay active.
 
@@ -195,7 +195,7 @@ Status: planning only, nothing of this is built. It comes right after the curren
 - *Mining readiness checklist.* Synchronized (not in initial download), enough peers, a `getblocktemplate` self-test succeeds with a throwaway coinbase address, UTXO attestation fields present in the template. The card also generates the settings block for `elektron-net-pool` or for a GBT miner (host, port, user), without the password. In-node CPU mining on the phone is not offered (SHA-256d, battery); `generatetoaddress` stays available to the console on regtest and testnet.
 - *Persistence and logging.* The RPC users and the access level live in an app-private config include file that the app writes before every node start (not on the command line, so `ps` never shows them). RPC users are never logged, the cleaned log export (§8.9) hides addresses and paths and also drops `rpcauth` lines.
 
-**Security requirements.** S26: server access is off by default, binds only to local addresses, and never to a public interface. S27: no plain text RPC password is stored, external users are hashed `rpcauth` users with a method whitelist, and wallet and key calls are never exposed. S28: enabling needs device authentication and an explicit risk confirmation, and a visible banner shows while it is on. S29: node only mode starts the node with `-disablewallet=1` and holds no key material.
+**Security requirements.** S26: server access is off by default, binds only to local addresses, and never to a public interface. S27: no plain text RPC password is stored, external users are hashed `rpcauth` users with a method whitelist, and wallet and key calls are never exposed. S28: enabling needs device authentication and an explicit risk confirmation, and a visible banner shows while it is on. S29: node only mode holds no key material until the user creates a wallet, and adding a wallet needs no node restart.
 
 **Tests.** Argument builder and config include writer (unit), `rpcauth` hash against Core's reference vectors, an integration test with the real regtest node: external user reaches only the whitelisted calls (`getblockcount` yes, `stop` and `getwalletinfo` no), cookie access keeps working, revoked user is refused, bind address is the configured one, and node only mode starts and later switches to wallet mode on the same data folder. Device lab: Wi-Fi change, doze, screen off, charging only, thermal pause, 24 hour soak as a pool backend.
 
@@ -531,7 +531,7 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 | S26 | Server access is off by default, binds only to local addresses and never to a public interface (§3.7) | MUST |
 | S27 | No plain text RPC password is stored, external users are hashed `rpcauth` users with a method whitelist, wallet and key calls are never exposed (§3.7) | MUST |
 | S28 | Enabling server access needs device authentication and an explicit risk confirmation, and a visible banner shows while it is on (§3.7) | MUST |
-| S29 | Node only mode starts the node with `-disablewallet=1` and holds no key material (§3.7) | MUST |
+| S29 | Node only mode holds no key material until the user creates a wallet, and adding a wallet needs no node restart (§3.7) | MUST |
 
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 
@@ -687,7 +687,7 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 
 ### Phase 4b: Node only mode and server access (next, §3.7)
 
-- [ ] App mode switch and first-run choice "Use as node only", node start without a wallet, `-disablewallet=1` in node only mode
+- [ ] App mode switch and first-run choice "Use as node only", node start without a wallet, wallet creation at any time without a restart
 - [ ] Server access: local network bind, allow list, `rpcauth` users with salted hashes, method whitelists per role, connection card, banner, auto-off timer
 - [ ] Mining readiness checklist, pool settings block, `getblocktemplate` self-test
 - [ ] Spike: `-rpcauth` together with the cookie and the empty `-rpcpassword=` override on the real node
