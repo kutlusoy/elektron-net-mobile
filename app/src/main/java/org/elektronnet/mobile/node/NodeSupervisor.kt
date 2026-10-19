@@ -18,6 +18,14 @@ class NodeSupervisor(
     private var stopRequested = false
 
     @Volatile
+    var startedAt: Long = 0
+        private set
+
+    @Volatile
+    var warmup: String? = null
+        private set
+
+    @Volatile
     var state: NodeState = NodeState.Stopped
         private set
 
@@ -46,6 +54,8 @@ class NodeSupervisor(
                 return
             }
             process = started
+            startedAt = System.currentTimeMillis()
+            warmup = null
             setState(NodeState.Starting)
             val drainer = thread("node-output") { drain(started) }
             thread("node-exit") { awaitExit(started, drainer) }
@@ -124,6 +134,7 @@ class NodeSupervisor(
                 markRunning(started)
                 return
             } catch (e: RpcException) {
+                if (e.inWarmup) warmup = e.message
                 if (!e.inWarmup) {
                     markRunning(started)
                     return
@@ -136,7 +147,10 @@ class NodeSupervisor(
 
     private fun markRunning(started: Process) {
         synchronized(lock) {
-            if (process === started && state == NodeState.Starting) setState(NodeState.Running)
+            if (process === started && state == NodeState.Starting) {
+                warmup = null
+                setState(NodeState.Running)
+            }
         }
     }
 

@@ -5,6 +5,23 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import org.elektronnet.mobile.ui.model.NodeHealth
+import org.elektronnet.mobile.ui.model.NodeHealthRules
+import org.elektronnet.mobile.ui.model.NodeLogPhase
+import org.elektronnet.mobile.ui.model.NodePhase
+import org.elektronnet.mobile.ui.model.SyncEta
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -44,6 +61,42 @@ fun NodeScreen(
     onStart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showLog by rememberSaveable { mutableStateOf(false) }
+    var log by remember { mutableStateOf(emptyList<String>()) }
+    val watching = showLog || model.state == NodeTabState.Starting
+    LaunchedEffect(watching) {
+        while (watching) {
+            log = withContext(Dispatchers.IO) { NodeHost.logTail(200) }
+            delay(2_000)
+        }
+    }
+    var diag by remember { mutableStateOf<NodeHost.Diagnostics?>(null) }
+    var now by remember { mutableStateOf(System.currentTimeMillis()) }
+    var noPeersSince by remember { mutableStateOf<Long?>(null) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            diag = withContext(Dispatchers.IO) { NodeHost.diagnostics() }
+            now = System.currentTimeMillis()
+            delay(1_000)
+        }
+    }
+    val peerCount = model.details?.peers
+    LaunchedEffect(peerCount) { noPeersSince = if (peerCount == 0L) System.currentTimeMillis() else null }
+    val running = model.details != null
+    val starting = model.state == NodeTabState.Starting
+    val health = NodeHealthRules.assess(
+        starting = starting,
+        running = running,
+        elapsedMs = diag?.let { if (it.startedAt > 0) now - it.startedAt else 0 } ?: 0,
+        silentMs = diag?.let { if (it.lastLogAt > 0) now - it.lastLogAt else 0 } ?: 0,
+        peers = peerCount ?: -1,
+        noPeersForMs = noPeersSince?.let { now - it } ?: 0,
+    )
+    val phase = NodeLogPhase.of(log)
+    val eta = remember { SyncEta() }
+    val details = model.details
+    LaunchedEffect(details?.blocks) { details?.let { eta.add(System.currentTimeMillis(), it.blocks) } }
+    val etaText = details?.let { eta.remainingMs((it.headers - it.blocks).coerceAtLeast(0)) }?.let { etaLabel(it) }
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -56,8 +109,16 @@ fun NodeScreen(
             Text(title(model), style = MaterialTheme.typography.titleLarge)
             hint(model)?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             model.detail?.let { Text(it, style = MaterialTheme.typography.bodySmall.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)) }
-            if (model.state == NodeTabState.CatchingUp && model.percent != null) {
-                LinearProgressIndicator(progress = { model.percent / 100f }, modifier = Modifier.fillMaxWidth())
+            ProgressBlock(model, phase, etaText)
+            if (starting || running) {
+                DiagnosticsBlock(
+                    starting = starting,
+                    peers = peerCount,
+                    elapsed = diag?.takeIf { it.startedAt > 0 }?.let { now - it.startedAt },
+                    sinceLog = diag?.takeIf { it.lastLogAt > 0 }?.let { now - it.lastLogAt },
+                    warmup = diag?.warmup,
+                    health = health,
+                )
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
@@ -76,9 +137,109 @@ fun NodeScreen(
         }
         Text(stringResource(R.string.node_explainer), color = MaterialTheme.colorScheme.onSurfaceVariant)
         model.details?.let { StatGrid(it) }
+        LogSection(showLog, { showLog = it }, log)
         if (model.details != null) {
             TelemetrySection(model.details, telemetry)
             PeerSection(peers, showGeoCredit)
+        }
+    }
+}
+
+@Composable
+private fun DiagnosticsBlock(starting: Boolean, peers: Long?, elapsed: Long?, sinceLog: Long?, warmup: String?, health: NodeHealth) {
+    val muted = MaterialTheme.colorScheme.onSurfaceVariant
+    val small = MaterialTheme.typography.bodySmall
+    if (peers != null) {
+        Text(
+            if (peers > 0) stringResource(R.string.diag_peers, peers) else stringResource(R.string.diag_no_peers),
+            color = if (peers > 0) MaterialTheme.colorScheme.primary else muted,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+        )
+    }
+    if (starting && !warmup.isNullOrBlank()) Text(warmup, color = muted, style = small)
+    if (elapsed != null && starting) Text(stringResource(R.string.diag_elapsed, NodeHealthRules.clock(elapsed)), color = muted, style = small)
+    if (sinceLog != null) Text(stringResource(R.string.diag_last_log, NodeHealthRules.clock(sinceLog)), color = muted, style = small)
+    val warning = when (health) {
+        NodeHealth.Silent -> R.string.health_silent
+        NodeHealth.SlowStart -> R.string.health_slow_start
+        NodeHealth.NoPeers -> R.string.health_no_peers
+        NodeHealth.Ok -> null
+    }
+    warning?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error, style = small) }
+}
+
+@Composable
+private fun ProgressBlock(model: NodeTabModel, phase: NodePhase, etaText: String?) {
+    val muted = MaterialTheme.colorScheme.onSurfaceVariant
+    when (model.state) {
+        NodeTabState.Starting -> {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            Text(stringResource(phaseText(phase)), color = muted, style = MaterialTheme.typography.bodySmall)
+        }
+        NodeTabState.CatchingUp -> {
+            val details = model.details
+            if (model.percent != null && details != null && details.headers > 0) {
+                LinearProgressIndicator(progress = { model.percent / 100f }, modifier = Modifier.fillMaxWidth())
+                Text(stringResource(R.string.sync_blocks_of, details.blocks, details.headers), color = muted, style = MaterialTheme.typography.bodySmall)
+            } else {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                Text(stringResource(R.string.phase_headers), color = muted, style = MaterialTheme.typography.bodySmall)
+            }
+            etaText?.let { Text(it, color = muted, style = MaterialTheme.typography.bodySmall) }
+        }
+        else -> Unit
+    }
+}
+
+private fun phaseText(phase: NodePhase): Int = when (phase) {
+    NodePhase.LoadingIndex -> R.string.phase_index
+    NodePhase.VerifyingBlocks -> R.string.phase_verify
+    NodePhase.LoadingWallet -> R.string.phase_wallet
+    NodePhase.StartingNetwork -> R.string.phase_network
+    NodePhase.SyncingHeaders -> R.string.phase_headers
+    NodePhase.Other -> R.string.phase_starting
+}
+
+@Composable
+private fun etaLabel(ms: Long): String {
+    val minutes = ms / 60_000
+    val text = when {
+        minutes < 1 -> stringResource(R.string.eta_under_minute)
+        minutes < 90 -> stringResource(R.string.eta_minutes, minutes)
+        else -> stringResource(R.string.eta_hours, minutes / 60, minutes % 60)
+    }
+    return stringResource(R.string.eta_left, text)
+}
+
+@Composable
+private fun LogSection(show: Boolean, onShow: (Boolean) -> Unit, lines: List<String>) {
+    val clipboard = androidx.compose.ui.platform.LocalClipboardManager.current
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(stringResource(R.string.node_log_title), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.node_log_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            androidx.compose.material3.Switch(checked = show, onCheckedChange = onShow)
+        }
+        if (show) {
+            val scroll = rememberScrollState()
+            LaunchedEffect(lines.size) { scroll.scrollTo(scroll.maxValue) }
+            GlassCard {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Column(modifier = Modifier.heightIn(max = 320.dp).verticalScroll(scroll)) {
+                        if (lines.isEmpty()) Text(stringResource(R.string.node_log_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        lines.forEach {
+                            Text(it, fontFamily = org.elektronnet.mobile.ui.theme.ElektronMono, fontSize = 11.sp, lineHeight = 14.sp)
+                        }
+                    }
+                    if (lines.isNotEmpty()) {
+                        TextButton(onClick = { clipboard.setText(androidx.compose.ui.text.AnnotatedString(lines.joinToString("\n"))) }) {
+                            Text(stringResource(R.string.node_log_copy))
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -246,6 +246,15 @@ object NodeHost {
         return runCatching { supervisor.peers().map { PeerRow(it, geo.lookup(it.address)) } }.getOrNull()
     }
 
+    data class Diagnostics(val startedAt: Long, val warmup: String?, val lastLogAt: Long)
+
+    fun diagnostics(): Diagnostics? {
+        val supervisor = controller?.current ?: return null
+        return Diagnostics(supervisor.startedAt, supervisor.warmup, supervisor.output.lastAddedAt)
+    }
+
+    fun logTail(count: Int): List<String> = controller?.current?.output?.tail(count).orEmpty()
+
     fun clearCrash() {
         controller?.clearCrash()
     }

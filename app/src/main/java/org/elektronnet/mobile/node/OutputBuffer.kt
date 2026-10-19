@@ -6,7 +6,12 @@ class OutputBuffer(private val capacity: Int = 2_000) {
     private val lines = ArrayDeque<String>()
     private val listeners = java.util.concurrent.CopyOnWriteArrayList<(String) -> Unit>()
 
+    @Volatile
+    var lastAddedAt: Long = 0
+        private set
+
     fun add(line: String) {
+        lastAddedAt = System.currentTimeMillis()
         synchronized(lines) {
             if (lines.size >= capacity) lines.removeFirst()
             lines.addLast(line)
