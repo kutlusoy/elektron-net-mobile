@@ -1,7 +1,7 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.27 (draft)
-- **Date:** October 21, 2026
+- **Version:** 0.28 (draft)
+- **Date:** October 22, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
@@ -27,7 +27,7 @@
 - No address reuse by default: fresh receive and change addresses, and coins that arrive on an already spent address are kept out of automatic spending (shown separately, spendable on purpose).
 - Complete transaction history per wallet, 10 per page newest first, with search across everything, filters and CSV export; speed up a waiting payment with fee bump (RBF) when you sent it, or with CPFP when it is incoming.
 - Address book (local, shared by all wallets), public descriptor export, an encrypted wallet file export and a restore from a `wallet.dat` backup through the system file picker. A restored file without a passphrase gets one right away, and is discarded if you cancel.
-- Tor and I2P next to IPv4 and IPv6, each switched on in Settings. Tor and a small I2P router run inside the app next to the node. Options cover the Tor routing (next to the normal connections or everything through Tor), running a Tor relay or exit relay with bandwidth and monthly limits, and I2P tunnel sharing. Small chips beside the "Synced" dot show the networks in use: IPv4, IPv6, Tor (purple), I2P (green). Details: [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md).
+- Tor and I2P next to IPv4 and IPv6, each switched on in Settings. Tor and a small I2P router run inside the app next to the node. Options cover the Tor routing (next to the normal connections or everything through Tor), running a Tor relay or exit relay with bandwidth and monthly limits, and I2P tunnel sharing. Small chips beside the "Synced" dot show the networks in use: IPv4, IPv6, Tor (purple), I2P (green), and the Node tab has a tile per switched-on network with its status, address, peers and ports. Ports that other programs already use are moved to the next free one. Details: [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md).
 - Fee estimates come from the node with a fallback to a mempool explorer; the explorer list (default `https://mempool.elektron-net.org`) can be edited and is also used for transaction links.
 - Node dashboard: sync phase, height, peers with country (offline DB-IP Country Lite lookup, addresses never leave the phone), disk usage, prune height, snapshot state.
 - Simple everyday wallet following common mobile wallet conventions (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node (four risk tiers, confirmation dialogs, encrypted history, file commands confined to a private folder).
@@ -121,7 +121,7 @@ Do not clear app data if you want to keep the synchronized node and wallet datab
 
 ### Releases
 
-Signed APKs are published under Releases as "Elektron Mobile v<version>", built by `.github/workflows/release.yml` from a pushed tag or a manual run, with the node built fresh from `elektron-net` (see [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) §6.1). Each release has the mainnet APK, the testnet APK and `SHA256SUMS.txt`. Versions look like `v4.0.4-m0.1.0`: the Elektron Net node version, then `m` and the wallet version, so the wallet can be updated without a new node (distribution guideline §8.1).
+Signed APKs are published under Releases as "Elektron Mobile v<version>", built by `.github/workflows/release.yml` from a pushed tag or a manual run, with the node built fresh from `elektron-net` (see [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) §6.1). Each release has the mainnet APK, the testnet APK and `SHA256SUMS.txt`. Versions look like `v4.0.4-m0.1.0`: the Elektron Net node version, then `m` and the wallet version, so the wallet can be updated without a new node (distribution guideline §8.1). Test builds without a release key are signed with one fixed public test key (`app/test-signing`), so they can update each other and keep their data. Switching between a test build and a release-key build needs one uninstall, so export the wallet file or keep the recovery phrase first.
 
 ## 7. Repository structure
 

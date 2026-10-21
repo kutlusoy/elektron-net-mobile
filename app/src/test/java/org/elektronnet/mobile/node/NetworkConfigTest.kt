@@ -176,4 +176,25 @@ class NetworkConfigTest {
             root.deleteRecursively()
         }
     }
+
+    @Test
+    fun busyPortsMoveToTheNextFreeOne() {
+        val busy = setOf(9050, 9051, 9060, 7656)
+        val resolved = NetworkPorts().resolved { it !in busy }
+        assertEquals(NetworkPorts(torSocks = 9070, torControl = 9061, i2pSam = 7666), resolved)
+        assertEquals(NetworkPorts(), NetworkPorts().resolved { true })
+    }
+
+    @Test
+    fun resolvedPortsAreDistinctAndTheNodeAcceptsThem() {
+        val resolved = NetworkPorts(torSocks = 9050, torControl = 9050, i2pSam = 9050).resolved { true }
+        assertEquals(3, setOf(resolved.torSocks, resolved.torControl, resolved.i2pSam).size)
+        val held = java.net.ServerSocket(0, 1, java.net.InetAddress.getByName(NetworkArgs.LOOPBACK))
+        try {
+            assertFalse(NetworkPorts.loopbackFree(held.localPort))
+        } finally {
+            held.close()
+        }
+        assertTrue(NetworkPorts.loopbackFree(held.localPort))
+    }
 }

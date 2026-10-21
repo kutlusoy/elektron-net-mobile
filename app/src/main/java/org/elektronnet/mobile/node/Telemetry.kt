@@ -1,5 +1,11 @@
 package org.elektronnet.mobile.node
 
+data class LocalAddress(val address: String, val port: Int) {
+    val isOnion: Boolean get() = address.endsWith(".onion")
+    val isI2p: Boolean get() = address.endsWith(".i2p")
+    fun display(): String = if (port > 0) "$address:$port" else address
+}
+
 data class Telemetry(
     val difficulty: Double?,
     val hashPerSecond: Double?,
@@ -12,6 +18,7 @@ data class Telemetry(
     val networkActive: Boolean? = null,
     val initialBlockDownload: Boolean? = null,
     val schedule: ChainSchedule? = null,
+    val localAddresses: List<LocalAddress> = emptyList(),
 ) {
     companion object {
         fun parse(chain: Any?, mining: Any?, mempool: Any?, network: Any? = null): Telemetry {
@@ -30,6 +37,10 @@ data class Telemetry(
                 connectionsOut = (n?.get("connections_out") as? Number)?.toLong(),
                 networkActive = n?.get("networkactive") as? Boolean,
                 initialBlockDownload = c?.get("initialblockdownload") as? Boolean,
+                localAddresses = (n?.get("localaddresses") as? List<*>).orEmpty().mapNotNull { entry ->
+                    val map = entry as? Map<*, *> ?: return@mapNotNull null
+                    LocalAddress(map["address"] as? String ?: return@mapNotNull null, (map["port"] as? Number)?.toInt() ?: 0)
+                },
             )
         }
     }

@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">बैंडविड्थ सीमा</string>
     <string name="net_i2p_share">दूसरों के लिए बैंडविड्थ का हिस्सा</string>
     <string name="net_i2p_note">I2P और Tor, IPv4 और IPv6 के साथ साथ चलते हैं। बदलाव से नोड थोड़ी देर के लिए फिर शुरू होता है।</string>
+    <string name="net_tile_status">स्थिति</string>
+    <string name="net_tile_address">पता</string>
+    <string name="net_tile_waiting">पते की प्रतीक्षा</string>
+    <string name="net_tile_peers">इस नेटवर्क पर पीयर</string>
+    <string name="net_tile_socks">SOCKS पोर्ट</string>
+    <string name="net_tile_control">कंट्रोल पोर्ट</string>
+    <string name="net_tile_routing">रूटिंग</string>
+    <string name="net_tile_role">भूमिका</string>
+    <string name="net_tile_sam">SAM ब्रिज</string>
+    <string name="net_tile_incoming">आने वाले कनेक्शन</string>
+    <string name="net_tile_sharing">दूसरों के लिए रिले</string>
+    <string name="net_tile_share">बैंडविड्थ का हिस्सा</string>
 </resources>

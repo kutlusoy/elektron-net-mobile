@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">Limite de débit</string>
     <string name="net_i2p_share">Part du débit pour les autres</string>
     <string name="net_i2p_note">I2P et Tor fonctionnent en parallèle d\'IPv4 et IPv6. Les changements relancent le nœud un instant.</string>
+    <string name="net_tile_status">État</string>
+    <string name="net_tile_address">Adresse</string>
+    <string name="net_tile_waiting">en attente de l\'adresse</string>
+    <string name="net_tile_peers">Pairs sur ce réseau</string>
+    <string name="net_tile_socks">Port SOCKS</string>
+    <string name="net_tile_control">Port de contrôle</string>
+    <string name="net_tile_routing">Routage</string>
+    <string name="net_tile_role">Rôle</string>
+    <string name="net_tile_sam">Pont SAM</string>
+    <string name="net_tile_incoming">Connexions entrantes</string>
+    <string name="net_tile_sharing">Relais pour les autres</string>
+    <string name="net_tile_share">Part du débit</string>
 </resources>

@@ -51,6 +51,9 @@ object NodeHost {
     private var controller: NodeController? = null
     var networkServices: NetworkServices? = null
         private set
+
+    var networkPorts: org.elektronnet.mobile.node.NetworkPorts = ChainConfig.networkPorts
+        private set
     private var datadir: File? = null
     private var appContext: Context? = null
 
@@ -132,6 +135,7 @@ object NodeHost {
             walletSetup.markRescanPending(store.rescanWallet)
             setupStatus = walletSetup.status
         }
+        networkPorts = ChainConfig.networkPorts.resolved()
         val datadir = File(app.filesDir, ChainConfig.datadirName)
         datadir.mkdirs()
         this.datadir = datadir
@@ -144,13 +148,13 @@ object NodeHost {
             fastprune = store.fastprune(),
             homeDir = app.filesDir,
             network = store.loadNetwork(),
-            ports = ChainConfig.networkPorts,
+            ports = networkPorts,
         )
         val device = AndroidDeviceState(app, datadir)
         val services = NetworkServices(
             binaries = ServiceBinaries(File(app.applicationInfo.nativeLibraryDir, "libtor.so"), File(app.applicationInfo.nativeLibraryDir, "libi2pd.so")),
             root = File(app.filesDir, "network"),
-            ports = ChainConfig.networkPorts,
+            ports = networkPorts,
             dnsServers = { AndroidDeviceState.dnsServers(app) },
             prepareI2pData = { dir -> installI2pData(app, dir) },
         )

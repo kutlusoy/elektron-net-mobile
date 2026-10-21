@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">Giới hạn băng thông</string>
     <string name="net_i2p_share">Phần băng thông dành cho người khác</string>
     <string name="net_i2p_note">I2P và Tor chạy song song với IPv4 và IPv6. Thay đổi sẽ khởi động lại nút trong chốc lát.</string>
+    <string name="net_tile_status">Trạng thái</string>
+    <string name="net_tile_address">Địa chỉ</string>
+    <string name="net_tile_waiting">đang chờ địa chỉ</string>
+    <string name="net_tile_peers">Peer trong mạng này</string>
+    <string name="net_tile_socks">Cổng SOCKS</string>
+    <string name="net_tile_control">Cổng điều khiển</string>
+    <string name="net_tile_routing">Định tuyến</string>
+    <string name="net_tile_role">Vai trò</string>
+    <string name="net_tile_sam">Cầu SAM</string>
+    <string name="net_tile_incoming">Kết nối đến</string>
+    <string name="net_tile_sharing">Chuyển tiếp cho người khác</string>
+    <string name="net_tile_share">Phần băng thông</string>
 </resources>

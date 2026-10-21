@@ -772,4 +772,16 @@
     <string name="net_i2p_bandwidth">Bandwidth limit</string>
     <string name="net_i2p_share">Share of bandwidth for others</string>
     <string name="net_i2p_note">I2P and Tor work in parallel with IPv4 and IPv6. Changes restart the node for a moment.</string>
+    <string name="net_tile_status">Status</string>
+    <string name="net_tile_address">Address</string>
+    <string name="net_tile_waiting">waiting for the address</string>
+    <string name="net_tile_peers">Peers on this network</string>
+    <string name="net_tile_socks">SOCKS port</string>
+    <string name="net_tile_control">Control port</string>
+    <string name="net_tile_routing">Routing</string>
+    <string name="net_tile_role">Role</string>
+    <string name="net_tile_sam">SAM bridge</string>
+    <string name="net_tile_incoming">Incoming connections</string>
+    <string name="net_tile_sharing">Relaying for others</string>
+    <string name="net_tile_share">Bandwidth share</string>
 </resources>

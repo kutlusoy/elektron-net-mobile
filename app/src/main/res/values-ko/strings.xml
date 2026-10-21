@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">대역폭 제한</string>
     <string name="net_i2p_share">다른 사람에게 내줄 대역폭 비율</string>
     <string name="net_i2p_note">I2P와 Tor는 IPv4, IPv6와 함께 병행해서 동작합니다. 변경하면 노드가 잠깐 다시 시작됩니다.</string>
+    <string name="net_tile_status">상태</string>
+    <string name="net_tile_address">주소</string>
+    <string name="net_tile_waiting">주소를 기다리는 중</string>
+    <string name="net_tile_peers">이 네트워크의 피어</string>
+    <string name="net_tile_socks">SOCKS 포트</string>
+    <string name="net_tile_control">제어 포트</string>
+    <string name="net_tile_routing">라우팅</string>
+    <string name="net_tile_role">역할</string>
+    <string name="net_tile_sam">SAM 브리지</string>
+    <string name="net_tile_incoming">들어오는 연결</string>
+    <string name="net_tile_sharing">다른 사람을 위한 중계</string>
+    <string name="net_tile_share">대역폭 비율</string>
 </resources>

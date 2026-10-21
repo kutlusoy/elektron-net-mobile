@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">Batas bandwidth</string>
     <string name="net_i2p_share">Bagian bandwidth untuk orang lain</string>
     <string name="net_i2p_note">I2P dan Tor berjalan paralel dengan IPv4 dan IPv6. Perubahan memulai ulang node sebentar.</string>
+    <string name="net_tile_status">Status</string>
+    <string name="net_tile_address">Alamat</string>
+    <string name="net_tile_waiting">menunggu alamat</string>
+    <string name="net_tile_peers">Peer di jaringan ini</string>
+    <string name="net_tile_socks">Port SOCKS</string>
+    <string name="net_tile_control">Port kontrol</string>
+    <string name="net_tile_routing">Perutean</string>
+    <string name="net_tile_role">Peran</string>
+    <string name="net_tile_sam">Jembatan SAM</string>
+    <string name="net_tile_incoming">Koneksi masuk</string>
+    <string name="net_tile_sharing">Meneruskan untuk orang lain</string>
+    <string name="net_tile_share">Bagian bandwidth</string>
 </resources>

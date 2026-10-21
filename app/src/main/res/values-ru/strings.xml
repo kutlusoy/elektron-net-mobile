@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">Лимит скорости</string>
     <string name="net_i2p_share">Доля пропускной способности для других</string>
     <string name="net_i2p_note">I2P и Tor работают параллельно с IPv4 и IPv6. Изменения ненадолго перезапускают узел.</string>
+    <string name="net_tile_status">Состояние</string>
+    <string name="net_tile_address">Адрес</string>
+    <string name="net_tile_waiting">ожидание адреса</string>
+    <string name="net_tile_peers">Пиры в этой сети</string>
+    <string name="net_tile_socks">Порт SOCKS</string>
+    <string name="net_tile_control">Порт управления</string>
+    <string name="net_tile_routing">Маршрутизация</string>
+    <string name="net_tile_role">Роль</string>
+    <string name="net_tile_sam">Мост SAM</string>
+    <string name="net_tile_incoming">Входящие соединения</string>
+    <string name="net_tile_sharing">Ретрансляция для других</string>
+    <string name="net_tile_share">Доля пропускной способности</string>
 </resources>
