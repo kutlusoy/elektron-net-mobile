@@ -790,4 +790,9 @@
     <string name="net_reach_checking">sedang diperiksa, hingga 20 menit</string>
     <string name="net_reach_no">tidak, buka port di router</string>
     <string name="net_reach_unknown">belum diuji</string>
+    <string name="wallets_reload">Muat ulang dompet</string>
+    <string name="wallets_reload_hint">Mencari dompet di node Anda, menambahkan yang belum ada di daftar ini, dan memuatnya.</string>
+    <string name="wallets_reload_result">%1$d ditambahkan, %2$d dihapus dari daftar, %3$d dimuat.</string>
+    <string name="wallets_reload_none">Tidak ada yang baru ditemukan.</string>
+    <string name="wallets_reload_failed">Node belum siap.</string>
 </resources>

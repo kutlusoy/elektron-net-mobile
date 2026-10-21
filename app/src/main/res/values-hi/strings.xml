@@ -790,4 +790,9 @@
     <string name="net_reach_checking">जाँच जारी है, अधिकतम 20 मिनट</string>
     <string name="net_reach_no">नहीं, राउटर में पोर्ट खोलें</string>
     <string name="net_reach_unknown">अभी जाँचा नहीं गया</string>
+    <string name="wallets_reload">वॉलेट फिर से लोड करें</string>
+    <string name="wallets_reload_hint">आपके नोड पर वॉलेट खोजता है, इस सूची में जो नहीं हैं उन्हें जोड़ता है और लोड करता है।</string>
+    <string name="wallets_reload_result">%1$d जोड़े गए, %2$d सूची से हटाए गए, %3$d लोड किए गए।</string>
+    <string name="wallets_reload_none">कुछ नया नहीं मिला।</string>
+    <string name="wallets_reload_failed">नोड अभी तैयार नहीं है।</string>
 </resources>

@@ -790,4 +790,9 @@
     <string name="net_reach_checking">comprobando, hasta 20 minutos</string>
     <string name="net_reach_no">no, abre el puerto en tu router</string>
     <string name="net_reach_unknown">aún no comprobado</string>
+    <string name="wallets_reload">Recargar monederos</string>
+    <string name="wallets_reload_hint">Busca monederos en tu nodo, añade los que faltan en esta lista y los carga.</string>
+    <string name="wallets_reload_result">%1$d añadidos, %2$d quitados de la lista, %3$d cargados.</string>
+    <string name="wallets_reload_none">No se encontró nada nuevo.</string>
+    <string name="wallets_reload_failed">El nodo aún no está listo.</string>
 </resources>

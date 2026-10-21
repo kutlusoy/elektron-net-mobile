@@ -174,6 +174,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - Each toggle has a one-line description in plain words beneath it.
 - Defaults are the recommended ones, so most users never open Network and battery. Tor and I2P are off until the user switches them on, their options appear only then.
 - After "Restore from wallet file" succeeds the app switches to the new wallet at once and shows a card with "Wallet restored. It scans for your coins in the background." and OK. The error text of a failed restore shows the node's reason in a second line.
+- The Wallets screen has "Reload wallets" (lists wallets found on the node, drops stale entries, loads unloaded ones, shows the counts) above "Restore from wallet file"; the list is never extended automatically.
 - The Wallets screen has "Restore from wallet file" below "Add wallet". A backup without a passphrase leads to a dialog for a new passphrase, cancelling discards the restored wallet.
 
 ## 7. States and Errors

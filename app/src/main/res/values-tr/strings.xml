@@ -790,4 +790,9 @@
     <string name="net_reach_checking">kontrol ediliyor, en çok 20 dakika</string>
     <string name="net_reach_no">hayır, portu yönlendiricide aç</string>
     <string name="net_reach_unknown">henüz denenmedi</string>
+    <string name="wallets_reload">Cüzdanları yeniden yükle</string>
+    <string name="wallets_reload_hint">Düğümünüzdeki cüzdanları arar, bu listede eksik olanları ekler ve yükler.</string>
+    <string name="wallets_reload_result">%1$d eklendi, %2$d listeden kaldırıldı, %3$d yüklendi.</string>
+    <string name="wallets_reload_none">Yeni bir şey bulunamadı.</string>
+    <string name="wallets_reload_failed">Düğüm henüz hazır değil.</string>
 </resources>

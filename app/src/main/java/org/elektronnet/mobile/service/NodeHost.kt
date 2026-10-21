@@ -92,6 +92,20 @@ object NodeHost {
         return next
     }
 
+    // The "Reload wallets" button: lists the wallets the node has but the list lacks, drops entries without a wallet and loads the rest
+    fun reloadWallets(): org.elektronnet.mobile.wallet.WalletReconciler.Result? {
+        val supervisor = runningSupervisor() ?: return null
+        val reg = registry ?: return null
+        val rpc = supervisor.rpc.asWalletRpc()
+        val busy = if (setupStatus != SetupStatus.None) setOf(walletSetup.walletName) else emptySet()
+        val reconciler = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy }
+        val result = reconciler.reconcile(adopt = true) ?: return null
+        walletNamesOnDisk = reconciler.namesOnDisk().orEmpty().toSet()
+        if (reg.wallets().isNotEmpty()) markWalletReady(true)
+        refreshWallets()
+        return result
+    }
+
     // Lets the next tick compare the wallet list with the node again and load wallets that are listed but not loaded
     fun requestReconcile() {
         reconciledFor = 0L
@@ -245,7 +259,7 @@ object NodeHost {
                 val rpc = supervisor.rpc.asWalletRpc()
                 if (reconcileNeeded && reg != null) {
                     val busy = if (setupStatus != SetupStatus.None) setOf(walletSetup.walletName) else emptySet()
-                    val result = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy }.reconcile()
+                    val result = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy }.reconcile(adopt = false)
                     if (result != null) {
                         walletNamesOnDisk = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg).namesOnDisk().orEmpty().toSet()
                         reconciledFor = supervisor.startedAt

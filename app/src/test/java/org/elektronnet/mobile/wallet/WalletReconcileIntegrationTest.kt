@@ -41,6 +41,12 @@ class WalletReconcileIntegrationTest {
             registry.add("pending", "")
             registry.add("elektron", "main")
             val reconciler = WalletReconciler(rpc, registry) { setOf("pending") }
+            val quiet = reconciler.reconcile(adopt = false)!!
+            assertEquals(listOf("ghost"), quiet.dropped)
+            assertTrue(quiet.adopted.isEmpty())
+            assertTrue(quiet.loaded.isEmpty())
+            assertFalse(registry.wallets().any { it.name == "elektron_2" })
+            registry.add("ghost", "")
             val result = reconciler.reconcile()!!
             assertEquals(listOf("ghost"), result.dropped)
             assertEquals(listOf("elektron_2"), result.adopted)

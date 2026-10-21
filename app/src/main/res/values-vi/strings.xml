@@ -790,4 +790,9 @@
     <string name="net_reach_checking">đang kiểm tra, tối đa 20 phút</string>
     <string name="net_reach_no">không, hãy mở cổng trên bộ định tuyến</string>
     <string name="net_reach_unknown">chưa được kiểm tra</string>
+    <string name="wallets_reload">Tải lại ví</string>
+    <string name="wallets_reload_hint">Tìm các ví trên nút của bạn, thêm những ví còn thiếu vào danh sách này và tải chúng.</string>
+    <string name="wallets_reload_result">Đã thêm %1$d, đã xóa %2$d khỏi danh sách, đã tải %3$d.</string>
+    <string name="wallets_reload_none">Không tìm thấy gì mới.</string>
+    <string name="wallets_reload_failed">Nút chưa sẵn sàng.</string>
 </resources>
