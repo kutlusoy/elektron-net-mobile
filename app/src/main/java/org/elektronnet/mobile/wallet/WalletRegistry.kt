@@ -60,6 +60,12 @@ class WalletRegistry(private val store: WalletRegistryStore) {
     }
 
     @Synchronized
+    fun changeName(old: String, new: String) {
+        save(wallets().map { if (it.name == old) it.copy(name = new) else it })
+        if (store.active == old) store.active = new
+    }
+
+    @Synchronized
     fun rename(name: String, label: String) {
         save(wallets().map { if (it.name == name) it.copy(label = label.trim()) else it })
     }

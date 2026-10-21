@@ -57,7 +57,7 @@ object NodeHost {
     private var datadir: File? = null
     private var appContext: Context? = null
 
-    private val walletSetup = WalletSetup { name -> appContext?.let { bootstrap(it, name) } }
+    private val walletSetup = WalletSetup(onNameTaken = { old -> renameForSetup(old) }) { name -> appContext?.let { bootstrap(it, name) } }
 
     private var registry: WalletRegistry? = null
 
@@ -81,9 +81,26 @@ object NodeHost {
         activeWallet = reg.active().name
     }
 
+    // The wallet name is already used on the node: give the new wallet the next free name and keep its entry in the list
+    private fun renameForSetup(old: String): String? {
+        val reg = registry ?: return null
+        val onDisk = runningSupervisor()?.let { org.elektronnet.mobile.wallet.WalletReconciler(it.rpc.asWalletRpc(), reg).namesOnDisk() } ?: return null
+        walletNamesOnDisk = onDisk.toSet()
+        val next = reg.nextName(walletNamesOnDisk + old)
+        reg.changeName(old, next)
+        refreshWallets()
+        return next
+    }
+
+    // Lets the next tick compare the wallet list with the node again and load wallets that are listed but not loaded
+    fun requestReconcile() {
+        reconciledFor = 0L
+    }
+
     fun switchWallet(name: String) {
         registry?.setActive(name)
         refreshWallets()
+        requestReconcile()
     }
 
     fun renameWallet(name: String, label: String) {
@@ -265,9 +282,13 @@ object NodeHost {
         val name = walletSetup.walletName
         val before = walletSetup.status
         walletSetup.cancel()
-        if (name != WalletBootstrap.DEFAULT_WALLET && (before == SetupStatus.Waiting || before is SetupStatus.Failed)) {
-            registry?.remove(name)
-            refreshWallets()
+        if (before == SetupStatus.Waiting || before is SetupStatus.Failed) {
+            val onNode = runningSupervisor()?.let { org.elektronnet.mobile.wallet.WalletRemover(it.rpc.asWalletRpc()) {}.existsOnNode(name) }
+            if (onNode != true && registry?.wallets()?.size.let { it != null && it > 0 }) {
+                registry?.remove(name)
+                refreshWallets()
+            }
+            requestReconcile()
         }
         settings?.rescanPending = false
         setupStatus = walletSetup.status

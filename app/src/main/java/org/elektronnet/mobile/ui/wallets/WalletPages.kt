@@ -249,6 +249,7 @@ fun WalletsScreen(onBack: () -> Unit, onAdd: () -> Unit) {
     BackHandler(onBack = onBack)
     var renaming by remember { mutableStateOf<OwnWallet?>(null) }
     var removing by remember { mutableStateOf<OwnWallet?>(null) }
+    LaunchedEffect(Unit) { NodeHost.requestReconcile() }
     ToolPage(stringResource(R.string.wallets_title), onBack) {
         NodeHost.wallets.forEach { wallet ->
             GlassCard {
