@@ -81,4 +81,16 @@ class NetworkTilesModelTest {
         assertTrue(telemetry.localAddresses[0].isOnion && telemetry.localAddresses[1].isI2p)
         assertEquals("x.b32.i2p", telemetry.localAddresses[1].display())
     }
+
+    @Test
+    fun theTorTileShowsBootstrapAndRelayReachability() {
+        val log = listOf("[notice] Bootstrapped 100% (done): Done", "[warn] Your server has not managed to confirm reachability for its ORPort(s) at x")
+        val client = NetworkTiles.build(NetworkSettings(tor = TorSettings(enabled = true)), NetworkPorts(), ServiceState.Running, true, ServiceState.Stopped, true, emptyList(), emptyMap(), log).single().rows.associate { it.label to it.value }
+        assertEquals(TileValue.Percent(100), client[TileLabel.Bootstrap])
+        assertTrue(TileLabel.Reachable !in client)
+        val relay = NetworkTiles.build(NetworkSettings(tor = TorSettings(enabled = true, role = TorRole.Relay)), NetworkPorts(), ServiceState.Running, true, ServiceState.Stopped, true, emptyList(), emptyMap(), log).single().rows.associate { it.label to it.value }
+        assertEquals(TileValue.Reach(org.elektronnet.mobile.node.RelayReach.Unreachable), relay[TileLabel.Reachable])
+        val noLog = NetworkTiles.build(NetworkSettings(tor = TorSettings(enabled = true)), NetworkPorts(), ServiceState.Starting, true, ServiceState.Stopped, true, emptyList(), emptyMap()).single().rows.associate { it.label to it.value }
+        assertEquals(TileValue.Waiting, noLog[TileLabel.Bootstrap])
+    }
 }

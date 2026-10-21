@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">로그 숨기기</string>
     <string name="net_addr_none">저장된 주소가 아직 없습니다. 네트워크가 준비되면 노드가 만듭니다. 아무것도 바뀌지 않았습니다.</string>
     <string name="net_tile_i2p_wait">처음 시작할 때 I2P 라우터는 피어를 찾고 터널을 만드는 데 몇 분이 걸립니다. 준비되면 주소가 나타납니다.</string>
+    <string name="net_tile_bootstrap">Tor 네트워크</string>
+    <string name="net_tile_reach">릴레이 포트 접근 가능</string>
+    <string name="net_reach_checking">확인 중, 최대 20분</string>
+    <string name="net_reach_no">아니요, 공유기에서 포트를 여세요</string>
+    <string name="net_reach_unknown">아직 확인하지 않음</string>
 </resources>

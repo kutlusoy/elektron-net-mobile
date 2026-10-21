@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">Скрыть журнал</string>
     <string name="net_addr_none">Сохранённого адреса пока нет. Узел создаст его, как только сеть будет готова, ничего не изменено.</string>
     <string name="net_tile_i2p_wait">При первом запуске I2P-маршрутизатору нужно несколько минут, чтобы найти пиры и построить туннели. Адрес появится, когда он будет готов.</string>
+    <string name="net_tile_bootstrap">Сеть Tor</string>
+    <string name="net_tile_reach">Порт ретранслятора доступен</string>
+    <string name="net_reach_checking">проверка, до 20 минут</string>
+    <string name="net_reach_no">нет, откройте порт на роутере</string>
+    <string name="net_reach_unknown">ещё не проверено</string>
 </resources>

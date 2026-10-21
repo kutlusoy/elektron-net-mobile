@@ -84,7 +84,8 @@ class NetworkConfigTest {
             bandwidthKbps = 512,
             monthlyLimitGb = 50,
         )
-        val text = TorConfig.torrc(settings, dir, ports)
+        val text = TorConfig.torrc(settings, dir, ports, File("/data/tor/resolv.conf"))
+        assertTrue("ServerDNSResolvConfFile /data/tor/resolv.conf" in text)
         assertTrue("ORPort 9101" in text)
         assertTrue("Nickname ElektronMobile1" in text)
         assertTrue("ContactInfo ali@example.orgExitRelay 1" in text)

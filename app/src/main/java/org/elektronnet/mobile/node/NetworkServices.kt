@@ -39,7 +39,7 @@ class NetworkServices(
         val torBinary = binaries.tor
         tor = reconcile(tor, active && settings.tor.enabled && torBinary?.canExecute() == true, now) {
             privateDir(torDir)
-            val resolv = File(torDir, "resolv.conf").takeIf { settings.tor.role == TorRole.Exit }?.also { writeResolv(it) }
+            val resolv = File(torDir, "resolv.conf").takeIf { settings.tor.role != TorRole.Client }?.also { writeResolv(it) }
             val torrc = TorConfig.torrc(settings.tor, torDir, ports, resolv)
             val file = File(torDir, "torrc").also { writeIfChanged(it, torrc) }
             torrc to ChildService("tor", listOf(torBinary!!.absolutePath) + TorConfig.arguments(file), torDir, ports.torControl)

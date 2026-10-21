@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">ログを隠す</string>
     <string name="net_addr_none">保存されたアドレスはまだありません。ネットワークの準備ができ次第ノードが作成します。何も変更していません。</string>
     <string name="net_tile_i2p_wait">初回起動時、I2P ルーターがピアを見つけてトンネルを作るのに数分かかります。準備ができるとアドレスが表示されます。</string>
+    <string name="net_tile_bootstrap">Tor ネットワーク</string>
+    <string name="net_tile_reach">リレーポートに到達可能</string>
+    <string name="net_reach_checking">確認中（最大 20 分）</string>
+    <string name="net_reach_no">いいえ、ルーターでポートを開けてください</string>
+    <string name="net_reach_unknown">まだ確認していません</string>
 </resources>

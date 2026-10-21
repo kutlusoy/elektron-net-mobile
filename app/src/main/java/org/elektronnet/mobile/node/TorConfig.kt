@@ -22,6 +22,7 @@ object TorConfig {
         } else {
             lines.add("ORPort ${tor.orPort}")
             lines.add("PublishServerDescriptor 1")
+            resolvConf?.let { lines.add("ServerDNSResolvConfFile ${it.absolutePath}") }
             lines.add("RelayBandwidthRate ${tor.bandwidthKbps} KBytes")
             lines.add("RelayBandwidthBurst ${tor.bandwidthKbps * 2} KBytes")
             if (tor.nickname.isNotEmpty()) lines.add("Nickname ${tor.nickname}")
@@ -33,7 +34,6 @@ object TorConfig {
             if (tor.role == TorRole.Exit) {
                 lines.add("ExitRelay 1")
                 lines.add("IPv6Exit 0")
-                resolvConf?.let { lines.add("ServerDNSResolvConfFile ${it.absolutePath}") }
                 when (tor.exitPolicy) {
                     ExitPolicyKind.Reduced -> lines.add("ReducedExitPolicy 1")
                     ExitPolicyKind.Web -> {
