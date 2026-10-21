@@ -790,4 +790,9 @@
     <string name="net_reach_checking">جارٍ الفحص، حتى 20 دقيقة</string>
     <string name="net_reach_no">لا، افتح المنفذ في الراوتر</string>
     <string name="net_reach_unknown">لم يُفحص بعد</string>
+    <string name="wallets_reload">إعادة تحميل المحافظ</string>
+    <string name="wallets_reload_hint">يبحث عن المحافظ على عقدتك ويضيف الناقصة إلى هذه القائمة ويحمّلها.</string>
+    <string name="wallets_reload_result">تمت إضافة %1$d، وإزالة %2$d من القائمة، وتحميل %3$d.</string>
+    <string name="wallets_reload_none">لم يتم العثور على شيء جديد.</string>
+    <string name="wallets_reload_failed">العقدة غير جاهزة بعد.</string>
 </resources>

@@ -790,4 +790,9 @@
     <string name="net_reach_checking">verifica in corso, fino a 20 minuti</string>
     <string name="net_reach_no">no, apri la porta sul router</string>
     <string name="net_reach_unknown">non ancora verificato</string>
+    <string name="wallets_reload">Ricarica i wallet</string>
+    <string name="wallets_reload_hint">Cerca i wallet sul tuo nodo, aggiunge quelli mancanti in questo elenco e li carica.</string>
+    <string name="wallets_reload_result">%1$d aggiunti, %2$d rimossi dall\'elenco, %3$d caricati.</string>
+    <string name="wallets_reload_none">Nessuna novità trovata.</string>
+    <string name="wallets_reload_failed">Il nodo non è ancora pronto.</string>
 </resources>

@@ -790,4 +790,9 @@
     <string name="net_reach_checking">wird geprüft, bis zu 20 Minuten</string>
     <string name="net_reach_no">nein, öffne den Port im Router</string>
     <string name="net_reach_unknown">noch nicht geprüft</string>
+    <string name="wallets_reload">Wallets neu laden</string>
+    <string name="wallets_reload_hint">Sucht Wallets auf deinem Node, ergänzt fehlende in dieser Liste und lädt sie.</string>
+    <string name="wallets_reload_result">%1$d hinzugefügt, %2$d aus der Liste entfernt, %3$d geladen.</string>
+    <string name="wallets_reload_none">Nichts Neues gefunden.</string>
+    <string name="wallets_reload_failed">Der Node ist noch nicht bereit.</string>
 </resources>

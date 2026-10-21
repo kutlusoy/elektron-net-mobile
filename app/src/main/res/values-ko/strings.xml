@@ -790,4 +790,9 @@
     <string name="net_reach_checking">확인 중, 최대 20분</string>
     <string name="net_reach_no">아니요, 공유기에서 포트를 여세요</string>
     <string name="net_reach_unknown">아직 확인하지 않음</string>
+    <string name="wallets_reload">지갑 다시 불러오기</string>
+    <string name="wallets_reload_hint">노드에서 지갑을 찾아 이 목록에 없는 것을 추가하고 불러옵니다.</string>
+    <string name="wallets_reload_result">%1$d개 추가, 목록에서 %2$d개 제거, %3$d개 불러옴.</string>
+    <string name="wallets_reload_none">새로 찾은 항목이 없습니다.</string>
+    <string name="wallets_reload_failed">노드가 아직 준비되지 않았습니다.</string>
 </resources>

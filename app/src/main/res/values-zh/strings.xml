@@ -790,4 +790,9 @@
     <string name="net_reach_checking">正在检查，最长 20 分钟</string>
     <string name="net_reach_no">否，请在路由器上开放该端口</string>
     <string name="net_reach_unknown">尚未检测</string>
+    <string name="wallets_reload">重新加载钱包</string>
+    <string name="wallets_reload_hint">在你的节点上查找钱包，将此列表中缺少的添加进来并加载。</string>
+    <string name="wallets_reload_result">已添加 %1$d 个，已从列表移除 %2$d 个，已加载 %3$d 个。</string>
+    <string name="wallets_reload_none">未发现新内容。</string>
+    <string name="wallets_reload_failed">节点尚未就绪。</string>
 </resources>

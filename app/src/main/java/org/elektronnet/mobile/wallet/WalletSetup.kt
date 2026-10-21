@@ -18,7 +18,11 @@ sealed interface SetupStatus {
     val inProgress: Boolean get() = this == Waiting || this == Rescanning
 }
 
-class WalletSetup(private val bootstrap: (String) -> WalletBootstrap?) {
+// onNameTaken: a wallet with the requested name already exists on the node, returns a free name or null
+class WalletSetup(
+    private val onNameTaken: (String) -> String? = { null },
+    private val bootstrap: (String) -> WalletBootstrap?,
+) {
     @Volatile
     var status: SetupStatus = SetupStatus.None
         private set
@@ -79,7 +83,16 @@ class WalletSetup(private val bootstrap: (String) -> WalletBootstrap?) {
                     status = SetupStatus.Ready()
                 }
             }
-            is BootstrapResult.Failed -> status = if (result.reason == BootstrapFailure.NodeNotReady) SetupStatus.Waiting else SetupStatus.Failed(result.reason)
+            is BootstrapResult.Failed -> {
+                val alternative = if (result.reason == BootstrapFailure.WalletExists) onNameTaken(req.walletName)?.takeIf { it != req.walletName } else null
+                if (alternative != null) {
+                    request = SetupRequest(req.phrase, req.passphrase, req.restore, alternative)
+                    walletName = alternative
+                    status = SetupStatus.Waiting
+                } else {
+                    status = if (result.reason == BootstrapFailure.NodeNotReady) SetupStatus.Waiting else SetupStatus.Failed(result.reason)
+                }
+            }
         }
     }
 

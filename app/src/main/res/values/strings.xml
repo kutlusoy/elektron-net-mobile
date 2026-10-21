@@ -801,4 +801,9 @@
     <string name="net_reach_checking">checking, up to 20 minutes</string>
     <string name="net_reach_no">no, open the port on your router</string>
     <string name="net_reach_unknown">not tested yet</string>
+    <string name="wallets_reload">Reload wallets</string>
+    <string name="wallets_reload_hint">Looks for wallets on your node, adds the ones missing from this list and loads them.</string>
+    <string name="wallets_reload_result">%1$d added, %2$d removed from the list, %3$d loaded.</string>
+    <string name="wallets_reload_none">Nothing new found.</string>
+    <string name="wallets_reload_failed">The node is not ready yet.</string>
 </resources>

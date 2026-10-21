@@ -790,4 +790,9 @@
     <string name="net_reach_checking">vérification, jusqu\'à 20 minutes</string>
     <string name="net_reach_no">non, ouvre le port sur ton routeur</string>
     <string name="net_reach_unknown">pas encore testé</string>
+    <string name="wallets_reload">Recharger les portefeuilles</string>
+    <string name="wallets_reload_hint">Cherche les portefeuilles sur ton nœud, ajoute ceux qui manquent à cette liste et les charge.</string>
+    <string name="wallets_reload_result">%1$d ajoutés, %2$d retirés de la liste, %3$d chargés.</string>
+    <string name="wallets_reload_none">Rien de nouveau trouvé.</string>
+    <string name="wallets_reload_failed">Le nœud n\'est pas encore prêt.</string>
 </resources>

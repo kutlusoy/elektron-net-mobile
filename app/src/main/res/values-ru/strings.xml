@@ -790,4 +790,9 @@
     <string name="net_reach_checking">проверка, до 20 минут</string>
     <string name="net_reach_no">нет, откройте порт на роутере</string>
     <string name="net_reach_unknown">ещё не проверено</string>
+    <string name="wallets_reload">Перезагрузить кошельки</string>
+    <string name="wallets_reload_hint">Ищет кошельки на вашем узле, добавляет отсутствующие в этот список и загружает их.</string>
+    <string name="wallets_reload_result">Добавлено: %1$d, удалено из списка: %2$d, загружено: %3$d.</string>
+    <string name="wallets_reload_none">Ничего нового не найдено.</string>
+    <string name="wallets_reload_failed">Узел ещё не готов.</string>
 </resources>

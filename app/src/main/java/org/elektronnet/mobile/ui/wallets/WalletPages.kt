@@ -249,6 +249,10 @@ fun WalletsScreen(onBack: () -> Unit, onAdd: () -> Unit) {
     BackHandler(onBack = onBack)
     var renaming by remember { mutableStateOf<OwnWallet?>(null) }
     var removing by remember { mutableStateOf<OwnWallet?>(null) }
+    var reloadResult by remember { mutableStateOf<String?>(null) }
+    var reloading by remember { mutableStateOf(false) }
+    val reloadScope = rememberCoroutineScope()
+    val context = LocalContext.current
     ToolPage(stringResource(R.string.wallets_title), onBack) {
         NodeHost.wallets.forEach { wallet ->
             GlassCard {
@@ -265,6 +269,24 @@ fun WalletsScreen(onBack: () -> Unit, onAdd: () -> Unit) {
         }
         Button(onClick = onAdd, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.wallets_add)) }
         Hint(stringResource(R.string.wallets_hint))
+        OutlinedButton(
+            enabled = !reloading,
+            onClick = {
+                reloading = true
+                reloadScope.launch {
+                    val result = withContext(Dispatchers.IO) { runCatching { NodeHost.reloadWallets() }.getOrNull() }
+                    reloading = false
+                    reloadResult = when {
+                        result == null -> context.getString(R.string.wallets_reload_failed)
+                        result.adopted.isEmpty() && result.dropped.isEmpty() && result.loaded.isEmpty() -> context.getString(R.string.wallets_reload_none)
+                        else -> context.getString(R.string.wallets_reload_result, result.adopted.size, result.dropped.size, result.loaded.size)
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(stringResource(R.string.wallets_reload)) }
+        Hint(stringResource(R.string.wallets_reload_hint))
+        reloadResult?.let { Text(it, color = MaterialTheme.colorScheme.primary) }
         RestoreFileSection()
     }
     removing?.let { wallet -> RemoveWalletDialog(wallet, onDismiss = { removing = null }) }

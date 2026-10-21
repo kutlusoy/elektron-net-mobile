@@ -790,4 +790,9 @@
     <string name="net_reach_checking">verificando, até 20 minutos</string>
     <string name="net_reach_no">não, abra a porta no roteador</string>
     <string name="net_reach_unknown">ainda não testado</string>
+    <string name="wallets_reload">Recarregar carteiras</string>
+    <string name="wallets_reload_hint">Procura carteiras no seu nó, adiciona as que faltam nesta lista e as carrega.</string>
+    <string name="wallets_reload_result">%1$d adicionadas, %2$d removidas da lista, %3$d carregadas.</string>
+    <string name="wallets_reload_none">Nada novo encontrado.</string>
+    <string name="wallets_reload_failed">O nó ainda não está pronto.</string>
 </resources>

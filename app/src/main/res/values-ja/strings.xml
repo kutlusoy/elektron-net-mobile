@@ -790,4 +790,9 @@
     <string name="net_reach_checking">確認中（最大 20 分）</string>
     <string name="net_reach_no">いいえ、ルーターでポートを開けてください</string>
     <string name="net_reach_unknown">まだ確認していません</string>
+    <string name="wallets_reload">ウォレットを再読み込み</string>
+    <string name="wallets_reload_hint">ノード上のウォレットを探し、この一覧にないものを追加して読み込みます。</string>
+    <string name="wallets_reload_result">%1$d 件追加、一覧から %2$d 件削除、%3$d 件読み込み。</string>
+    <string name="wallets_reload_none">新しいものは見つかりませんでした。</string>
+    <string name="wallets_reload_failed">ノードはまだ準備できていません。</string>
 </resources>

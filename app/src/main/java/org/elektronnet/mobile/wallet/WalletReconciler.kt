@@ -11,13 +11,14 @@ class WalletReconciler(
         ((rpc.call("listwalletdir", emptyList<Any?>(), null) as Map<*, *>)["wallets"] as List<*>).map { (it as Map<*, *>)["name"].toString() }
     }.getOrNull()
 
-    fun reconcile(): Result? {
+    // adopt = false only drops entries without a node wallet and loads listed wallets, adopt = true also lists node wallets that are missing
+    fun reconcile(adopt: Boolean = true): Result? {
         val onDisk = namesOnDisk() ?: return null
         val keep = protectedNames()
         val dropped = registry.wallets().map { it.name }.filter { it !in onDisk && it !in keep }
         dropped.forEach { registry.remove(it) }
         val known = registry.wallets().map { it.name }.toSet()
-        val adopted = onDisk.filter { OWN_NAME.matches(it) && it !in known }
+        val adopted = if (adopt) onDisk.filter { OWN_NAME.matches(it) && it !in known } else emptyList()
         adopted.forEach { registry.add(it, "") }
         val loadedNow = runCatching { (rpc.call("listwallets", emptyList<Any?>(), null) as List<*>).map { it.toString() }.toSet() }.getOrDefault(emptySet())
         val loaded = registry.wallets().map { it.name }.filter { it in onDisk && it !in loadedNow }.filter {
