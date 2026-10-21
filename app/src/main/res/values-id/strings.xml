@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">Alamat lama langsung berhenti bekerja. Peer yang hanya tahu alamat lama tidak bisa lagi menemukan node-mu. Node restart sebentar.</string>
     <string name="net_addr_confirm_yes">Buat alamat baru</string>
     <string name="net_addr_done">Selesai. Node restart dengan alamat baru.</string>
+    <string name="net_tile_log_show">Tampilkan log</string>
+    <string name="net_tile_log_hide">Sembunyikan log</string>
+    <string name="net_addr_none">Belum ada alamat tersimpan. Node membuatnya segera setelah jaringan siap, tidak ada yang diubah.</string>
+    <string name="net_tile_i2p_wait">Pada start pertama router I2P butuh beberapa menit untuk menemukan peer dan membangun tunnel. Alamat muncul saat sudah siap.</string>
 </resources>

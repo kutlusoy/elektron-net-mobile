@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">Il vecchio indirizzo smette subito di funzionare. I peer che conoscono solo quello vecchio non trovano più il tuo nodo. Il nodo si riavvia per un momento.</string>
     <string name="net_addr_confirm_yes">Crea nuovo indirizzo</string>
     <string name="net_addr_done">Fatto. Il nodo si riavvia con un nuovo indirizzo.</string>
+    <string name="net_tile_log_show">Mostra il log</string>
+    <string name="net_tile_log_hide">Nascondi il log</string>
+    <string name="net_addr_none">Non c\'è ancora un indirizzo salvato. Il nodo ne crea uno appena la rete è pronta, non è stato cambiato nulla.</string>
+    <string name="net_tile_i2p_wait">Al primo avvio il router I2P impiega alcuni minuti per trovare peer e costruire tunnel. L\'indirizzo compare quando è pronto.</string>
 </resources>

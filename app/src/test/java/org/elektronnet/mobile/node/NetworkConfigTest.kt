@@ -26,6 +26,7 @@ class NetworkConfigTest {
         assertTrue("-onion=127.0.0.1:9050" in args)
         assertTrue("-torcontrol=127.0.0.1:9051" in args)
         assertTrue("-listenonion=1" in args)
+        assertTrue("-debug=tor" in args)
         assertTrue(args.none { it.startsWith("-proxy=") || it.startsWith("-bind=") })
         assertTrue("-listenonion=0" in NetworkArgs.forNode(network, ports, 8333, listen = false))
     }
@@ -45,6 +46,7 @@ class NetworkConfigTest {
     fun i2pArgumentsPointAtTheSamBridge() {
         val network = NetworkSettings(i2p = I2pSettings(enabled = true))
         assertTrue("-i2psam=127.0.0.1:7656" in NetworkArgs.forNode(network, ports, 8333, listen = true))
+        assertTrue("-debug=i2p" in NetworkArgs.forNode(network, ports, 8333, listen = true))
         assertTrue("-i2pacceptincoming=1" in NetworkArgs.forNode(network, ports, 8333, listen = true))
         assertTrue("-i2pacceptincoming=0" in NetworkArgs.forNode(network, ports, 8333, listen = false))
         val refusing = NetworkSettings(i2p = I2pSettings(enabled = true, acceptIncoming = false))

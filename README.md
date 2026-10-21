@@ -5,7 +5,7 @@
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
-- **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md), [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md), [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
+- **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md), [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md), [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md), [`WHITEPAPER.md`](./WHITEPAPER.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 
 ---
 
@@ -167,6 +167,7 @@ The full requirement list is in plan section 9.
 | [`doc-elektron/guideline-ux-and-screens.md`](./doc-elektron/guideline-ux-and-screens.md) | Everyday user flows, navigation, screens, wording, usability tests |
 | [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md) | Themes, effects, legibility rules, typography, logo |
 | [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) | Flavors, channels, signing, F-Droid, Play |
+| [`WHITEPAPER.md`](./WHITEPAPER.md) | The idea, architecture, privacy model and full feature list of the app |
 | [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md) | Tor and I2P: design, node arguments, relay options, indicator, build, tests |
 | [`elektron-net` docs](https://github.com/kutlusoy/elektron-net/tree/main/doc-elektron) | Node behavior, pruning and snapshot audit, wallet integration |
 

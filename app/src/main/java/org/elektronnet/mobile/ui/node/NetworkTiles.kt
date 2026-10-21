@@ -5,6 +5,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
+import org.elektronnet.mobile.node.LogSanitizer
+import org.elektronnet.mobile.ui.theme.ElektronMono
+import org.elektronnet.mobile.ui.tools.shareText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
@@ -46,6 +57,9 @@ fun NetworkTilesSection(telemetry: Telemetry?) {
 
 @Composable
 private fun NetworkTileCard(tile: NetworkTile) {
+    val context = LocalContext.current
+    val clipboard = LocalClipboardManager.current
+    var showLog by remember { mutableStateOf(false) }
     GlassCard {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -53,9 +67,25 @@ private fun NetworkTileCard(tile: NetworkTile) {
                 Text(stringResource(if (tile.net == ConnNet.Tor) R.string.net_tor_title else R.string.net_i2p_title), style = MaterialTheme.typography.titleMedium)
             }
             tile.rows.forEach { row -> InfoRow(stringResource(labelText(row.label)), valueText(row.value), mono = isMono(row.value)) }
+            if (tile.net == ConnNet.I2p && tile.rows.any { it.label == TileLabel.Address && it.value == TileValue.Waiting }) {
+                Text(stringResource(R.string.net_tile_i2p_wait), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            TextButton(onClick = { showLog = !showLog }) { Text(stringResource(if (showLog) R.string.net_tile_log_hide else R.string.net_tile_log_show)) }
+            if (showLog) {
+                val services = NodeHost.networkServices
+                val lines = (if (tile.net == ConnNet.Tor) services?.torOutput() else services?.i2pOutput()).orEmpty().takeLast(LOG_LINES)
+                val clean = LogSanitizer.clean(lines)
+                Text(clean, style = MaterialTheme.typography.bodySmall, fontFamily = ElektronMono)
+                Row {
+                    TextButton(onClick = { clipboard.setText(AnnotatedString(clean)) }) { Text(stringResource(R.string.action_copy)) }
+                    TextButton(onClick = { shareText(context, clean) }) { Text(stringResource(R.string.action_share)) }
+                }
+            }
         }
     }
 }
+
+private const val LOG_LINES = 30
 
 private fun isMono(value: TileValue): Boolean = value is TileValue.Text && value.mono
 

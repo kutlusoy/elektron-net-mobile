@@ -792,4 +792,8 @@
     <string name="net_addr_confirm_body">The old address stops working at once. Peers that only know the old one can no longer find your node. The node restarts for a moment.</string>
     <string name="net_addr_confirm_yes">Create new address</string>
     <string name="net_addr_done">Done. The node restarts with a new address.</string>
+    <string name="net_tile_log_show">Show log</string>
+    <string name="net_tile_log_hide">Hide log</string>
+    <string name="net_addr_none">There is no stored address yet. The node creates one as soon as the network is ready, nothing was changed.</string>
+    <string name="net_tile_i2p_wait">On its first start the I2P router needs several minutes to find peers and build tunnels. The address appears when it is ready.</string>
 </resources>

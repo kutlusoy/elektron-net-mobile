@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">古いアドレスはすぐに使えなくなります。古いアドレスしか知らないピアはノードを見つけられなくなります。ノードは一瞬再起動します。</string>
     <string name="net_addr_confirm_yes">新しいアドレスを作る</string>
     <string name="net_addr_done">完了しました。ノードは新しいアドレスで再起動します。</string>
+    <string name="net_tile_log_show">ログを表示</string>
+    <string name="net_tile_log_hide">ログを隠す</string>
+    <string name="net_addr_none">保存されたアドレスはまだありません。ネットワークの準備ができ次第ノードが作成します。何も変更していません。</string>
+    <string name="net_tile_i2p_wait">初回起動時、I2P ルーターがピアを見つけてトンネルを作るのに数分かかります。準備ができるとアドレスが表示されます。</string>
 </resources>

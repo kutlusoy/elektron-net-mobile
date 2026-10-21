@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">Eski adres hemen çalışmaz olur. Yalnızca eskisini bilen eşler düğümünü artık bulamaz. Düğüm kısa süre yeniden başlar.</string>
     <string name="net_addr_confirm_yes">Yeni adres oluştur</string>
     <string name="net_addr_done">Tamam. Düğüm yeni adresle yeniden başlıyor.</string>
+    <string name="net_tile_log_show">Günlüğü göster</string>
+    <string name="net_tile_log_hide">Günlüğü gizle</string>
+    <string name="net_addr_none">Henüz kayıtlı bir adres yok. Düğüm, ağ hazır olur olmaz bir tane oluşturur, hiçbir şey değiştirilmedi.</string>
+    <string name="net_tile_i2p_wait">İlk başlatmada I2P yönlendiricisinin eş bulması ve tünel kurması birkaç dakika sürer. Hazır olunca adres görünür.</string>
 </resources>

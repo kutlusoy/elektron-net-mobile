@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">Die alte Adresse funktioniert sofort nicht mehr. Peers, die nur die alte kennen, finden deinen Node nicht mehr. Der Node startet kurz neu.</string>
     <string name="net_addr_confirm_yes">Neue Adresse erzeugen</string>
     <string name="net_addr_done">Fertig. Der Node startet mit einer neuen Adresse neu.</string>
+    <string name="net_tile_log_show">Log anzeigen</string>
+    <string name="net_tile_log_hide">Log ausblenden</string>
+    <string name="net_addr_none">Es gibt noch keine gespeicherte Adresse. Der Node erzeugt sie, sobald das Netzwerk bereit ist, es wurde nichts geändert.</string>
+    <string name="net_tile_i2p_wait">Beim ersten Start braucht der I2P-Router einige Minuten, um Peers zu finden und Tunnel zu bauen. Die Adresse erscheint, sobald er bereit ist.</string>
 </resources>

@@ -500,12 +500,21 @@ object NodeHost {
 
     var addressNotice: org.elektronnet.mobile.node.AddressKind? by mutableStateOf(null)
 
+    var addressNothingToRenew: org.elektronnet.mobile.node.AddressKind? by mutableStateOf(null)
+
     fun renewAddress(kind: org.elektronnet.mobile.node.AddressKind) {
         val root = datadir ?: return
         val chain = Chain.fromBuildName(ChainConfig.chain)
+        val keys = org.elektronnet.mobile.node.AddressKeys(File(root, chain.subdir))
+        addressNotice = null
+        addressNothingToRenew = null
+        if (!keys.exists(kind)) {
+            addressNothingToRenew = kind
+            return
+        }
         Thread {
-            controller?.shutdown()
-            if (org.elektronnet.mobile.node.AddressKeys(File(root, chain.subdir)).renew(kind)) addressNotice = kind
+            controller?.restartNode()
+            if (keys.renew(kind)) addressNotice = kind
         }.start()
     }
 

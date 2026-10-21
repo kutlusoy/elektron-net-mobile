@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">이전 주소는 즉시 작동하지 않게 됩니다. 이전 주소만 아는 피어는 더 이상 내 노드를 찾지 못합니다. 노드가 잠깐 다시 시작됩니다.</string>
     <string name="net_addr_confirm_yes">새 주소 만들기</string>
     <string name="net_addr_done">완료. 노드가 새 주소로 다시 시작됩니다.</string>
+    <string name="net_tile_log_show">로그 표시</string>
+    <string name="net_tile_log_hide">로그 숨기기</string>
+    <string name="net_addr_none">저장된 주소가 아직 없습니다. 네트워크가 준비되면 노드가 만듭니다. 아무것도 바뀌지 않았습니다.</string>
+    <string name="net_tile_i2p_wait">처음 시작할 때 I2P 라우터는 피어를 찾고 터널을 만드는 데 몇 분이 걸립니다. 준비되면 주소가 나타납니다.</string>
 </resources>
