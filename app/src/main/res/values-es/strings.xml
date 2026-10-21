@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">Ocultar registro</string>
     <string name="net_addr_none">Aún no hay una dirección guardada. El nodo la crea en cuanto la red esté lista, no se cambió nada.</string>
     <string name="net_tile_i2p_wait">En el primer inicio el router I2P necesita varios minutos para encontrar pares y crear túneles. La dirección aparece cuando esté listo.</string>
+    <string name="net_tile_bootstrap">Red Tor</string>
+    <string name="net_tile_reach">Puerto del relé accesible</string>
+    <string name="net_reach_checking">comprobando, hasta 20 minutos</string>
+    <string name="net_reach_no">no, abre el puerto en tu router</string>
+    <string name="net_reach_unknown">aún no comprobado</string>
 </resources>

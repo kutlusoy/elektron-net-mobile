@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">Sembunyikan log</string>
     <string name="net_addr_none">Belum ada alamat tersimpan. Node membuatnya segera setelah jaringan siap, tidak ada yang diubah.</string>
     <string name="net_tile_i2p_wait">Pada start pertama router I2P butuh beberapa menit untuk menemukan peer dan membangun tunnel. Alamat muncul saat sudah siap.</string>
+    <string name="net_tile_bootstrap">Jaringan Tor</string>
+    <string name="net_tile_reach">Port relay dapat dijangkau</string>
+    <string name="net_reach_checking">sedang diperiksa, hingga 20 menit</string>
+    <string name="net_reach_no">tidak, buka port di router</string>
+    <string name="net_reach_unknown">belum diuji</string>
 </resources>

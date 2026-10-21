@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">إخفاء السجل</string>
     <string name="net_addr_none">لا يوجد عنوان محفوظ بعد. تنشئه العقدة بمجرد جاهزية الشبكة، ولم يتغير شيء.</string>
     <string name="net_tile_i2p_wait">عند أول تشغيل يحتاج موجّه I2P إلى بضع دقائق للعثور على الأقران وبناء الأنفاق. يظهر العنوان عندما يصبح جاهزاً.</string>
+    <string name="net_tile_bootstrap">شبكة Tor</string>
+    <string name="net_tile_reach">منفذ المرحّل متاح</string>
+    <string name="net_reach_checking">جارٍ الفحص، حتى 20 دقيقة</string>
+    <string name="net_reach_no">لا، افتح المنفذ في الراوتر</string>
+    <string name="net_reach_unknown">لم يُفحص بعد</string>
 </resources>

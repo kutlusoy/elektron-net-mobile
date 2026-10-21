@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">隐藏日志</string>
     <string name="net_addr_none">尚无已保存的地址。网络就绪后节点会立即创建，未做任何更改。</string>
     <string name="net_tile_i2p_wait">首次启动时，I2P 路由器需要几分钟来寻找节点并建立隧道。就绪后地址会出现。</string>
+    <string name="net_tile_bootstrap">Tor 网络</string>
+    <string name="net_tile_reach">中继端口可访问</string>
+    <string name="net_reach_checking">正在检查，最长 20 分钟</string>
+    <string name="net_reach_no">否，请在路由器上开放该端口</string>
+    <string name="net_reach_unknown">尚未检测</string>
 </resources>

@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">Nascondi il log</string>
     <string name="net_addr_none">Non c\'è ancora un indirizzo salvato. Il nodo ne crea uno appena la rete è pronta, non è stato cambiato nulla.</string>
     <string name="net_tile_i2p_wait">Al primo avvio il router I2P impiega alcuni minuti per trovare peer e costruire tunnel. L\'indirizzo compare quando è pronto.</string>
+    <string name="net_tile_bootstrap">Rete Tor</string>
+    <string name="net_tile_reach">Porta del relay raggiungibile</string>
+    <string name="net_reach_checking">verifica in corso, fino a 20 minuti</string>
+    <string name="net_reach_no">no, apri la porta sul router</string>
+    <string name="net_reach_unknown">non ancora verificato</string>
 </resources>

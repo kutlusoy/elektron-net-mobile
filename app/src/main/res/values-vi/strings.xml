@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">Ẩn nhật ký</string>
     <string name="net_addr_none">Chưa có địa chỉ nào được lưu. Nút sẽ tạo một địa chỉ ngay khi mạng sẵn sàng, chưa có gì thay đổi.</string>
     <string name="net_tile_i2p_wait">Ở lần khởi động đầu, bộ định tuyến I2P cần vài phút để tìm peer và dựng đường hầm. Địa chỉ xuất hiện khi nó sẵn sàng.</string>
+    <string name="net_tile_bootstrap">Mạng Tor</string>
+    <string name="net_tile_reach">Cổng relay truy cập được</string>
+    <string name="net_reach_checking">đang kiểm tra, tối đa 20 phút</string>
+    <string name="net_reach_no">không, hãy mở cổng trên bộ định tuyến</string>
+    <string name="net_reach_unknown">chưa được kiểm tra</string>
 </resources>

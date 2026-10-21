@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">लॉग छिपाएँ</string>
     <string name="net_addr_none">अभी कोई सहेजा हुआ पता नहीं है। नेटवर्क तैयार होते ही नोड एक बना लेता है, कुछ नहीं बदला।</string>
     <string name="net_tile_i2p_wait">पहली शुरुआत में I2P राउटर को पीयर खोजने और टनल बनाने में कुछ मिनट लगते हैं। तैयार होने पर पता दिख जाता है।</string>
+    <string name="net_tile_bootstrap">Tor नेटवर्क</string>
+    <string name="net_tile_reach">रिले पोर्ट तक पहुँच</string>
+    <string name="net_reach_checking">जाँच जारी है, अधिकतम 20 मिनट</string>
+    <string name="net_reach_no">नहीं, राउटर में पोर्ट खोलें</string>
+    <string name="net_reach_unknown">अभी जाँचा नहीं गया</string>
 </resources>

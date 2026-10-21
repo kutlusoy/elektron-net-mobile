@@ -796,4 +796,9 @@
     <string name="net_tile_log_hide">Hide log</string>
     <string name="net_addr_none">There is no stored address yet. The node creates one as soon as the network is ready, nothing was changed.</string>
     <string name="net_tile_i2p_wait">On its first start the I2P router needs several minutes to find peers and build tunnels. The address appears when it is ready.</string>
+    <string name="net_tile_bootstrap">Tor network</string>
+    <string name="net_tile_reach">Relay port reachable</string>
+    <string name="net_reach_checking">checking, up to 20 minutes</string>
+    <string name="net_reach_no">no, open the port on your router</string>
+    <string name="net_reach_unknown">not tested yet</string>
 </resources>

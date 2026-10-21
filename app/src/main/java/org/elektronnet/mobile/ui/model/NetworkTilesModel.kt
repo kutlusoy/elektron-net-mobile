@@ -4,13 +4,15 @@ import org.elektronnet.mobile.node.LocalAddress
 import org.elektronnet.mobile.node.NetworkArgs
 import org.elektronnet.mobile.node.NetworkPorts
 import org.elektronnet.mobile.node.NetworkSettings
+import org.elektronnet.mobile.node.RelayReach
+import org.elektronnet.mobile.node.TorLogStatus
 import org.elektronnet.mobile.node.ServiceState
 import org.elektronnet.mobile.node.TorRole
 import org.elektronnet.mobile.node.TorRouting
 
 enum class TileStatus { Running, Starting, Failed, Idle, Missing }
 
-enum class TileLabel { Status, Address, Peers, Socks, Control, Routing, Role, RelayPort, Bandwidth, Sam, Incoming, Sharing, Share }
+enum class TileLabel { Status, Address, Peers, Socks, Control, Routing, Role, RelayPort, Bandwidth, Sam, Incoming, Sharing, Share, Bootstrap, Reachable }
 
 sealed interface TileValue {
     data class Text(val text: String, val mono: Boolean = true) : TileValue
@@ -21,6 +23,7 @@ sealed interface TileValue {
     data class Role(val role: TorRole) : TileValue
     data class Kbps(val kbps: Int) : TileValue
     data class Percent(val percent: Int) : TileValue
+    data class Reach(val reach: RelayReach) : TileValue
     data object Waiting : TileValue
 }
 
@@ -46,13 +49,16 @@ object NetworkTiles {
         i2pAvailable: Boolean,
         local: List<LocalAddress>,
         peerNetworks: Map<String, Int>,
+        torLog: List<String> = emptyList(),
     ): List<NetworkTile> {
         val tiles = mutableListOf<NetworkTile>()
         val loopback = NetworkArgs.LOOPBACK
         if (network.tor.enabled) {
             val tor = network.tor.normalized()
+            val log = TorLogStatus.parse(torLog)
             val rows = mutableListOf(
                 TileRow(TileLabel.Status, TileValue.Status(status(torState, torAvailable))),
+                TileRow(TileLabel.Bootstrap, log.bootstrap?.let { TileValue.Percent(it) } ?: TileValue.Waiting),
                 TileRow(TileLabel.Address, local.firstOrNull { it.isOnion }?.let { TileValue.Text(it.display()) } ?: TileValue.Waiting),
                 TileRow(TileLabel.Peers, TileValue.Count(peerNetworks[ConnNet.Tor.key] ?: 0)),
                 TileRow(TileLabel.Socks, TileValue.Text("$loopback:${ports.torSocks}")),
@@ -62,6 +68,7 @@ object NetworkTiles {
             )
             if (tor.role != TorRole.Client) {
                 rows.add(TileRow(TileLabel.RelayPort, TileValue.Text(tor.orPort.toString())))
+                rows.add(TileRow(TileLabel.Reachable, TileValue.Reach(log.reach)))
                 rows.add(TileRow(TileLabel.Bandwidth, TileValue.Kbps(tor.bandwidthKbps)))
             }
             tiles.add(NetworkTile(ConnNet.Tor, rows))

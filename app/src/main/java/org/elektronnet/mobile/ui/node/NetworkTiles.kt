@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.node.NetworkPorts
+import org.elektronnet.mobile.node.RelayReach
 import org.elektronnet.mobile.node.NetworkSettings
 import org.elektronnet.mobile.node.ServiceState
 import org.elektronnet.mobile.node.Telemetry
@@ -51,6 +52,7 @@ fun NetworkTilesSection(telemetry: Telemetry?) {
         i2pAvailable = services?.i2pAvailable ?: false,
         local = telemetry?.localAddresses.orEmpty(),
         peerNetworks = NodeHost.latest?.peerNetworks.orEmpty(),
+        torLog = services?.torOutput().orEmpty(),
     )
     tiles.forEach { NetworkTileCard(it) }
 }
@@ -103,6 +105,8 @@ private fun labelText(label: TileLabel): Int = when (label) {
     TileLabel.Incoming -> R.string.net_tile_incoming
     TileLabel.Sharing -> R.string.net_tile_sharing
     TileLabel.Share -> R.string.net_tile_share
+    TileLabel.Bootstrap -> R.string.net_tile_bootstrap
+    TileLabel.Reachable -> R.string.net_tile_reach
 }
 
 @Composable
@@ -129,5 +133,13 @@ private fun valueText(value: TileValue): String = when (value) {
     )
     is TileValue.Kbps -> stringResource(R.string.net_kbps, value.kbps)
     is TileValue.Percent -> stringResource(R.string.net_percent, value.percent)
+    is TileValue.Reach -> stringResource(
+        when (value.reach) {
+            RelayReach.Reachable -> R.string.yes
+            RelayReach.Unreachable -> R.string.net_reach_no
+            RelayReach.Checking -> R.string.net_reach_checking
+            RelayReach.Unknown -> R.string.net_reach_unknown
+        },
+    )
     TileValue.Waiting -> stringResource(R.string.net_tile_waiting)
 }

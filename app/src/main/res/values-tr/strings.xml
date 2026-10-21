@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">Günlüğü gizle</string>
     <string name="net_addr_none">Henüz kayıtlı bir adres yok. Düğüm, ağ hazır olur olmaz bir tane oluşturur, hiçbir şey değiştirilmedi.</string>
     <string name="net_tile_i2p_wait">İlk başlatmada I2P yönlendiricisinin eş bulması ve tünel kurması birkaç dakika sürer. Hazır olunca adres görünür.</string>
+    <string name="net_tile_bootstrap">Tor ağı</string>
+    <string name="net_tile_reach">Röle portuna erişilebiliyor</string>
+    <string name="net_reach_checking">kontrol ediliyor, en çok 20 dakika</string>
+    <string name="net_reach_no">hayır, portu yönlendiricide aç</string>
+    <string name="net_reach_unknown">henüz denenmedi</string>
 </resources>

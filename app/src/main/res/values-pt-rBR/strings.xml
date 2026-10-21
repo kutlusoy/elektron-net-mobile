@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">Ocultar log</string>
     <string name="net_addr_none">Ainda não há endereço salvo. O nó cria um assim que a rede estiver pronta, nada foi alterado.</string>
     <string name="net_tile_i2p_wait">Na primeira inicialização o roteador I2P leva alguns minutos para achar pares e construir túneis. O endereço aparece quando ele estiver pronto.</string>
+    <string name="net_tile_bootstrap">Rede Tor</string>
+    <string name="net_tile_reach">Porta do relay acessível</string>
+    <string name="net_reach_checking">verificando, até 20 minutos</string>
+    <string name="net_reach_no">não, abra a porta no roteador</string>
+    <string name="net_reach_unknown">ainda não testado</string>
 </resources>

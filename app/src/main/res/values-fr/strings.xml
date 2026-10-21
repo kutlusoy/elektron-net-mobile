@@ -785,4 +785,9 @@
     <string name="net_tile_log_hide">Masquer le journal</string>
     <string name="net_addr_none">Aucune adresse n\'est encore enregistrée. Le nœud en crée une dès que le réseau est prêt, rien n\'a été modifié.</string>
     <string name="net_tile_i2p_wait">Au premier démarrage, le routeur I2P a besoin de plusieurs minutes pour trouver des pairs et construire des tunnels. L\'adresse apparaît quand il est prêt.</string>
+    <string name="net_tile_bootstrap">Réseau Tor</string>
+    <string name="net_tile_reach">Port du relais joignable</string>
+    <string name="net_reach_checking">vérification, jusqu\'à 20 minutes</string>
+    <string name="net_reach_no">non, ouvre le port sur ton routeur</string>
+    <string name="net_reach_unknown">pas encore testé</string>
 </resources>
