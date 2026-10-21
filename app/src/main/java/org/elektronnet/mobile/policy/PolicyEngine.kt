@@ -43,7 +43,7 @@ class PolicyEngine(private val tuning: PolicyTuning = PolicyTuning()) {
         }
 
         val serve = settings.serveSnapshots && networkActive && device.network == NetworkType.Unmetered && device.charging
-        val decision = PolicyDecision(run, networkActive, profile, listen, serve, reasons)
+        val decision = PolicyDecision(run, networkActive, profile, listen, serve, reasons, settings.network)
         last = decision
         return decision
     }

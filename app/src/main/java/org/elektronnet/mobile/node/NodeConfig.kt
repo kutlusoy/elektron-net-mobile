@@ -14,9 +14,13 @@ data class NodeConfig(
     val networkActive: Boolean = true,
     val extraArgs: List<String> = emptyList(),
     val homeDir: File? = null,
+    val network: NetworkSettings = NetworkSettings(),
+    val ports: NetworkPorts = NetworkPorts(),
 ) {
     val cookieFile: File get() = File(datadir, ".rpc-cookie")
     val confFile: File get() = File(datadir, "bitcoin.conf")
+
+    fun networkArgs(): List<String> = NetworkArgs.forNode(network.normalized(), ports, p2pPort, listen)
 
     fun arguments(): List<String> {
         val args = mutableListOf(
@@ -36,6 +40,7 @@ data class NodeConfig(
         chain.arg?.let { args.add(it) }
         args.addAll(profile.args)
         if (fastprune) args.add("-fastprune")
+        args.addAll(networkArgs())
         args.addAll(extraArgs)
         return args
     }

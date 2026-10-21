@@ -118,6 +118,8 @@ fun SettingsScreen(
             ToggleRow(R.string.settings_inbound, R.string.settings_inbound_hint, settings.allowInbound) { onPolicy(settings.copy(allowInbound = it)) }
             ToggleRow(R.string.settings_serve, R.string.settings_serve_hint, settings.serveSnapshots) { onPolicy(settings.copy(serveSnapshots = it)) }
         }
+        TorSettingsCard(settings, onPolicy)
+        I2pSettingsCard(settings, onPolicy)
         SettingsCard(R.string.settings_storage) {
             ToggleRow(R.string.settings_fastprune, R.string.settings_fastprune_hint, fastprune, onFastprune)
             val floorGb = settings.storageFloorBytes / GIB
@@ -267,7 +269,7 @@ private fun UpdateChecker() {
 }
 
 @Composable
-private fun SettingsCard(title: Int, content: @Composable () -> Unit) {
+internal fun SettingsCard(title: Int, content: @Composable () -> Unit) {
     GlassCard {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(stringResource(title), style = MaterialTheme.typography.titleMedium)
@@ -277,7 +279,7 @@ private fun SettingsCard(title: Int, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun StepSlider(title: Int, steps: Int, index: Int, label: String, labelFor: (Int) -> String, onCommit: (Int) -> Unit) {
+internal fun StepSlider(title: Int, steps: Int, index: Int, label: String, labelFor: (Int) -> String, onCommit: (Int) -> Unit) {
     var position by remember(index) { mutableStateOf(index.toFloat()) }
     val shown = position.roundToInt().coerceIn(0, steps - 1)
     Column {
@@ -349,7 +351,7 @@ private fun profileHint(profile: NodeProfile): Int = when (profile) {
 }
 
 @Composable
-private fun ToggleRow(title: Int, hint: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
+internal fun ToggleRow(title: Int, hint: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -396,7 +398,7 @@ private fun AppearanceSection(ui: UiSettings, onUi: (UiSettings) -> Unit) {
 }
 
 @Composable
-private fun ChoiceRow(selected: Boolean, onSelect: () -> Unit, label: String, hint: String?, trailing: @Composable () -> Unit) {
+internal fun ChoiceRow(selected: Boolean, onSelect: () -> Unit, label: String, hint: String?, trailing: @Composable () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

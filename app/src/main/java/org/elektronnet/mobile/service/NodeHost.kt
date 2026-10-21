@@ -8,7 +8,9 @@ import java.io.File
 import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.node.Chain
 import org.elektronnet.mobile.node.NodeConfig
+import org.elektronnet.mobile.node.NetworkServices
 import org.elektronnet.mobile.node.NodeController
+import org.elektronnet.mobile.node.ServiceBinaries
 import org.elektronnet.mobile.node.NodeState
 import org.elektronnet.mobile.policy.PolicyEngine
 import org.elektronnet.mobile.runtime.NodeRuntime
@@ -47,6 +49,8 @@ object NodeHost {
     val store: SettingsStore? get() = settings
     private var runtime: NodeRuntime? = null
     private var controller: NodeController? = null
+    var networkServices: NetworkServices? = null
+        private set
     private var datadir: File? = null
     private var appContext: Context? = null
 
@@ -139,9 +143,19 @@ object NodeHost {
             p2pPort = ChainConfig.p2pPort,
             fastprune = store.fastprune(),
             homeDir = app.filesDir,
+            network = store.loadNetwork(),
+            ports = ChainConfig.networkPorts,
         )
         val device = AndroidDeviceState(app, datadir)
-        val nodeController = NodeController(config)
+        val services = NetworkServices(
+            binaries = ServiceBinaries(File(app.applicationInfo.nativeLibraryDir, "libtor.so"), File(app.applicationInfo.nativeLibraryDir, "libi2pd.so")),
+            root = File(app.filesDir, "network"),
+            ports = ChainConfig.networkPorts,
+            dnsServers = { AndroidDeviceState.dnsServers(app) },
+            prepareI2pData = { dir -> installI2pData(app, dir) },
+        )
+        networkServices = services
+        val nodeController = NodeController(config, services = services)
         controller = nodeController
         runtime = NodeRuntime(
             controller = nodeController,
@@ -318,6 +332,40 @@ object NodeHost {
 
     fun walletExport(): org.elektronnet.mobile.wallet.WalletExport? = runningSupervisor()?.let { org.elektronnet.mobile.wallet.WalletExport(it.rpc.asWalletRpc(), activeWallet) }
 
+    private fun walletRestore(): org.elektronnet.mobile.wallet.WalletRestore? {
+        val supervisor = runningSupervisor() ?: return null
+        val root = datadir ?: return null
+        val chain = Chain.fromBuildName(ChainConfig.chain)
+        return org.elektronnet.mobile.wallet.WalletRestore(supervisor.rpc.asWalletRpc()) { name ->
+            File(root, "${chain.subdir}/wallets/$name").deleteRecursively()
+        }
+    }
+
+    private fun registerRestored(name: String) {
+        registry?.add(name, "")
+        registry?.setActive(name)
+        settings?.setWalletReady(true)
+        refreshWallets()
+    }
+
+    fun restoreWalletFile(file: File): org.elektronnet.mobile.wallet.RestoreResult {
+        val restore = walletRestore() ?: return org.elektronnet.mobile.wallet.RestoreResult.Failed(org.elektronnet.mobile.wallet.RestoreFailure.NodeNotReady)
+        val result = restore.restore(file, nextWalletName())
+        if (result is org.elektronnet.mobile.wallet.RestoreResult.Restored && result.encrypted) registerRestored(result.walletName)
+        return result
+    }
+
+    fun protectRestoredWallet(name: String, passphrase: String): org.elektronnet.mobile.wallet.RestoreFailure? {
+        val restore = walletRestore() ?: return org.elektronnet.mobile.wallet.RestoreFailure.NodeNotReady
+        val failure = restore.protect(name, passphrase)
+        if (failure == null) registerRestored(name)
+        return failure
+    }
+
+    fun discardRestoredWallet(name: String) {
+        walletRestore()?.discard(name)
+    }
+
     fun addressBook(): org.elektronnet.mobile.wallet.AddressBook? = appContext?.let { org.elektronnet.mobile.wallet.AddressBook(File(it.filesDir, "contacts.json"), addressCheck) }
 
     fun coinControl(wallet: String = activeWallet): CoinControl? = runningSupervisor()?.let { CoinControl(it.rpc.asWalletRpc(), wallet) }
@@ -388,4 +436,21 @@ object NodeHost {
     }
 
     fun delayFor(snapshot: RuntimeSnapshot): Long = runtime?.suggestedDelayMs(snapshot, appVisible) ?: 30_000
+
+    private fun installI2pData(context: Context, dir: File) {
+        val target = File(dir, "certificates")
+        if (target.isDirectory) return
+        copyAssetTree(context, "i2pd/certificates", target)
+    }
+
+    private fun copyAssetTree(context: Context, asset: String, target: File) {
+        val children = context.assets.list(asset).orEmpty()
+        if (children.isEmpty()) {
+            target.parentFile?.mkdirs()
+            runCatching { context.assets.open(asset).use { input -> target.outputStream().use { input.copyTo(it) } } }
+            return
+        }
+        target.mkdirs()
+        children.forEach { copyAssetTree(context, "$asset/$it", File(target, it)) }
+    }
 }

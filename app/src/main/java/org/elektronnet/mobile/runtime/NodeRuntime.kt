@@ -18,6 +18,7 @@ data class RuntimeSnapshot(
     val state: NodeState?,
     val status: NodeStatus?,
     val headline: Headline,
+    val peerNetworks: Map<String, Int> = emptyMap(),
 )
 
 class NodeRuntime(
@@ -38,16 +39,18 @@ class NodeRuntime(
         val supervisor = controller.current
         val state = supervisor?.state
         var status: NodeStatus? = null
+        var peerNetworks: Map<String, Int> = emptyMap()
         if (state == NodeState.Running && supervisor != null) {
             try {
                 status = supervisor.status()
+                peerNetworks = runCatching { supervisor.peers() }.getOrDefault(emptyList()).groupingBy { it.network }.eachCount().filterKeys { it.isNotEmpty() }
                 val counters = supervisor.rpc.call("getnettotals") as Map<*, *>
                 recordTotals((counters["totalbytesrecv"] as Long) + (counters["totalbytessent"] as Long), observed.network, now)
             } catch (e: IOException) {
             } catch (e: RpcException) {
             }
         }
-        return RuntimeSnapshot(decision, state, status, Headline.from(decision, state, status))
+        return RuntimeSnapshot(decision, state, status, Headline.from(decision, state, status), peerNetworks)
     }
 
     fun recordTotals(totalBytes: Long, network: NetworkType, nowMs: Long) {

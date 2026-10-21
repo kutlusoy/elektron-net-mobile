@@ -70,15 +70,17 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: native-build/build-cache
-          key: native-${{ hashFiles('native-build/core-source.env', 'native-build/docker/**') }}-${{ github.run_id }}
+          key: native-${{ hashFiles('native-build/core-source.env', 'native-build/helpers-source.env', 'native-build/docker/**', 'native-build/helpers/**') }}-${{ github.run_id }}
           restore-keys: |
-            native-${{ hashFiles('native-build/core-source.env', 'native-build/docker/**') }}-
-      - name: Build elektrond for arm64-v8a and x86_64
+            native-${{ hashFiles('native-build/core-source.env', 'native-build/helpers-source.env', 'native-build/docker/**', 'native-build/helpers/**') }}-
+      - name: Build elektrond, Tor and i2pd for arm64-v8a and x86_64
         run: bash native-build/build.sh all
       - name: Pack the node libraries
         run: |
           test -f app/src/main/jniLibs/arm64-v8a/libelektrond.so
-          tar -C app/src/main -cf native.tar jniLibs assets/core-manifest
+          test -f app/src/main/jniLibs/arm64-v8a/libtor.so
+          test -f app/src/main/jniLibs/arm64-v8a/libi2pd.so
+          tar -C app/src/main -cf native.tar jniLibs assets/core-manifest assets/i2pd
       - uses: actions/upload-artifact@v4
         with:
           name: native

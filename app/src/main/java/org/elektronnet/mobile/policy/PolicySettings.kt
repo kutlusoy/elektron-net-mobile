@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.policy
 
+import org.elektronnet.mobile.node.NetworkSettings
 import org.elektronnet.mobile.node.NodeProfile
 
 data class ScheduleWindow(val startMinute: Int, val endMinute: Int) {
@@ -20,6 +21,7 @@ data class PolicySettings(
     val serveSnapshots: Boolean = true,
     val storageFloorBytes: Long = 2L * 1024 * 1024 * 1024,
     val schedule: ScheduleWindow? = null,
+    val network: NetworkSettings = NetworkSettings(),
 )
 
 data class PolicyTuning(

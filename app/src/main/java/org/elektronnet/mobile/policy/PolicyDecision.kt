@@ -1,5 +1,6 @@
 package org.elektronnet.mobile.policy
 
+import org.elektronnet.mobile.node.NetworkSettings
 import org.elektronnet.mobile.node.NodeProfile
 
 enum class PolicyReason {
@@ -27,4 +28,5 @@ data class PolicyDecision(
     val listen: Boolean,
     val serveSnapshots: Boolean,
     val reasons: Set<PolicyReason>,
+    val network: NetworkSettings = NetworkSettings(),
 )

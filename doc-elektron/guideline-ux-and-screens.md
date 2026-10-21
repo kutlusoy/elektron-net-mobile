@@ -142,6 +142,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - **Buttons:** Pause or Resume, Stop or Start. Actions that change cost (use mobile data) say so.
 - **Why paused?** The first reason from the policy engine is shown in words (plan §7), with a link to the matching setting.
 - **Details** (always visible): tiles for validated blocks, known headers, peers, progress and prune height, then the cards Network (type, version, protocol, connections in and out, network active, initial download, ports), Blockchain and mining (difficulty, hash rate, mempool, storage) and Pruning (blocks kept, blocks until pruning starts, estimated date). Below them the connected peers: tap a peer for its details (ID, network, country, connection type, transport, protocol, synced headers and blocks, minimum ping, bytes received and sent, time offset, local binding). An optional live log (off by default) follows the node output and can be copied.
+- **Connection chips:** next to the status dot and the word "Synced" (here and on the Wallet tab) small outlined chips show the networks in use with the number of connected peers: IPv4, IPv6, Tor (purple) and I2P (green). Tor and I2P show with 0 while they are switched on and waiting for peers. They wrap onto the next line on narrow screens.
 - **Explainer link** "What is my node?" repeats the Welcome explainer.
 
 ### 6.6 Settings
@@ -150,6 +151,8 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 |---|---|---|
 | Security | Change passphrase, Fingerprint or face unlock with a slider for the lock delay (immediately to 30 minutes), notification for incoming payments, "Allow screenshots" (temporary, red banner while on, ends when the app is closed or locked), Check my backup (the user types the phrase from paper, the app never stores or shows it again) | plan §8.1, S16 |
 | Network and battery | "Use mobile data" (off), "Allow roaming" (off, only shown when mobile data is on), "Monthly mobile data limit" (slider from 1 GB to No limit), "Only while charging", "Only at night" (22:00 to 06:00), "Run in the background" (on), "How much the node may use" (while the app is open, balanced, always on) | `PolicySettings`, plan §7 |
+| Tor | "Use Tor" with a status line, routing (next to the normal connections or everything through Tor), role (client only, relay, exit relay). A relay adds a bandwidth slider, a monthly limit slider, relay name, contact and port. An exit adds the exit policy (reduced or web only) and asks for confirmation | `NetworkSettings.tor`, `guideline-tor-and-i2p.md` |
+| I2P | "Use I2P" with a status line, accept incoming I2P connections, relay traffic for others with a bandwidth slider and the share for others | `NetworkSettings.i2p` |
 | Sharing | "Accept incoming connections", "Share snapshots (Wi-Fi and charging only)" | `allowInbound`, `serveSnapshots`, plan §5.2 |
 | Storage | "Storage saver" (fast pruning, applies at the next node start), "Stop the node when free space is below" (slider, 1 to 20 GB) | `fastprune`, `storageFloorBytes`, plan §3.2 |
 | Block explorer | Add, edit, reorder and remove explorer addresses (default `https://mempool.elektron-net.org`), with the privacy sentence | plan §8.7, S23 |
@@ -167,7 +170,8 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - Limits are sliders with discrete steps, the current value is shown beside the title and a limit that means "none" sits at the far end.
 - Stopping or pausing the node asks for confirmation first, so a stray tap cannot switch the node off.
 - Each toggle has a one-line description in plain words beneath it.
-- Defaults are the recommended ones, so most users never open Network and battery.
+- Defaults are the recommended ones, so most users never open Network and battery. Tor and I2P are off until the user switches them on, their options appear only then.
+- The Wallets screen has "Restore from wallet file" below "Add wallet". A backup without a passphrase leads to a dialog for a new passphrase, cancelling discards the restored wallet.
 
 ## 7. States and Errors
 

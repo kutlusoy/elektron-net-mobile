@@ -1,11 +1,11 @@
 # Elektron Net: `elektron-net-mobile` Android Full Node Wallet
 
-- **Version:** 0.26 (draft)
-- **Date:** October 19, 2026
+- **Version:** 0.27 (draft)
+- **Date:** October 21, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
 - **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
-- **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md), [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
+- **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md), [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md), [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 
 ---
 
@@ -26,7 +26,8 @@
 - Several wallets with a quick switch and removal only with that wallet's passphrase, review-before-sign transaction flow (PSBT), fee policy re-check before signing, optional "subtract fee from amount", coin control (choose and freeze coins), address labels, QR receive and scan.
 - No address reuse by default: fresh receive and change addresses, and coins that arrive on an already spent address are kept out of automatic spending (shown separately, spendable on purpose).
 - Complete transaction history per wallet, 10 per page newest first, with search across everything, filters and CSV export; speed up a waiting payment with fee bump (RBF) when you sent it, or with CPFP when it is incoming.
-- Address book (local, shared by all wallets), public descriptor export and an encrypted wallet file export through the system file picker.
+- Address book (local, shared by all wallets), public descriptor export, an encrypted wallet file export and a restore from a `wallet.dat` backup through the system file picker. A restored file without a passphrase gets one right away, and is discarded if you cancel.
+- Tor and I2P next to IPv4 and IPv6, each switched on in Settings. Tor and a small I2P router run inside the app next to the node. Options cover the Tor routing (next to the normal connections or everything through Tor), running a Tor relay or exit relay with bandwidth and monthly limits, and I2P tunnel sharing. Small chips beside the "Synced" dot show the networks in use: IPv4, IPv6, Tor (purple), I2P (green). Details: [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md).
 - Fee estimates come from the node with a fallback to a mempool explorer; the explorer list (default `https://mempool.elektron-net.org`) can be edited and is also used for transaction links.
 - Node dashboard: sync phase, height, peers with country (offline DB-IP Country Lite lookup, addresses never leave the phone), disk usage, prune height, snapshot state.
 - Simple everyday wallet following common mobile wallet conventions (balance, Receive, Send, history), with the node one tab away and explained in plain words, plus an opt-in Expert mode with a console to the node (four risk tiers, confirmation dialogs, encrypted history, file commands confined to a private folder).
@@ -52,9 +53,12 @@ Android app (Kotlin, Jetpack Compose)
         |  JSON-RPC, 127.0.0.1 only, authenticated
         v
 elektrond (native, bundled as libelektrond.so)
-        +-- P2P Elektron network
+        +-- P2P Elektron network (IPv4, IPv6, optionally Tor and I2P)
         +-- chainstate, pruned block data, snapshots
         +-- descriptor wallet, encrypted keys, signing
+libtor.so, libi2pd.so (optional helpers, started by the app next to the node)
+        +-- Tor: SOCKS and control on 127.0.0.1
+        +-- I2P router: SAM on 127.0.0.1
 ```
 
 The app supervises the node process and presents the wallet. Private keys live in the node's encrypted wallet, not in app code. After wallet creation or recovery the app does not hold the recovery phrase.
@@ -80,6 +84,8 @@ CORE_REF=<branch|tag|sha> ./native-build/build.sh all
 ```
 
 Full specification: plan section 11.1.
+
+Tor and the I2P router (`i2pd`) are built the same way: `native-build/fetch-helpers.sh` resolves the newest stable release tag of each on every build, and the helper build cross-compiles them for the NDK with pinned dependency checksums. `HELPERS=0 ./native-build/build.sh all` builds the app without them. See [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md).
 
 ## 5. Supported platforms
 
@@ -123,7 +129,7 @@ Signed APKs are published under Releases as "Elektron Mobile v<version>", built 
 build.gradle.kts, settings.gradle.kts, gradle/libs.versions.toml   Gradle project
 app/                       Android application
   src/main/java/org/elektronnet/mobile/
-    node/                  node supervisor, controller, RPC client, peers, telemetry
+    node/                  node supervisor, controller, RPC client, peers, telemetry, Tor and I2P settings and helper processes
     policy/                policy engine (network, battery, thermal, storage)
     runtime/               tick loop and status headline
     service/               foreground service, notifications, settings, node host
@@ -131,8 +137,8 @@ app/                       Android application
     console/               Expert console logic (parser, tiers, file guard, history)
     explorer/, geo/        explorer list and fee fallback, offline country lookup
     ui/                    Compose screens, theme and view models
-  src/main/jniLibs/        built libelektrond.so per ABI (generated)
-native-build/              fetch and build of elektrond (generated output not committed)
+  src/main/jniLibs/        built libelektrond.so, libtor.so and libi2pd.so per ABI (generated)
+native-build/              fetch and build of elektrond, Tor and i2pd (generated output not committed)
 design/                    palettes.json, check-contrast.py, gen-theme.py, logo/ and gen-logo.py
 tools/                     check-locales.py, check-rng.py, fetch-geoip.sh, version.py
 doc-elektron/              guidelines and reports
@@ -161,6 +167,7 @@ The full requirement list is in plan section 9.
 | [`doc-elektron/guideline-ux-and-screens.md`](./doc-elektron/guideline-ux-and-screens.md) | Everyday user flows, navigation, screens, wording, usability tests |
 | [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md) | Themes, effects, legibility rules, typography, logo |
 | [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md) | Flavors, channels, signing, F-Droid, Play |
+| [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md) | Tor and I2P: design, node arguments, relay options, indicator, build, tests |
 | [`elektron-net` docs](https://github.com/kutlusoy/elektron-net/tree/main/doc-elektron) | Node behavior, pruning and snapshot audit, wallet integration |
 
 ## 10. Credits
