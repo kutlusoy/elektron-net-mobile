@@ -15,6 +15,14 @@ import org.elektronnet.mobile.policy.NetworkType
 import org.elektronnet.mobile.policy.ThermalLevel
 
 class AndroidDeviceState(private val context: Context, private val dataDir: java.io.File) {
+    companion object {
+        fun dnsServers(context: Context): List<String> {
+            val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val properties = manager.getLinkProperties(manager.activeNetwork) ?: return emptyList()
+            return properties.dnsServers.mapNotNull { it.hostAddress }.filter { !it.contains(':') }
+        }
+    }
+
     fun read(appVisible: Boolean): DeviceState {
         val battery = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         val level = battery?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1

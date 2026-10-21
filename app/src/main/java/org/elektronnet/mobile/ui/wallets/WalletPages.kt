@@ -265,6 +265,7 @@ fun WalletsScreen(onBack: () -> Unit, onAdd: () -> Unit) {
         }
         Button(onClick = onAdd, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.wallets_add)) }
         Hint(stringResource(R.string.wallets_hint))
+        RestoreFileSection()
     }
     removing?.let { wallet -> RemoveWalletDialog(wallet, onDismiss = { removing = null }) }
     renaming?.let { wallet ->

@@ -5,7 +5,13 @@ import org.elektronnet.mobile.wallet.AmountUnit
 import java.time.YearMonth
 import org.elektronnet.mobile.node.Json
 import org.elektronnet.mobile.ui.model.UiSettings
+import org.elektronnet.mobile.node.ExitPolicyKind
+import org.elektronnet.mobile.node.I2pSettings
+import org.elektronnet.mobile.node.NetworkSettings
 import org.elektronnet.mobile.node.NodeProfile
+import org.elektronnet.mobile.node.TorRole
+import org.elektronnet.mobile.node.TorRouting
+import org.elektronnet.mobile.node.TorSettings
 import org.elektronnet.mobile.wallet.EscrowRecord
 import org.elektronnet.mobile.wallet.EscrowStore
 import org.elektronnet.mobile.wallet.WalletBootstrap
@@ -35,8 +41,36 @@ class SettingsStore(context: Context) {
             serveSnapshots = prefs.getBoolean(SERVE_SNAPSHOTS, defaults.serveSnapshots),
             storageFloorBytes = prefs.getLong(STORAGE_FLOOR, defaults.storageFloorBytes),
             schedule = if (start >= 0 && end >= 0) ScheduleWindow(start, end) else null,
+            network = loadNetwork(),
         )
     }
+
+    fun loadNetwork(): NetworkSettings {
+        val tor = TorSettings()
+        val i2p = I2pSettings()
+        return NetworkSettings(
+            tor = TorSettings(
+                enabled = prefs.getBoolean(TOR_ENABLED, tor.enabled),
+                routing = enumOf(prefs.getString(TOR_ROUTING, null), tor.routing),
+                role = enumOf(prefs.getString(TOR_ROLE, null), tor.role),
+                orPort = prefs.getInt(TOR_OR_PORT, tor.orPort),
+                nickname = prefs.getString(TOR_NICKNAME, null) ?: tor.nickname,
+                contact = prefs.getString(TOR_CONTACT, null) ?: tor.contact,
+                bandwidthKbps = prefs.getInt(TOR_BANDWIDTH, tor.bandwidthKbps),
+                monthlyLimitGb = prefs.getInt(TOR_LIMIT, tor.monthlyLimitGb),
+                exitPolicy = enumOf(prefs.getString(TOR_EXIT_POLICY, null), tor.exitPolicy),
+            ),
+            i2p = I2pSettings(
+                enabled = prefs.getBoolean(I2P_ENABLED, i2p.enabled),
+                acceptIncoming = prefs.getBoolean(I2P_ACCEPT, i2p.acceptIncoming),
+                transit = prefs.getBoolean(I2P_TRANSIT, i2p.transit),
+                bandwidthKbps = prefs.getInt(I2P_BANDWIDTH, i2p.bandwidthKbps),
+                sharePercent = prefs.getInt(I2P_SHARE, i2p.sharePercent),
+            ),
+        ).normalized()
+    }
+
+    private inline fun <reified T : Enum<T>> enumOf(name: String?, default: T): T = enumValues<T>().firstOrNull { it.name == name } ?: default
 
     fun walletReady(): Boolean = prefs.getBoolean(WALLET_READY, false)
 
@@ -136,6 +170,27 @@ class SettingsStore(context: Context) {
             .putInt(SCHEDULE_START, settings.schedule?.startMinute ?: -1)
             .putInt(SCHEDULE_END, settings.schedule?.endMinute ?: -1)
             .apply()
+        saveNetwork(settings.network)
+    }
+
+    private fun saveNetwork(network: NetworkSettings) {
+        val n = network.normalized()
+        prefs.edit()
+            .putBoolean(TOR_ENABLED, n.tor.enabled)
+            .putString(TOR_ROUTING, n.tor.routing.name)
+            .putString(TOR_ROLE, n.tor.role.name)
+            .putInt(TOR_OR_PORT, n.tor.orPort)
+            .putString(TOR_NICKNAME, n.tor.nickname)
+            .putString(TOR_CONTACT, n.tor.contact)
+            .putInt(TOR_BANDWIDTH, n.tor.bandwidthKbps)
+            .putInt(TOR_LIMIT, n.tor.monthlyLimitGb)
+            .putString(TOR_EXIT_POLICY, n.tor.exitPolicy.name)
+            .putBoolean(I2P_ENABLED, n.i2p.enabled)
+            .putBoolean(I2P_ACCEPT, n.i2p.acceptIncoming)
+            .putBoolean(I2P_TRANSIT, n.i2p.transit)
+            .putInt(I2P_BANDWIDTH, n.i2p.bandwidthKbps)
+            .putInt(I2P_SHARE, n.i2p.sharePercent)
+            .apply()
     }
 
     fun setUserStopped(value: Boolean) = prefs.edit().putBoolean(USER_STOPPED, value).apply()
@@ -189,6 +244,20 @@ class SettingsStore(context: Context) {
         const val NODE_ONLY = "node_only"
         const val NOTIFY_INCOMING = "notify_incoming"
         const val SEEN_INCOMING = "seen_incoming"
+        const val TOR_ENABLED = "tor_enabled"
+        const val TOR_ROUTING = "tor_routing"
+        const val TOR_ROLE = "tor_role"
+        const val TOR_OR_PORT = "tor_or_port"
+        const val TOR_NICKNAME = "tor_nickname"
+        const val TOR_CONTACT = "tor_contact"
+        const val TOR_BANDWIDTH = "tor_bandwidth"
+        const val TOR_LIMIT = "tor_limit_gb"
+        const val TOR_EXIT_POLICY = "tor_exit_policy"
+        const val I2P_ENABLED = "i2p_enabled"
+        const val I2P_ACCEPT = "i2p_accept"
+        const val I2P_TRANSIT = "i2p_transit"
+        const val I2P_BANDWIDTH = "i2p_bandwidth"
+        const val I2P_SHARE = "i2p_share"
         const val BUDGET_MONTH = "budget_month"
         const val BUDGET_USED = "budget_used"
     }

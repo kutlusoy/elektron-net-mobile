@@ -22,6 +22,8 @@ jobs:
         run: python3 -I tools/version.py --selftest
       - name: Build script tests
         run: bash native-build/tests/test-fetch-core.sh
+      - name: Helper release tag selection
+        run: bash native-build/tests/test-fetch-helpers.sh
 
   app:
     runs-on: ubuntu-24.04

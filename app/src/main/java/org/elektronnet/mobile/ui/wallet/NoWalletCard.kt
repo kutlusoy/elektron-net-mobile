@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.ui.GlassCard
+import org.elektronnet.mobile.ui.wallets.RestoreFileSection
 
 @Composable
 fun NoWalletCard(onCreate: () -> Unit, modifier: Modifier = Modifier) {
@@ -22,6 +23,7 @@ fun NoWalletCard(onCreate: () -> Unit, modifier: Modifier = Modifier) {
                 Text(stringResource(R.string.nowallet_title), style = MaterialTheme.typography.titleLarge)
                 Text(stringResource(R.string.nowallet_body), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Button(onClick = onCreate, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.nowallet_create)) }
+                RestoreFileSection()
             }
         }
     }

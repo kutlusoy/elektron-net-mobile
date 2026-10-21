@@ -7,6 +7,9 @@ set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # shellcheck source=core-source.env
 source "$SCRIPT_DIR/core-source.env"
+# shellcheck source=helpers-source.env
+source "$SCRIPT_DIR/helpers-source.env"
+export ZLIB_URL ZLIB_SHA256 OPENSSL_URL OPENSSL_SHA256 LIBEVENT_URL LIBEVENT_SHA256 BOOST_URL BOOST_SHA256
 CACHE_DIR=${CACHE_DIR:-$SCRIPT_DIR/build-cache}
 OUT_DIR=${OUT_DIR:-$SCRIPT_DIR/out}
 JOBS=${JOBS:-$(nproc)}
@@ -34,10 +37,16 @@ hash_strings() {
 bash "$SCRIPT_DIR/fetch-core.sh"
 # shellcheck source=/dev/null
 source "$CACHE_DIR/core-source.resolved.env"
+if [[ $HELPERS != 0 ]]; then
+    bash "$SCRIPT_DIR/fetch-helpers.sh"
+    # shellcheck source=/dev/null
+    source "$CACHE_DIR/helpers-source.resolved.env"
+fi
 
 mkdir -p "$SCRIPT_DIR/patches"
 PATCH_SET_SHA256=$(hash_files "$SCRIPT_DIR/patches")
 BUILDER_SHA256=$(hash_files "$SCRIPT_DIR/docker")
+HELPERS_SHA256=$(hash_files "$SCRIPT_DIR/helpers" "$SCRIPT_DIR/helpers-source.env")
 CONTRACT_SHA256=$(hash_files "$SCRIPT_DIR/contract" "$SCRIPT_DIR/contract-check.py")
 
 docker build -q -t "$IMAGE" \
@@ -89,6 +98,43 @@ LIB_SHA256=$(cat "$out/$binary.sha256")
 MANIFEST
 }
 
+build_helpers() {
+    local abi=$1 out=$OUT_DIR/$1 stamp
+    stamp=$(hash_strings "$TOR_SHA" "$I2PD_SHA" "$BUILDER_SHA256" "$HELPERS_SHA256" "$NDK_VERSION" "$ANDROID_API" "$abi")
+    if [[ -f $out/libtor.so && -f $out/libi2pd.so && -f $out/helpers.env ]] && grep -qx "STAMP=$stamp" "$out/helpers.env"; then
+        echo "build: tor and i2pd are up to date for $abi"
+        return
+    fi
+    echo "build: tor $TOR_TAG and i2pd $I2PD_TAG for $abi"
+    rm -f "$out/libtor.so" "$out/libi2pd.so" "$out/helpers.env"
+    mkdir -p "$out" "$CACHE_DIR/helpers-deps" "$CACHE_DIR/build-helpers-$abi"
+    docker run --rm "${container_user[@]}" \
+        -e ABI="$abi" -e ANDROID_API="$ANDROID_API" -e JOBS="$JOBS" \
+        -e ZLIB_URL -e ZLIB_SHA256 -e OPENSSL_URL -e OPENSSL_SHA256 -e LIBEVENT_URL -e LIBEVENT_SHA256 -e BOOST_URL -e BOOST_SHA256 \
+        -v "$CACHE_DIR/tor:/tor:ro" -v "$CACHE_DIR/i2pd:/i2pd:ro" \
+        -v "$SCRIPT_DIR/helpers:/helpers:ro" \
+        -v "$CACHE_DIR/helpers-deps:/cache" \
+        -v "$CACHE_DIR/build-helpers-$abi:/build" \
+        -v "$out:/out" \
+        "$IMAGE" /helpers/build-helpers-in-container.sh
+    cat > "$out/helpers.env" <<MANIFEST
+STAMP=$stamp
+ABI=$abi
+TOR_REPO_URL=$TOR_REPO_URL
+TOR_TAG=$TOR_TAG
+TOR_SHA=$TOR_SHA
+TOR_LIB_SHA256=$(cat "$out/libtor.so.sha256")
+I2PD_REPO_URL=$I2PD_REPO_URL
+I2PD_TAG=$I2PD_TAG
+I2PD_SHA=$I2PD_SHA
+I2PD_LIB_SHA256=$(cat "$out/libi2pd.so.sha256")
+OPENSSL_VERSION=$OPENSSL_VERSION
+LIBEVENT_VERSION=$LIBEVENT_VERSION
+ZLIB_VERSION=$ZLIB_VERSION
+BOOST_VERSION=$BOOST_VERSION
+MANIFEST
+}
+
 run_contract_check() {
     local out=$OUT_DIR/host stamp
     stamp=$(hash_strings "$(grep '^STAMP=' "$out/manifest.env")" "$CONTRACT_SHA256")
@@ -116,6 +162,7 @@ for abi in "${ABIS[@]}"; do
     if [[ $abi == host ]]; then
         [[ $CONTRACT_CHECK == 0 ]] || run_contract_check
     else
+        [[ $HELPERS == 0 ]] || build_helpers "$abi"
         OUT_DIR=$OUT_DIR bash "$SCRIPT_DIR/install-core.sh" "$abi"
     fi
 done

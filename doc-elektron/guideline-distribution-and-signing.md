@@ -59,6 +59,7 @@ Two product flavors from one code base. The testnet flavor is named `tnet` becau
 
 ## 4. Build Reproducibility
 
+- The APK also ships `libtor.so` and `libi2pd.so` per ABI (see [`guideline-tor-and-i2p.md`](./guideline-tor-and-i2p.md) §7). Their tags, commits and SHA-256 are recorded in `assets/core-manifest/helpers-<abi>.env`, and the release notes MUST name the resolved Tor and i2pd tags next to the node tag.
 - **MUST:** every release has a pinned Core tag (plan §11.1), a pinned NDK and image (plan §11), and the manifest with the resulting hashes. The release notes quote the Core tag and commit SHA.
 - **SHOULD:** the APK build is reproducible: same source commit, same pinned toolchain, same unsigned APK bytes (apart from the signature). Reproducibility is the precondition for F-Droid's reproducible-build verification and gives users a way to check the binary.
 - **MUST:** every build produces both flavors. The native node is built once per ABI and shared, so the testnet APK costs almost nothing extra. CI builds, tests and lints both flavors on every change, so a break in the testnet flavor shows up at once. Releases produce both APKs from the same commit and the same Core tag, signed with the same key, and publish them as separate files.

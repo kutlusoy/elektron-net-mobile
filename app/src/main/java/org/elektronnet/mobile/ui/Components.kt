@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +27,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.elektronnet.mobile.R
+import org.elektronnet.mobile.node.NetworkSettings
+import org.elektronnet.mobile.node.NodeState
+import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.ui.model.ConnChip
+import org.elektronnet.mobile.ui.model.ConnNet
+import org.elektronnet.mobile.ui.model.ConnectionModel
 import org.elektronnet.mobile.ui.model.NodeChip
 import org.elektronnet.mobile.ui.theme.LocalEffectLevel
 import org.elektronnet.mobile.ui.theme.LocalStatus
@@ -146,13 +154,59 @@ fun chipLabel(chip: NodeChip): String = stringResource(
 )
 
 @Composable
-fun NodeChipRow(chip: NodeChip, modifier: Modifier = Modifier) {
+fun connColor(net: ConnNet): Color = when (net) {
+    ConnNet.IPv4 -> MaterialTheme.colorScheme.primary
+    ConnNet.IPv6 -> Color(0xFF22B8CF)
+    ConnNet.Tor -> Color(0xFF7D4698)
+    ConnNet.I2p -> Color(0xFF3FA34D)
+    ConnNet.Cjdns -> Color(0xFFE0B341)
+}
+
+private fun connLabel(net: ConnNet): String = when (net) {
+    ConnNet.IPv4 -> "IPv4"
+    ConnNet.IPv6 -> "IPv6"
+    ConnNet.Tor -> "Tor"
+    ConnNet.I2p -> "I2P"
+    ConnNet.Cjdns -> "CJDNS"
+}
+
+@Composable
+fun ConnChipView(chip: ConnChip) {
+    val color = connColor(chip.net)
+    val shape = RoundedCornerShape(50)
     Row(
-        modifier = modifier,
+        modifier = Modifier
+            .clip(shape)
+            .border(1.dp, color.copy(alpha = if (chip.peers > 0) 0.95f else 0.45f), shape)
+            .padding(horizontal = 8.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
     ) {
-        StatusDot(chipColor(chip))
-        Text(chipLabel(chip), style = MaterialTheme.typography.labelLarge)
+        Box(modifier = Modifier.size(7.dp).clip(CircleShape).background(color))
+        Text("${connLabel(chip.net)} ${chip.peers}", style = MaterialTheme.typography.labelSmall)
+    }
+}
+
+@Composable
+fun rememberConnChips(): List<ConnChip> {
+    val snapshot = NodeHost.latest ?: return emptyList()
+    if (snapshot.state != NodeState.Running) return emptyList()
+    return ConnectionModel.chips(snapshot.peerNetworks, NodeHost.store?.loadNetwork() ?: NetworkSettings())
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun NodeChipRow(chip: NodeChip, modifier: Modifier = Modifier, nets: List<ConnChip> = rememberConnChips()) {
+    FlowRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+        itemVerticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            StatusDot(chipColor(chip))
+            Text(chipLabel(chip), style = MaterialTheme.typography.labelLarge)
+        }
+        nets.forEach { ConnChipView(it) }
     }
 }

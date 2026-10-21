@@ -492,6 +492,7 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 - The app keeps a list of its own wallets in the app preferences (name of the node wallet file and a user label). The first wallet is `elektron`, further ones `elektron_2`, `elektron_3` and so on. One wallet is active and used for balance, history, Receive, Send, coin control, signing and sweeping. Escrow wallets stay separate (`guideline-escrow-psbt-and-tools.md`).
 - Every wallet has its own recovery phrase, passphrase, descriptors and receive address. Adding a wallet uses the same create or restore flow as the first run, without the network and notification steps, and the same deferred setup that waits for the node (§8.3).
 - **Removing an unused wallet** (no transactions and no funds, checked with `getwalletinfo` and `getbalances`) is also possible without the passphrase, for example after a mistyped passphrase at creation. Used wallets always need the passphrase.
+- **Restoring from a wallet file:** Wallets (and the Wallets screen) offer "Restore from wallet file". The system file picker hands over a `wallet.dat` backup, the app stages it in its private folder and calls `restorewallet` under the next free wallet name (an existing name is never overwritten). A backup that is already encrypted is added at once. A backup without a passphrase gets one first: the app asks for a new passphrase (at least 8 characters, repeated), calls `encryptwallet`, and only then registers the wallet. Cancelling unloads the wallet and deletes its files. A file that is not a wallet is rejected and leaves nothing behind. On a pruned node the restored wallet finds its old coins through the UTXO scan (`fix-report-utxo-recovery-after-pruning.md`).
 - **Removing a wallet** needs the wallet's own passphrase and a confirmation that the user has its recovery phrase. The app checks the passphrase with a short unlock, unloads the wallet with `load_on_startup=false` and deletes its directory. Removing the last wallet returns the app to the first-run screens.
 
 ### 8.10 Units and amounts
@@ -612,6 +613,10 @@ Requirement: the app always ships the node from the canonical repository [`kutlu
 - **Patch drift:** because the base moves on every build, a patch that no longer applies cleanly MUST fail the build loudly. It is never skipped or force-applied. Landing X1 upstream removes the only planned patch.
 - Nightly CI builds against Core `main` and additionally against the latest release tag, so breaking upstream changes are visible before a release is cut.
 - Consequence: a release contains the node of the latest upstream release at build time, never unreleased `main` code. A new upstream release flows into the next app release build automatically, so release builds MUST be cut only from a green contract check, and the tag name and resolved SHA are part of the release notes.
+
+### 11.1a Tor and I2P helpers
+
+`native-build/fetch-helpers.sh` resolves, on every build, the newest stable release tag of Tor and of i2pd and checks out that exact commit (details and the decisions about the I2P router and the Tor repository in [`guideline-tor-and-i2p.md`](./guideline-tor-and-i2p.md) §7 and §8). `native-build/helpers/build-helpers-in-container.sh` builds zlib, OpenSSL, libevent and Boost with pinned checksums (`native-build/helpers-source.env`), then `libtor.so` and `libi2pd.so` per ABI with 16 KB page alignment. The result and its manifest (`assets/core-manifest/helpers-<abi>.env`) ship inside the APK. `HELPERS=0` skips them.
 
 ### 11.2 Contract check
 
