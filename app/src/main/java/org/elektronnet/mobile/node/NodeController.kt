@@ -42,6 +42,13 @@ class NodeController(
         applyNetworkActive(decision.networkActive)
     }
 
+    // Restarts only the node, the Tor and I2P helpers keep running so the I2P router does not have to build its tunnels again
+    @Synchronized
+    fun restartNode() {
+        supervisor?.stop(stopTimeoutMs)
+        appliedNetworkActive = null
+    }
+
     @Synchronized
     fun shutdown() {
         supervisor?.stop(stopTimeoutMs)

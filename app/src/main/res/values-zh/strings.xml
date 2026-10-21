@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">旧地址会立即失效。只知道旧地址的节点将无法再找到你的节点。节点会短暂重启。</string>
     <string name="net_addr_confirm_yes">创建新地址</string>
     <string name="net_addr_done">完成。节点正在以新地址重启。</string>
+    <string name="net_tile_log_show">显示日志</string>
+    <string name="net_tile_log_hide">隐藏日志</string>
+    <string name="net_addr_none">尚无已保存的地址。网络就绪后节点会立即创建，未做任何更改。</string>
+    <string name="net_tile_i2p_wait">首次启动时，I2P 路由器需要几分钟来寻找节点并建立隧道。就绪后地址会出现。</string>
 </resources>

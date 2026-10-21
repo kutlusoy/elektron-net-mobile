@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">O endereço antigo para de funcionar na hora. Pares que só conhecem o antigo não encontram mais seu nó. O nó reinicia por um instante.</string>
     <string name="net_addr_confirm_yes">Criar novo endereço</string>
     <string name="net_addr_done">Pronto. O nó reinicia com um novo endereço.</string>
+    <string name="net_tile_log_show">Mostrar log</string>
+    <string name="net_tile_log_hide">Ocultar log</string>
+    <string name="net_addr_none">Ainda não há endereço salvo. O nó cria um assim que a rede estiver pronta, nada foi alterado.</string>
+    <string name="net_tile_i2p_wait">Na primeira inicialização o roteador I2P leva alguns minutos para achar pares e construir túneis. O endereço aparece quando ele estiver pronto.</string>
 </resources>

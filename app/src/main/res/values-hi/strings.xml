@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">पुराना पता तुरंत काम करना बंद कर देता है। जो पीयर सिर्फ़ पुराना पता जानते हैं वे आपका नोड नहीं ढूँढ पाएँगे। नोड थोड़ी देर के लिए फिर शुरू होता है।</string>
     <string name="net_addr_confirm_yes">नया पता बनाएँ</string>
     <string name="net_addr_done">हो गया। नोड नए पते के साथ फिर शुरू हो रहा है।</string>
+    <string name="net_tile_log_show">लॉग दिखाएँ</string>
+    <string name="net_tile_log_hide">लॉग छिपाएँ</string>
+    <string name="net_addr_none">अभी कोई सहेजा हुआ पता नहीं है। नेटवर्क तैयार होते ही नोड एक बना लेता है, कुछ नहीं बदला।</string>
+    <string name="net_tile_i2p_wait">पहली शुरुआत में I2P राउटर को पीयर खोजने और टनल बनाने में कुछ मिनट लगते हैं। तैयार होने पर पता दिख जाता है।</string>
 </resources>

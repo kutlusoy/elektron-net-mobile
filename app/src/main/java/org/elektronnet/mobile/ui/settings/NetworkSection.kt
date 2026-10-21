@@ -197,6 +197,7 @@ private fun NewAddressBlock(kind: AddressKind) {
         Text(stringResource(if (kind == AddressKind.Onion) R.string.net_addr_new_tor else R.string.net_addr_new_i2p))
     }
     if (notice == kind) Hint(stringResource(R.string.net_addr_done))
+    if (NodeHost.addressNothingToRenew == kind) Hint(stringResource(R.string.net_addr_none))
     if (confirm) {
         AlertDialog(
             onDismissRequest = { confirm = false },
@@ -205,7 +206,6 @@ private fun NewAddressBlock(kind: AddressKind) {
             confirmButton = {
                 TextButton(onClick = {
                     confirm = false
-                    NodeHost.addressNotice = null
                     NodeHost.renewAddress(kind)
                 }) { Text(stringResource(R.string.net_addr_confirm_yes)) }
             },

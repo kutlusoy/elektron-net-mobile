@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">L\'ancienne adresse cesse de fonctionner tout de suite. Les pairs qui ne connaissent que l\'ancienne ne trouvent plus ton nœud. Le nœud redémarre un instant.</string>
     <string name="net_addr_confirm_yes">Créer une nouvelle adresse</string>
     <string name="net_addr_done">Terminé. Le nœud redémarre avec une nouvelle adresse.</string>
+    <string name="net_tile_log_show">Afficher le journal</string>
+    <string name="net_tile_log_hide">Masquer le journal</string>
+    <string name="net_addr_none">Aucune adresse n\'est encore enregistrée. Le nœud en crée une dès que le réseau est prêt, rien n\'a été modifié.</string>
+    <string name="net_tile_i2p_wait">Au premier démarrage, le routeur I2P a besoin de plusieurs minutes pour trouver des pairs et construire des tunnels. L\'adresse apparaît quand il est prêt.</string>
 </resources>

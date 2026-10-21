@@ -9,7 +9,7 @@ object I2pConfig {
             appendLine("daemon = false")
             appendLine("service = false")
             appendLine("log = stdout")
-            appendLine("loglevel = warn")
+            appendLine("loglevel = info")
             appendLine("ipv4 = true")
             appendLine("ipv6 = true")
             appendLine("notransit = ${!i2p.transit}")

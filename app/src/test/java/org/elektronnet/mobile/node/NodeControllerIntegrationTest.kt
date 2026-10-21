@@ -84,4 +84,36 @@ class NodeControllerIntegrationTest {
             dir.deleteRecursively()
         }
     }
+
+    @Test
+    fun restartingOnlyTheNodeLeavesTheHelpersRunning() {
+        val binary = System.getenv("ELEKTROND_BIN")
+        assumeTrue("ELEKTROND_BIN not set", binary != null && File(binary).canExecute())
+        val dir = Files.createTempDirectory("ctl-restart-it").toFile()
+        val ports = NetworkPorts(torSocks = 28460, torControl = 28461, i2pSam = 28462)
+        val tor = File(dir, "tor").apply {
+            writeText("#!/bin/sh\necho started\nexec python3 -c \"import socket,time\ns=socket.socket()\ns.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)\ns.bind(('127.0.0.1',28461))\ns.listen(5)\ntime.sleep(600)\"\n")
+            setExecutable(true)
+        }
+        val services = NetworkServices(ServiceBinaries(tor, null), File(dir, "svc"), ports)
+        val base = NodeConfig(File(binary!!), File(dir, "node"), Chain.Regtest, rpcPort = 28452, p2pPort = 28453, ports = ports)
+        val controller = NodeController(base, services = services) { NodeSupervisor(it, pollIntervalMs = 100) }
+        val network = NetworkSettings(tor = TorSettings(enabled = true))
+        try {
+            controller.apply(decision(network = network))
+            waitFor { controller.current!!.state == NodeState.Running && services.torState == ServiceState.Running }
+            val first = controller.current
+            val torOutput = services.torOutput()
+            controller.restartNode()
+            waitFor(20_000) { first!!.state == NodeState.Stopped }
+            assertEquals(ServiceState.Running, services.torState)
+            controller.apply(decision(network = network))
+            waitFor { controller.current!!.state == NodeState.Running && controller.current !== first }
+            assertEquals(ServiceState.Running, services.torState)
+            assertEquals(torOutput, services.torOutput())
+        } finally {
+            controller.shutdown()
+            dir.deleteRecursively()
+        }
+    }
 }

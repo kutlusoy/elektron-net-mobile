@@ -54,9 +54,13 @@ While Tor is switched on the Node tab shows a Tor tile, while I2P is on an I2P t
 
 ## 5b. Stable addresses
 
-The node keeps the private key of its onion service (`onion_v3_private_key`) and of its I2P destination (`i2p_private_key`) in its data directory and reuses them at every start. The address therefore stays the same across restarts, app updates and chain resets (a reset keeps these files) until the user decides otherwise. Each card has a "New Tor address" and a "New I2P address" button. After a confirmation the app stops the node, deletes that one key file and lets the node start again, which creates a fresh key and address. The old address stops working at once, peers that only know it can no longer find the node.
+The node keeps the private key of its onion service (`onion_v3_private_key`) and of its I2P destination (`i2p_private_key`) in its data directory and reuses them at every start. The address therefore stays the same across restarts, app updates and chain resets (a reset keeps these files) until the user decides otherwise. Each card has a "New Tor address" and a "New I2P address" button. After a confirmation the app restarts only the node, not the Tor program and the I2P router, so the router keeps its tunnels. It deletes that one key file before the node starts again, which creates a fresh key and address. If the node has no stored key yet (for example while the I2P session is still being built) the app changes nothing and says so, because a restart would only delay the address. The old address stops working at once, peers that only know it can no longer find the node.
 
 The node persists the I2P key only while it accepts incoming I2P connections (`-i2pacceptincoming=1`, source: `net.cpp`). Without that, the I2P session is transient and the address changes with every session. The card says so.
+
+## 5c. Diagnosis
+
+Each tile has a "Show log" button with the last 30 lines of that helper (addresses, paths and keys removed, with copy and share). The node runs with `-debug=tor` and `-debug=i2p` while the network is switched on, so the live log shows control port authentication, the onion service and the I2P session. The I2P router logs at `info` level. On its first start the router needs several minutes to reseed, find peers and build tunnels, and the node can only create its I2P address after that. The SAM bridge may accept connections before the tunnels exist, so "running" on the I2P tile means the bridge is up, not that the address exists. The tile says so while the address is missing.
 
 ## 6. Connection indicator
 

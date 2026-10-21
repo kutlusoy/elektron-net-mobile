@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">La dirección anterior deja de funcionar al instante. Los pares que solo conocen la anterior ya no encuentran tu nodo. El nodo se reinicia un momento.</string>
     <string name="net_addr_confirm_yes">Crear nueva dirección</string>
     <string name="net_addr_done">Listo. El nodo se reinicia con una nueva dirección.</string>
+    <string name="net_tile_log_show">Mostrar registro</string>
+    <string name="net_tile_log_hide">Ocultar registro</string>
+    <string name="net_addr_none">Aún no hay una dirección guardada. El nodo la crea en cuanto la red esté lista, no se cambió nada.</string>
+    <string name="net_tile_i2p_wait">En el primer inicio el router I2P necesita varios minutos para encontrar pares y crear túneles. La dirección aparece cuando esté listo.</string>
 </resources>

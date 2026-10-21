@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">يتوقف العنوان القديم عن العمل فوراً. الأقران الذين يعرفون العنوان القديم فقط لن يجدوا عقدتك بعد الآن. تُعاد العقدة للتشغيل لحظة.</string>
     <string name="net_addr_confirm_yes">إنشاء عنوان جديد</string>
     <string name="net_addr_done">تم. تُعاد العقدة للتشغيل بعنوان جديد.</string>
+    <string name="net_tile_log_show">إظهار السجل</string>
+    <string name="net_tile_log_hide">إخفاء السجل</string>
+    <string name="net_addr_none">لا يوجد عنوان محفوظ بعد. تنشئه العقدة بمجرد جاهزية الشبكة، ولم يتغير شيء.</string>
+    <string name="net_tile_i2p_wait">عند أول تشغيل يحتاج موجّه I2P إلى بضع دقائق للعثور على الأقران وبناء الأنفاق. يظهر العنوان عندما يصبح جاهزاً.</string>
 </resources>

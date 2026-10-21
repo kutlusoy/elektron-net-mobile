@@ -781,4 +781,8 @@
     <string name="net_addr_confirm_body">Старый адрес сразу перестаёт работать. Пиры, знающие только его, больше не найдут ваш узел. Узел ненадолго перезапустится.</string>
     <string name="net_addr_confirm_yes">Создать новый адрес</string>
     <string name="net_addr_done">Готово. Узел перезапускается с новым адресом.</string>
+    <string name="net_tile_log_show">Показать журнал</string>
+    <string name="net_tile_log_hide">Скрыть журнал</string>
+    <string name="net_addr_none">Сохранённого адреса пока нет. Узел создаст его, как только сеть будет готова, ничего не изменено.</string>
+    <string name="net_tile_i2p_wait">При первом запуске I2P-маршрутизатору нужно несколько минут, чтобы найти пиры и построить туннели. Адрес появится, когда он будет готов.</string>
 </resources>

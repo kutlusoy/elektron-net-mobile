@@ -10,6 +10,7 @@ object NetworkArgs {
             val socks = "$LOOPBACK:${ports.torSocks}"
             args.add("-torcontrol=$LOOPBACK:${ports.torControl}")
             args.add("-listenonion=${if (listen) 1 else 0}")
+            args.add("-debug=tor")
             args.add(if (tor.routing == TorRouting.AllTraffic) "-proxy=$socks" else "-onion=$socks")
             if (tor.routing == TorRouting.AllTraffic && listen) {
                 args.add("-bind=$LOOPBACK:$p2pPort")
@@ -21,6 +22,7 @@ object NetworkArgs {
         val i2p = network.i2p
         if (i2p.enabled) {
             args.add("-i2psam=$LOOPBACK:${ports.i2pSam}")
+            args.add("-debug=i2p")
             args.add("-i2pacceptincoming=${if (i2p.acceptIncoming && listen) 1 else 0}")
         }
         return args
