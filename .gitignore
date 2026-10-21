@@ -2,11 +2,13 @@ native-build/build-cache/
 native-build/out/
 app/src/main/jniLibs/
 app/src/main/assets/core-manifest/
+app/src/main/assets/i2pd/
 .gradle/
 build/
 local.properties
 *.jks
 *.keystore
+!app/test-signing/elektron-test.jks
 .idea/
 *.iml
 app/src/main/assets/geoip/dbip-country-lite.mmdb

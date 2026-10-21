@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">Bant genişliği sınırı</string>
     <string name="net_i2p_share">Başkaları için ayrılan bant payı</string>
     <string name="net_i2p_note">I2P ve Tor, IPv4 ve IPv6 ile paralel çalışır. Değişiklikler düğümü kısa süre yeniden başlatır.</string>
+    <string name="net_tile_status">Durum</string>
+    <string name="net_tile_address">Adres</string>
+    <string name="net_tile_waiting">adres bekleniyor</string>
+    <string name="net_tile_peers">Bu ağdaki eşler</string>
+    <string name="net_tile_socks">SOCKS portu</string>
+    <string name="net_tile_control">Kontrol portu</string>
+    <string name="net_tile_routing">Yönlendirme</string>
+    <string name="net_tile_role">Rol</string>
+    <string name="net_tile_sam">SAM köprüsü</string>
+    <string name="net_tile_incoming">Gelen bağlantılar</string>
+    <string name="net_tile_sharing">Başkaları için aktarım</string>
+    <string name="net_tile_share">Bant genişliği payı</string>
 </resources>

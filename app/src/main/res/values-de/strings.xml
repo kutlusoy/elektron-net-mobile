@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">Bandbreitenlimit</string>
     <string name="net_i2p_share">Anteil der Bandbreite für andere</string>
     <string name="net_i2p_note">I2P und Tor laufen parallel zu IPv4 und IPv6. Änderungen starten den Node kurz neu.</string>
+    <string name="net_tile_status">Status</string>
+    <string name="net_tile_address">Adresse</string>
+    <string name="net_tile_waiting">wartet auf die Adresse</string>
+    <string name="net_tile_peers">Peers in diesem Netzwerk</string>
+    <string name="net_tile_socks">SOCKS-Port</string>
+    <string name="net_tile_control">Steuerport</string>
+    <string name="net_tile_routing">Routing</string>
+    <string name="net_tile_role">Rolle</string>
+    <string name="net_tile_sam">SAM-Brücke</string>
+    <string name="net_tile_incoming">Eingehende Verbindungen</string>
+    <string name="net_tile_sharing">Weiterleiten für andere</string>
+    <string name="net_tile_share">Bandbreitenanteil</string>
 </resources>

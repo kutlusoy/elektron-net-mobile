@@ -315,6 +315,7 @@ private fun TelemetrySection(details: NodeDetails, telemetry: org.elektronnet.mo
                 TelemetryRow(stringResource(R.string.net_rpc), "127.0.0.1:" + org.elektronnet.mobile.ChainConfig.rpcPort)
             }
         }
+        NetworkTilesSection(telemetry)
         telemetry?.schedule?.let { ChainEventsCard(it, telemetry.difficulty) }
         GlassCard {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

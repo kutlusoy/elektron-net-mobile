@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">حد عرض النطاق</string>
     <string name="net_i2p_share">حصة عرض النطاق للآخرين</string>
     <string name="net_i2p_note">يعمل I2P وTor بالتوازي مع IPv4 وIPv6. تعيد التغييرات تشغيل العقدة لحظة.</string>
+    <string name="net_tile_status">الحالة</string>
+    <string name="net_tile_address">العنوان</string>
+    <string name="net_tile_waiting">في انتظار العنوان</string>
+    <string name="net_tile_peers">الأقران في هذه الشبكة</string>
+    <string name="net_tile_socks">منفذ SOCKS</string>
+    <string name="net_tile_control">منفذ التحكم</string>
+    <string name="net_tile_routing">التوجيه</string>
+    <string name="net_tile_role">الدور</string>
+    <string name="net_tile_sam">جسر SAM</string>
+    <string name="net_tile_incoming">الاتصالات الواردة</string>
+    <string name="net_tile_sharing">التمرير للآخرين</string>
+    <string name="net_tile_share">حصة عرض النطاق</string>
 </resources>

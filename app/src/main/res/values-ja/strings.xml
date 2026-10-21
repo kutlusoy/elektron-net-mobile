@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">帯域幅の上限</string>
     <string name="net_i2p_share">他の人に回す帯域幅の割合</string>
     <string name="net_i2p_note">I2P と Tor は IPv4 と IPv6 と並行して動作します。変更するとノードが一瞬再起動します。</string>
+    <string name="net_tile_status">状態</string>
+    <string name="net_tile_address">アドレス</string>
+    <string name="net_tile_waiting">アドレスを待っています</string>
+    <string name="net_tile_peers">このネットワークのピア</string>
+    <string name="net_tile_socks">SOCKS ポート</string>
+    <string name="net_tile_control">コントロールポート</string>
+    <string name="net_tile_routing">ルーティング</string>
+    <string name="net_tile_role">役割</string>
+    <string name="net_tile_sam">SAM ブリッジ</string>
+    <string name="net_tile_incoming">着信接続</string>
+    <string name="net_tile_sharing">他の人のための中継</string>
+    <string name="net_tile_share">帯域幅の割合</string>
 </resources>

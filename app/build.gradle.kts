@@ -86,6 +86,12 @@ android {
     }
 
     signingConfigs {
+        create("test") {
+            storeFile = file("test-signing/elektron-test.jks")
+            storePassword = "elektrontest"
+            keyAlias = "elektrontest"
+            keyPassword = "elektrontest"
+        }
         val keystorePath = providers.environmentVariable("ELEKTRON_KEYSTORE").orNull
         if (keystorePath != null) {
             create("release") {
@@ -100,11 +106,12 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            signingConfig = signingConfigs.getByName("test")
         }
         create("nightly") {
             initWith(getByName("release"))
             applicationIdSuffix = ".nightly"
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("test")
             matchingFallbacks += "release"
         }
         release {

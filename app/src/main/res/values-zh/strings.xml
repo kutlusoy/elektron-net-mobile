@@ -761,4 +761,16 @@
     <string name="net_i2p_bandwidth">带宽限制</string>
     <string name="net_i2p_share">分给他人的带宽比例</string>
     <string name="net_i2p_note">I2P 和 Tor 与 IPv4、IPv6 并行工作。更改会让节点短暂重启。</string>
+    <string name="net_tile_status">状态</string>
+    <string name="net_tile_address">地址</string>
+    <string name="net_tile_waiting">正在等待地址</string>
+    <string name="net_tile_peers">此网络中的节点</string>
+    <string name="net_tile_socks">SOCKS 端口</string>
+    <string name="net_tile_control">控制端口</string>
+    <string name="net_tile_routing">路由方式</string>
+    <string name="net_tile_role">角色</string>
+    <string name="net_tile_sam">SAM 桥</string>
+    <string name="net_tile_incoming">传入连接</string>
+    <string name="net_tile_sharing">为他人中继</string>
+    <string name="net_tile_share">带宽比例</string>
 </resources>

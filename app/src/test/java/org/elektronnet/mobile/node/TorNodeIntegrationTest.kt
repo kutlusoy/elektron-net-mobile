@@ -43,6 +43,9 @@ class TorNodeIntegrationTest {
             val torLines = supervisor.output.snapshot().filter { it.contains("[tor]") }
             assertTrue("no authentication: $torLines", torLines.any { it.contains("Authentication successful") })
             assertTrue("no onion service: $torLines", torLines.any { it.contains("ADD_ONION successful") })
+            val local = (supervisor.rpc.call("getnetworkinfo") as Map<*, *>)["localaddresses"] as List<*>
+            val onionAddress = local.map { it as Map<*, *> }.firstOrNull { it["address"].toString().endsWith(".onion") }
+            assertTrue("no onion address in getnetworkinfo: $local", onionAddress != null)
         } finally {
             supervisor.stop()
             services.stopAll()

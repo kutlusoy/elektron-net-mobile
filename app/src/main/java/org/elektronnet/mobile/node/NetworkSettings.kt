@@ -70,7 +70,33 @@ data class NetworkPorts(
     val torControl: Int = 9051,
     val i2pSam: Int = 7656,
 ) {
+    // Moves a port that another program already uses (Orbot, a system Tor, the other flavor) to the next free one
+    fun resolved(isFree: (Int) -> Boolean = ::loopbackFree): NetworkPorts {
+        val taken = mutableSetOf<Int>()
+        fun pick(preferred: Int): Int {
+            var port = preferred
+            repeat(MAX_TRIES) {
+                if (port !in taken && isFree(port)) return port.also { taken.add(it) }
+                port += STEP
+            }
+            return preferred.also { taken.add(it) }
+        }
+        return NetworkPorts(pick(torSocks), pick(torControl), pick(i2pSam))
+    }
+
     companion object {
         val Testnet = NetworkPorts(torSocks = 19050, torControl = 19051, i2pSam = 17656)
+        private const val STEP = 10
+        private const val MAX_TRIES = 50
+
+        fun loopbackFree(port: Int): Boolean = try {
+            java.net.ServerSocket().use {
+                it.reuseAddress = false
+                it.bind(java.net.InetSocketAddress(NetworkArgs.LOOPBACK, port))
+            }
+            true
+        } catch (e: java.io.IOException) {
+            false
+        }
     }
 }

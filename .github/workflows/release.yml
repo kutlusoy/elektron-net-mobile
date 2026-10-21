@@ -134,7 +134,7 @@ jobs:
             } >> "$GITHUB_ENV"
             echo "signed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning::No release key configured. The APKs are signed with a temporary test key and are not for distribution."
+            echo "::warning::No release key configured. The APKs are signed with the public test key in app/test-signing and are not for distribution."
             echo "signed=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Peer country database
@@ -170,7 +170,7 @@ jobs:
             echo "| Node ref | $(get CORE_REF_NAME) |"
             echo "| Node commit | $(get CORE_SHA) |"
             echo "| Node library SHA-256 (arm64-v8a) | $(get LIB_SHA256) |"
-            echo "| Signing | $([[ ${{ steps.sign.outputs.signed }} == true ]] && echo 'release key' || echo 'temporary test key, not for distribution') |"
+            echo "| Signing | $([[ ${{ steps.sign.outputs.signed }} == true ]] && echo 'release key' || echo 'public test key (app/test-signing), not for distribution') |"
             echo
             echo "Files:"
             echo
