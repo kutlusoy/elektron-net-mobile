@@ -61,6 +61,14 @@ object NodeHost {
 
     private var registry: WalletRegistry? = null
 
+    var walletFlag: Boolean by mutableStateOf(false)
+        private set
+
+    private fun markWalletReady(value: Boolean) {
+        walletFlag = value
+        settings?.setWalletReady(value)
+    }
+
     var activeWallet: String by mutableStateOf(WalletBootstrap.DEFAULT_WALLET)
         private set
 
@@ -102,7 +110,7 @@ object NodeHost {
         if (wallets.isEmpty()) {
             walletSetup.cancel()
             setupStatus = walletSetup.status
-            settings?.setWalletReady(false)
+            markWalletReady(false)
             settings?.rescanPending = false
         }
         return null
@@ -116,7 +124,18 @@ object NodeHost {
 
     fun walletNames(): List<String> = (registry?.wallets().orEmpty().map { it.name } + WalletBootstrap.DEFAULT_WALLET).distinct()
 
-    fun nextWalletName(): String = registry?.nextName() ?: WalletBootstrap.DEFAULT_WALLET
+    @Volatile
+    private var walletNamesOnDisk: Set<String> = emptySet()
+
+    // Reads the cached list, the screens call this on the main thread
+    fun nextWalletName(): String = registry?.nextName(walletNamesOnDisk) ?: WalletBootstrap.DEFAULT_WALLET
+
+    private fun liveWalletName(): String {
+        val reg = registry ?: return WalletBootstrap.DEFAULT_WALLET
+        val onDisk = runningSupervisor()?.let { org.elektronnet.mobile.wallet.WalletReconciler(it.rpc.asWalletRpc(), reg).namesOnDisk() }
+        if (onDisk != null) walletNamesOnDisk = onDisk.toSet()
+        return reg.nextName(walletNamesOnDisk)
+    }
 
     var setupStatus: SetupStatus by mutableStateOf(SetupStatus.None)
         private set
@@ -128,6 +147,7 @@ object NodeHost {
         appContext = app
         val store = SettingsStore(app)
         val reg = WalletRegistry(store.walletRegistryStore())
+        walletFlag = store.walletReady()
         if (store.walletReady()) reg.ensureDefault()
         registry = reg
         refreshWallets()
@@ -180,7 +200,54 @@ object NodeHost {
         val snapshot = current.tick()
         settings?.saveBudget(current.budget)
         latest = snapshot
+        maintainWallets(snapshot)
         return snapshot
+    }
+
+    @Volatile
+    private var reconciledFor = 0L
+
+    @Volatile
+    private var maintenanceRunning = false
+
+    private val pendingCoinRefresh = java.util.Collections.synchronizedSet(linkedSetOf<String>())
+
+    var restoreNotice: String? by mutableStateOf(null)
+
+    private fun maintainWallets(snapshot: RuntimeSnapshot) {
+        val supervisor = controller?.current ?: return
+        if (supervisor.state != NodeState.Running || maintenanceRunning) return
+        val synced = snapshot.headline is org.elektronnet.mobile.runtime.Headline.Synchronized
+        val reconcileNeeded = reconciledFor != supervisor.startedAt
+        val refreshNeeded = synced && pendingCoinRefresh.isNotEmpty()
+        if (!reconcileNeeded && !refreshNeeded) return
+        maintenanceRunning = true
+        Thread {
+            try {
+                val reg = registry
+                val rpc = supervisor.rpc.asWalletRpc()
+                if (reconcileNeeded && reg != null) {
+                    val busy = if (setupStatus != SetupStatus.None) setOf(walletSetup.walletName) else emptySet()
+                    val result = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy }.reconcile()
+                    if (result != null) {
+                        walletNamesOnDisk = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg).namesOnDisk().orEmpty().toSet()
+                        reconciledFor = supervisor.startedAt
+                        pendingCoinRefresh.addAll(reg.wallets().map { it.name })
+                        if (reg.wallets().isNotEmpty()) markWalletReady(true)
+                        refreshWallets()
+                    }
+                }
+                if (synced) {
+                    val refresh = org.elektronnet.mobile.wallet.CoinRefresh(supervisor.rpc.asWalletRpc(SCAN_TIMEOUT_MS))
+                    pendingCoinRefresh.toList().forEach { name ->
+                        refresh.refresh(name)
+                        pendingCoinRefresh.remove(name)
+                    }
+                }
+            } finally {
+                maintenanceRunning = false
+            }
+        }.start()
     }
 
     fun beginSetup(request: SetupRequest, label: String = "") {
@@ -219,13 +286,13 @@ object NodeHost {
         val store = settings
         when (status) {
             is SetupStatus.Ready -> {
-                store?.setWalletReady(true)
+                markWalletReady(true)
                 store?.rescanPending = false
                 registry?.setActive(walletSetup.walletName)
                 refreshWallets()
             }
             SetupStatus.NeedsRescan, SetupStatus.Rescanning -> {
-                store?.setWalletReady(true)
+                markWalletReady(true)
                 store?.rescanPending = true
                 store?.rescanWallet = walletSetup.walletName
                 registry?.setActive(walletSetup.walletName)
@@ -348,13 +415,15 @@ object NodeHost {
     private fun registerRestored(name: String) {
         registry?.add(name, "")
         registry?.setActive(name)
-        settings?.setWalletReady(true)
+        markWalletReady(true)
+        pendingCoinRefresh.add(name)
+        restoreNotice = name
         refreshWallets()
     }
 
     fun restoreWalletFile(file: File): org.elektronnet.mobile.wallet.RestoreResult {
         val restore = walletRestore() ?: return org.elektronnet.mobile.wallet.RestoreResult.Failed(org.elektronnet.mobile.wallet.RestoreFailure.NodeNotReady)
-        val result = restore.restore(file, nextWalletName())
+        val result = restore.restore(file, liveWalletName())
         if (result is org.elektronnet.mobile.wallet.RestoreResult.Restored && result.encrypted) registerRestored(result.walletName)
         return result
     }

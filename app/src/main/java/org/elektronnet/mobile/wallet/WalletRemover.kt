@@ -5,13 +5,18 @@ import org.elektronnet.mobile.node.RpcException
 enum class RemoveFailure { WrongPassphrase, NodeNotReady, Unknown }
 
 class WalletRemover(private val rpc: WalletRpc, private val removeWalletFiles: (String) -> Unit) {
-    fun isUnused(walletName: String): Boolean = runCatching {
+    fun isUnused(walletName: String): Boolean = existsOnNode(walletName) == false || runCatching {
         val info = rpc.call("getwalletinfo", emptyList<Any?>(), walletName) as Map<*, *>
         val mine = (rpc.call("getbalances", emptyList<Any?>(), walletName) as Map<*, *>)["mine"] as Map<*, *>
         (info["txcount"] as? Number)?.toLong() == 0L && mine.values.all { (it as? Number)?.toDouble() == 0.0 }
     }.getOrDefault(false)
 
+    fun existsOnNode(walletName: String): Boolean? = runCatching {
+        ((rpc.call("listwalletdir", emptyList<Any?>(), null) as Map<*, *>)["wallets"] as List<*>).any { (it as Map<*, *>)["name"] == walletName }
+    }.getOrNull()
+
     fun remove(walletName: String, passphrase: String?): RemoveFailure? {
+        if (existsOnNode(walletName) == false) return if (runCatching { removeWalletFiles(walletName) }.isSuccess) null else RemoveFailure.Unknown
         if (passphrase == null) {
             if (!isUnused(walletName)) return RemoveFailure.WrongPassphrase
         } else {
