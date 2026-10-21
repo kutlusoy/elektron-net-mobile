@@ -132,7 +132,7 @@ object NodeHost {
         val root = datadir ?: return org.elektronnet.mobile.wallet.RemoveFailure.Unknown
         val chain = Chain.fromBuildName(ChainConfig.chain)
         val failure = org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) { wallet ->
-            File(root, "${chain.subdir}/wallets/$wallet").deleteRecursively()
+            org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$wallet"))
         }.remove(name, passphrase)
         if (failure != null) return failure
         registry?.remove(name)
@@ -347,7 +347,7 @@ object NodeHost {
             rpc = supervisor.rpc.asWalletRpc(),
             bip39 = Bip39(words),
             testnet = ChainConfig.isTestnet,
-            removeWalletFiles = { name -> File(root, "${chain.subdir}/wallets/$name").deleteRecursively() },
+            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name")) },
             walletName = walletName,
         )
     }
@@ -406,7 +406,7 @@ object NodeHost {
             rpc = supervisor.rpc.asWalletRpc(),
             store = store.escrowStore(),
             testnet = ChainConfig.isTestnet,
-            removeWalletFiles = { name -> File(root, "${chain.subdir}/wallets/$name").deleteRecursively() },
+            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name")) },
         )
     }
 
@@ -443,7 +443,7 @@ object NodeHost {
         val root = datadir ?: return null
         val chain = Chain.fromBuildName(ChainConfig.chain)
         return org.elektronnet.mobile.wallet.WalletRestore(supervisor.rpc.asWalletRpc()) { name ->
-            File(root, "${chain.subdir}/wallets/$name").deleteRecursively()
+            org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name"))
         }
     }
 
