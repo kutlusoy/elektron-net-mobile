@@ -207,8 +207,9 @@ private fun UnitPicker() {
         value = position,
         onValueChange = { position = it },
         onValueChangeFinished = {
-            UnitState.current = shown
-            NodeHost.store?.amountUnit = shown
+            val chosen = AmountUnit.entries[position.roundToInt().coerceIn(0, AmountUnit.entries.lastIndex)]
+            UnitState.current = chosen
+            NodeHost.store?.amountUnit = chosen
         },
         valueRange = 0f..AmountUnit.entries.lastIndex.toFloat(),
         steps = AmountUnit.entries.size - 2,
@@ -290,7 +291,8 @@ internal fun StepSlider(title: Int, steps: Int, index: Int, label: String, label
         Slider(
             value = position,
             onValueChange = { position = it },
-            onValueChangeFinished = { onCommit(shown) },
+            // the callback can run before the last value change was composed, so it reads the current position, not `shown`
+            onValueChangeFinished = { onCommit(position.roundToInt().coerceIn(0, steps - 1)) },
             valueRange = 0f..(steps - 1).toFloat(),
             steps = (steps - 2).coerceAtLeast(0),
         )
