@@ -104,6 +104,12 @@ check_alignment() {
     (( loads > 0 )) || { echo "no LOAD segments found in $file" >&2; exit 1; }
 }
 
+# A fully static executable cannot resolve host names on Android (the resolver hooks of bionic are only set up by the dynamic loader)
+check_dynamic() {
+    local file=$1
+    "$BIN/llvm-readelf" -d "$file" | grep -q "(NEEDED)" || { echo "$file is statically linked, DNS would fail on Android" >&2; exit 1; }
+}
+
 build_tor() {
     local dir=$BUILD/tor
     rm -rf "$dir"
@@ -121,14 +127,19 @@ build_tor() {
         "$STRIP" --strip-unneeded src/app/tor
     )
     check_alignment "$dir/src/app/tor"
+    check_dynamic "$dir/src/app/tor"
     install -m 0755 "$dir/src/app/tor" "$OUT/libtor.so"
     sha256sum "$OUT/libtor.so" | cut -d' ' -f1 > "$OUT/libtor.so.sha256"
 }
 
 build_i2pd() {
-    local dir=$BUILD/i2pd
-    rm -rf "$dir"
-    cmake -S "$I2PD_SRC/build" -B "$dir" -G Ninja \
+    local dir=$BUILD/i2pd src=$BUILD/i2pd-src
+    rm -rf "$dir" "$src"
+    cp -a "$I2PD_SRC" "$src"
+    # WITH_STATIC links the libraries statically, which is wanted, but it also adds -static for the whole executable
+    sed -i 's/LINK_FLAGS "-static"/LINK_FLAGS ""/' "$src/build/CMakeLists.txt"
+    ! grep -q 'LINK_FLAGS "-static"' "$src/build/CMakeLists.txt" || { echo "the i2pd build file still links statically" >&2; exit 1; }
+    cmake -S "$src/build" -B "$dir" -G Ninja \
         -DCMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake" \
         -DANDROID_ABI="$ABI" -DANDROID_PLATFORM="android-$ANDROID_API" -DANDROID_STL=c++_static \
         -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-DANDROID_BINARY \
@@ -142,10 +153,11 @@ build_i2pd() {
     [[ -n $binary ]] || { echo "i2pd not found in build tree" >&2; exit 1; }
     "$STRIP" --strip-unneeded "$binary"
     check_alignment "$binary"
+    check_dynamic "$binary"
     install -m 0755 "$binary" "$OUT/libi2pd.so"
     sha256sum "$OUT/libi2pd.so" | cut -d' ' -f1 > "$OUT/libi2pd.so.sha256"
     rm -rf "$OUT/i2pd-certificates"
-    cp -r "$I2PD_SRC/contrib/certificates" "$OUT/i2pd-certificates"
+    cp -r "$src/contrib/certificates" "$OUT/i2pd-certificates"
 }
 
 build_zlib
