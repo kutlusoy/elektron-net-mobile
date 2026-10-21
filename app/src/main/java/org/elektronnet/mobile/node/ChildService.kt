@@ -48,8 +48,8 @@ class ChildService(
             process = started
             startedAt = System.currentTimeMillis()
             state = ServiceState.Starting
-            thread("$name-output") { try { started.inputStream.bufferedReader().useLines { lines -> lines.forEach { output.add(it) } } } catch (e: IOException) { } }
-            thread("$name-exit") { awaitExit(started) }
+            val reader = thread("$name-output") { try { started.inputStream.bufferedReader().useLines { lines -> lines.forEach { output.add(it) } } } catch (e: IOException) { } }
+            thread("$name-exit") { awaitExit(started, reader) }
             thread("$name-ready") { awaitReady(started) }
         }
     }
@@ -68,8 +68,9 @@ class ChildService(
         }
     }
 
-    private fun awaitExit(started: Process) {
+    private fun awaitExit(started: Process, reader: Thread) {
         val code = started.waitFor()
+        reader.join(DRAIN_JOIN_MS)
         synchronized(lock) {
             if (process !== started) return
             process = null
@@ -96,10 +97,11 @@ class ChildService(
         false
     }
 
-    private fun thread(name: String, body: () -> Unit) = Thread(body, name).apply { isDaemon = true }.also { it.start() }
+    private fun thread(name: String, body: () -> Unit): Thread = Thread(body, name).apply { isDaemon = true }.also { it.start() }
 
     private companion object {
         const val POLL_MS = 250L
+        const val DRAIN_JOIN_MS = 500L
         const val SLOW_POLL_MS = 5_000L
         const val CONNECT_TIMEOUT_MS = 500
     }
