@@ -7,6 +7,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.elektronnet.mobile.R
+import org.elektronnet.mobile.node.AddressKind
 import org.elektronnet.mobile.node.ExitPolicyKind
 import org.elektronnet.mobile.node.I2pSettings
 import org.elektronnet.mobile.node.ServiceState
@@ -62,6 +64,7 @@ fun TorSettingsCard(settings: PolicySettings, onPolicy: (PolicySettings) -> Unit
                 stringResource(R.string.net_status, statusText(services?.torState, services?.torAvailable ?: false)),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            NewAddressBlock(AddressKind.Onion)
             Text(stringResource(R.string.net_tor_routing), style = MaterialTheme.typography.labelLarge)
             ChoiceRow(tor.routing == TorRouting.Additional, { update(tor.copy(routing = TorRouting.Additional)) }, stringResource(R.string.net_tor_additional), stringResource(R.string.net_tor_additional_hint)) {}
             ChoiceRow(tor.routing == TorRouting.AllTraffic, { update(tor.copy(routing = TorRouting.AllTraffic)) }, stringResource(R.string.net_tor_all), stringResource(R.string.net_tor_all_hint)) {}
@@ -157,6 +160,7 @@ fun I2pSettingsCard(settings: PolicySettings, onPolicy: (PolicySettings) -> Unit
                 stringResource(R.string.net_status, statusText(services?.i2pState, services?.i2pAvailable ?: false)),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            NewAddressBlock(AddressKind.I2p)
             ToggleRow(R.string.net_i2p_incoming, R.string.net_i2p_incoming_hint, i2p.acceptIncoming) { update(i2p.copy(acceptIncoming = it)) }
             ToggleRow(R.string.net_i2p_transit, R.string.net_i2p_transit_hint, i2p.transit) { update(i2p.copy(transit = it)) }
             val bandwidthIndex = indexAtLeast(I2P_BANDWIDTH, i2p.bandwidthKbps)
@@ -181,5 +185,31 @@ fun I2pSettingsCard(settings: PolicySettings, onPolicy: (PolicySettings) -> Unit
             }
             Hint(stringResource(R.string.net_i2p_note))
         }
+    }
+}
+
+@Composable
+private fun NewAddressBlock(kind: AddressKind) {
+    var confirm by remember { mutableStateOf(false) }
+    val notice = NodeHost.addressNotice
+    Hint(stringResource(if (kind == AddressKind.Onion) R.string.net_addr_keep_tor else R.string.net_addr_keep_i2p))
+    OutlinedButton(onClick = { confirm = true }, modifier = Modifier.fillMaxWidth()) {
+        Text(stringResource(if (kind == AddressKind.Onion) R.string.net_addr_new_tor else R.string.net_addr_new_i2p))
+    }
+    if (notice == kind) Hint(stringResource(R.string.net_addr_done))
+    if (confirm) {
+        AlertDialog(
+            onDismissRequest = { confirm = false },
+            title = { Text(stringResource(R.string.net_addr_confirm_title)) },
+            text = { Text(stringResource(R.string.net_addr_confirm_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirm = false
+                    NodeHost.addressNotice = null
+                    NodeHost.renewAddress(kind)
+                }) { Text(stringResource(R.string.net_addr_confirm_yes)) }
+            },
+            dismissButton = { TextButton(onClick = { confirm = false }) { Text(stringResource(R.string.action_cancel)) } },
+        )
     }
 }

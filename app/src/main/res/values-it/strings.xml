@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">Connessioni in ingresso</string>
     <string name="net_tile_sharing">Inoltro per altri</string>
     <string name="net_tile_share">Quota di banda</string>
+    <string name="net_addr_keep_tor">Il tuo nodo mantiene lo stesso indirizzo Tor tra i riavvii, finché non ne crei uno nuovo.</string>
+    <string name="net_addr_keep_i2p">Il tuo nodo mantiene lo stesso indirizzo I2P tra i riavvii, finché non ne crei uno nuovo. Serve l\'opzione \"Accetta connessioni I2P in ingresso\".</string>
+    <string name="net_addr_new_tor">Nuovo indirizzo Tor</string>
+    <string name="net_addr_new_i2p">Nuovo indirizzo I2P</string>
+    <string name="net_addr_confirm_title">Creare un nuovo indirizzo?</string>
+    <string name="net_addr_confirm_body">Il vecchio indirizzo smette subito di funzionare. I peer che conoscono solo quello vecchio non trovano più il tuo nodo. Il nodo si riavvia per un momento.</string>
+    <string name="net_addr_confirm_yes">Crea nuovo indirizzo</string>
+    <string name="net_addr_done">Fatto. Il nodo si riavvia con un nuovo indirizzo.</string>
 </resources>

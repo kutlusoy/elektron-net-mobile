@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">传入连接</string>
     <string name="net_tile_sharing">为他人中继</string>
     <string name="net_tile_share">带宽比例</string>
+    <string name="net_addr_keep_tor">在你创建新地址之前，节点会在重启之间保持同一个 Tor 地址。</string>
+    <string name="net_addr_keep_i2p">在你创建新地址之前，节点会在重启之间保持同一个 I2P 地址。这需要打开“接受传入的 I2P 连接”。</string>
+    <string name="net_addr_new_tor">新的 Tor 地址</string>
+    <string name="net_addr_new_i2p">新的 I2P 地址</string>
+    <string name="net_addr_confirm_title">创建新地址？</string>
+    <string name="net_addr_confirm_body">旧地址会立即失效。只知道旧地址的节点将无法再找到你的节点。节点会短暂重启。</string>
+    <string name="net_addr_confirm_yes">创建新地址</string>
+    <string name="net_addr_done">完成。节点正在以新地址重启。</string>
 </resources>

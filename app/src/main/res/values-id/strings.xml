@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">Koneksi masuk</string>
     <string name="net_tile_sharing">Meneruskan untuk orang lain</string>
     <string name="net_tile_share">Bagian bandwidth</string>
+    <string name="net_addr_keep_tor">Node-mu mempertahankan alamat Tor yang sama di antara restart, sampai kamu membuat yang baru.</string>
+    <string name="net_addr_keep_i2p">Node-mu mempertahankan alamat I2P yang sama di antara restart, sampai kamu membuat yang baru. Ini memerlukan sakelar \"Terima koneksi I2P masuk\".</string>
+    <string name="net_addr_new_tor">Alamat Tor baru</string>
+    <string name="net_addr_new_i2p">Alamat I2P baru</string>
+    <string name="net_addr_confirm_title">Buat alamat baru?</string>
+    <string name="net_addr_confirm_body">Alamat lama langsung berhenti bekerja. Peer yang hanya tahu alamat lama tidak bisa lagi menemukan node-mu. Node restart sebentar.</string>
+    <string name="net_addr_confirm_yes">Buat alamat baru</string>
+    <string name="net_addr_done">Selesai. Node restart dengan alamat baru.</string>
 </resources>

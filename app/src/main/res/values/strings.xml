@@ -784,4 +784,12 @@
     <string name="net_tile_incoming">Incoming connections</string>
     <string name="net_tile_sharing">Relaying for others</string>
     <string name="net_tile_share">Bandwidth share</string>
+    <string name="net_addr_keep_tor">Your node keeps the same Tor address between restarts, until you create a new one.</string>
+    <string name="net_addr_keep_i2p">Your node keeps the same I2P address between restarts, until you create a new one. This needs the switch \"Accept incoming I2P connections\".</string>
+    <string name="net_addr_new_tor">New Tor address</string>
+    <string name="net_addr_new_i2p">New I2P address</string>
+    <string name="net_addr_confirm_title">Create a new address?</string>
+    <string name="net_addr_confirm_body">The old address stops working at once. Peers that only know the old one can no longer find your node. The node restarts for a moment.</string>
+    <string name="net_addr_confirm_yes">Create new address</string>
+    <string name="net_addr_done">Done. The node restarts with a new address.</string>
 </resources>

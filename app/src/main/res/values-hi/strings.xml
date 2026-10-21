@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">आने वाले कनेक्शन</string>
     <string name="net_tile_sharing">दूसरों के लिए रिले</string>
     <string name="net_tile_share">बैंडविड्थ का हिस्सा</string>
+    <string name="net_addr_keep_tor">नया पता बनाने तक आपका नोड रीस्टार्ट के बीच वही Tor पता रखता है।</string>
+    <string name="net_addr_keep_i2p">नया पता बनाने तक आपका नोड रीस्टार्ट के बीच वही I2P पता रखता है। इसके लिए \"आने वाले I2P कनेक्शन स्वीकार करें\" चालू होना चाहिए।</string>
+    <string name="net_addr_new_tor">नया Tor पता</string>
+    <string name="net_addr_new_i2p">नया I2P पता</string>
+    <string name="net_addr_confirm_title">नया पता बनाएँ?</string>
+    <string name="net_addr_confirm_body">पुराना पता तुरंत काम करना बंद कर देता है। जो पीयर सिर्फ़ पुराना पता जानते हैं वे आपका नोड नहीं ढूँढ पाएँगे। नोड थोड़ी देर के लिए फिर शुरू होता है।</string>
+    <string name="net_addr_confirm_yes">नया पता बनाएँ</string>
+    <string name="net_addr_done">हो गया। नोड नए पते के साथ फिर शुरू हो रहा है।</string>
 </resources>

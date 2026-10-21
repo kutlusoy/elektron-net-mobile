@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">着信接続</string>
     <string name="net_tile_sharing">他の人のための中継</string>
     <string name="net_tile_share">帯域幅の割合</string>
+    <string name="net_addr_keep_tor">新しいアドレスを作るまで、ノードは再起動をまたいで同じ Tor アドレスを保ちます。</string>
+    <string name="net_addr_keep_i2p">新しいアドレスを作るまで、ノードは再起動をまたいで同じ I2P アドレスを保ちます。「I2P の着信接続を受け付ける」がオンである必要があります。</string>
+    <string name="net_addr_new_tor">新しい Tor アドレス</string>
+    <string name="net_addr_new_i2p">新しい I2P アドレス</string>
+    <string name="net_addr_confirm_title">新しいアドレスを作りますか？</string>
+    <string name="net_addr_confirm_body">古いアドレスはすぐに使えなくなります。古いアドレスしか知らないピアはノードを見つけられなくなります。ノードは一瞬再起動します。</string>
+    <string name="net_addr_confirm_yes">新しいアドレスを作る</string>
+    <string name="net_addr_done">完了しました。ノードは新しいアドレスで再起動します。</string>
 </resources>

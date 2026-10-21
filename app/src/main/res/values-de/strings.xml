@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">Eingehende Verbindungen</string>
     <string name="net_tile_sharing">Weiterleiten für andere</string>
     <string name="net_tile_share">Bandbreitenanteil</string>
+    <string name="net_addr_keep_tor">Dein Node behält dieselbe Tor-Adresse über Neustarts hinweg, bis du eine neue erzeugst.</string>
+    <string name="net_addr_keep_i2p">Dein Node behält dieselbe I2P-Adresse über Neustarts hinweg, bis du eine neue erzeugst. Dafür muss der Schalter „Eingehende I2P-Verbindungen annehmen“ an sein.</string>
+    <string name="net_addr_new_tor">Neue Tor-Adresse</string>
+    <string name="net_addr_new_i2p">Neue I2P-Adresse</string>
+    <string name="net_addr_confirm_title">Neue Adresse erzeugen?</string>
+    <string name="net_addr_confirm_body">Die alte Adresse funktioniert sofort nicht mehr. Peers, die nur die alte kennen, finden deinen Node nicht mehr. Der Node startet kurz neu.</string>
+    <string name="net_addr_confirm_yes">Neue Adresse erzeugen</string>
+    <string name="net_addr_done">Fertig. Der Node startet mit einer neuen Adresse neu.</string>
 </resources>

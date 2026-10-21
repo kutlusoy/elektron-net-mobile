@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">Gelen bağlantılar</string>
     <string name="net_tile_sharing">Başkaları için aktarım</string>
     <string name="net_tile_share">Bant genişliği payı</string>
+    <string name="net_addr_keep_tor">Düğümün, sen yenisini oluşturana kadar yeniden başlatmalar arasında aynı Tor adresini korur.</string>
+    <string name="net_addr_keep_i2p">Düğümün, sen yenisini oluşturana kadar yeniden başlatmalar arasında aynı I2P adresini korur. Bunun için \"Gelen I2P bağlantılarını kabul et\" anahtarı açık olmalı.</string>
+    <string name="net_addr_new_tor">Yeni Tor adresi</string>
+    <string name="net_addr_new_i2p">Yeni I2P adresi</string>
+    <string name="net_addr_confirm_title">Yeni adres oluşturulsun mu?</string>
+    <string name="net_addr_confirm_body">Eski adres hemen çalışmaz olur. Yalnızca eskisini bilen eşler düğümünü artık bulamaz. Düğüm kısa süre yeniden başlar.</string>
+    <string name="net_addr_confirm_yes">Yeni adres oluştur</string>
+    <string name="net_addr_done">Tamam. Düğüm yeni adresle yeniden başlıyor.</string>
 </resources>

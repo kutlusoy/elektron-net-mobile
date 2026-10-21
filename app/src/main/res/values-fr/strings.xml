@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">Connexions entrantes</string>
     <string name="net_tile_sharing">Relais pour les autres</string>
     <string name="net_tile_share">Part du débit</string>
+    <string name="net_addr_keep_tor">Ton nœud garde la même adresse Tor entre les redémarrages, jusqu\'à ce que tu en crées une nouvelle.</string>
+    <string name="net_addr_keep_i2p">Ton nœud garde la même adresse I2P entre les redémarrages, jusqu\'à ce que tu en crées une nouvelle. Cela demande l\'option « Accepter les connexions I2P entrantes ».</string>
+    <string name="net_addr_new_tor">Nouvelle adresse Tor</string>
+    <string name="net_addr_new_i2p">Nouvelle adresse I2P</string>
+    <string name="net_addr_confirm_title">Créer une nouvelle adresse ?</string>
+    <string name="net_addr_confirm_body">L\'ancienne adresse cesse de fonctionner tout de suite. Les pairs qui ne connaissent que l\'ancienne ne trouvent plus ton nœud. Le nœud redémarre un instant.</string>
+    <string name="net_addr_confirm_yes">Créer une nouvelle adresse</string>
+    <string name="net_addr_done">Terminé. Le nœud redémarre avec une nouvelle adresse.</string>
 </resources>

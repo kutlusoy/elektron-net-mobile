@@ -498,6 +498,17 @@ object NodeHost {
         controller?.clearCrash()
     }
 
+    var addressNotice: org.elektronnet.mobile.node.AddressKind? by mutableStateOf(null)
+
+    fun renewAddress(kind: org.elektronnet.mobile.node.AddressKind) {
+        val root = datadir ?: return
+        val chain = Chain.fromBuildName(ChainConfig.chain)
+        Thread {
+            controller?.shutdown()
+            if (org.elektronnet.mobile.node.AddressKeys(File(root, chain.subdir)).renew(kind)) addressNotice = kind
+        }.start()
+    }
+
     fun resetChainData(): Boolean {
         val dir = datadir ?: return false
         controller?.shutdown()
