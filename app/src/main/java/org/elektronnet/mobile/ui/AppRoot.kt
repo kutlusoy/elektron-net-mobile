@@ -47,6 +47,7 @@ import org.elektronnet.mobile.ui.tools.ToolsScreen
 import org.elektronnet.mobile.ui.wallets.CoinsScreen
 import org.elektronnet.mobile.ui.wallets.ContactsScreen
 import org.elektronnet.mobile.ui.wallets.WalletDetailsScreen
+import org.elektronnet.mobile.ui.wallets.RestoreNotice
 import org.elektronnet.mobile.ui.wallets.WalletSwitcher
 import org.elektronnet.mobile.ui.wallets.WalletsScreen
 import org.elektronnet.mobile.ui.wallet.TxDetailsScreen
@@ -97,7 +98,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     val snapshot = NodeHost.latest
     var storeReady by remember { mutableStateOf(store?.walletReady() ?: false) }
     val setup = NodeHost.setupStatus
-    val walletReady = (storeReady && NodeHost.wallets.isNotEmpty()) || setup != SetupStatus.None
+    val walletReady = ((storeReady || NodeHost.walletFlag) && NodeHost.wallets.isNotEmpty()) || setup != SetupStatus.None
     var nodeOnly by remember { mutableStateOf(store?.nodeOnly == true) }
     val shell = walletReady || nodeOnly
 
@@ -258,6 +259,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         onWallets = { show(Overlay.Wallets) },
                         onContacts = { show(Overlay.Contacts) },
                     )
+                    NodeHost.restoreNotice?.let { RestoreNotice { NodeHost.restoreNotice = null } }
                     SetupBanner(
                         status = setup,
                         needsPassphrase = NodeHost.needsRescanPassphrase,

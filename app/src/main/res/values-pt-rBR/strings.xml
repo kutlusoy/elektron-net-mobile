@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">Conexões de entrada</string>
     <string name="net_tile_sharing">Retransmitindo para outros</string>
     <string name="net_tile_share">Parte da banda</string>
+    <string name="net_addr_keep_tor">Seu nó mantém o mesmo endereço Tor entre reinicializações, até você criar um novo.</string>
+    <string name="net_addr_keep_i2p">Seu nó mantém o mesmo endereço I2P entre reinicializações, até você criar um novo. Isso exige a opção \"Aceitar conexões I2P de entrada\".</string>
+    <string name="net_addr_new_tor">Novo endereço Tor</string>
+    <string name="net_addr_new_i2p">Novo endereço I2P</string>
+    <string name="net_addr_confirm_title">Criar um novo endereço?</string>
+    <string name="net_addr_confirm_body">O endereço antigo para de funcionar na hora. Pares que só conhecem o antigo não encontram mais seu nó. O nó reinicia por um instante.</string>
+    <string name="net_addr_confirm_yes">Criar novo endereço</string>
+    <string name="net_addr_done">Pronto. O nó reinicia com um novo endereço.</string>
 </resources>

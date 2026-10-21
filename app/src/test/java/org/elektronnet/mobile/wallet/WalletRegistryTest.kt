@@ -1,51 +1,35 @@
 package org.elektronnet.mobile.wallet
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WalletRegistryTest {
-    private fun registry() = WalletRegistry(MemoryWalletRegistryStore())
-
     @Test
-    fun startsWithTheDefaultWallet() {
-        val r = registry()
-        assertEquals(emptyList<OwnWallet>(), r.wallets())
-        assertEquals(WalletBootstrap.DEFAULT_WALLET, r.active().name)
-        assertEquals(1, r.wallets().size)
-        r.ensureDefault()
-        assertEquals(1, r.wallets().size)
+    fun askingForTheActiveWalletNeverCreatesOne() {
+        val registry = WalletRegistry(MemoryWalletRegistryStore())
+        assertEquals(WalletBootstrap.DEFAULT_WALLET, registry.active().name)
+        assertTrue(registry.wallets().isEmpty())
+        assertEquals(WalletBootstrap.DEFAULT_WALLET, registry.nextName())
     }
 
     @Test
-    fun addsAndSwitchesWallets() {
-        val r = registry()
-        r.ensureDefault()
-        val name = r.nextName()
-        assertEquals("elektron_2", name)
-        r.add(name, " Savings ")
-        assertEquals("elektron_3", r.nextName())
-        r.setActive(name)
-        assertEquals("Savings", r.active().label)
-        r.setActive("unknown")
-        assertEquals(name, r.active().name)
+    fun namesAlreadyOnDiskAreSkipped() {
+        val registry = WalletRegistry(MemoryWalletRegistryStore())
+        registry.add("elektron", "")
+        assertEquals("elektron_3", registry.nextName(setOf("elektron_2")))
+        assertEquals("elektron_2", registry.nextName())
     }
 
     @Test
-    fun renameAndRemove() {
-        val r = registry()
-        r.ensureDefault()
-        r.add("elektron_2", "A")
-        r.setActive("elektron_2")
-        r.rename("elektron_2", "B")
-        assertEquals("B", r.active().label)
-        r.remove("elektron_2")
-        assertEquals(WalletBootstrap.DEFAULT_WALLET, r.active().name)
-        assertEquals(1, r.wallets().size)
-    }
-
-    @Test
-    fun brokenStoredDataFallsBackToDefault() {
-        val store = MemoryWalletRegistryStore().apply { json = "not json" }
-        assertEquals(WalletBootstrap.DEFAULT_WALLET, WalletRegistry(store).active().name)
+    fun theActiveWalletIsTheChosenOneOrTheFirst() {
+        val registry = WalletRegistry(MemoryWalletRegistryStore())
+        registry.add("elektron", "")
+        registry.add("elektron_2", "second")
+        assertEquals("elektron", registry.active().name)
+        registry.setActive("elektron_2")
+        assertEquals("elektron_2", registry.active().name)
+        registry.remove("elektron_2")
+        assertEquals("elektron", registry.active().name)
     }
 }

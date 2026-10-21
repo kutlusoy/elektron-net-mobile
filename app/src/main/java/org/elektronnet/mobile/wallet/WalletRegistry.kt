@@ -34,8 +34,8 @@ class WalletRegistry(private val store: WalletRegistryStore) {
 
     @Synchronized
     fun active(): OwnWallet {
-        val all = wallets().ifEmpty { listOf(ensureDefault()) }
-        return all.firstOrNull { it.name == store.active } ?: all.first()
+        val all = wallets()
+        return all.firstOrNull { it.name == store.active } ?: all.firstOrNull() ?: OwnWallet(WalletBootstrap.DEFAULT_WALLET, "")
     }
 
     @Synchronized
@@ -44,8 +44,8 @@ class WalletRegistry(private val store: WalletRegistryStore) {
     }
 
     @Synchronized
-    fun nextName(): String {
-        val taken = wallets().map { it.name }.toSet()
+    fun nextName(alsoTaken: Set<String> = emptySet()): String {
+        val taken = wallets().map { it.name }.toSet() + alsoTaken
         if (WalletBootstrap.DEFAULT_WALLET !in taken) return WalletBootstrap.DEFAULT_WALLET
         var n = 2
         while ("${WalletBootstrap.DEFAULT_WALLET}_$n" in taken) n++

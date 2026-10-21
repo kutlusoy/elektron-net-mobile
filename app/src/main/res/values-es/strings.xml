@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">Conexiones entrantes</string>
     <string name="net_tile_sharing">Retransmitir para otros</string>
     <string name="net_tile_share">Parte del ancho de banda</string>
+    <string name="net_addr_keep_tor">Tu nodo conserva la misma dirección Tor entre reinicios, hasta que crees una nueva.</string>
+    <string name="net_addr_keep_i2p">Tu nodo conserva la misma dirección I2P entre reinicios, hasta que crees una nueva. Para ello hace falta el interruptor \"Aceptar conexiones I2P entrantes\".</string>
+    <string name="net_addr_new_tor">Nueva dirección Tor</string>
+    <string name="net_addr_new_i2p">Nueva dirección I2P</string>
+    <string name="net_addr_confirm_title">¿Crear una nueva dirección?</string>
+    <string name="net_addr_confirm_body">La dirección anterior deja de funcionar al instante. Los pares que solo conocen la anterior ya no encuentran tu nodo. El nodo se reinicia un momento.</string>
+    <string name="net_addr_confirm_yes">Crear nueva dirección</string>
+    <string name="net_addr_done">Listo. El nodo se reinicia con una nueva dirección.</string>
 </resources>

@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.service.ConsoleStore
 import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.ui.GlassCard
 import org.elektronnet.mobile.ui.SecretField
 import org.elektronnet.mobile.ui.tools.ErrorText
 import org.elektronnet.mobile.ui.tools.Hint
@@ -42,6 +43,7 @@ fun RestoreFileSection() {
     val scope = rememberCoroutineScope()
     var busy by remember { mutableStateOf(false) }
     var failure by remember { mutableStateOf<RestoreFailure?>(null) }
+    var detail by remember { mutableStateOf("") }
     var done by remember { mutableStateOf(false) }
     var needsPassphrase by remember { mutableStateOf<String?>(null) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
@@ -65,7 +67,10 @@ fun RestoreFileSection() {
             busy = false
             when (result) {
                 is RestoreResult.Restored -> if (result.encrypted) done = true else needsPassphrase = result.walletName
-                is RestoreResult.Failed -> failure = result.reason
+                is RestoreResult.Failed -> {
+                    failure = result.reason
+                    detail = result.detail
+                }
             }
         }
     }
@@ -75,7 +80,10 @@ fun RestoreFileSection() {
         }
         Hint(stringResource(R.string.restore_file_hint))
         if (done) Hint(stringResource(R.string.restore_file_done))
-        failure?.let { ErrorText(stringResource(restoreError(it))) }
+        failure?.let {
+            ErrorText(stringResource(restoreError(it)))
+            if (detail.isNotBlank()) Hint(detail.take(160))
+        }
     }
     needsPassphrase?.let { name ->
         SetPassphraseDialog(
@@ -143,4 +151,14 @@ private fun restoreError(failure: RestoreFailure): Int = when (failure) {
     RestoreFailure.WeakPassphrase -> R.string.fr_pass_weak
     RestoreFailure.NodeNotReady -> R.string.fr_err_node
     RestoreFailure.Unknown -> R.string.fr_err_unknown
+}
+
+@Composable
+fun RestoreNotice(onDismiss: () -> Unit) {
+    GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.restore_file_done))
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_ok)) }
+        }
+    }
 }

@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">Входящие соединения</string>
     <string name="net_tile_sharing">Ретрансляция для других</string>
     <string name="net_tile_share">Доля пропускной способности</string>
+    <string name="net_addr_keep_tor">Ваш узел сохраняет один и тот же адрес Tor между перезапусками, пока вы не создадите новый.</string>
+    <string name="net_addr_keep_i2p">Ваш узел сохраняет один и тот же адрес I2P между перезапусками, пока вы не создадите новый. Для этого нужен переключатель «Принимать входящие I2P-соединения».</string>
+    <string name="net_addr_new_tor">Новый адрес Tor</string>
+    <string name="net_addr_new_i2p">Новый адрес I2P</string>
+    <string name="net_addr_confirm_title">Создать новый адрес?</string>
+    <string name="net_addr_confirm_body">Старый адрес сразу перестаёт работать. Пиры, знающие только его, больше не найдут ваш узел. Узел ненадолго перезапустится.</string>
+    <string name="net_addr_confirm_yes">Создать новый адрес</string>
+    <string name="net_addr_done">Готово. Узел перезапускается с новым адресом.</string>
 </resources>

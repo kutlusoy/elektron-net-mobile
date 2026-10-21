@@ -52,6 +52,12 @@ The Tor and I2P groups are visible in Settings at all times, their detailed opti
 
 While Tor is switched on the Node tab shows a Tor tile, while I2P is on an I2P tile, below the Network card. A Tor tile lists status (running, starting, failed, not included), the onion address with its port (or "waiting for the address" until the node has created its onion service), peers over Tor, SOCKS port, control port, routing and role, and for relays the relay port and the bandwidth limit. An I2P tile lists status, the I2P address, peers over I2P, the SAM bridge, whether incoming connections are accepted, whether it relays for others, the bandwidth limit and the share. The addresses come from `getnetworkinfo` (`localaddresses`), the peer counts from `getpeerinfo`.
 
+## 5b. Stable addresses
+
+The node keeps the private key of its onion service (`onion_v3_private_key`) and of its I2P destination (`i2p_private_key`) in its data directory and reuses them at every start. The address therefore stays the same across restarts, app updates and chain resets (a reset keeps these files) until the user decides otherwise. Each card has a "New Tor address" and a "New I2P address" button. After a confirmation the app stops the node, deletes that one key file and lets the node start again, which creates a fresh key and address. The old address stops working at once, peers that only know it can no longer find the node.
+
+The node persists the I2P key only while it accepts incoming I2P connections (`-i2pacceptincoming=1`, source: `net.cpp`). Without that, the I2P session is transient and the address changes with every session. The card says so.
+
 ## 6. Connection indicator
 
 Next to the green dot and the word "Synced" on the Wallet tab and on the Node tab, small outlined chips show which networks the node uses right now, with the number of connected peers: IPv4, IPv6, Tor (purple), I2P (green) and CJDNS. IPv4, IPv6 and CJDNS appear when peers are connected. Tor and I2P also appear with 0 when they are switched on, so the user sees that they are waiting for peers. The numbers come from `getpeerinfo` on every tick. When the node is not running, no chip is shown.
@@ -86,6 +92,8 @@ Next to the green dot and the word "Synced" on the Wallet tab and on the Node ta
 | `I2pNodeIntegrationTest` | A real `elektrond` connects to the configured SAM port (a stand-in SAM server sees `HELLO`) and reports I2P as reachable |
 | `NetworkTilesModelTest` | Rows of the Tor and I2P tiles and the parsing of the node's local addresses |
 | `NodeControllerIntegrationTest` | Only settings that change the node arguments restart the node |
+| `TorAddressIntegrationTest` | A real Tor and `elektrond`: the onion address is the same after repeated restarts, differs after the key is renewed, and is again stable |
+| `AddressKeysTest` | Renewing deletes only the chosen key |
 | `ConnectionModelTest` | Which chips appear |
 | `native-build/tests/test-fetch-helpers.sh` | Release tag selection, also across a stale and a fresh repository |
 

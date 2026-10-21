@@ -153,6 +153,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 | Security | Change passphrase, Fingerprint or face unlock with a slider for the lock delay (immediately to 30 minutes), notification for incoming payments, "Allow screenshots" (temporary, red banner while on, ends when the app is closed or locked), Check my backup (the user types the phrase from paper, the app never stores or shows it again) | plan §8.1, S16 |
 | Network and battery | "Use mobile data" (off), "Allow roaming" (off, only shown when mobile data is on), "Monthly mobile data limit" (slider from 1 GB to No limit), "Only while charging", "Only at night" (22:00 to 06:00), "Run in the background" (on), "How much the node may use" (while the app is open, balanced, always on) | `PolicySettings`, plan §7 |
 | Tor | "Use Tor" with a status line, routing (next to the normal connections or everything through Tor), role (client only, relay, exit relay). A relay adds a bandwidth slider, a monthly limit slider, relay name, contact and port. An exit adds the exit policy (reduced or web only) and asks for confirmation | `NetworkSettings.tor`, `guideline-tor-and-i2p.md` |
+| Stable addresses | A "New Tor address" and a "New I2P address" button in the cards. The node keeps its address until the user asks for a new one, after a confirmation that explains the effect | `AddressKeys`, `guideline-tor-and-i2p.md` §5b |
 | I2P | "Use I2P" with a status line, accept incoming I2P connections, relay traffic for others with a bandwidth slider and the share for others | `NetworkSettings.i2p` |
 | Sharing | "Accept incoming connections", "Share snapshots (Wi-Fi and charging only)" | `allowInbound`, `serveSnapshots`, plan §5.2 |
 | Storage | "Storage saver" (fast pruning, applies at the next node start), "Stop the node when free space is below" (slider, 1 to 20 GB) | `fastprune`, `storageFloorBytes`, plan §3.2 |
@@ -172,6 +173,7 @@ Restore: enter 12 or 24 words  ->  choose passphrase  ->  "Restore starts when y
 - Stopping or pausing the node asks for confirmation first, so a stray tap cannot switch the node off.
 - Each toggle has a one-line description in plain words beneath it.
 - Defaults are the recommended ones, so most users never open Network and battery. Tor and I2P are off until the user switches them on, their options appear only then.
+- After "Restore from wallet file" succeeds the app switches to the new wallet at once and shows a card with "Wallet restored. It scans for your coins in the background." and OK. The error text of a failed restore shows the node's reason in a second line.
 - The Wallets screen has "Restore from wallet file" below "Add wallet". A backup without a passphrase leads to a dialog for a new passphrase, cancelling discards the restored wallet.
 
 ## 7. States and Errors

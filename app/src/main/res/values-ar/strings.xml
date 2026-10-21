@@ -773,4 +773,12 @@
     <string name="net_tile_incoming">الاتصالات الواردة</string>
     <string name="net_tile_sharing">التمرير للآخرين</string>
     <string name="net_tile_share">حصة عرض النطاق</string>
+    <string name="net_addr_keep_tor">تحتفظ عقدتك بعنوان Tor نفسه بين عمليات إعادة التشغيل حتى تنشئ عنواناً جديداً.</string>
+    <string name="net_addr_keep_i2p">تحتفظ عقدتك بعنوان I2P نفسه بين عمليات إعادة التشغيل حتى تنشئ عنواناً جديداً. يتطلب ذلك تشغيل خيار \"قبول اتصالات I2P الواردة\".</string>
+    <string name="net_addr_new_tor">عنوان Tor جديد</string>
+    <string name="net_addr_new_i2p">عنوان I2P جديد</string>
+    <string name="net_addr_confirm_title">إنشاء عنوان جديد؟</string>
+    <string name="net_addr_confirm_body">يتوقف العنوان القديم عن العمل فوراً. الأقران الذين يعرفون العنوان القديم فقط لن يجدوا عقدتك بعد الآن. تُعاد العقدة للتشغيل لحظة.</string>
+    <string name="net_addr_confirm_yes">إنشاء عنوان جديد</string>
+    <string name="net_addr_done">تم. تُعاد العقدة للتشغيل بعنوان جديد.</string>
 </resources>
