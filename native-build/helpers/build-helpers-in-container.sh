@@ -58,7 +58,7 @@ build_openssl() {
     (
         cd "$dir"
         export ANDROID_NDK_ROOT=$ANDROID_NDK_HOME
-        ./Configure "$OPENSSL_TARGET" -D__ANDROID_API__="$ANDROID_API" no-shared no-tests no-ui-console no-engine no-docs \
+        ./Configure "$OPENSSL_TARGET" -D__ANDROID_API__="$ANDROID_API" no-shared no-tests no-ui-console \
             --prefix="$PREFIX" --libdir=lib --openssldir="$PREFIX/ssl"
         make -j"$JOBS" build_libs
         make install_dev

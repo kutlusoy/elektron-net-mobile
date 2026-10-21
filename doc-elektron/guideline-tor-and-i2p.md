@@ -5,7 +5,7 @@
 - **Audience:** Android and node developers, release engineers, testers who run the app as a relay
 - **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/torcontrol.cpp`, `src/i2p.cpp`, `src/init.cpp` (arguments `-onion`, `-proxy`, `-torcontrol`, `-listenonion`, `-i2psam`, `-i2pacceptincoming`) and this repository: `app/src/main/java/org/elektronnet/mobile/node/` (`NetworkSettings.kt`, `NetworkArgs.kt`, `TorConfig.kt`, `I2pConfig.kt`, `ChildService.kt`, `NetworkServices.kt`), `native-build/fetch-helpers.sh`, `native-build/helpers/`
-- **Fork base:** [`torproject/tor`](https://github.com/torproject/tor), [`PurpleI2P/i2pd`](https://github.com/PurpleI2P/i2pd)
+- **Fork base:** [`tpo/core/tor`](https://gitlab.torproject.org/tpo/core/tor), [`PurpleI2P/i2pd`](https://github.com/PurpleI2P/i2pd)
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) §4.1, §11.4, [`guideline-ux-and-screens.md`](./guideline-ux-and-screens.md) §6.5 and §6.6, [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md)
 
 ---
@@ -54,7 +54,7 @@ Next to the green dot and the word "Synced" on the Wallet tab and on the Node ta
 
 ## 7. Build
 
-- `native-build/fetch-helpers.sh` resolves the **newest stable release tag** of Tor (`tor-X.Y.Z.N`, no alpha, rc or dev) and of i2pd (`X.Y.Z`) on every build and checks out that exact commit. For Tor it asks `github.com/torproject/tor` and the official `gitlab.torproject.org/tpo/core/tor` and takes the highest tag of both. `TOR_REF` and `I2PD_REF` pin a tag for debugging.
+- `native-build/fetch-helpers.sh` resolves the **newest stable release tag** of Tor (`tor-X.Y.Z.N`, no alpha, rc or dev) and of i2pd (`X.Y.Z`) on every build and checks out that exact commit. Tor comes from the official repository `gitlab.torproject.org/tpo/core/tor` only (`TOR_REPO_URLS` can list more). `TOR_REF` and `I2PD_REF` pin a tag for debugging.
 - `native-build/helpers/build-helpers-in-container.sh` cross-builds zlib, OpenSSL, libevent and (for i2pd) Boost with the NDK, all with pinned versions and SHA-256 checksums from `native-build/helpers-source.env`, then Tor and i2pd as static-library executables with 16 KB page alignment. `HELPERS=0` builds without them.
 - Output: `libtor.so` and `libi2pd.so` per ABI in `jniLibs`, `assets/i2pd/certificates`, and `assets/core-manifest/helpers-<abi>.env` with repository, tag, commit and SHA-256 of both binaries. A build is skipped only when the resolved commits, the builder files and the helper files are unchanged.
 - A build without the libraries still works: Settings then shows "not included in this build" next to the switch.
@@ -62,7 +62,7 @@ Next to the green dot and the word "Synced" on the Wallet tab and on the Node ta
 ## 8. Decisions and differences
 
 1. **I2P router.** The reference implementation [`i2p/i2p.i2p`](https://github.com/i2p/i2p.i2p) is a Java router. Embedding it needs a Java runtime inside the app process and several times the memory. This version ships [`i2pd`](https://github.com/PurpleI2P/i2pd), the C++ implementation of the same protocol and the same network, as a native child process like Tor and the node. The node side is identical (SAM on `127.0.0.1`), so the router can be replaced later without touching the node arguments.
-2. **Tor repository.** The GitHub repository `torproject/tor` is a mirror. At the time of writing its newest final tag is `tor-0.4.7.13` and it has no 0.4.8 branch. `fetch-helpers.sh` therefore also asks the official GitLab repository and takes the highest tag of both, so a stale mirror never decides which Tor ships. Check the resolved tag in the helper manifest of every release.
+2. **Tor repository.** Tor is fetched from the official GitLab repository only. The GitHub repository `torproject/tor` is a mirror that lags behind: its newest final tag was `tor-0.4.7.13` while the official repository was at 0.4.9. The first release build resolved `tor-0.4.9.14`. Check the resolved tag in the helper manifest of every release.
 3. **Nothing is built on the phone.** All binaries come from the CI build.
 
 ## 9. Risks
