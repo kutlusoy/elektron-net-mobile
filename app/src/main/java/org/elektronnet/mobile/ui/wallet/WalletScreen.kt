@@ -63,8 +63,14 @@ fun WalletScreen(
             androidx.compose.material3.HorizontalDivider(modifier = Modifier.fillMaxWidth(0.25f), thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
             Text(stringResource(R.string.balance_label), color = MaterialTheme.colorScheme.onSurfaceVariant)
             when {
-                balance?.amountText != null ->
-                    Text("${balance.amountText} ${Amount.unitSymbol()}", style = MaterialTheme.typography.displaySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                balance?.amountText != null -> {
+                    val elek = "${balance.amountText} ${Amount.unitSymbol()}"
+                    val fiat = org.elektronnet.mobile.ui.theme.FiatState.text(balance.trustedLep)
+                    val main = if (fiat != null && org.elektronnet.mobile.ui.theme.FiatState.fiatIsMain) fiat else elek
+                    Text(main, style = MaterialTheme.typography.displaySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                    val other = if (main == elek) fiat else elek
+                    other?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                }
                 balance?.waitingForSync == true ->
                     Text(stringResource(R.string.balance_waiting), style = MaterialTheme.typography.titleMedium)
                 else -> Text(stringResource(R.string.balance_unavailable), style = MaterialTheme.typography.titleMedium)

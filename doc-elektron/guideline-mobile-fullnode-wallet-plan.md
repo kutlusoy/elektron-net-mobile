@@ -24,7 +24,7 @@ Requirement levels follow common practice: **MUST** = mandatory for correct/safe
 - Non-custodial wallet on top of the node's own descriptor wallet (keys live in Core, not in Kotlin).
 - Background operation as an opt-out feature with explicit resource limits. The user can stop the node at any time.
 
-**Out of scope for v1 (tracked in §17):** Lightning, hardware signer support, iOS, Tor/I2P, multi-wallet UI, fiat prices.
+**Out of scope for v1 (tracked in §17):** Lightning, hardware signer support, iOS, Tor/I2P, multi-wallet UI (all three were added later; fiat prices are an opt-in setting, see the UX guideline).
 
 **Why a full node instead of an Electrum-style client:** the light-client path requires an external Electrum-protocol server and a per-header SPV difficulty implementation including the Stoic Awakening rules (see `guideline-spv-header-difficulty-verification.md`). The app's own full node validates everything itself, removes the server trust assumption, and needs neither. No server infrastructure of any kind is required to run the app. The cost is storage, battery and bandwidth, which this plan budgets explicitly (§6, §7).
 

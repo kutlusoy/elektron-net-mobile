@@ -795,4 +795,37 @@
     <string name="wallets_reload_result">%1$d개 추가, 목록에서 %2$d개 제거, %3$d개 불러옴.</string>
     <string name="wallets_reload_none">새로 찾은 항목이 없습니다.</string>
     <string name="wallets_reload_failed">노드가 아직 준비되지 않았습니다.</string>
+    <string name="settings_fiat">법정화폐 가치</string>
+    <string name="fiat_switch">법정화폐 가치 표시</string>
+    <string name="fiat_hint">가격 서비스에 ELEK 시세를 요청합니다. 서비스는 사용자의 IP 주소를 봅니다. 끄면 ELEK만 표시됩니다.</string>
+    <string name="fiat_provider">가격 서비스</string>
+    <string name="fiat_provider_add">서비스 추가</string>
+    <string name="fiat_provider_edit">서비스 편집</string>
+    <string name="fiat_provider_delete">삭제</string>
+    <string name="fiat_provider_name">이름</string>
+    <string name="fiat_provider_url">주소 (https). {BASE}와 {QUOTE}는 쌍으로 대체됩니다</string>
+    <string name="fiat_provider_path">응답에서 가격의 경로</string>
+    <string name="fiat_provider_help">예: https://api.example.org/ticker/{BASE}-{QUOTE} 및 경로 data.price. {base}와 {quote}는 소문자 형태이며 경로에서도 쓸 수 있습니다. 숫자는 목록 항목을 고르고 (data.0.last), *는 객체의 첫 항목을 가져옵니다. 실제 시장 없이 시험하려면 고정 주소를 쓰세요: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} 및 경로 bitcoin.{quote}. 그러면 결과가 ELEK 가격을 대신합니다.</string>
+    <string name="fiat_pair">통화 쌍</string>
+    <string name="fiat_pair_add">직접 쌍 추가</string>
+    <string name="fiat_pair_code">통화 코드, 예: PLN 또는 USDT</string>
+    <string name="fiat_pair_help">서비스에 해당 시장이 있으면 어떤 코드든 동작합니다. 없으면 ELEK만 표시됩니다.</string>
+    <string name="fiat_order_elek">1 %1$s의 가격 (%2$s)</string>
+    <string name="fiat_order_fiat">1 %1$s의 가격 (%2$s), 환산</string>
+    <string name="fiat_main">기본 표시</string>
+    <string name="fiat_main_elek">ELEK 금액 (내 단위)</string>
+    <string name="fiat_main_fiat">법정화폐 금액</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">%1$s 시장을 찾을 수 없습니다. ELEK만 표시됩니다.</string>
+    <string name="fiat_status_failed">가격 서비스에 연결할 수 없습니다. ELEK만 표시됩니다.</string>
+    <string name="fiat_status_loading">시세 불러오는 중…</string>
+    <string name="fiat_refresh">지금 새로고침</string>
+    <string name="send_enter_in">금액 입력 단위</string>
+    <string name="fiat_ticker">거래소에서의 ELEK 심볼</string>
+    <string name="fiat_ticker_hint">시장 이름을 만듭니다 (예: ELEK_EUR). 거래소가 ELEK을 다른 심볼로 상장하면 바꾸세요.</string>
+    <string name="fiat_provider_gecko">CoinGecko 단순 가격 주소에는 경로가 필요 없습니다. ids=bitcoin만 허용되며, 상장이 없는 동안 Bitcoin 가격이 ELEK을 대신합니다.</string>
+    <string name="fiat_provider_reject">CoinGecko 주소는 bitcoin만 허용됩니다.</string>
+    <string name="fiat_status_limited">가격 서비스가 요청을 제한합니다. 앱이 나중에 다시 시도합니다. ELEK만 표시됩니다.</string>
+    <string name="fiat_fallback">예비 서비스</string>
+    <string name="fiat_fallback_hint">위 서비스가 실패하거나 해당 시장이 없으면 여기서 켠 서비스를 그 순서대로 시도합니다. 필요할 때만 요청합니다.</string>
 </resources>

@@ -126,6 +126,10 @@ class SettingsStore(context: Context) {
         get() = AmountUnit.entries.firstOrNull { it.name == prefs.getString(AMOUNT_UNIT, null) } ?: AmountUnit.Elek
         set(value) = prefs.edit().putString(AMOUNT_UNIT, value.name).apply()
 
+    var fiat: org.elektronnet.mobile.fiat.FiatSettings
+        get() = org.elektronnet.mobile.fiat.FiatSettings.decode(prefs.getString(FIAT, null))
+        set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
+
     var nodeOnly: Boolean
         get() = prefs.getBoolean(NODE_ONLY, false)
         set(value) = prefs.edit().putBoolean(NODE_ONLY, value).apply()
@@ -241,6 +245,7 @@ class SettingsStore(context: Context) {
         const val RECEIVE_ADDRESS = "receive_address"
         const val LOCK_GRACE = "lock_grace_ms"
         const val AMOUNT_UNIT = "amount_unit"
+        const val FIAT = "fiat"
         const val NODE_ONLY = "node_only"
         const val NOTIFY_INCOMING = "notify_incoming"
         const val SEEN_INCOMING = "seen_incoming"

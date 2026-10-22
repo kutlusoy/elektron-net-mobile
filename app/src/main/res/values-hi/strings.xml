@@ -795,4 +795,37 @@
     <string name="wallets_reload_result">%1$d जोड़े गए, %2$d सूची से हटाए गए, %3$d लोड किए गए।</string>
     <string name="wallets_reload_none">कुछ नया नहीं मिला।</string>
     <string name="wallets_reload_failed">नोड अभी तैयार नहीं है।</string>
+    <string name="settings_fiat">फिएट मूल्य</string>
+    <string name="fiat_switch">फिएट मूल्य दिखाएँ</string>
+    <string name="fiat_hint">ELEK की दर किसी मूल्य सेवा से पूछता है। सेवा आपका IP पता देखती है। बंद: केवल ELEK दिखता है।</string>
+    <string name="fiat_provider">मूल्य सेवा</string>
+    <string name="fiat_provider_add">सेवा जोड़ें</string>
+    <string name="fiat_provider_edit">सेवा संपादित करें</string>
+    <string name="fiat_provider_delete">हटाएँ</string>
+    <string name="fiat_provider_name">नाम</string>
+    <string name="fiat_provider_url">पता (https), {BASE} और {QUOTE} जोड़ी से बदल दिए जाते हैं</string>
+    <string name="fiat_provider_path">उत्तर में मूल्य का पथ</string>
+    <string name="fiat_provider_help">उदाहरण: https://api.example.org/ticker/{BASE}-{QUOTE} और पथ data.price। {base} और {quote} छोटे अक्षरों वाले रूप हैं, पथ में भी चलते हैं। संख्याएँ सूची की प्रविष्टि चुनती हैं (data.0.last), * ऑब्जेक्ट की पहली प्रविष्टि लेता है। असली बाज़ार के बिना परखने के लिए स्थिर पता लें: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} और पथ bitcoin.{quote}। तब परिणाम ELEK मूल्य की जगह लेता है।</string>
+    <string name="fiat_pair">मुद्रा जोड़ी</string>
+    <string name="fiat_pair_add">अपनी जोड़ी जोड़ें</string>
+    <string name="fiat_pair_code">मुद्रा कोड, जैसे PLN या USDT</string>
+    <string name="fiat_pair_help">यदि सेवा में उसके लिए बाज़ार है तो कोई भी कोड चलता है। न हो तो केवल ELEK दिखता है।</string>
+    <string name="fiat_order_elek">1 %1$s का मूल्य %2$s में</string>
+    <string name="fiat_order_fiat">1 %1$s का मूल्य %2$s में, परिवर्तित</string>
+    <string name="fiat_main">मुख्य प्रदर्शन</string>
+    <string name="fiat_main_elek">ELEK राशियाँ (आपकी इकाई में)</string>
+    <string name="fiat_main_fiat">फिएट राशियाँ</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">%1$s बाज़ार नहीं मिला। केवल ELEK दिखता है।</string>
+    <string name="fiat_status_failed">मूल्य सेवा तक पहुँच नहीं हो पा रही। केवल ELEK दिखता है।</string>
+    <string name="fiat_status_loading">दर लोड हो रही है…</string>
+    <string name="fiat_refresh">अभी ताज़ा करें</string>
+    <string name="send_enter_in">राशि दर्ज करें</string>
+    <string name="fiat_ticker">एक्सचेंजों पर ELEK का प्रतीक</string>
+    <string name="fiat_ticker_hint">बाज़ार का नाम बनाता है, जैसे ELEK_EUR। यदि कोई एक्सचेंज ELEK को किसी और प्रतीक से सूचीबद्ध करे तो इसे बदलें।</string>
+    <string name="fiat_provider_gecko">CoinGecko के सरल मूल्य पते को पथ नहीं चाहिए। केवल ids=bitcoin स्वीकार है, जब तक लिस्टिंग नहीं है, Bitcoin का मूल्य ELEK की जगह लेता है।</string>
+    <string name="fiat_provider_reject">CoinGecko के पते केवल bitcoin के लिए स्वीकार हैं।</string>
+    <string name="fiat_status_limited">मूल्य सेवा अनुरोधों को सीमित करती है। ऐप बाद में फिर कोशिश करेगा। केवल ELEK दिखता है।</string>
+    <string name="fiat_fallback">बैकअप सेवाएँ</string>
+    <string name="fiat_fallback_hint">यदि ऊपर की सेवा विफल हो या उसमें वह बाज़ार न हो, तो यहाँ चालू की गई सेवाएँ उसी क्रम में आज़माई जाती हैं। उनसे केवल ज़रूरत पड़ने पर पूछा जाता है।</string>
 </resources>

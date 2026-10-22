@@ -58,6 +58,7 @@ import org.elektronnet.mobile.ui.model.SendInput
 import org.elektronnet.mobile.wallet.AddressFormat
 import org.elektronnet.mobile.wallet.Amount
 import org.elektronnet.mobile.wallet.AmountUnit
+import org.elektronnet.mobile.fiat.FiatRates
 import org.elektronnet.mobile.wallet.EscrowRecord
 import org.elektronnet.mobile.wallet.FeeLevel
 import org.elektronnet.mobile.wallet.FeeOption
@@ -99,7 +100,13 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
 
     val resolved = SendInput.recipient(recipientText, NodeHost.paymentUri, org.elektronnet.mobile.wallet.AddressCheck(ChainConfig.isTestnet), ChainConfig.uriScheme)
     val spendable = if (selectedCoins.isNotEmpty()) selectedCoins.sumOf { it.amountLep } else available ?: 0L
-    val amountState = SendInput.amount(amountText, spendable)
+    val fiat = org.elektronnet.mobile.ui.theme.FiatState.current
+    var inFiat by remember { mutableStateOf(false) }
+    val fiatInput = if (inFiat) fiat else null
+    LaunchedEffect(fiat == null) {
+        if (fiat == null && inFiat) { amountText = ""; inFiat = false }
+    }
+    val amountState = SendInput.amount(amountText, spendable, fiatInput)
     val customFee = SendInput.customFee(customText, floor)
 
     SecureWindow(step == Step.Review || step == Step.Confirm || step == Step.Working)
@@ -120,7 +127,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     LaunchedEffect(recipientText, resolved.address) {
         val isLink = recipientText.trim().startsWith(ChainConfig.uriScheme + ":", ignoreCase = true)
         if (isLink && resolved.usable && step == Step.Recipient) {
-            resolved.amountLep?.let { amountText = Amount.display(it); max = false }
+            resolved.amountLep?.let { amountText = Amount.display(it); max = false; inFiat = false }
             noteFromLink = resolved.note
         }
     }
@@ -248,10 +255,29 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         TextButton(onClick = { selectedCoins = emptyList() }) { Text(stringResource(R.string.coinpick_clear)) }
                     }
                 }
+                if (fiat != null) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(R.string.send_enter_in), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        listOf(false to Amount.unitSymbol(), true to fiat.quote).forEach { (fiatMode, name) ->
+                            val choose = {
+                                if (inFiat != fiatMode) {
+                                    val lep = (amountState as? AmountState.Ok)?.lep
+                                    amountText = when {
+                                        lep == null -> ""
+                                        fiatMode -> FiatRates.inputText(lep, fiat)
+                                        else -> Amount.display(lep)
+                                    }
+                                    inFiat = fiatMode
+                                }
+                            }
+                            if (inFiat == fiatMode) Button(onClick = choose) { Text(name) } else OutlinedButton(onClick = choose) { Text(name) }
+                        }
+                    }
+                }
                 OutlinedTextField(
-                    value = if (max) Amount.display(spendable) else amountText,
+                    value = if (max) (if (fiatInput != null) FiatRates.inputText(spendable, fiatInput) else Amount.display(spendable)) else amountText,
                     onValueChange = { amountText = it; max = false },
-                    label = { Text(stringResource(R.string.receive_amount, Amount.unitSymbol())) },
+                    label = { Text(stringResource(R.string.receive_amount, fiatInput?.quote ?: Amount.unitSymbol())) },
                     enabled = !max,
                     singleLine = true,
                     isError = !max && (amountState == AmountState.Invalid || amountState is AmountState.Over),
@@ -269,9 +295,17 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         else -> Unit
                     }
                 }
-                (amountState as? AmountState.Ok)?.takeIf { !max && Amount.unit != AmountUnit.Elek }?.let {
+                (amountState as? AmountState.Ok)?.takeIf { !max && !inFiat && Amount.unit != AmountUnit.Elek }?.let {
                     Text("= " + Amount.formatIn(AmountUnit.Elek, it.lep) + " " + AmountUnit.Elek.symbol, color = MaterialTheme.colorScheme.primary)
                 }
+                (if (max) spendable else (amountState as? AmountState.Ok)?.lep)?.let { lep ->
+                    if (inFiat) {
+                        Text("\u2248 " + Amount.displayWithUnit(lep), color = MaterialTheme.colorScheme.primary)
+                    } else {
+                        org.elektronnet.mobile.ui.theme.FiatState.text(lep)?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    }
+                }
+                fiat?.let { Text(stringResource(R.string.fiat_status_ok, FiatRates.format(Amount.LEP_PER_ELEK, it)), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 noteFromLink?.let { Text(stringResource(R.string.send_link_note, it), color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 Button(
                     onClick = {
@@ -363,17 +397,19 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                             fontFamily = ElektronMono,
                         )
                     }
-                    ReviewLine(stringResource(if (prepared?.request?.subtracts == true) R.string.send_review_gets else R.string.send_review_amount)) { Text(elek(review.amountLep), style = MaterialTheme.typography.titleLarge) }
+                    ReviewLine(stringResource(if (prepared?.request?.subtracts == true) R.string.send_review_gets else R.string.send_review_amount)) { Text(elek(review.amountLep), style = MaterialTheme.typography.titleLarge); FiatLine(review.amountLep) }
                     ReviewLine(stringResource(R.string.tx_fee)) {
                         Text(elek(review.feeLep) + "  (" + stringResource(R.string.send_fee_rate, review.feeRate.toPlainString()) + ")")
+                        FiatLine(review.feeLep)
                     }
-                    ReviewLine(stringResource(R.string.send_review_total)) { Text(elek(review.totalLep), style = MaterialTheme.typography.titleLarge) }
+                    ReviewLine(stringResource(R.string.send_review_total)) { Text(elek(review.totalLep), style = MaterialTheme.typography.titleLarge); FiatLine(review.totalLep) }
                     Button(onClick = { step = Step.Confirm }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(if (escrow != null) R.string.escrow_sign_action else R.string.action_send)) }
                 }
             }
             Step.Confirm -> {
                 Text(stringResource(R.string.send_confirm_title), style = MaterialTheme.typography.headlineSmall)
                 Text(stringResource(R.string.send_confirm_body))
+                prepared?.review?.let { Text(elek(it.totalLep), style = MaterialTheme.typography.titleLarge); FiatLine(it.totalLep) }
                 SecretField(
                     value = passphrase,
                     onValueChange = { passphrase = it },
@@ -404,7 +440,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     OutlinedButton(onClick = { onDone(null) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_done_close)) }
                 } else {
                     Text(stringResource(R.string.send_done_title), style = MaterialTheme.typography.headlineSmall)
-                    prepared?.review?.let { Text(elek(it.amountLep)) }
+                    prepared?.review?.let { Text(elek(it.amountLep)); FiatLine(it.amountLep) }
                     Button(onClick = { onDone(txid) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_view_tx)) }
                     OutlinedButton(onClick = { onDone(null) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_done_close)) }
                 }
@@ -416,6 +452,11 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
 @Composable
 private fun elek(lep: Long): String =
     Amount.displayWithUnit(lep) + if (Amount.unit != AmountUnit.Elek) " (= " + Amount.formatIn(AmountUnit.Elek, lep) + " " + AmountUnit.Elek.symbol + ")" else ""
+
+@Composable
+private fun FiatLine(lep: Long) {
+    org.elektronnet.mobile.ui.theme.FiatState.text(lep)?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+}
 
 @Composable
 private fun ReviewLine(label: String, content: @Composable () -> Unit) {

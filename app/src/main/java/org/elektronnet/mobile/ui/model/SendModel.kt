@@ -47,9 +47,10 @@ object SendInput {
         return ResolvedRecipient(stateOf(kind), if (kind == AddressKind.Native || kind == AddressKind.LegacyBase58) check.normalized(trimmed) else null, null, null)
     }
 
-    fun amount(text: String, availableLep: Long): AmountState {
+    // fiatRate set: the text is an amount in the fiat currency of that rate
+    fun amount(text: String, availableLep: Long, fiatRate: org.elektronnet.mobile.fiat.FiatRate? = null): AmountState {
         if (text.isBlank()) return AmountState.Empty
-        val lep = Amount.parseIn(Amount.unit, text, allowComma = true) ?: return AmountState.Invalid
+        val lep = (if (fiatRate != null) org.elektronnet.mobile.fiat.FiatRates.lepFromFiat(text, fiatRate) else Amount.parseIn(Amount.unit, text, allowComma = true)) ?: return AmountState.Invalid
         return if (lep > availableLep) AmountState.Over(availableLep) else AmountState.Ok(lep)
     }
 

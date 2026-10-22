@@ -795,4 +795,37 @@
     <string name="wallets_reload_result">%1$d eklendi, %2$d listeden kaldırıldı, %3$d yüklendi.</string>
     <string name="wallets_reload_none">Yeni bir şey bulunamadı.</string>
     <string name="wallets_reload_failed">Düğüm henüz hazır değil.</string>
+    <string name="settings_fiat">Fiat değeri</string>
+    <string name="fiat_switch">Fiat değerini göster</string>
+    <string name="fiat_hint">ELEK kurunu bir fiyat hizmetinden sorar. Hizmet IP adresini görür. Kapalı: yalnızca ELEK gösterilir.</string>
+    <string name="fiat_provider">Fiyat hizmeti</string>
+    <string name="fiat_provider_add">Hizmet ekle</string>
+    <string name="fiat_provider_edit">Hizmeti düzenle</string>
+    <string name="fiat_provider_delete">Sil</string>
+    <string name="fiat_provider_name">Ad</string>
+    <string name="fiat_provider_url">Adres (https), {BASE} ve {QUOTE} çiftle değiştirilir</string>
+    <string name="fiat_provider_path">Yanıttaki fiyatın yolu</string>
+    <string name="fiat_provider_help">Örnek: https://api.example.org/ticker/{BASE}-{QUOTE} ve data.price yolu. {base} ve {quote} küçük harfli biçimlerdir, yolda da çalışır. Sayılar bir liste öğesini seçer (data.0.last), * bir nesnenin ilk girdisini alır. Gerçek piyasa olmadan denemek için sabit bir adres kullan: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} ve bitcoin.{quote} yolu. Sonuç o zaman ELEK fiyatının yerini tutar.</string>
+    <string name="fiat_pair">Para birimi çifti</string>
+    <string name="fiat_pair_add">Kendi çiftini ekle</string>
+    <string name="fiat_pair_code">Para birimi kodu, örneğin PLN veya USDT</string>
+    <string name="fiat_pair_help">Fiyat hizmetinde o kod için bir piyasa varsa her kod çalışır. Yoksa yalnızca ELEK gösterilir.</string>
+    <string name="fiat_order_elek">1 %1$s fiyatı, %2$s cinsinden</string>
+    <string name="fiat_order_fiat">1 %1$s fiyatı, %2$s cinsinden, çevrilmiş</string>
+    <string name="fiat_main">Ana görünüm</string>
+    <string name="fiat_main_elek">ELEK tutarları (kendi biriminde)</string>
+    <string name="fiat_main_fiat">Fiat tutarları</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">%1$s piyasası bulunamadı. Yalnızca ELEK gösterilir.</string>
+    <string name="fiat_status_failed">Fiyat hizmetine ulaşılamıyor. Yalnızca ELEK gösterilir.</string>
+    <string name="fiat_status_loading">Kur yükleniyor…</string>
+    <string name="fiat_refresh">Şimdi yenile</string>
+    <string name="send_enter_in">Tutarı şu birimde gir</string>
+    <string name="fiat_ticker">ELEK\'in borsalardaki sembolü</string>
+    <string name="fiat_ticker_hint">Piyasa adını oluşturur, örneğin ELEK_EUR. Bir borsa ELEK\'i başka bir sembolle listeliyorsa değiştirin.</string>
+    <string name="fiat_provider_gecko">CoinGecko basit fiyat adresi için yol gerekmez. Yalnızca ids=bitcoin kabul edilir, listeleme olmadığı sürece Bitcoin fiyatı ELEK\'in yerini tutar.</string>
+    <string name="fiat_provider_reject">CoinGecko adresleri yalnızca bitcoin için kabul edilir.</string>
+    <string name="fiat_status_limited">Fiyat hizmeti istekleri sınırlıyor. Uygulama daha sonra tekrar dener. Yalnızca ELEK gösterilir.</string>
+    <string name="fiat_fallback">Yedek hizmetler</string>
+    <string name="fiat_fallback_hint">Yukarıdaki hizmet çalışmazsa veya piyasayı bilmiyorsa, burada açtıklarınız bu sırayla denenir. Yalnızca gerektiğinde sorulurlar.</string>
 </resources>

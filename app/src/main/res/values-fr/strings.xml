@@ -795,4 +795,37 @@
     <string name="wallets_reload_result">%1$d ajoutés, %2$d retirés de la liste, %3$d chargés.</string>
     <string name="wallets_reload_none">Rien de nouveau trouvé.</string>
     <string name="wallets_reload_failed">Le nœud n\'est pas encore prêt.</string>
+    <string name="settings_fiat">Valeur en monnaie fiat</string>
+    <string name="fiat_switch">Afficher la valeur en monnaie fiat</string>
+    <string name="fiat_hint">Interroge un service de cours pour obtenir le taux de l\'ELEK. Le service voit ton adresse IP. Désactivé : seul l\'ELEK est affiché.</string>
+    <string name="fiat_provider">Service de cours</string>
+    <string name="fiat_provider_add">Ajouter un service</string>
+    <string name="fiat_provider_edit">Modifier le service</string>
+    <string name="fiat_provider_delete">Supprimer</string>
+    <string name="fiat_provider_name">Nom</string>
+    <string name="fiat_provider_url">Adresse (https), {BASE} et {QUOTE} sont remplacés par la paire</string>
+    <string name="fiat_provider_path">Chemin du prix dans la réponse</string>
+    <string name="fiat_provider_help">Exemple : https://api.example.org/ticker/{BASE}-{QUOTE} avec le chemin data.price. {base} et {quote} sont les formes en minuscules, valables aussi dans le chemin. Les nombres choisissent un élément de liste (data.0.last), * prend la première entrée d\'un objet. Pour tester sans vrai marché, utilise une adresse fixe : https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} avec le chemin bitcoin.{quote}. Le résultat tient alors lieu de cours de l\'ELEK.</string>
+    <string name="fiat_pair">Paire de devises</string>
+    <string name="fiat_pair_add">Ajouter une paire personnalisée</string>
+    <string name="fiat_pair_code">Code de devise, par exemple PLN ou USDT</string>
+    <string name="fiat_pair_help">Tout code fonctionne si le service a un marché pour lui. Sinon, seul l\'ELEK est affiché.</string>
+    <string name="fiat_order_elek">Prix de 1 %1$s en %2$s</string>
+    <string name="fiat_order_fiat">Prix de 1 %1$s en %2$s, converti</string>
+    <string name="fiat_main">Affichage principal</string>
+    <string name="fiat_main_elek">Montants en ELEK (dans ton unité)</string>
+    <string name="fiat_main_fiat">Montants en monnaie fiat</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">Aucun marché %1$s trouvé. Seul l\'ELEK est affiché.</string>
+    <string name="fiat_status_failed">Le service de cours est injoignable. Seul l\'ELEK est affiché.</string>
+    <string name="fiat_status_loading">Chargement du taux…</string>
+    <string name="fiat_refresh">Actualiser maintenant</string>
+    <string name="send_enter_in">Saisir le montant en</string>
+    <string name="fiat_ticker">Symbole de l\'ELEK sur les plateformes</string>
+    <string name="fiat_ticker_hint">Forme le nom du marché, par exemple ELEK_EUR. Modifie-le si une plateforme liste l\'ELEK sous un autre symbole.</string>
+    <string name="fiat_provider_gecko">Une adresse de prix simple CoinGecko n\'a pas besoin de chemin. Seul ids=bitcoin est accepté, le prix du Bitcoin tient alors lieu d\'ELEK tant qu\'il n\'y a pas de cotation.</string>
+    <string name="fiat_provider_reject">Les adresses CoinGecko ne sont acceptées que pour bitcoin.</string>
+    <string name="fiat_status_limited">Le service de cours limite les requêtes. L\'app réessaiera plus tard. Seul l\'ELEK est affiché.</string>
+    <string name="fiat_fallback">Services de secours</string>
+    <string name="fiat_fallback_hint">Si le service ci-dessus échoue ou n\'a pas ce marché, ceux que tu actives ici sont essayés dans cet ordre. Ils ne sont interrogés qu\'en cas de besoin.</string>
 </resources>

@@ -18,11 +18,12 @@ data class HistoryRow(
     val confirmations: Int,
     val subtitle: String?,
     val timeSeconds: Long,
+    val netLep: Long = 0,
 )
 
 data class HistoryDay(val date: LocalDate, val rows: List<HistoryRow>)
 
-data class BalanceUi(val amountText: String?, val pendingText: String?, val waitingForSync: Boolean)
+data class BalanceUi(val amountText: String?, val pendingText: String?, val waitingForSync: Boolean, val trustedLep: Long = 0, val pendingLep: Long = 0)
 
 enum class HistoryFilter { All, Received, Sent }
 
@@ -68,6 +69,7 @@ object HistoryModel {
             confirmations = item.confirmations,
             subtitle = item.label ?: item.address?.let(::shorten),
             timeSeconds = item.timeSeconds,
+            netLep = item.netLep,
         )
     }
 
@@ -79,6 +81,8 @@ object HistoryModel {
             amountText = if (!synced && empty) null else Amount.display(balances.trustedLep),
             pendingText = if (pending != 0L) Amount.display(Math.abs(pending)) else null,
             waitingForSync = !synced && empty,
+            trustedLep = balances.trustedLep,
+            pendingLep = Math.abs(pending),
         )
     }
 

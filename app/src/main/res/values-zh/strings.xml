@@ -795,4 +795,37 @@
     <string name="wallets_reload_result">已添加 %1$d 个，已从列表移除 %2$d 个，已加载 %3$d 个。</string>
     <string name="wallets_reload_none">未发现新内容。</string>
     <string name="wallets_reload_failed">节点尚未就绪。</string>
+    <string name="settings_fiat">法币价值</string>
+    <string name="fiat_switch">显示法币价值</string>
+    <string name="fiat_hint">向价格服务查询 ELEK 汇率。该服务会看到你的 IP 地址。关闭时只显示 ELEK。</string>
+    <string name="fiat_provider">价格服务</string>
+    <string name="fiat_provider_add">添加服务</string>
+    <string name="fiat_provider_edit">编辑服务</string>
+    <string name="fiat_provider_delete">删除</string>
+    <string name="fiat_provider_name">名称</string>
+    <string name="fiat_provider_url">地址 (https)，{BASE} 和 {QUOTE} 会被货币对替换</string>
+    <string name="fiat_provider_path">响应中价格的路径</string>
+    <string name="fiat_provider_help">示例：https://api.example.org/ticker/{BASE}-{QUOTE}，路径 data.price。{base} 和 {quote} 是小写形式，在路径中同样可用。数字选择列表项 (data.0.last)，* 取对象的第一项。没有真实市场时可用固定地址测试：https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote}，路径 bitcoin.{quote}。结果将代替 ELEK 价格。</string>
+    <string name="fiat_pair">货币对</string>
+    <string name="fiat_pair_add">添加自己的货币对</string>
+    <string name="fiat_pair_code">货币代码，例如 PLN 或 USDT</string>
+    <string name="fiat_pair_help">只要价格服务有对应市场，任何代码都可用。没有时只显示 ELEK。</string>
+    <string name="fiat_order_elek">1 %1$s 的价格 (%2$s)</string>
+    <string name="fiat_order_fiat">1 %1$s 的价格 (%2$s)，已换算</string>
+    <string name="fiat_main">主显示</string>
+    <string name="fiat_main_elek">ELEK 金额 (按你的单位)</string>
+    <string name="fiat_main_fiat">法币金额</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">未找到市场 %1$s。只显示 ELEK。</string>
+    <string name="fiat_status_failed">无法连接价格服务。只显示 ELEK。</string>
+    <string name="fiat_status_loading">正在加载汇率…</string>
+    <string name="fiat_refresh">立即刷新</string>
+    <string name="send_enter_in">输入金额单位</string>
+    <string name="fiat_ticker">ELEK 在交易所的代码</string>
+    <string name="fiat_ticker_hint">用于生成市场名称，例如 ELEK_EUR。如果交易所以其他代码上架 ELEK，请修改。</string>
+    <string name="fiat_provider_gecko">CoinGecko 简单价格地址无需路径。只接受 ids=bitcoin，在没有上架前，比特币价格代替 ELEK。</string>
+    <string name="fiat_provider_reject">CoinGecko 地址只接受 bitcoin。</string>
+    <string name="fiat_status_limited">价格服务限制了请求。应用稍后重试。只显示 ELEK。</string>
+    <string name="fiat_fallback">备用服务</string>
+    <string name="fiat_fallback_hint">如果上面的服务失败或没有该市场，这里开启的服务会按顺序尝试。只在需要时才会请求。</string>
 </resources>

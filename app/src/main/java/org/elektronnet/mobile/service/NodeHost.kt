@@ -221,6 +221,7 @@ object NodeHost {
         )
         settings = store
         org.elektronnet.mobile.ui.theme.UnitState.current = store.amountUnit
+        org.elektronnet.mobile.ui.theme.FiatState.load(store.fiat)
         org.elektronnet.mobile.wallet.Amount.unitProvider = { org.elektronnet.mobile.ui.theme.UnitState.current }
         org.elektronnet.mobile.ui.theme.UiState.settings = store.loadUi(org.elektronnet.mobile.ui.theme.Palettes.all.map { it.key }.toSet())
         return store
