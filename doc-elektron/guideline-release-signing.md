@@ -21,7 +21,7 @@ Requirement levels follow common practice: **MUST** = mandatory, **SHOULD** = st
 
 The `release` workflow stops with an error when a secret is missing, and it stops when an APK carries the public test certificate. It cannot produce a test-signed release by accident. Use `prerelease` for everything that is only a test.
 
-**Pre-releases and releases never update each other.** The signatures differ and the application IDs differ (`.nightly` suffix), so a release cannot update a pre-release and a pre-release cannot update a release. Switching means a fresh install and a new setup with the recovery phrase or an exported wallet file. A pre-release is updated by a newer pre-release, a release by a newer release. The pre-release notes say so.
+**Pre-releases and releases never update each other.** The signatures differ and the application IDs differ (`.nightly` suffix), so a release cannot update a pre-release and a pre-release cannot update a release. Switching means a fresh install and a new setup with the recovery phrase or an exported wallet file. A pre-release is updated by a newer pre-release, a release by a newer release. The title and notes of a pre-release build say so (title: "Elektron Mobile v<version> (test build, no updates to or from releases)").
 
 A PGP key is not needed. Android only checks the APK signature, and the Android Developer Verification of Google asks for the APK signing certificate, not for PGP. Users verify a download with the SHA-256 of the file and the signing certificate fingerprint printed in the release notes.
 

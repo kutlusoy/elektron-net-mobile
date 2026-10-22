@@ -128,7 +128,7 @@ jobs:
           manifest=app/src/main/assets/core-manifest/arm64-v8a.env
           get() { grep "^$1=" "$manifest" | cut -d= -f2-; }
           {
-            echo "Elektron Mobile v$VERSION"
+            echo "Elektron Mobile v$VERSION (test build)"
             echo
             echo "Android wallet with its own Elektron Net full node. The version has two parts: the Elektron Net node version ($NODE_VERSION) and the wallet version (m$MOBILE_VERSION). A wallet update without a new node only changes the second part."
             echo
@@ -181,8 +181,8 @@ jobs:
           flags=(--prerelease)
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/*.apk dist/SHA256SUMS.txt --clobber
-            gh release edit "$TAG" --title "Elektron Mobile v$VERSION" --notes-file dist/NOTES.md "${flags[@]}"
+            gh release edit "$TAG" --title "Elektron Mobile v$VERSION (test build, no updates to or from releases)" --notes-file dist/NOTES.md "${flags[@]}"
           else
             gh release create "$TAG" dist/*.apk dist/SHA256SUMS.txt \
-              --target "$TARGET" --title "Elektron Mobile v$VERSION" --notes-file dist/NOTES.md "${flags[@]}"
+              --target "$TARGET" --title "Elektron Mobile v$VERSION (test build, no updates to or from releases)" --notes-file dist/NOTES.md "${flags[@]}"
           fi
