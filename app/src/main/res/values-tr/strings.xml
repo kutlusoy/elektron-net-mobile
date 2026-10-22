@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">Fiyat hizmeti istekleri sınırlıyor. Uygulama daha sonra tekrar dener. Yalnızca ELEK gösterilir.</string>
     <string name="fiat_fallback">Yedek hizmetler</string>
     <string name="fiat_fallback_hint">Yukarıdaki hizmet çalışmazsa veya piyasayı bilmiyorsa, burada açtıklarınız bu sırayla denenir. Yalnızca gerektiğinde sorulurlar.</string>
+    <string name="net_peers">Elle eklenen eşler</string>
+    <string name="net_peer_hint">Bu ağdaki başka bir Elektron düğümünün adresini yazarak veya QR kodundan tarayarak ekleyin. Uygulama şimdi ve her başlangıçta bağlanır.</string>
+    <string name="net_peer_field">Eş adresi</string>
+    <string name="net_peer_add">Ekle</string>
+    <string name="net_peer_scan">QR tara</string>
+    <string name="net_peer_qr">QR göster</string>
+    <string name="net_peer_remove">Kaldır</string>
+    <string name="net_peer_none">Henüz eş eklenmedi.</string>
+    <string name="net_peer_added">Eş eklendi, düğüm bağlanıyor.</string>
+    <string name="net_peer_saved">Eş kaydedildi. Düğüm başlarken kullanılır.</string>
+    <string name="net_peer_exists">Bu eş zaten listede.</string>
+    <string name="net_peer_invalid">Bu geçerli bir Tor veya I2P adresi değil.</string>
 </resources>

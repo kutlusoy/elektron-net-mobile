@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">El servicio de precios limita las solicitudes. La app lo intentará más tarde. Solo se muestra ELEK.</string>
     <string name="fiat_fallback">Servicios de respaldo</string>
     <string name="fiat_fallback_hint">Si el servicio de arriba falla o no tiene ese mercado, se prueban los que actives aquí, en ese orden. Solo se consultan cuando hace falta.</string>
+    <string name="net_peers">Peers añadidos a mano</string>
+    <string name="net_peer_hint">Añade la dirección de otro nodo Elektron en esta red, escrita o escaneada desde su código QR. La app se conecta ahora y en cada inicio.</string>
+    <string name="net_peer_field">Dirección del peer</string>
+    <string name="net_peer_add">Añadir</string>
+    <string name="net_peer_scan">Escanear QR</string>
+    <string name="net_peer_qr">Mostrar QR</string>
+    <string name="net_peer_remove">Quitar</string>
+    <string name="net_peer_none">Aún no hay peers añadidos.</string>
+    <string name="net_peer_added">Peer añadido, el nodo se está conectando.</string>
+    <string name="net_peer_saved">Peer guardado. Se usa cuando el nodo arranque.</string>
+    <string name="net_peer_exists">Este peer ya está en la lista.</string>
+    <string name="net_peer_invalid">No es una dirección válida de Tor o I2P.</string>
 </resources>

@@ -3,10 +3,21 @@ package org.elektronnet.mobile.ui.node
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.Modifier
+import org.elektronnet.mobile.node.PeerAddress
+import org.elektronnet.mobile.ui.tools.Hint
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,8 +54,9 @@ import org.elektronnet.mobile.ui.model.TileValue
 @Composable
 fun NetworkTilesSection(telemetry: Telemetry?) {
     val services = NodeHost.networkServices
+    val network = NodeHost.peerVersion.let { NodeHost.store?.loadNetwork() } ?: NetworkSettings()
     val tiles = NetworkTiles.build(
-        network = NodeHost.store?.loadNetwork() ?: NetworkSettings(),
+        network = network,
         ports = NodeHost.networkPorts,
         torState = services?.torState ?: ServiceState.Stopped,
         torAvailable = services?.torAvailable ?: false,
@@ -54,14 +66,17 @@ fun NetworkTilesSection(telemetry: Telemetry?) {
         peerNetworks = NodeHost.latest?.peerNetworks.orEmpty(),
         torLog = services?.torOutput().orEmpty(),
     )
-    tiles.forEach { NetworkTileCard(it) }
+    tiles.forEach { tile ->
+        NetworkTileCard(tile, network.peers.filter { if (tile.net == ConnNet.Tor) PeerAddress.isOnion(it) else PeerAddress.isI2p(it) })
+    }
 }
 
 @Composable
-private fun NetworkTileCard(tile: NetworkTile) {
+private fun NetworkTileCard(tile: NetworkTile, peers: List<String>) {
     val context = LocalContext.current
     val clipboard = LocalClipboardManager.current
     var showLog by remember { mutableStateOf(false) }
+    var qrFor by remember { mutableStateOf<String?>(null) }
     GlassCard {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -75,12 +90,14 @@ private fun NetworkTileCard(tile: NetworkTile) {
                     Row {
                         TextButton(onClick = { clipboard.setText(AnnotatedString(address)) }) { Text(stringResource(R.string.action_copy)) }
                         TextButton(onClick = { shareText(context, address) }) { Text(stringResource(R.string.action_share)) }
+                        TextButton(onClick = { qrFor = address }) { Text(stringResource(R.string.net_peer_qr)) }
                     }
                 }
             }
             if (tile.net == ConnNet.I2p && tile.rows.any { it.label == TileLabel.Address && it.value == TileValue.Waiting }) {
                 Text(stringResource(R.string.net_tile_i2p_wait), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
+            PeerBlock(tile.net, peers)
             TextButton(onClick = { showLog = !showLog }) { Text(stringResource(if (showLog) R.string.net_tile_log_hide else R.string.net_tile_log_show)) }
             if (showLog) {
                 val services = NodeHost.networkServices
@@ -93,6 +110,19 @@ private fun NetworkTileCard(tile: NetworkTile) {
                 }
             }
         }
+    }
+    qrFor?.let { address ->
+        AlertDialog(
+            onDismissRequest = { qrFor = null },
+            title = { Text(stringResource(if (tile.net == ConnNet.Tor) R.string.net_tor_title else R.string.net_i2p_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    org.elektronnet.mobile.ui.receive.QrView(address)
+                    Text(address, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
+                }
+            },
+            confirmButton = { TextButton(onClick = { qrFor = null }) { Text(stringResource(R.string.action_ok)) } },
+        )
     }
 }
 
@@ -151,4 +181,54 @@ private fun valueText(value: TileValue): String = when (value) {
         },
     )
     TileValue.Waiting -> stringResource(R.string.net_tile_waiting)
+}
+
+@Composable
+private fun PeerBlock(net: ConnNet, peers: List<String>) {
+    val scope = rememberCoroutineScope()
+    var text by remember { mutableStateOf("") }
+    val result = NodeHost.peerResult
+    fun add(value: String) {
+        scope.launch {
+            val outcome = withContext(Dispatchers.IO) { NodeHost.addPeer(value) }
+            if (outcome == NodeHost.PeerResult.Added || outcome == NodeHost.PeerResult.Saved) text = ""
+        }
+    }
+    Text(stringResource(R.string.net_peers), style = MaterialTheme.typography.labelLarge)
+    if (peers.isEmpty()) {
+        Hint(stringResource(R.string.net_peer_none))
+    } else {
+        peers.forEach { peer ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(PeerAddress.shown(peer), fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
+                TextButton(onClick = { scope.launch(Dispatchers.IO) { NodeHost.removePeer(peer) } }) { Text(stringResource(R.string.net_peer_remove)) }
+            }
+        }
+    }
+    OutlinedTextField(
+        value = text,
+        onValueChange = { text = it; NodeHost.peerResult = null },
+        label = { Text(stringResource(R.string.net_peer_field)) },
+        isError = result == NodeHost.PeerResult.Invalid,
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(enabled = text.isNotBlank(), onClick = { add(text) }) { Text(stringResource(R.string.net_peer_add)) }
+        OutlinedButton(onClick = { NodeHost.peerScanRequested = true }) { Text(stringResource(R.string.net_peer_scan)) }
+    }
+    result?.let {
+        Text(
+            stringResource(
+                when (it) {
+                    NodeHost.PeerResult.Added -> R.string.net_peer_added
+                    NodeHost.PeerResult.Saved -> R.string.net_peer_saved
+                    NodeHost.PeerResult.Exists -> R.string.net_peer_exists
+                    NodeHost.PeerResult.Invalid -> R.string.net_peer_invalid
+                },
+            ),
+            color = if (it == NodeHost.PeerResult.Invalid) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+        )
+    }
+    Hint(stringResource(R.string.net_peer_hint))
 }

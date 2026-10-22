@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">Сервис цен ограничивает запросы. Приложение повторит попытку позже. Показывается только ELEK.</string>
     <string name="fiat_fallback">Резервные сервисы</string>
     <string name="fiat_fallback_hint">Если верхний сервис не отвечает или не знает рынок, включённые здесь пробуются по порядку. Они опрашиваются только при необходимости.</string>
+    <string name="net_peers">Пиры, добавленные вручную</string>
+    <string name="net_peer_hint">Добавьте адрес другого узла Elektron в этой сети: введите его или отсканируйте QR-код. Приложение подключается сейчас и при каждом запуске.</string>
+    <string name="net_peer_field">Адрес пира</string>
+    <string name="net_peer_add">Добавить</string>
+    <string name="net_peer_scan">Сканировать QR</string>
+    <string name="net_peer_qr">Показать QR</string>
+    <string name="net_peer_remove">Удалить</string>
+    <string name="net_peer_none">Пиры ещё не добавлены.</string>
+    <string name="net_peer_added">Пир добавлен, узел подключается.</string>
+    <string name="net_peer_saved">Пир сохранён. Он используется при запуске узла.</string>
+    <string name="net_peer_exists">Этот пир уже в списке.</string>
+    <string name="net_peer_invalid">Это неверный адрес Tor или I2P.</string>
 </resources>

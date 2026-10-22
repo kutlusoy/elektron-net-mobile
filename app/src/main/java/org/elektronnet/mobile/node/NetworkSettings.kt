@@ -61,8 +61,16 @@ data class I2pSettings(
 data class NetworkSettings(
     val tor: TorSettings = TorSettings(),
     val i2p: I2pSettings = I2pSettings(),
+    val peers: List<String> = emptyList(),
 ) {
-    fun normalized(): NetworkSettings = NetworkSettings(tor.normalized(), i2p.normalized())
+    fun normalized(): NetworkSettings = NetworkSettings(tor.normalized(), i2p.normalized(), peers.mapNotNull(PeerAddress::parse).distinct().take(MAX_PEERS))
+
+    // peers added by hand, only those of a network that is switched on
+    fun activePeers(): List<String> = normalized().peers.filter { (PeerAddress.isOnion(it) && tor.enabled) || (PeerAddress.isI2p(it) && i2p.enabled) }
+
+    companion object {
+        const val MAX_PEERS = 50
+    }
 }
 
 data class NetworkPorts(

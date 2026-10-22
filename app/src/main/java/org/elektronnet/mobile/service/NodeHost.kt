@@ -510,6 +510,38 @@ object NodeHost {
         return org.elektronnet.mobile.geo.GeoIp(reader).also { geoIp = it }
     }
 
+    enum class PeerResult { Added, Saved, Exists, Invalid }
+
+    var peerResult: PeerResult? by mutableStateOf(null)
+    var peerVersion by mutableStateOf(0)
+    var peerScanRequested by mutableStateOf(false)
+
+    // call from a background thread, it talks to the node
+    fun addPeer(text: String): PeerResult {
+        val arg = org.elektronnet.mobile.node.PeerAddress.parse(text)
+        val store = store
+        val result = when {
+            arg == null || store == null -> PeerResult.Invalid
+            arg in store.manualPeers -> PeerResult.Exists
+            else -> {
+                store.manualPeers = store.manualPeers + arg
+                val running = controller?.current?.takeIf { it.state == NodeState.Running }
+                if (running != null && runCatching { running.rpc.call("addnode", listOf(arg, "add")) }.isSuccess) PeerResult.Added else PeerResult.Saved
+            }
+        }
+        peerResult = result
+        peerVersion++
+        return result
+    }
+
+    fun removePeer(arg: String) {
+        val store = store ?: return
+        store.manualPeers = store.manualPeers - arg
+        controller?.current?.takeIf { it.state == NodeState.Running }?.let { runCatching { it.rpc.call("addnode", listOf(arg, "remove")) } }
+        peerResult = null
+        peerVersion++
+    }
+
     fun telemetry(): org.elektronnet.mobile.node.Telemetry? {
         val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
         return runCatching { supervisor.telemetry() }.getOrNull()

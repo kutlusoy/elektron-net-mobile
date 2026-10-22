@@ -67,8 +67,14 @@ class SettingsStore(context: Context) {
                 bandwidthKbps = prefs.getInt(I2P_BANDWIDTH, i2p.bandwidthKbps),
                 sharePercent = prefs.getInt(I2P_SHARE, i2p.sharePercent),
             ),
+            peers = manualPeers,
         ).normalized()
     }
+
+    // kept apart from the network switches so saving those never overwrites a peer added meanwhile
+    var manualPeers: List<String>
+        get() = runCatching { (Json.parse(prefs.getString(NET_PEERS, null) ?: "[]") as List<*>).mapNotNull { it as? String } }.getOrDefault(emptyList())
+        set(value) = prefs.edit().putString(NET_PEERS, Json.stringify(value)).apply()
 
     private inline fun <reified T : Enum<T>> enumOf(name: String?, default: T): T = enumValues<T>().firstOrNull { it.name == name } ?: default
 
@@ -246,6 +252,7 @@ class SettingsStore(context: Context) {
         const val LOCK_GRACE = "lock_grace_ms"
         const val AMOUNT_UNIT = "amount_unit"
         const val FIAT = "fiat"
+        const val NET_PEERS = "net_peers"
         const val NODE_ONLY = "node_only"
         const val NOTIFY_INCOMING = "notify_incoming"
         const val SEEN_INCOMING = "seen_incoming"

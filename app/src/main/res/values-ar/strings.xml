@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">تحد خدمة الأسعار من الطلبات. سيعيد التطبيق المحاولة لاحقًا. يُعرض ELEK فقط.</string>
     <string name="fiat_fallback">خدمات احتياطية</string>
     <string name="fiat_fallback_hint">إذا تعطلت الخدمة أعلاه أو لم تعرف السوق، تُجرَّب الخدمات التي تفعّلها هنا بهذا الترتيب. ولا تُستعلم إلا عند الحاجة.</string>
+    <string name="net_peers">أقران مضافة يدويًا</string>
+    <string name="net_peer_hint">أضف عنوان عقدة Elektron أخرى على هذه الشبكة، بكتابته أو بمسح رمز QR الخاص بها. يتصل التطبيق الآن وعند كل تشغيل.</string>
+    <string name="net_peer_field">عنوان القرين</string>
+    <string name="net_peer_add">إضافة</string>
+    <string name="net_peer_scan">مسح QR</string>
+    <string name="net_peer_qr">عرض QR</string>
+    <string name="net_peer_remove">إزالة</string>
+    <string name="net_peer_none">لم تتم إضافة أقران بعد.</string>
+    <string name="net_peer_added">تمت إضافة القرين، والعقدة تتصل.</string>
+    <string name="net_peer_saved">تم حفظ القرين. يُستخدم عند بدء العقدة.</string>
+    <string name="net_peer_exists">هذا القرين موجود في القائمة بالفعل.</string>
+    <string name="net_peer_invalid">هذا ليس عنوان Tor أو I2P صالحًا.</string>
 </resources>

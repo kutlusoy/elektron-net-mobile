@@ -54,6 +54,7 @@ import org.elektronnet.mobile.ui.wallet.TxDetailsScreen
 import java.time.ZoneId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.runtime.LaunchedEffect
 import org.elektronnet.mobile.runtime.Headline
@@ -67,7 +68,7 @@ import org.elektronnet.mobile.ui.wallet.WalletScreen
 
 private data class WalletData(val balances: Balances, val items: List<TxItem>)
 
-private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet, Console, Contacts }
+private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet, Console, Contacts, PeerScan }
 
 private const val RECENT_COUNT = 8
 
@@ -102,6 +103,13 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     var nodeOnly by remember { mutableStateOf(store?.nodeOnly == true) }
     val shell = walletReady || nodeOnly
 
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    LaunchedEffect(NodeHost.peerScanRequested) {
+        if (NodeHost.peerScanRequested) {
+            NodeHost.peerScanRequested = false
+            show(Overlay.PeerScan)
+        }
+    }
     val fiatSettings = org.elektronnet.mobile.ui.theme.FiatState.settings
     LaunchedEffect(fiatSettings) {
         if (fiatSettings.enabled) delay(FIAT_DEBOUNCE_MS)
@@ -256,6 +264,13 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 )
                 Overlay.Console -> ConsoleRoot(onClose = { show(Overlay.None) })
                 Overlay.Contacts -> ContactsScreen(onBack = { show(Overlay.None) })
+                Overlay.PeerScan -> org.elektronnet.mobile.ui.scan.QrScannerScreen(
+                    onResult = { text ->
+                        show(Overlay.None)
+                        scope.launch(Dispatchers.IO) { NodeHost.addPeer(text) }
+                    },
+                    onClose = { show(Overlay.None) },
+                )
                 Overlay.None -> Unit
             }
             if (overlay != Overlay.None) return@Box

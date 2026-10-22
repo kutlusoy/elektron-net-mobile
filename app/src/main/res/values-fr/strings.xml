@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">Le service de cours limite les requêtes. L\'app réessaiera plus tard. Seul l\'ELEK est affiché.</string>
     <string name="fiat_fallback">Services de secours</string>
     <string name="fiat_fallback_hint">Si le service ci-dessus échoue ou n\'a pas ce marché, ceux que tu actives ici sont essayés dans cet ordre. Ils ne sont interrogés qu\'en cas de besoin.</string>
+    <string name="net_peers">Pairs ajoutés à la main</string>
+    <string name="net_peer_hint">Ajoute l\'adresse d\'un autre nœud Elektron sur ce réseau, saisie ou scannée depuis son code QR. L\'app se connecte maintenant et à chaque démarrage.</string>
+    <string name="net_peer_field">Adresse du pair</string>
+    <string name="net_peer_add">Ajouter</string>
+    <string name="net_peer_scan">Scanner un QR</string>
+    <string name="net_peer_qr">Afficher le QR</string>
+    <string name="net_peer_remove">Retirer</string>
+    <string name="net_peer_none">Aucun pair ajouté pour l\'instant.</string>
+    <string name="net_peer_added">Pair ajouté, le nœud se connecte.</string>
+    <string name="net_peer_saved">Pair enregistré. Il est utilisé au démarrage du nœud.</string>
+    <string name="net_peer_exists">Ce pair est déjà dans la liste.</string>
+    <string name="net_peer_invalid">Ce n\'est pas une adresse Tor ou I2P valide.</string>
 </resources>

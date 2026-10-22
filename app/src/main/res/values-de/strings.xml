@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">Der Kursdienst begrenzt die Anfragen. Die App versucht es später erneut. Es wird nur ELEK angezeigt.</string>
     <string name="fiat_fallback">Ersatzdienste</string>
     <string name="fiat_fallback_hint">Fällt der Dienst oben aus oder kennt er den Markt nicht, werden die hier eingeschalteten in dieser Reihenfolge versucht. Sie werden nur bei Bedarf gefragt.</string>
+    <string name="net_peers">Von Hand hinzugefügte Peers</string>
+    <string name="net_peer_hint">Trage die Adresse eines anderen Elektron-Nodes in diesem Netz ein oder scanne seinen QR-Code. Die App verbindet sich jetzt und bei jedem Start erneut.</string>
+    <string name="net_peer_field">Peer-Adresse</string>
+    <string name="net_peer_add">Hinzufügen</string>
+    <string name="net_peer_scan">QR scannen</string>
+    <string name="net_peer_qr">QR zeigen</string>
+    <string name="net_peer_remove">Entfernen</string>
+    <string name="net_peer_none">Noch keine Peers hinzugefügt.</string>
+    <string name="net_peer_added">Peer hinzugefügt, der Node verbindet sich.</string>
+    <string name="net_peer_saved">Peer gespeichert. Er wird beim Start des Nodes verwendet.</string>
+    <string name="net_peer_exists">Dieser Peer steht schon in der Liste.</string>
+    <string name="net_peer_invalid">Das ist keine gültige Adresse für Tor oder I2P.</string>
 </resources>

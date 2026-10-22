@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">Layanan harga membatasi permintaan. Aplikasi mencoba lagi nanti. Hanya ELEK yang ditampilkan.</string>
     <string name="fiat_fallback">Layanan cadangan</string>
     <string name="fiat_fallback_hint">Jika layanan di atas gagal atau tidak punya pasar itu, layanan yang Anda aktifkan di sini dicoba berurutan. Layanan ini hanya ditanya saat diperlukan.</string>
+    <string name="net_peers">Peer yang ditambahkan manual</string>
+    <string name="net_peer_hint">Tambahkan alamat node Elektron lain di jaringan ini, diketik atau dipindai dari kode QR-nya. Aplikasi terhubung sekarang dan setiap kali mulai.</string>
+    <string name="net_peer_field">Alamat peer</string>
+    <string name="net_peer_add">Tambah</string>
+    <string name="net_peer_scan">Pindai QR</string>
+    <string name="net_peer_qr">Tampilkan QR</string>
+    <string name="net_peer_remove">Hapus</string>
+    <string name="net_peer_none">Belum ada peer yang ditambahkan.</string>
+    <string name="net_peer_added">Peer ditambahkan, node sedang terhubung.</string>
+    <string name="net_peer_saved">Peer disimpan. Dipakai saat node mulai.</string>
+    <string name="net_peer_exists">Peer ini sudah ada di daftar.</string>
+    <string name="net_peer_invalid">Ini bukan alamat Tor atau I2P yang valid.</string>
 </resources>

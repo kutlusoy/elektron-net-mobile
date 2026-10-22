@@ -839,4 +839,16 @@
     <string name="fiat_status_limited">The price service limits requests. The app tries again later. Only ELEK is shown.</string>
     <string name="fiat_fallback">Fallback services</string>
     <string name="fiat_fallback_hint">If the service above fails or has no such market, the ones you switch on here are tried in that order. They are only asked when needed.</string>
+    <string name="net_peers">Peers added by hand</string>
+    <string name="net_peer_hint">Add the address of another Elektron node on this network, typed in or scanned from its QR code. The app connects now and again at every start.</string>
+    <string name="net_peer_field">Peer address</string>
+    <string name="net_peer_add">Add</string>
+    <string name="net_peer_scan">Scan QR</string>
+    <string name="net_peer_qr">Show QR</string>
+    <string name="net_peer_remove">Remove</string>
+    <string name="net_peer_none">No peers added yet.</string>
+    <string name="net_peer_added">Peer added, the node is connecting.</string>
+    <string name="net_peer_saved">Peer saved. It is used when the node starts.</string>
+    <string name="net_peer_exists">This peer is already in the list.</string>
+    <string name="net_peer_invalid">This is not a valid address for Tor or I2P.</string>
 </resources>

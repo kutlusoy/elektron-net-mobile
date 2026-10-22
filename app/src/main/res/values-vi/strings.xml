@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">Dịch vụ giá giới hạn yêu cầu. Ứng dụng sẽ thử lại sau. Chỉ hiển thị ELEK.</string>
     <string name="fiat_fallback">Dịch vụ dự phòng</string>
     <string name="fiat_fallback_hint">Nếu dịch vụ ở trên lỗi hoặc không có thị trường đó, các dịch vụ bạn bật ở đây sẽ được thử theo thứ tự. Chúng chỉ được hỏi khi cần.</string>
+    <string name="net_peers">Peer thêm thủ công</string>
+    <string name="net_peer_hint">Thêm địa chỉ của một nút Elektron khác trên mạng này, nhập tay hoặc quét mã QR của nó. Ứng dụng kết nối ngay bây giờ và mỗi lần khởi động.</string>
+    <string name="net_peer_field">Địa chỉ peer</string>
+    <string name="net_peer_add">Thêm</string>
+    <string name="net_peer_scan">Quét QR</string>
+    <string name="net_peer_qr">Hiện QR</string>
+    <string name="net_peer_remove">Xóa</string>
+    <string name="net_peer_none">Chưa thêm peer nào.</string>
+    <string name="net_peer_added">Đã thêm peer, nút đang kết nối.</string>
+    <string name="net_peer_saved">Đã lưu peer. Sẽ được dùng khi nút khởi động.</string>
+    <string name="net_peer_exists">Peer này đã có trong danh sách.</string>
+    <string name="net_peer_invalid">Đây không phải địa chỉ Tor hoặc I2P hợp lệ.</string>
 </resources>
