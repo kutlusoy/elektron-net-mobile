@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">Sửa dịch vụ</string>
     <string name="fiat_provider_delete">Xóa</string>
     <string name="fiat_provider_name">Tên</string>
-    <string name="fiat_provider_url">Địa chỉ (https) có {BASE} và {QUOTE}</string>
+    <string name="fiat_provider_url">Địa chỉ (https), {BASE} và {QUOTE} được thay bằng cặp</string>
     <string name="fiat_provider_path">Đường dẫn tới giá trong phản hồi</string>
-    <string name="fiat_provider_help">Ví dụ: https://api.example.org/ticker/{BASE}-{QUOTE} với đường dẫn data.price. Số chọn một mục trong danh sách (data.0.last), * lấy mục đầu tiên của đối tượng. {base} và {quote} là dạng chữ thường.</string>
+    <string name="fiat_provider_help">Ví dụ: https://api.example.org/ticker/{BASE}-{QUOTE} với đường dẫn data.price. {base} và {quote} là dạng chữ thường, cũng dùng được trong đường dẫn. Số chọn một mục trong danh sách (data.0.last), * lấy mục đầu tiên của đối tượng. Để thử khi chưa có thị trường thật, dùng địa chỉ cố định: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} với đường dẫn bitcoin.{quote}. Kết quả khi đó thay cho giá ELEK.</string>
     <string name="fiat_pair">Cặp tiền tệ</string>
     <string name="fiat_pair_add">Thêm cặp riêng</string>
     <string name="fiat_pair_code">Mã tiền tệ, ví dụ PLN hoặc USDT</string>

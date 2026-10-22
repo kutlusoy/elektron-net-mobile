@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">Hizmeti düzenle</string>
     <string name="fiat_provider_delete">Sil</string>
     <string name="fiat_provider_name">Ad</string>
-    <string name="fiat_provider_url">{BASE} ve {QUOTE} içeren adres (https)</string>
+    <string name="fiat_provider_url">Adres (https), {BASE} ve {QUOTE} çiftle değiştirilir</string>
     <string name="fiat_provider_path">Yanıttaki fiyatın yolu</string>
-    <string name="fiat_provider_help">Örnek: https://api.example.org/ticker/{BASE}-{QUOTE} ve data.price yolu. Sayılar bir liste öğesini seçer (data.0.last), * bir nesnenin ilk girdisini alır. {base} ve {quote} küçük harfli biçimlerdir.</string>
+    <string name="fiat_provider_help">Örnek: https://api.example.org/ticker/{BASE}-{QUOTE} ve data.price yolu. {base} ve {quote} küçük harfli biçimlerdir, yolda da çalışır. Sayılar bir liste öğesini seçer (data.0.last), * bir nesnenin ilk girdisini alır. Gerçek piyasa olmadan denemek için sabit bir adres kullan: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} ve bitcoin.{quote} yolu. Sonuç o zaman ELEK fiyatının yerini tutar.</string>
     <string name="fiat_pair">Para birimi çifti</string>
     <string name="fiat_pair_add">Kendi çiftini ekle</string>
     <string name="fiat_pair_code">Para birimi kodu, örneğin PLN veya USDT</string>

@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">Ubah layanan</string>
     <string name="fiat_provider_delete">Hapus</string>
     <string name="fiat_provider_name">Nama</string>
-    <string name="fiat_provider_url">Alamat (https) dengan {BASE} dan {QUOTE}</string>
+    <string name="fiat_provider_url">Alamat (https), {BASE} dan {QUOTE} diganti dengan pasangan</string>
     <string name="fiat_provider_path">Jalur ke harga dalam jawaban</string>
-    <string name="fiat_provider_help">Contoh: https://api.example.org/ticker/{BASE}-{QUOTE} dengan jalur data.price. Angka memilih entri daftar (data.0.last), * mengambil entri pertama objek. {base} dan {quote} adalah bentuk huruf kecil.</string>
+    <string name="fiat_provider_help">Contoh: https://api.example.org/ticker/{BASE}-{QUOTE} dengan jalur data.price. {base} dan {quote} adalah bentuk huruf kecil, keduanya juga berlaku di jalur. Angka memilih entri daftar (data.0.last), * mengambil entri pertama objek. Untuk menguji tanpa pasar nyata, pakai alamat tetap: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} dengan jalur bitcoin.{quote}. Hasilnya lalu menggantikan harga ELEK.</string>
     <string name="fiat_pair">Pasangan mata uang</string>
     <string name="fiat_pair_add">Tambah pasangan sendiri</string>
     <string name="fiat_pair_code">Kode mata uang, misalnya PLN atau USDT</string>

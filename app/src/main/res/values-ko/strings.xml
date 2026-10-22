@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">서비스 편집</string>
     <string name="fiat_provider_delete">삭제</string>
     <string name="fiat_provider_name">이름</string>
-    <string name="fiat_provider_url">{BASE}와 {QUOTE}를 포함한 주소 (https)</string>
+    <string name="fiat_provider_url">주소 (https). {BASE}와 {QUOTE}는 쌍으로 대체됩니다</string>
     <string name="fiat_provider_path">응답에서 가격의 경로</string>
-    <string name="fiat_provider_help">예: https://api.example.org/ticker/{BASE}-{QUOTE} 및 경로 data.price. 숫자는 목록 항목을 고르고 (data.0.last), *는 객체의 첫 항목을 가져옵니다. {base}와 {quote}는 소문자 형태입니다.</string>
+    <string name="fiat_provider_help">예: https://api.example.org/ticker/{BASE}-{QUOTE} 및 경로 data.price. {base}와 {quote}는 소문자 형태이며 경로에서도 쓸 수 있습니다. 숫자는 목록 항목을 고르고 (data.0.last), *는 객체의 첫 항목을 가져옵니다. 실제 시장 없이 시험하려면 고정 주소를 쓰세요: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} 및 경로 bitcoin.{quote}. 그러면 결과가 ELEK 가격을 대신합니다.</string>
     <string name="fiat_pair">통화 쌍</string>
     <string name="fiat_pair_add">직접 쌍 추가</string>
     <string name="fiat_pair_code">통화 코드, 예: PLN 또는 USDT</string>

@@ -30,6 +30,18 @@ class FiatRatesTest {
     }
 
     @Test
+    fun aFixedAddressCanStandInForAMarketWithQuotePlaceholderInThePath() {
+        val gecko = PriceProvider("own", "CoinGecko test", "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies={quote}", "bitcoin.{quote}")
+        assertTrue(gecko.valid())
+        assertEquals("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur", gecko.requestUrl("EUR", PairOrder.ElekFirst))
+        val settings = FiatSettings(enabled = true, providerId = "own", quote = "EUR", customProviders = listOf(gecko))
+        val found = FiatRates.refresh(settings, 5L) { """{"bitcoin":{"eur":61234.5,"usd":66000}}""" } as RateResult.Found
+        assertEquals(0, BigDecimal("61234.5").compareTo(found.rate.perElek))
+        val usd = FiatRates.refresh(settings.copy(quote = "USD"), 5L) { """{"bitcoin":{"eur":61234.5,"usd":66000}}""" } as RateResult.Found
+        assertEquals(0, BigDecimal("66000").compareTo(usd.rate.perElek))
+    }
+
+    @Test
     fun invertsTheRateForFiatFirstPairs() {
         val settings = FiatSettings(enabled = true, quote = "EUR", order = PairOrder.FiatFirst)
         val result = FiatRates.refresh(settings, 1000L) { """{"price":"20"}""" } as RateResult.Found
@@ -88,7 +100,8 @@ class FiatRatesTest {
         assertNull(FiatCodes.normalize("ELEK"))
         assertNull(FiatCodes.normalize("e"))
         assertEquals("EUR", FiatCodes.normalize(" eur "))
-        assertFalse(PriceProvider.validUrl("https://example.org/{BASE}"))
+        assertTrue(PriceProvider.validUrl("https://example.org/fixed"))
+        assertFalse(PriceProvider.validUrl("https://"))
         assertFalse(PriceProvider.validUrl("ftp://example.org/{BASE}/{QUOTE}"))
     }
 }

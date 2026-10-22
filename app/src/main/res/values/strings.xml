@@ -814,9 +814,9 @@
     <string name="fiat_provider_edit">Edit service</string>
     <string name="fiat_provider_delete">Delete</string>
     <string name="fiat_provider_name">Name</string>
-    <string name="fiat_provider_url">Address (https) with {BASE} and {QUOTE}</string>
+    <string name="fiat_provider_url">Address (https), {BASE} and {QUOTE} are replaced by the pair</string>
     <string name="fiat_provider_path">Path to the price in the answer</string>
-    <string name="fiat_provider_help">Example: https://api.example.org/ticker/{BASE}-{QUOTE} with the path data.price. Numbers pick a list entry (data.0.last), * takes the first entry of an object. {base} and {quote} are the lowercase forms.</string>
+    <string name="fiat_provider_help">Example: https://api.example.org/ticker/{BASE}-{QUOTE} with the path data.price. {base} and {quote} are the lowercase forms, both also work in the path. Numbers pick a list entry (data.0.last), * takes the first entry of an object. To test without a real market, use a fixed address: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} with the path bitcoin.{quote}. The result then stands in for the ELEK price.</string>
     <string name="fiat_pair">Currency pair</string>
     <string name="fiat_pair_add">Add own pair</string>
     <string name="fiat_pair_code">Currency code, for example PLN or USDT</string>

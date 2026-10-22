@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">サービスを編集</string>
     <string name="fiat_provider_delete">削除</string>
     <string name="fiat_provider_name">名前</string>
-    <string name="fiat_provider_url">{BASE} と {QUOTE} を含むアドレス (https)</string>
+    <string name="fiat_provider_url">アドレス (https)。{BASE} と {QUOTE} はペアに置き換えられます</string>
     <string name="fiat_provider_path">応答内の価格のパス</string>
-    <string name="fiat_provider_help">例: https://api.example.org/ticker/{BASE}-{QUOTE} とパス data.price。数字はリストの項目を選び (data.0.last)、* はオブジェクトの最初の項目を取ります。{base} と {quote} は小文字の形です。</string>
+    <string name="fiat_provider_help">例: https://api.example.org/ticker/{BASE}-{QUOTE} とパス data.price。{base} と {quote} は小文字の形で、パスでも使えます。数字はリストの項目を選び (data.0.last)、* はオブジェクトの最初の項目を取ります。実際の市場なしで試すには固定アドレスを使います: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} とパス bitcoin.{quote}。結果は ELEK の価格の代わりになります。</string>
     <string name="fiat_pair">通貨ペア</string>
     <string name="fiat_pair_add">独自のペアを追加</string>
     <string name="fiat_pair_code">通貨コード (例: PLN、USDT)</string>

@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">Изменить сервис</string>
     <string name="fiat_provider_delete">Удалить</string>
     <string name="fiat_provider_name">Название</string>
-    <string name="fiat_provider_url">Адрес (https) с {BASE} и {QUOTE}</string>
+    <string name="fiat_provider_url">Адрес (https), {BASE} и {QUOTE} заменяются парой</string>
     <string name="fiat_provider_path">Путь к цене в ответе</string>
-    <string name="fiat_provider_help">Пример: https://api.example.org/ticker/{BASE}-{QUOTE} с путём data.price. Числа выбирают элемент списка (data.0.last), * берёт первую запись объекта. {base} и {quote} — формы в нижнем регистре.</string>
+    <string name="fiat_provider_help">Пример: https://api.example.org/ticker/{BASE}-{QUOTE} с путём data.price. {base} и {quote} — формы в нижнем регистре, обе работают и в пути. Числа выбирают элемент списка (data.0.last), * берёт первую запись объекта. Для теста без реального рынка возьмите фиксированный адрес: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} с путём bitcoin.{quote}. Результат тогда заменяет курс ELEK.</string>
     <string name="fiat_pair">Валютная пара</string>
     <string name="fiat_pair_add">Добавить свою пару</string>
     <string name="fiat_pair_code">Код валюты, например PLN или USDT</string>

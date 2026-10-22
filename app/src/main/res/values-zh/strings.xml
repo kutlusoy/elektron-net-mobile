@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">编辑服务</string>
     <string name="fiat_provider_delete">删除</string>
     <string name="fiat_provider_name">名称</string>
-    <string name="fiat_provider_url">含 {BASE} 和 {QUOTE} 的地址 (https)</string>
+    <string name="fiat_provider_url">地址 (https)，{BASE} 和 {QUOTE} 会被货币对替换</string>
     <string name="fiat_provider_path">响应中价格的路径</string>
-    <string name="fiat_provider_help">示例：https://api.example.org/ticker/{BASE}-{QUOTE}，路径 data.price。数字选择列表项 (data.0.last)，* 取对象的第一项。{base} 和 {quote} 是小写形式。</string>
+    <string name="fiat_provider_help">示例：https://api.example.org/ticker/{BASE}-{QUOTE}，路径 data.price。{base} 和 {quote} 是小写形式，在路径中同样可用。数字选择列表项 (data.0.last)，* 取对象的第一项。没有真实市场时可用固定地址测试：https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote}，路径 bitcoin.{quote}。结果将代替 ELEK 价格。</string>
     <string name="fiat_pair">货币对</string>
     <string name="fiat_pair_add">添加自己的货币对</string>
     <string name="fiat_pair_code">货币代码，例如 PLN 或 USDT</string>

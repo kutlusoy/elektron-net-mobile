@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">تعديل الخدمة</string>
     <string name="fiat_provider_delete">حذف</string>
     <string name="fiat_provider_name">الاسم</string>
-    <string name="fiat_provider_url">العنوان (https) مع {BASE} و {QUOTE}</string>
+    <string name="fiat_provider_url">العنوان (https)، يُستبدل {BASE} و {QUOTE} بالزوج</string>
     <string name="fiat_provider_path">مسار السعر في الرد</string>
-    <string name="fiat_provider_help">مثال: https://api.example.org/ticker/{BASE}-{QUOTE} مع المسار data.price. الأرقام تختار عنصرًا من قائمة (data.0.last)، و * تأخذ أول مدخل في الكائن. {base} و {quote} هما الصيغتان بالأحرف الصغيرة.</string>
+    <string name="fiat_provider_help">مثال: https://api.example.org/ticker/{BASE}-{QUOTE} مع المسار data.price. {base} و {quote} هما الصيغتان بالأحرف الصغيرة، وكلتاهما تعملان في المسار أيضًا. الأرقام تختار عنصرًا من قائمة (data.0.last)، و * تأخذ أول مدخل في الكائن. للاختبار دون سوق حقيقي استخدم عنوانًا ثابتًا: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} مع المسار bitcoin.{quote}. تحل النتيجة حينها محل سعر ELEK.</string>
     <string name="fiat_pair">زوج العملات</string>
     <string name="fiat_pair_add">إضافة زوج خاص</string>
     <string name="fiat_pair_code">رمز العملة، مثل PLN أو USDT</string>

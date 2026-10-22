@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">सेवा संपादित करें</string>
     <string name="fiat_provider_delete">हटाएँ</string>
     <string name="fiat_provider_name">नाम</string>
-    <string name="fiat_provider_url">{BASE} और {QUOTE} के साथ पता (https)</string>
+    <string name="fiat_provider_url">पता (https), {BASE} और {QUOTE} जोड़ी से बदल दिए जाते हैं</string>
     <string name="fiat_provider_path">उत्तर में मूल्य का पथ</string>
-    <string name="fiat_provider_help">उदाहरण: https://api.example.org/ticker/{BASE}-{QUOTE} और पथ data.price। संख्याएँ सूची की प्रविष्टि चुनती हैं (data.0.last), * ऑब्जेक्ट की पहली प्रविष्टि लेता है। {base} और {quote} छोटे अक्षरों वाले रूप हैं।</string>
+    <string name="fiat_provider_help">उदाहरण: https://api.example.org/ticker/{BASE}-{QUOTE} और पथ data.price। {base} और {quote} छोटे अक्षरों वाले रूप हैं, पथ में भी चलते हैं। संख्याएँ सूची की प्रविष्टि चुनती हैं (data.0.last), * ऑब्जेक्ट की पहली प्रविष्टि लेता है। असली बाज़ार के बिना परखने के लिए स्थिर पता लें: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} और पथ bitcoin.{quote}। तब परिणाम ELEK मूल्य की जगह लेता है।</string>
     <string name="fiat_pair">मुद्रा जोड़ी</string>
     <string name="fiat_pair_add">अपनी जोड़ी जोड़ें</string>
     <string name="fiat_pair_code">मुद्रा कोड, जैसे PLN या USDT</string>

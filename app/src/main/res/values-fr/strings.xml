@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">Modifier le service</string>
     <string name="fiat_provider_delete">Supprimer</string>
     <string name="fiat_provider_name">Nom</string>
-    <string name="fiat_provider_url">Adresse (https) avec {BASE} et {QUOTE}</string>
+    <string name="fiat_provider_url">Adresse (https), {BASE} et {QUOTE} sont remplacés par la paire</string>
     <string name="fiat_provider_path">Chemin du prix dans la réponse</string>
-    <string name="fiat_provider_help">Exemple : https://api.example.org/ticker/{BASE}-{QUOTE} avec le chemin data.price. Les nombres choisissent un élément de liste (data.0.last), * prend la première entrée d\'un objet. {base} et {quote} sont les formes en minuscules.</string>
+    <string name="fiat_provider_help">Exemple : https://api.example.org/ticker/{BASE}-{QUOTE} avec le chemin data.price. {base} et {quote} sont les formes en minuscules, valables aussi dans le chemin. Les nombres choisissent un élément de liste (data.0.last), * prend la première entrée d\'un objet. Pour tester sans vrai marché, utilise une adresse fixe : https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} avec le chemin bitcoin.{quote}. Le résultat tient alors lieu de cours de l\'ELEK.</string>
     <string name="fiat_pair">Paire de devises</string>
     <string name="fiat_pair_add">Ajouter une paire personnalisée</string>
     <string name="fiat_pair_code">Code de devise, par exemple PLN ou USDT</string>

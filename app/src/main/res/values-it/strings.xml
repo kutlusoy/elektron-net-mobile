@@ -803,9 +803,9 @@
     <string name="fiat_provider_edit">Modifica servizio</string>
     <string name="fiat_provider_delete">Elimina</string>
     <string name="fiat_provider_name">Nome</string>
-    <string name="fiat_provider_url">Indirizzo (https) con {BASE} e {QUOTE}</string>
+    <string name="fiat_provider_url">Indirizzo (https), {BASE} e {QUOTE} vengono sostituiti dalla coppia</string>
     <string name="fiat_provider_path">Percorso del prezzo nella risposta</string>
-    <string name="fiat_provider_help">Esempio: https://api.example.org/ticker/{BASE}-{QUOTE} con il percorso data.price. I numeri scelgono una voce di elenco (data.0.last), * prende la prima voce di un oggetto. {base} e {quote} sono le forme minuscole.</string>
+    <string name="fiat_provider_help">Esempio: https://api.example.org/ticker/{BASE}-{QUOTE} con il percorso data.price. {base} e {quote} sono le forme minuscole, valide anche nel percorso. I numeri scelgono una voce di elenco (data.0.last), * prende la prima voce di un oggetto. Per provare senza un mercato reale usa un indirizzo fisso: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&amp;vs_currencies={quote} con il percorso bitcoin.{quote}. Il risultato fa allora da prezzo di ELEK.</string>
     <string name="fiat_pair">Coppia di valute</string>
     <string name="fiat_pair_add">Aggiungi coppia personale</string>
     <string name="fiat_pair_code">Codice valuta, ad esempio PLN o USDT</string>
