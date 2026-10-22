@@ -5,6 +5,8 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
+class RateLimitException : IOException("rate limited")
+
 object PriceFetch {
     private const val MAX_BYTES = 64 * 1024
 
@@ -19,6 +21,7 @@ object PriceFetch {
             connection.setRequestProperty("Accept", "application/json")
             connection.setRequestProperty("User-Agent", "ElektronMobile")
             val code = connection.responseCode
+            if (code == 429) throw RateLimitException()
             if (code in 400..499) return null
             if (code != 200) throw IOException("HTTP $code")
             return connection.inputStream.use { stream ->

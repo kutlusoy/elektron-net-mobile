@@ -821,4 +821,9 @@
     <string name="fiat_status_loading">시세 불러오는 중…</string>
     <string name="fiat_refresh">지금 새로고침</string>
     <string name="send_enter_in">금액 입력 단위</string>
+    <string name="fiat_ticker">거래소에서의 ELEK 심볼</string>
+    <string name="fiat_ticker_hint">시장 이름을 만듭니다 (예: ELEK_EUR). 거래소가 ELEK을 다른 심볼로 상장하면 바꾸세요.</string>
+    <string name="fiat_provider_gecko">CoinGecko 단순 가격 주소에는 경로가 필요 없습니다. ids=bitcoin만 허용되며, 상장이 없는 동안 Bitcoin 가격이 ELEK을 대신합니다.</string>
+    <string name="fiat_provider_reject">CoinGecko 주소는 bitcoin만 허용됩니다.</string>
+    <string name="fiat_status_limited">가격 서비스가 요청을 제한합니다. 앱이 나중에 다시 시도합니다. ELEK만 표시됩니다.</string>
 </resources>

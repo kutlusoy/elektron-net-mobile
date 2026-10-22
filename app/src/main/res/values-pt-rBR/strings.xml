@@ -821,4 +821,9 @@
     <string name="fiat_status_loading">Carregando a cotação…</string>
     <string name="fiat_refresh">Atualizar agora</string>
     <string name="send_enter_in">Inserir valor em</string>
+    <string name="fiat_ticker">Símbolo do ELEK nas corretoras</string>
+    <string name="fiat_ticker_hint">Forma o nome do mercado, por exemplo ELEK_EUR. Altere se uma corretora listar o ELEK com outro símbolo.</string>
+    <string name="fiat_provider_gecko">Um endereço de preço simples da CoinGecko não precisa de caminho. Só ids=bitcoin é aceito, o preço do Bitcoin faz então as vezes do ELEK enquanto não houver listagem.</string>
+    <string name="fiat_provider_reject">Endereços da CoinGecko só são aceitos para bitcoin.</string>
+    <string name="fiat_status_limited">O serviço de preços limita as solicitações. O app tenta de novo mais tarde. Só o ELEK é mostrado.</string>
 </resources>

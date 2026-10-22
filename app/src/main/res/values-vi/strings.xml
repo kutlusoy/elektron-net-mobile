@@ -821,4 +821,9 @@
     <string name="fiat_status_loading">Đang tải tỷ giá…</string>
     <string name="fiat_refresh">Làm mới ngay</string>
     <string name="send_enter_in">Nhập số tiền theo</string>
+    <string name="fiat_ticker">Ký hiệu ELEK trên các sàn</string>
+    <string name="fiat_ticker_hint">Tạo tên thị trường, ví dụ ELEK_EUR. Hãy đổi nếu sàn niêm yết ELEK dưới ký hiệu khác.</string>
+    <string name="fiat_provider_gecko">Địa chỉ giá đơn giản của CoinGecko không cần đường dẫn. Chỉ chấp nhận ids=bitcoin, giá Bitcoin khi đó thay cho ELEK khi chưa có niêm yết.</string>
+    <string name="fiat_provider_reject">Địa chỉ CoinGecko chỉ được chấp nhận cho bitcoin.</string>
+    <string name="fiat_status_limited">Dịch vụ giá giới hạn yêu cầu. Ứng dụng sẽ thử lại sau. Chỉ hiển thị ELEK.</string>
 </resources>

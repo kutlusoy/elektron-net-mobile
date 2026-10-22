@@ -148,3 +148,50 @@ class FiatReceiveTest {
         assertTrue(org.elektronnet.mobile.ui.model.ReceiveUiModel.build("elek1qabc", uris, "x", "", true, rate).amountInvalid)
     }
 }
+
+class FiatStandInTest {
+    private val bitcoin = PriceProvider("own", "Test", "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur,try", "")
+    private val response = """{"bitcoin":{"usd":81762,"eur":72940,"try":4057676}}"""
+
+    @Test
+    fun bitcoinOnCoinGeckoStandsInForElekWithoutAPath() {
+        assertTrue(bitcoin.valid())
+        val settings = FiatSettings(enabled = true, providerId = "own", quote = "TRY", customProviders = listOf(bitcoin))
+        val found = FiatRates.refresh(settings, 1L) { response } as RateResult.Found
+        assertEquals(0, BigDecimal("4057676").compareTo(found.rate.perElek))
+        val eur = FiatRates.refresh(settings.copy(quote = "EUR"), 1L) { response } as RateResult.Found
+        assertEquals(0, BigDecimal("72940").compareTo(eur.rate.perElek))
+    }
+
+    @Test
+    fun otherCoinGeckoAssetsAreRejected() {
+        val solana = bitcoin.copy(url = "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd,eur,try")
+        assertTrue(solana.rejectedAsset)
+        assertFalse(solana.valid())
+        assertFalse(bitcoin.copy(url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,solana&vs_currencies=usd").valid())
+        assertFalse(solana.copy(path = "solana.eur").valid())
+        assertFalse(bitcoin.copy(url = "https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd").valid())
+        assertFalse(FiatSettings.decode(FiatSettings(customProviders = listOf(bitcoin), providerId = "own").encode().replace("ids=bitcoin", "ids=solana")).customProviders.isNotEmpty())
+        assertFalse(bitcoin.copy(path = "").copy(url = "https://example.org/x").valid())
+    }
+
+    @Test
+    fun theElekSymbolOnExchangesCanBeChanged() {
+        val binance = PriceProviders.builtin.first { it.id == "binance" }
+        assertEquals("https://api.binance.com/api/v3/ticker/price?symbol=ELKEUR", binance.requestUrl("EUR", PairOrder.ElekFirst, "ELK"))
+        assertEquals("https://api.binance.com/api/v3/ticker/price?symbol=EURELK", binance.requestUrl("EUR", PairOrder.FiatFirst, "ELK"))
+        val settings = FiatSettings(ticker = "elk", quote = "EUR", order = PairOrder.FiatFirst).normalized()
+        assertEquals("ELK", settings.ticker)
+        assertEquals("EUR_ELK", settings.pairLabel)
+        assertEquals("ELK", FiatSettings.decode(settings.encode()).ticker)
+        assertEquals("ELEK", FiatSettings(ticker = "x").normalized().ticker)
+        var requested = ""
+        FiatRates.refresh(settings.copy(enabled = true), 1L) { requested = it; null }
+        assertEquals("https://api.binance.com/api/v3/ticker/price?symbol=EURELK", requested)
+    }
+
+    @Test
+    fun aRateLimitAnswerIsTreatedAsLimitedNotAsMissingMarket() {
+        assertEquals(RateResult.Limited, FiatRates.refresh(FiatSettings(enabled = true), 1L) { throw RateLimitException() })
+    }
+}

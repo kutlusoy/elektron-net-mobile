@@ -821,4 +821,9 @@
     <string name="fiat_status_loading">Memuat kurs…</string>
     <string name="fiat_refresh">Segarkan sekarang</string>
     <string name="send_enter_in">Masukkan jumlah dalam</string>
+    <string name="fiat_ticker">Simbol ELEK di bursa</string>
+    <string name="fiat_ticker_hint">Membentuk nama pasar, misalnya ELEK_EUR. Ubah jika bursa mencatat ELEK dengan simbol lain.</string>
+    <string name="fiat_provider_gecko">Alamat harga sederhana CoinGecko tidak memerlukan jalur. Hanya ids=bitcoin yang diterima, harga Bitcoin lalu menggantikan ELEK selama belum ada listing.</string>
+    <string name="fiat_provider_reject">Alamat CoinGecko hanya diterima untuk bitcoin.</string>
+    <string name="fiat_status_limited">Layanan harga membatasi permintaan. Aplikasi mencoba lagi nanti. Hanya ELEK yang ditampilkan.</string>
 </resources>

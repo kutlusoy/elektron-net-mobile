@@ -821,4 +821,9 @@
     <string name="fiat_status_loading">दर लोड हो रही है…</string>
     <string name="fiat_refresh">अभी ताज़ा करें</string>
     <string name="send_enter_in">राशि दर्ज करें</string>
+    <string name="fiat_ticker">एक्सचेंजों पर ELEK का प्रतीक</string>
+    <string name="fiat_ticker_hint">बाज़ार का नाम बनाता है, जैसे ELEK_EUR। यदि कोई एक्सचेंज ELEK को किसी और प्रतीक से सूचीबद्ध करे तो इसे बदलें।</string>
+    <string name="fiat_provider_gecko">CoinGecko के सरल मूल्य पते को पथ नहीं चाहिए। केवल ids=bitcoin स्वीकार है, जब तक लिस्टिंग नहीं है, Bitcoin का मूल्य ELEK की जगह लेता है।</string>
+    <string name="fiat_provider_reject">CoinGecko के पते केवल bitcoin के लिए स्वीकार हैं।</string>
+    <string name="fiat_status_limited">मूल्य सेवा अनुरोधों को सीमित करती है। ऐप बाद में फिर कोशिश करेगा। केवल ELEK दिखता है।</string>
 </resources>

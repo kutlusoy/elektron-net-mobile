@@ -104,9 +104,15 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
 
     val fiatSettings = org.elektronnet.mobile.ui.theme.FiatState.settings
     LaunchedEffect(fiatSettings) {
+        if (fiatSettings.enabled) delay(FIAT_DEBOUNCE_MS)
+        var lastFetch = 0L
         while (fiatSettings.enabled) {
-            org.elektronnet.mobile.ui.theme.FiatState.refresh()
-            delay(FIAT_REFRESH_MS)
+            val now = System.currentTimeMillis()
+            if (NodeHost.appVisible && now - lastFetch >= org.elektronnet.mobile.fiat.FiatRates.POLL_MS) {
+                org.elektronnet.mobile.ui.theme.FiatState.refresh()
+                lastFetch = now
+            }
+            delay(FIAT_TICK_MS)
         }
     }
 
@@ -366,4 +372,5 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     }
 }
 
-private const val FIAT_REFRESH_MS = 5 * 60 * 1000L
+private const val FIAT_DEBOUNCE_MS = 2_000L
+private const val FIAT_TICK_MS = 15_000L

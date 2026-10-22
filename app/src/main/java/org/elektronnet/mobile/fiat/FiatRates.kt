@@ -14,6 +14,7 @@ sealed interface RateResult {
     data class Found(val rate: FiatRate) : RateResult
     data object NoPair : RateResult
     data object Failed : RateResult
+    data object Limited : RateResult
 }
 
 object PriceParser {
@@ -33,8 +34,8 @@ object PriceParser {
         }
     }.getOrNull()
 
-    fun rate(provider: PriceProvider, json: String, quote: String, order: PairOrder, now: Long): FiatRate? {
-        val price = extract(json, provider.requestPath(quote, order))?.takeIf { it.signum() > 0 } ?: return null
+    fun rate(provider: PriceProvider, json: String, quote: String, order: PairOrder, now: Long, ticker: String = ELEK_TICKER): FiatRate? {
+        val price = extract(json, provider.requestPath(quote, order, ticker))?.takeIf { it.signum() > 0 } ?: return null
         val perElek = if (order == PairOrder.ElekFirst) price else BigDecimal.ONE.divide(price, MathContext(12, RoundingMode.HALF_EVEN))
         return FiatRate(perElek, quote, now)
     }
@@ -42,16 +43,21 @@ object PriceParser {
 
 object FiatRates {
     const val MAX_AGE_MS = 6 * 60 * 60 * 1000L
+    const val MIN_GAP_MS = 60_000L
+    const val BACKOFF_MS = 15 * 60_000L
+    const val POLL_MS = 5 * 60_000L
 
     // fetch returns the response body, or null when the service has no such market (HTTP 4xx); it throws on network errors
     fun refresh(settings: FiatSettings, now: Long, fetch: (String) -> String?): RateResult {
         val provider = settings.provider
         val body = try {
-            fetch(provider.requestUrl(settings.quote, settings.order)) ?: return RateResult.NoPair
+            fetch(provider.requestUrl(settings.quote, settings.order, settings.ticker)) ?: return RateResult.NoPair
+        } catch (e: RateLimitException) {
+            return RateResult.Limited
         } catch (e: Exception) {
             return RateResult.Failed
         }
-        val rate = PriceParser.rate(provider, body, settings.quote, settings.order, now)
+        val rate = PriceParser.rate(provider, body, settings.quote, settings.order, now, settings.ticker)
         return if (rate != null) RateResult.Found(rate) else RateResult.NoPair
     }
 

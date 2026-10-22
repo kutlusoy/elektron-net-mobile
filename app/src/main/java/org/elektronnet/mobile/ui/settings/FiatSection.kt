@@ -23,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.elektronnet.mobile.R
-import org.elektronnet.mobile.fiat.ELEK_TICKER
 import org.elektronnet.mobile.fiat.FiatCodes
 import org.elektronnet.mobile.fiat.FiatRates
 import org.elektronnet.mobile.fiat.PairOrder
@@ -52,20 +51,34 @@ fun FiatSection() {
         }
     }
 
+    var tickerText by remember(settings.ticker) { mutableStateOf(settings.ticker) }
+    OutlinedTextField(
+        value = tickerText,
+        onValueChange = { text ->
+            tickerText = text.take(10)
+            FiatCodes.normalizeTicker(text)?.let { FiatState.apply(FiatState.settings.copy(ticker = it)) }
+        },
+        label = { Text(stringResource(R.string.fiat_ticker)) },
+        isError = FiatCodes.normalizeTicker(tickerText) == null,
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    Hint(stringResource(R.string.fiat_ticker_hint))
+
     Text(stringResource(R.string.fiat_pair), style = MaterialTheme.typography.labelLarge)
     Choice(settings.quote, settings.quotes) { index -> FiatState.apply(settings.copy(quote = settings.quotes[index])) }
     OutlinedButton(onClick = { addingPair = true }) { Text(stringResource(R.string.fiat_pair_add)) }
     ChoiceRow(
         settings.order == PairOrder.ElekFirst,
         { FiatState.apply(settings.copy(order = PairOrder.ElekFirst)) },
-        "${ELEK_TICKER}_${settings.quote}",
-        stringResource(R.string.fiat_order_elek, ELEK_TICKER, settings.quote),
+        "${settings.ticker}_${settings.quote}",
+        stringResource(R.string.fiat_order_elek, settings.ticker, settings.quote),
     ) {}
     ChoiceRow(
         settings.order == PairOrder.FiatFirst,
         { FiatState.apply(settings.copy(order = PairOrder.FiatFirst)) },
-        "${settings.quote}_$ELEK_TICKER",
-        stringResource(R.string.fiat_order_fiat, settings.quote, ELEK_TICKER),
+        "${settings.quote}_${settings.ticker}",
+        stringResource(R.string.fiat_order_fiat, settings.quote, settings.ticker),
     ) {}
 
     Text(stringResource(R.string.fiat_main), style = MaterialTheme.typography.labelLarge)
@@ -78,6 +91,7 @@ fun FiatSection() {
             FiatStatus.Ok -> stringResource(R.string.fiat_status_ok, rate?.let { FiatRates.format(Amount.LEP_PER_ELEK, it) } ?: "")
             FiatStatus.NoPair -> stringResource(R.string.fiat_status_nopair, settings.pairLabel)
             FiatStatus.Failed -> stringResource(R.string.fiat_status_failed)
+            FiatStatus.Limited -> stringResource(R.string.fiat_status_limited)
             FiatStatus.Loading, FiatStatus.Idle -> stringResource(R.string.fiat_status_loading)
         },
         color = MaterialTheme.colorScheme.primary,
@@ -136,7 +150,9 @@ private fun ProviderDialog(existing: PriceProvider?, takenIds: List<String>, onD
                 OutlinedTextField(name, { name = it }, label = { Text(stringResource(R.string.fiat_provider_name)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
                 OutlinedTextField(url, { url = it }, label = { Text(stringResource(R.string.fiat_provider_url)) }, modifier = Modifier.fillMaxWidth())
                 OutlinedTextField(path, { path = it }, label = { Text(stringResource(R.string.fiat_provider_path)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                if (candidate.rejectedAsset) Text(stringResource(R.string.fiat_provider_reject), color = MaterialTheme.colorScheme.error)
                 Hint(stringResource(R.string.fiat_provider_help))
+                Hint(stringResource(R.string.fiat_provider_gecko))
             }
         },
         confirmButton = { TextButton(enabled = candidate.valid(), onClick = { onSave(candidate) }) { Text(stringResource(R.string.action_save)) } },

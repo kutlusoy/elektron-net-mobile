@@ -7,20 +7,33 @@ const val ELEK_TICKER = "ELEK"
 enum class PairOrder { ElekFirst, FiatFirst }
 
 data class PriceProvider(val id: String, val name: String, val url: String, val path: String, val builtin: Boolean = false) {
-    fun valid(): Boolean = id.isNotBlank() && name.isNotBlank() && name.length <= 40 && path.isNotBlank() && path.length <= 100 && validUrl(url)
+    // a CoinGecko "simple price" address needs no path, the id in the address names the asset
+    val geckoIds: List<String>? get() = if (isGeckoSimplePrice(url)) GECKO_IDS.find(url)?.groupValues?.get(1)?.split(',')?.map { it.lowercase() }.orEmpty() else null
 
-    fun requestUrl(quote: String, order: PairOrder): String = fill(url, quote, order)
+    // CoinGecko has no ELEK, so only bitcoin is accepted there as a stand-in for the ELEK price
+    val rejectedAsset: Boolean get() = geckoIds?.let { ids -> ids.isEmpty() || ids.any { it !in STAND_IN } } == true
 
-    fun requestPath(quote: String, order: PairOrder): String = fill(path, quote, order)
+    private val effectivePath: String get() = path.ifBlank { geckoIds?.singleOrNull()?.let { "$it.{quote}" }.orEmpty() }
 
-    private fun fill(text: String, quote: String, order: PairOrder): String {
-        val (base, counter) = if (order == PairOrder.ElekFirst) ELEK_TICKER to quote else quote to ELEK_TICKER
+    fun valid(): Boolean = id.isNotBlank() && name.isNotBlank() && name.length <= 40 && effectivePath.isNotBlank() && path.length <= 100 && validUrl(url) && !rejectedAsset
+
+    fun requestUrl(quote: String, order: PairOrder, ticker: String = ELEK_TICKER): String = fill(url, quote, order, ticker)
+
+    fun requestPath(quote: String, order: PairOrder, ticker: String = ELEK_TICKER): String = fill(effectivePath, quote, order, ticker)
+
+    private fun fill(text: String, quote: String, order: PairOrder, ticker: String): String {
+        val (base, counter) = if (order == PairOrder.ElekFirst) ticker to quote else quote to ticker
         return text.replace("{BASE}", base).replace("{QUOTE}", counter).replace("{base}", base.lowercase()).replace("{quote}", counter.lowercase())
     }
 
     fun toMap(): Map<String, Any?> = linkedMapOf("id" to id, "name" to name, "url" to url, "path" to path)
 
     companion object {
+        val STAND_IN = setOf("bitcoin")
+        private val GECKO_IDS = Regex("[?&]ids=([^&]+)")
+
+        fun isGeckoSimplePrice(url: String): Boolean = url.startsWith("https://api.coingecko.com/api/v3/simple/price")
+
         // placeholders are optional, so a fixed address works for tests (the price is then read in whatever currency the address returns)
         fun validUrl(url: String): Boolean = url.length <= 300 && url.startsWith("https://") && url.length > "https://".length && url.none { it.isWhitespace() }
 
@@ -49,7 +62,9 @@ object FiatCodes {
     val standard = listOf("EUR", "USD", "GBP", "CHF", "TRY", "JPY", "USDT", "BTC")
     private val CODE = Regex("^[A-Z0-9]{2,10}$")
 
-    fun normalize(text: String): String? = text.trim().uppercase().takeIf { CODE.matches(it) && it != ELEK_TICKER }
+    fun normalize(text: String, ticker: String = ELEK_TICKER): String? = text.trim().uppercase().takeIf { CODE.matches(it) && it != ticker }
+
+    fun normalizeTicker(text: String): String? = text.trim().uppercase().takeIf { CODE.matches(it) }
 }
 
 data class FiatSettings(
@@ -60,20 +75,23 @@ data class FiatSettings(
     val mainFiat: Boolean = false,
     val customProviders: List<PriceProvider> = emptyList(),
     val customQuotes: List<String> = emptyList(),
+    val ticker: String = ELEK_TICKER,
 ) {
     val providers: List<PriceProvider> get() = PriceProviders.builtin + customProviders
     val provider: PriceProvider get() = providers.firstOrNull { it.id == providerId } ?: PriceProviders.builtin.first()
     val quotes: List<String> get() = (FiatCodes.standard + customQuotes).distinct()
-    val pairLabel: String get() = if (order == PairOrder.ElekFirst) "${ELEK_TICKER}_$quote" else "${quote}_$ELEK_TICKER"
+    val pairLabel: String get() = if (order == PairOrder.ElekFirst) "${ticker}_$quote" else "${quote}_$ticker"
 
     fun normalized(): FiatSettings {
         val customs = customProviders.filter { it.valid() && !it.builtin && PriceProviders.builtin.none { b -> b.id == it.id } }.distinctBy { it.id }.take(MAX_CUSTOM)
-        val extra = customQuotes.mapNotNull(FiatCodes::normalize).filter { it !in FiatCodes.standard }.distinct().take(MAX_CUSTOM)
-        val code = FiatCodes.normalize(quote) ?: "EUR"
+        val symbol = FiatCodes.normalizeTicker(ticker) ?: ELEK_TICKER
+        val extra = customQuotes.mapNotNull { FiatCodes.normalize(it, symbol) }.filter { it !in FiatCodes.standard }.distinct().take(MAX_CUSTOM)
+        val code = FiatCodes.normalize(quote, symbol) ?: "EUR"
         val known = (PriceProviders.builtin + customs).any { it.id == providerId }
         return copy(
             providerId = if (known) providerId else PriceProviders.builtin.first().id,
             quote = code,
+            ticker = symbol,
             customProviders = customs,
             customQuotes = (extra + code).filter { it !in FiatCodes.standard }.distinct(),
         )
@@ -81,7 +99,7 @@ data class FiatSettings(
 
     fun encode(): String = Json.stringify(
         linkedMapOf(
-            "enabled" to enabled, "provider" to providerId, "quote" to quote, "order" to order.name, "mainFiat" to mainFiat,
+            "enabled" to enabled, "provider" to providerId, "quote" to quote, "ticker" to ticker, "order" to order.name, "mainFiat" to mainFiat,
             "providers" to customProviders.map { it.toMap() }, "quotes" to customQuotes,
         ),
     )
@@ -96,6 +114,7 @@ data class FiatSettings(
                 enabled = map["enabled"] as? Boolean ?: defaults.enabled,
                 providerId = map["provider"] as? String ?: defaults.providerId,
                 quote = map["quote"] as? String ?: defaults.quote,
+                ticker = map["ticker"] as? String ?: defaults.ticker,
                 order = PairOrder.entries.firstOrNull { it.name == map["order"] } ?: defaults.order,
                 mainFiat = map["mainFiat"] as? Boolean ?: defaults.mainFiat,
                 customProviders = (map["providers"] as? List<*>).orEmpty().mapNotNull { (it as? Map<*, *>)?.let(PriceProvider::fromMap) },

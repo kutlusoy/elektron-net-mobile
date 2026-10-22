@@ -821,4 +821,9 @@
     <string name="fiat_status_loading">جارٍ تحميل السعر…</string>
     <string name="fiat_refresh">تحديث الآن</string>
     <string name="send_enter_in">إدخال المبلغ بـ</string>
+    <string name="fiat_ticker">رمز ELEK في المنصات</string>
+    <string name="fiat_ticker_hint">يكوّن اسم السوق، مثل ELEK_EUR. غيّره إذا أدرجت منصة ELEK برمز آخر.</string>
+    <string name="fiat_provider_gecko">عنوان السعر البسيط في CoinGecko لا يحتاج إلى مسار. يُقبل ids=bitcoin فقط، ويحل سعر Bitcoin محل ELEK ما دام لا يوجد إدراج.</string>
+    <string name="fiat_provider_reject">عناوين CoinGecko تُقبل لـ bitcoin فقط.</string>
+    <string name="fiat_status_limited">تحد خدمة الأسعار من الطلبات. سيعيد التطبيق المحاولة لاحقًا. يُعرض ELEK فقط.</string>
 </resources>

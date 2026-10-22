@@ -821,4 +821,9 @@
     <string name="fiat_status_loading">正在加载汇率…</string>
     <string name="fiat_refresh">立即刷新</string>
     <string name="send_enter_in">输入金额单位</string>
+    <string name="fiat_ticker">ELEK 在交易所的代码</string>
+    <string name="fiat_ticker_hint">用于生成市场名称，例如 ELEK_EUR。如果交易所以其他代码上架 ELEK，请修改。</string>
+    <string name="fiat_provider_gecko">CoinGecko 简单价格地址无需路径。只接受 ids=bitcoin，在没有上架前，比特币价格代替 ELEK。</string>
+    <string name="fiat_provider_reject">CoinGecko 地址只接受 bitcoin。</string>
+    <string name="fiat_status_limited">价格服务限制了请求。应用稍后重试。只显示 ELEK。</string>
 </resources>
