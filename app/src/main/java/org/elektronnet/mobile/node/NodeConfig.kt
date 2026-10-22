@@ -41,6 +41,7 @@ data class NodeConfig(
         args.addAll(profile.args)
         if (fastprune) args.add("-fastprune")
         args.addAll(networkArgs())
+        network.activePeers().forEach { args.add("-addnode=$it") }
         args.addAll(extraArgs)
         return args
     }

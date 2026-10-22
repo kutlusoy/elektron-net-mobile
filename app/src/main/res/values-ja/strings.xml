@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">価格サービスがリクエストを制限しています。アプリは後で再試行します。ELEK のみ表示されます。</string>
     <string name="fiat_fallback">予備のサービス</string>
     <string name="fiat_fallback_hint">上のサービスが失敗した場合や該当する市場がない場合、ここでオンにしたサービスがその順に試されます。必要なときだけ問い合わせます。</string>
+    <string name="net_peers">手動で追加したピア</string>
+    <string name="net_peer_hint">このネットワーク上の別の Elektron ノードのアドレスを、入力するか QR コードをスキャンして追加します。アプリは今すぐ、そして起動のたびに接続します。</string>
+    <string name="net_peer_field">ピアのアドレス</string>
+    <string name="net_peer_add">追加</string>
+    <string name="net_peer_scan">QR をスキャン</string>
+    <string name="net_peer_qr">QR を表示</string>
+    <string name="net_peer_remove">削除</string>
+    <string name="net_peer_none">追加されたピアはまだありません。</string>
+    <string name="net_peer_added">ピアを追加しました。ノードが接続中です。</string>
+    <string name="net_peer_saved">ピアを保存しました。ノードの起動時に使われます。</string>
+    <string name="net_peer_exists">このピアはすでに一覧にあります。</string>
+    <string name="net_peer_invalid">有効な Tor または I2P のアドレスではありません。</string>
 </resources>

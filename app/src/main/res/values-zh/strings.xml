@@ -828,4 +828,16 @@
     <string name="fiat_status_limited">价格服务限制了请求。应用稍后重试。只显示 ELEK。</string>
     <string name="fiat_fallback">备用服务</string>
     <string name="fiat_fallback_hint">如果上面的服务失败或没有该市场，这里开启的服务会按顺序尝试。只在需要时才会请求。</string>
+    <string name="net_peers">手动添加的节点</string>
+    <string name="net_peer_hint">添加此网络上另一个 Elektron 节点的地址，可手动输入或扫描其二维码。应用会立即连接，并在每次启动时连接。</string>
+    <string name="net_peer_field">节点地址</string>
+    <string name="net_peer_add">添加</string>
+    <string name="net_peer_scan">扫描二维码</string>
+    <string name="net_peer_qr">显示二维码</string>
+    <string name="net_peer_remove">移除</string>
+    <string name="net_peer_none">尚未添加节点。</string>
+    <string name="net_peer_added">已添加节点，正在连接。</string>
+    <string name="net_peer_saved">已保存节点。将在节点启动时使用。</string>
+    <string name="net_peer_exists">此节点已在列表中。</string>
+    <string name="net_peer_invalid">这不是有效的 Tor 或 I2P 地址。</string>
 </resources>
