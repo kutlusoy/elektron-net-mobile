@@ -249,3 +249,29 @@ class FiatFallbackTest {
         assertEquals(listOf("KuCoin", "MEXC"), s.fallbacks.map { it.name })
     }
 }
+
+class FiatCoinGeckoTest {
+    private val gecko = PriceProviders.builtin.first { it.id == "coingecko" }
+
+    @Test
+    fun theReadyMadeEntryLooksUpTheSymbolWhateverThePairOrder() {
+        assertTrue(gecko.valid())
+        assertEquals("https://api.coingecko.com/api/v3/simple/price?symbols=elek&vs_currencies=eur", gecko.requestUrl("EUR", PairOrder.ElekFirst))
+        assertEquals("https://api.coingecko.com/api/v3/simple/price?symbols=elk&vs_currencies=try", gecko.requestUrl("TRY", PairOrder.FiatFirst, "ELK"))
+        val response = """{"some-coin-id":{"eur":0.42}}"""
+        listOf(PairOrder.ElekFirst, PairOrder.FiatFirst).forEach { order ->
+            val found = FiatRates.refresh(FiatSettings(enabled = true, providerId = "coingecko", quote = "EUR", order = order), 1L) { response } as RateResult.Found
+            assertEquals(0, BigDecimal("0.42").compareTo(found.rate.perElek))
+            assertEquals("CoinGecko", found.rate.source)
+        }
+    }
+
+    @Test
+    fun theBitcoinStandInStillWorksInBothOrders() {
+        val bitcoin = PriceProvider("own", "Test", "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur,try", "")
+        listOf(PairOrder.ElekFirst, PairOrder.FiatFirst).forEach { order ->
+            val found = FiatRates.refresh(FiatSettings(enabled = true, providerId = "own", quote = "EUR", order = order, customProviders = listOf(bitcoin)), 1L) { """{"bitcoin":{"eur":72940}}""" } as RateResult.Found
+            assertEquals(0, BigDecimal("72940").compareTo(found.rate.perElek))
+        }
+    }
+}

@@ -36,7 +36,7 @@ object PriceParser {
 
     fun rate(provider: PriceProvider, json: String, quote: String, order: PairOrder, now: Long, ticker: String = ELEK_TICKER): FiatRate? {
         val price = extract(json, provider.requestPath(quote, order, ticker))?.takeIf { it.signum() > 0 } ?: return null
-        val perElek = if (order == PairOrder.ElekFirst) price else BigDecimal.ONE.divide(price, MathContext(12, RoundingMode.HALF_EVEN))
+        val perElek = if (provider.orderFor(order) == PairOrder.ElekFirst) price else BigDecimal.ONE.divide(price, MathContext(12, RoundingMode.HALF_EVEN))
         return FiatRate(perElek, quote, now, provider.name)
     }
 }

@@ -11,19 +11,25 @@ data class PriceProvider(val id: String, val name: String, val url: String, val 
     val geckoIds: List<String>? get() = if (isGeckoSimplePrice(url)) GECKO_IDS.find(url)?.groupValues?.get(1)?.split(',')?.map { it.lowercase() }.orEmpty() else null
 
     // CoinGecko has no ELEK, so only bitcoin is accepted there as a stand-in for the ELEK price
-    val rejectedAsset: Boolean get() = geckoIds?.let { ids -> ids.isEmpty() || ids.any { it !in STAND_IN } } == true
+    val rejectedAsset: Boolean get() = !builtin && geckoIds?.let { ids -> ids.isEmpty() || ids.any { it !in STAND_IN } } == true
 
-    private val effectivePath: String get() = path.ifBlank { geckoIds?.singleOrNull()?.let { "$it.{quote}" }.orEmpty() }
+    private val effectivePath: String get() = path.ifBlank { geckoIds?.singleOrNull()?.let { "$it.{fiat}" }.orEmpty() }
+
+    // an address that names no {BASE} or {QUOTE} always returns the price of 1 ELEK in the fiat currency, whatever the pair order
+    private val directional: Boolean get() = listOf(url, effectivePath).any { text -> DIRECTIONAL.any { it in text } }
+
+    fun orderFor(order: PairOrder): PairOrder = if (directional) order else PairOrder.ElekFirst
 
     fun valid(): Boolean = id.isNotBlank() && name.isNotBlank() && name.length <= 40 && effectivePath.isNotBlank() && path.length <= 100 && validUrl(url) && !rejectedAsset
 
-    fun requestUrl(quote: String, order: PairOrder, ticker: String = ELEK_TICKER): String = fill(url, quote, order, ticker)
+    fun requestUrl(quote: String, order: PairOrder, ticker: String = ELEK_TICKER): String = fill(url, quote, orderFor(order), ticker)
 
-    fun requestPath(quote: String, order: PairOrder, ticker: String = ELEK_TICKER): String = fill(effectivePath, quote, order, ticker)
+    fun requestPath(quote: String, order: PairOrder, ticker: String = ELEK_TICKER): String = fill(effectivePath, quote, orderFor(order), ticker)
 
     private fun fill(text: String, quote: String, order: PairOrder, ticker: String): String {
         val (base, counter) = if (order == PairOrder.ElekFirst) ticker to quote else quote to ticker
         return text.replace("{BASE}", base).replace("{QUOTE}", counter).replace("{base}", base.lowercase()).replace("{quote}", counter.lowercase())
+            .replace("{ELEK}", ticker).replace("{elek}", ticker.lowercase()).replace("{FIAT}", quote).replace("{fiat}", quote.lowercase())
     }
 
     fun toMap(): Map<String, Any?> = linkedMapOf("id" to id, "name" to name, "url" to url, "path" to path)
@@ -31,6 +37,7 @@ data class PriceProvider(val id: String, val name: String, val url: String, val 
     companion object {
         val STAND_IN = setOf("bitcoin")
         private val GECKO_IDS = Regex("[?&]ids=([^&]+)")
+        private val DIRECTIONAL = listOf("{BASE}", "{QUOTE}", "{base}", "{quote}")
 
         fun isGeckoSimplePrice(url: String): Boolean = url.startsWith("https://api.coingecko.com/api/v3/simple/price")
 
@@ -55,6 +62,7 @@ object PriceProviders {
         PriceProvider("gate", "Gate.io", "https://api.gateio.ws/api/v4/spot/tickers?currency_pair={BASE}_{QUOTE}", "0.last", true),
         PriceProvider("xeggex", "XeggeX", "https://api.xeggex.com/api/v2/market/getbysymbol/{BASE}%2F{QUOTE}", "lastPrice", true),
         PriceProvider("tradeogre", "TradeOgre", "https://tradeogre.com/api/v1/ticker/{BASE}-{QUOTE}", "price", true),
+        PriceProvider("coingecko", "CoinGecko", "https://api.coingecko.com/api/v3/simple/price?symbols={elek}&vs_currencies={fiat}", "*.{fiat}", true),
     )
 }
 
