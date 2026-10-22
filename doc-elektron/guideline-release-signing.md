@@ -31,10 +31,10 @@ Do this once, offline, on a machine you trust.
 
 ```
 keytool -genkeypair -v -keystore elektron-release.jks -alias elektron-release \
-  -keyalg RSA -keysize 4096 -sigalg SHA384withRSA -validity 36500
+  -keyalg RSA -keysize 4096 -sigalg SHA384withRSA -validity 50040
 ```
 
-- The keystore password and the key password MUST be long and unique. Store them in a password manager.
+- `-validity 50040` is 137 years, valid until 2163 (a symbolic number, Android only needs the certificate to outlive the app). The keystore password and the key password MUST be long and unique. Store them in a password manager.
 - Keep at least two offline backups of `elektron-release.jks` in different places. **If this file is lost, no update can be signed any more, and every user has to uninstall and reinstall.**
 - The key MUST NOT be committed, pasted into chats or stored anywhere except the offline backups and the repository secrets.
 - Print the certificate fingerprint, you need it for Google and for the release notes:
