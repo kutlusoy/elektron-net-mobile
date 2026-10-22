@@ -151,8 +151,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
 
     var peers by remember { mutableStateOf<List<NodeHost.PeerRow>>(emptyList()) }
     var telemetry by remember { mutableStateOf<org.elektronnet.mobile.node.Telemetry?>(null) }
-    LaunchedEffect(tab, walletReady) {
-        while (walletReady && tab == Tab.Node.ordinal) {
+    LaunchedEffect(tab, shell) {
+        while (shell && tab == Tab.Node.ordinal) {
             if (NodeHost.appVisible) {
                 val fresh = withContext(Dispatchers.IO) { NodeHost.peers() }
                 if (fresh != null) peers = fresh
