@@ -151,7 +151,7 @@ jobs:
             echo
             echo "Verify a download with \`sha256sum -c SHA256SUMS.txt\`."
             echo
-            echo "Test build signed with the public test key, application ID with the .nightly suffix. It never replaces an install from a release."
+            echo "**Test build, not for real funds.** It is signed with the public test key and has its own application ID (.nightly suffix). A release cannot update a pre-release and a pre-release cannot update a release, because the app signatures do not match. Switching between the two means a fresh install and a new setup with the recovery phrase or an exported wallet file. Update a pre-release only with a newer pre-release, and a release only with a newer release."
             echo
             echo "This is pre-release software. Do not store significant funds before an independent security review. Always keep your recovery phrase offline."
           } > dist/NOTES.md

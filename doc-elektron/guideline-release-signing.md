@@ -21,6 +21,8 @@ Requirement levels follow common practice: **MUST** = mandatory, **SHOULD** = st
 
 The `release` workflow stops with an error when a secret is missing, and it stops when an APK carries the public test certificate. It cannot produce a test-signed release by accident. Use `prerelease` for everything that is only a test.
 
+**Pre-releases and releases never update each other.** The signatures differ and the application IDs differ (`.nightly` suffix), so a release cannot update a pre-release and a pre-release cannot update a release. Switching means a fresh install and a new setup with the recovery phrase or an exported wallet file. A pre-release is updated by a newer pre-release, a release by a newer release. The pre-release notes say so.
+
 A PGP key is not needed. Android only checks the APK signature, and the Android Developer Verification of Google asks for the APK signing certificate, not for PGP. Users verify a download with the SHA-256 of the file and the signing certificate fingerprint printed in the release notes.
 
 ## 2. Create the release keystore
@@ -60,7 +62,7 @@ Settings, Secrets and variables, Actions, "New repository secret":
 3. The workflow builds the node from the matching `elektron-net` release tag, builds both APKs, checks the certificate with `apksigner verify --print-certs`, and publishes the APKs, `SHA256SUMS.txt` and notes with the certificate fingerprint.
 4. Compare the printed fingerprint with the one you noted in §2.
 
-Switching a device from a test build to a release build needs one uninstall, because the signing keys differ. Export the wallet file or keep the recovery phrase first.
+Switching a device from a test build to a release build is a fresh install, because the signing keys and application IDs differ. Export the wallet file or keep the recovery phrase first.
 
 ## 5. Android Developer Verification
 
