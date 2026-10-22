@@ -29,20 +29,40 @@ A PGP key is not needed. Android only checks the APK signature, and the Android 
 
 Do this once, offline, on a machine you trust.
 
+Bash:
+
 ```
-keytool -genkeypair -v -keystore elektron-release.jks -alias elektron-release -keyalg RSA -keysize 4096 -sigalg SHA384withRSA -validity 50040
+keytool -genkeypair -v -keystore elektron-release.jks -alias elektron-release \
+  -keyalg RSA -keysize 4096 -sigalg SHA384withRSA -validity 50040
 ```
+
+PowerShell (the line continuation is a backtick, not a backslash):
+
+```
+keytool -genkeypair -v -keystore elektron-release.jks -alias elektron-release `
+  -keyalg RSA -keysize 4096 -sigalg SHA384withRSA -validity 50040
+```
+
+Both work as one single line as well.
 
 - `-validity 50040` is 137 years, valid until 2163 (a symbolic number, Android only needs the certificate to outlive the app). The keystore password and the key password MUST be long and unique. Store them in a password manager.
 - Keep at least two offline backups of `elektron-release.jks` in different places. **If this file is lost, no update can be signed any more, and every user has to uninstall and reinstall.**
 - The key MUST NOT be committed, pasted into chats or stored anywhere except the offline backups and the repository secrets.
 - Print the certificate fingerprint, you need it for Google and for the release notes:
 
+Bash:
+
 ```
-keytool -list -v -keystore elektron-release.jks -alias elektron-release
+keytool -list -v -keystore elektron-release.jks -alias elektron-release | grep SHA256
 ```
 
-The line `SHA256:` under "Certificate fingerprints" is the fingerprint.
+PowerShell:
+
+```
+keytool -list -v -keystore elektron-release.jks -alias elektron-release | Select-String SHA256
+```
+
+The `SHA256:` line under "Certificate fingerprints" is the fingerprint.
 
 ## 3. Repository secrets
 
