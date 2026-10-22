@@ -68,7 +68,16 @@ private fun NetworkTileCard(tile: NetworkTile) {
                 StatusDot(connColor(tile.net))
                 Text(stringResource(if (tile.net == ConnNet.Tor) R.string.net_tor_title else R.string.net_i2p_title), style = MaterialTheme.typography.titleMedium)
             }
-            tile.rows.forEach { row -> InfoRow(stringResource(labelText(row.label)), valueText(row.value), mono = isMono(row.value)) }
+            tile.rows.forEach { row ->
+                InfoRow(stringResource(labelText(row.label)), valueText(row.value), mono = isMono(row.value))
+                val address = (row.value as? TileValue.Text)?.text?.takeIf { row.label == TileLabel.Address }
+                if (address != null) {
+                    Row {
+                        TextButton(onClick = { clipboard.setText(AnnotatedString(address)) }) { Text(stringResource(R.string.action_copy)) }
+                        TextButton(onClick = { shareText(context, address) }) { Text(stringResource(R.string.action_share)) }
+                    }
+                }
+            }
             if (tile.net == ConnNet.I2p && tile.rows.any { it.label == TileLabel.Address && it.value == TileValue.Waiting }) {
                 Text(stringResource(R.string.net_tile_i2p_wait), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
