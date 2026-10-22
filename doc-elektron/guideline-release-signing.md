@@ -30,8 +30,7 @@ A PGP key is not needed. Android only checks the APK signature, and the Android 
 Do this once, offline, on a machine you trust.
 
 ```
-keytool -genkeypair -v -keystore elektron-release.jks -alias elektron-release \
-  -keyalg RSA -keysize 4096 -sigalg SHA384withRSA -validity 50040
+keytool -genkeypair -v -keystore elektron-release.jks -alias elektron-release -keyalg RSA -keysize 4096 -sigalg SHA384withRSA -validity 50040
 ```
 
 - `-validity 50040` is 137 years, valid until 2163 (a symbolic number, Android only needs the certificate to outlive the app). The keystore password and the key password MUST be long and unique. Store them in a password manager.
@@ -40,8 +39,10 @@ keytool -genkeypair -v -keystore elektron-release.jks -alias elektron-release \
 - Print the certificate fingerprint, you need it for Google and for the release notes:
 
 ```
-keytool -list -v -keystore elektron-release.jks -alias elektron-release | grep SHA256
+keytool -list -v -keystore elektron-release.jks -alias elektron-release
 ```
+
+The line `SHA256:` under "Certificate fingerprints" is the fingerprint.
 
 ## 3. Repository secrets
 
@@ -49,7 +50,7 @@ Settings, Secrets and variables, Actions, "New repository secret":
 
 | Secret | Value |
 |---|---|
-| `ELEKTRON_KEYSTORE_BASE64` | `base64 -w0 elektron-release.jks` |
+| `ELEKTRON_KEYSTORE_BASE64` | Linux/macOS: `base64 -w0 elektron-release.jks`. PowerShell: `[Convert]::ToBase64String([IO.File]::ReadAllBytes("elektron-release.jks"))` |
 | `ELEKTRON_KEYSTORE_PASSWORD` | keystore password |
 | `ELEKTRON_KEY_ALIAS` | `elektron-release` |
 | `ELEKTRON_KEY_PASSWORD` | key password (optional, defaults to the keystore password) |
