@@ -795,4 +795,30 @@
     <string name="wallets_reload_result">%1$d ditambahkan, %2$d dihapus dari daftar, %3$d dimuat.</string>
     <string name="wallets_reload_none">Tidak ada yang baru ditemukan.</string>
     <string name="wallets_reload_failed">Node belum siap.</string>
+    <string name="settings_fiat">Nilai fiat</string>
+    <string name="fiat_switch">Tampilkan nilai fiat</string>
+    <string name="fiat_hint">Menanyakan kurs ELEK ke layanan harga. Layanan melihat alamat IP Anda. Mati: hanya ELEK yang ditampilkan.</string>
+    <string name="fiat_provider">Layanan harga</string>
+    <string name="fiat_provider_add">Tambah layanan</string>
+    <string name="fiat_provider_edit">Ubah layanan</string>
+    <string name="fiat_provider_delete">Hapus</string>
+    <string name="fiat_provider_name">Nama</string>
+    <string name="fiat_provider_url">Alamat (https) dengan {BASE} dan {QUOTE}</string>
+    <string name="fiat_provider_path">Jalur ke harga dalam jawaban</string>
+    <string name="fiat_provider_help">Contoh: https://api.example.org/ticker/{BASE}-{QUOTE} dengan jalur data.price. Angka memilih entri daftar (data.0.last), * mengambil entri pertama objek. {base} dan {quote} adalah bentuk huruf kecil.</string>
+    <string name="fiat_pair">Pasangan mata uang</string>
+    <string name="fiat_pair_add">Tambah pasangan sendiri</string>
+    <string name="fiat_pair_code">Kode mata uang, misalnya PLN atau USDT</string>
+    <string name="fiat_pair_help">Kode apa pun berfungsi jika layanan punya pasar untuknya. Jika tidak ada, hanya ELEK yang ditampilkan.</string>
+    <string name="fiat_order_elek">Harga 1 %1$s dalam %2$s</string>
+    <string name="fiat_order_fiat">Harga 1 %1$s dalam %2$s, dikonversi</string>
+    <string name="fiat_main">Tampilan utama</string>
+    <string name="fiat_main_elek">Jumlah ELEK (dalam satuan Anda)</string>
+    <string name="fiat_main_fiat">Jumlah fiat</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">Pasar %1$s tidak ditemukan. Hanya ELEK yang ditampilkan.</string>
+    <string name="fiat_status_failed">Layanan harga tidak dapat dijangkau. Hanya ELEK yang ditampilkan.</string>
+    <string name="fiat_status_loading">Memuat kurs…</string>
+    <string name="fiat_refresh">Segarkan sekarang</string>
+    <string name="send_enter_in">Masukkan jumlah dalam</string>
 </resources>

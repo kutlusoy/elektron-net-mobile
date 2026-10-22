@@ -795,4 +795,30 @@
     <string name="wallets_reload_result">%1$d hinzugefügt, %2$d aus der Liste entfernt, %3$d geladen.</string>
     <string name="wallets_reload_none">Nichts Neues gefunden.</string>
     <string name="wallets_reload_failed">Der Node ist noch nicht bereit.</string>
+    <string name="settings_fiat">Fiat-Wert</string>
+    <string name="fiat_switch">Fiat-Wert anzeigen</string>
+    <string name="fiat_hint">Fragt bei einem Kursdienst den ELEK-Kurs ab. Der Dienst sieht deine IP-Adresse. Aus: Es wird nur ELEK angezeigt.</string>
+    <string name="fiat_provider">Kursdienst</string>
+    <string name="fiat_provider_add">Dienst hinzufügen</string>
+    <string name="fiat_provider_edit">Dienst bearbeiten</string>
+    <string name="fiat_provider_delete">Löschen</string>
+    <string name="fiat_provider_name">Name</string>
+    <string name="fiat_provider_url">Adresse (https) mit {BASE} und {QUOTE}</string>
+    <string name="fiat_provider_path">Pfad zum Preis in der Antwort</string>
+    <string name="fiat_provider_help">Beispiel: https://api.example.org/ticker/{BASE}-{QUOTE} mit dem Pfad data.price. Zahlen wählen einen Listeneintrag (data.0.last), * nimmt den ersten Eintrag eines Objekts. {base} und {quote} sind die Kleinbuchstaben-Formen.</string>
+    <string name="fiat_pair">Währungspaar</string>
+    <string name="fiat_pair_add">Eigenes Paar hinzufügen</string>
+    <string name="fiat_pair_code">Währungscode, zum Beispiel PLN oder USDT</string>
+    <string name="fiat_pair_help">Jeder Code funktioniert, wenn der Kursdienst dafür einen Markt hat. Gibt es keinen, wird nur ELEK angezeigt.</string>
+    <string name="fiat_order_elek">Preis von 1 %1$s in %2$s</string>
+    <string name="fiat_order_fiat">Preis von 1 %1$s in %2$s, umgerechnet</string>
+    <string name="fiat_main">Hauptanzeige</string>
+    <string name="fiat_main_elek">ELEK-Beträge (in deiner Einheit)</string>
+    <string name="fiat_main_fiat">Fiat-Beträge</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">Kein Markt %1$s gefunden. Es wird nur ELEK angezeigt.</string>
+    <string name="fiat_status_failed">Der Kursdienst ist nicht erreichbar. Es wird nur ELEK angezeigt.</string>
+    <string name="fiat_status_loading">Kurs wird geladen…</string>
+    <string name="fiat_refresh">Jetzt aktualisieren</string>
+    <string name="send_enter_in">Betrag eingeben in</string>
 </resources>

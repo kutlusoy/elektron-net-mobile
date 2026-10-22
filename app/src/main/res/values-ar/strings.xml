@@ -795,4 +795,30 @@
     <string name="wallets_reload_result">تمت إضافة %1$d، وإزالة %2$d من القائمة، وتحميل %3$d.</string>
     <string name="wallets_reload_none">لم يتم العثور على شيء جديد.</string>
     <string name="wallets_reload_failed">العقدة غير جاهزة بعد.</string>
+    <string name="settings_fiat">القيمة بالعملة الورقية</string>
+    <string name="fiat_switch">عرض القيمة بالعملة الورقية</string>
+    <string name="fiat_hint">يطلب سعر ELEK من خدمة أسعار. ترى الخدمة عنوان IP الخاص بك. متوقف: يُعرض ELEK فقط.</string>
+    <string name="fiat_provider">خدمة الأسعار</string>
+    <string name="fiat_provider_add">إضافة خدمة</string>
+    <string name="fiat_provider_edit">تعديل الخدمة</string>
+    <string name="fiat_provider_delete">حذف</string>
+    <string name="fiat_provider_name">الاسم</string>
+    <string name="fiat_provider_url">العنوان (https) مع {BASE} و {QUOTE}</string>
+    <string name="fiat_provider_path">مسار السعر في الرد</string>
+    <string name="fiat_provider_help">مثال: https://api.example.org/ticker/{BASE}-{QUOTE} مع المسار data.price. الأرقام تختار عنصرًا من قائمة (data.0.last)، و * تأخذ أول مدخل في الكائن. {base} و {quote} هما الصيغتان بالأحرف الصغيرة.</string>
+    <string name="fiat_pair">زوج العملات</string>
+    <string name="fiat_pair_add">إضافة زوج خاص</string>
+    <string name="fiat_pair_code">رمز العملة، مثل PLN أو USDT</string>
+    <string name="fiat_pair_help">يعمل أي رمز إذا كان لدى الخدمة سوق له. إن لم يوجد، يُعرض ELEK فقط.</string>
+    <string name="fiat_order_elek">سعر 1 %1$s بـ %2$s</string>
+    <string name="fiat_order_fiat">سعر 1 %1$s بـ %2$s، بعد التحويل</string>
+    <string name="fiat_main">العرض الرئيسي</string>
+    <string name="fiat_main_elek">مبالغ ELEK (بوحدتك)</string>
+    <string name="fiat_main_fiat">مبالغ بالعملة الورقية</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">لم يُعثر على السوق %1$s. يُعرض ELEK فقط.</string>
+    <string name="fiat_status_failed">تعذر الوصول إلى خدمة الأسعار. يُعرض ELEK فقط.</string>
+    <string name="fiat_status_loading">جارٍ تحميل السعر…</string>
+    <string name="fiat_refresh">تحديث الآن</string>
+    <string name="send_enter_in">إدخال المبلغ بـ</string>
 </resources>

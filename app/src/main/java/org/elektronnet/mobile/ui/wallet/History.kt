@@ -87,7 +87,14 @@ internal fun HistoryRowView(row: HistoryRow, onClick: () -> Unit) {
                 Text(detail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        Text("${row.amountText} ${Amount.unitSymbol()}", fontFamily = ElektronMono)
+        val elek = "${row.amountText} ${Amount.unitSymbol()}"
+        val fiat = org.elektronnet.mobile.ui.theme.FiatState.text(row.netLep)
+        val fiatMain = fiat != null && org.elektronnet.mobile.ui.theme.FiatState.fiatIsMain
+        Column(horizontalAlignment = Alignment.End) {
+            Text(if (fiatMain) fiat!! else elek, fontFamily = ElektronMono)
+            val other = if (fiatMain) elek else fiat
+            other?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        }
     }
 }
 
@@ -130,10 +137,11 @@ fun TxDetailsScreen(item: TxItem, onClose: () -> Unit, onBumped: (String) -> Uni
         }
         Text(status)
         val sign = if (item.netLep > 0) "+" else if (item.netLep < 0) "-" else ""
-        Text(
-            "$sign${Amount.display(Math.abs(item.netLep))} ${Amount.unitSymbol()}",
-            style = MaterialTheme.typography.displaySmall,
-        )
+        val elekText = "$sign${Amount.display(Math.abs(item.netLep))} ${Amount.unitSymbol()}"
+        val fiatText = org.elektronnet.mobile.ui.theme.FiatState.text(item.netLep)
+        val fiatMain = fiatText != null && org.elektronnet.mobile.ui.theme.FiatState.fiatIsMain
+        Text(if (fiatMain) fiatText!! else elekText, style = MaterialTheme.typography.displaySmall)
+        (if (fiatMain) elekText else fiatText)?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
         if (item.timeSeconds > 0) {
             val formatted = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
                 .format(Instant.ofEpochSecond(item.timeSeconds).atZone(ZoneId.systemDefault()))

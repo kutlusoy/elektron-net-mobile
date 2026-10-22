@@ -795,4 +795,30 @@
     <string name="wallets_reload_result">%1$d 件追加、一覧から %2$d 件削除、%3$d 件読み込み。</string>
     <string name="wallets_reload_none">新しいものは見つかりませんでした。</string>
     <string name="wallets_reload_failed">ノードはまだ準備できていません。</string>
+    <string name="settings_fiat">法定通貨での価値</string>
+    <string name="fiat_switch">法定通貨の価値を表示</string>
+    <string name="fiat_hint">ELEK のレートを価格サービスに問い合わせます。サービスはあなたの IP アドレスを見ます。オフの場合は ELEK のみ表示されます。</string>
+    <string name="fiat_provider">価格サービス</string>
+    <string name="fiat_provider_add">サービスを追加</string>
+    <string name="fiat_provider_edit">サービスを編集</string>
+    <string name="fiat_provider_delete">削除</string>
+    <string name="fiat_provider_name">名前</string>
+    <string name="fiat_provider_url">{BASE} と {QUOTE} を含むアドレス (https)</string>
+    <string name="fiat_provider_path">応答内の価格のパス</string>
+    <string name="fiat_provider_help">例: https://api.example.org/ticker/{BASE}-{QUOTE} とパス data.price。数字はリストの項目を選び (data.0.last)、* はオブジェクトの最初の項目を取ります。{base} と {quote} は小文字の形です。</string>
+    <string name="fiat_pair">通貨ペア</string>
+    <string name="fiat_pair_add">独自のペアを追加</string>
+    <string name="fiat_pair_code">通貨コード (例: PLN、USDT)</string>
+    <string name="fiat_pair_help">サービスにその市場があれば、どのコードでも使えます。なければ ELEK のみ表示されます。</string>
+    <string name="fiat_order_elek">1 %1$s の価格 (%2$s)</string>
+    <string name="fiat_order_fiat">1 %1$s の価格 (%2$s)、換算</string>
+    <string name="fiat_main">メイン表示</string>
+    <string name="fiat_main_elek">ELEK の金額 (あなたの単位)</string>
+    <string name="fiat_main_fiat">法定通貨の金額</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">市場 %1$s が見つかりません。ELEK のみ表示されます。</string>
+    <string name="fiat_status_failed">価格サービスに接続できません。ELEK のみ表示されます。</string>
+    <string name="fiat_status_loading">レートを読み込み中…</string>
+    <string name="fiat_refresh">今すぐ更新</string>
+    <string name="send_enter_in">金額の入力単位</string>
 </resources>

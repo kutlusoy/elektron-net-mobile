@@ -795,4 +795,30 @@
     <string name="wallets_reload_result">%1$d añadidos, %2$d quitados de la lista, %3$d cargados.</string>
     <string name="wallets_reload_none">No se encontró nada nuevo.</string>
     <string name="wallets_reload_failed">El nodo aún no está listo.</string>
+    <string name="settings_fiat">Valor en moneda fiat</string>
+    <string name="fiat_switch">Mostrar valor en moneda fiat</string>
+    <string name="fiat_hint">Consulta a un servicio de precios la cotización de ELEK. El servicio ve tu dirección IP. Desactivado: solo se muestra ELEK.</string>
+    <string name="fiat_provider">Servicio de precios</string>
+    <string name="fiat_provider_add">Añadir servicio</string>
+    <string name="fiat_provider_edit">Editar servicio</string>
+    <string name="fiat_provider_delete">Eliminar</string>
+    <string name="fiat_provider_name">Nombre</string>
+    <string name="fiat_provider_url">Dirección (https) con {BASE} y {QUOTE}</string>
+    <string name="fiat_provider_path">Ruta al precio en la respuesta</string>
+    <string name="fiat_provider_help">Ejemplo: https://api.example.org/ticker/{BASE}-{QUOTE} con la ruta data.price. Los números eligen un elemento de una lista (data.0.last), * toma la primera entrada de un objeto. {base} y {quote} son las formas en minúsculas.</string>
+    <string name="fiat_pair">Par de divisas</string>
+    <string name="fiat_pair_add">Añadir par propio</string>
+    <string name="fiat_pair_code">Código de divisa, por ejemplo PLN o USDT</string>
+    <string name="fiat_pair_help">Cualquier código sirve si el servicio tiene un mercado para él. Si no lo tiene, solo se muestra ELEK.</string>
+    <string name="fiat_order_elek">Precio de 1 %1$s en %2$s</string>
+    <string name="fiat_order_fiat">Precio de 1 %1$s en %2$s, convertido</string>
+    <string name="fiat_main">Vista principal</string>
+    <string name="fiat_main_elek">Importes en ELEK (en tu unidad)</string>
+    <string name="fiat_main_fiat">Importes en moneda fiat</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">No se encontró el mercado %1$s. Solo se muestra ELEK.</string>
+    <string name="fiat_status_failed">El servicio de precios no está disponible. Solo se muestra ELEK.</string>
+    <string name="fiat_status_loading">Cargando la cotización…</string>
+    <string name="fiat_refresh">Actualizar ahora</string>
+    <string name="send_enter_in">Introducir importe en</string>
 </resources>

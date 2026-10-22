@@ -795,4 +795,30 @@
     <string name="wallets_reload_result">已添加 %1$d 个，已从列表移除 %2$d 个，已加载 %3$d 个。</string>
     <string name="wallets_reload_none">未发现新内容。</string>
     <string name="wallets_reload_failed">节点尚未就绪。</string>
+    <string name="settings_fiat">法币价值</string>
+    <string name="fiat_switch">显示法币价值</string>
+    <string name="fiat_hint">向价格服务查询 ELEK 汇率。该服务会看到你的 IP 地址。关闭时只显示 ELEK。</string>
+    <string name="fiat_provider">价格服务</string>
+    <string name="fiat_provider_add">添加服务</string>
+    <string name="fiat_provider_edit">编辑服务</string>
+    <string name="fiat_provider_delete">删除</string>
+    <string name="fiat_provider_name">名称</string>
+    <string name="fiat_provider_url">含 {BASE} 和 {QUOTE} 的地址 (https)</string>
+    <string name="fiat_provider_path">响应中价格的路径</string>
+    <string name="fiat_provider_help">示例：https://api.example.org/ticker/{BASE}-{QUOTE}，路径 data.price。数字选择列表项 (data.0.last)，* 取对象的第一项。{base} 和 {quote} 是小写形式。</string>
+    <string name="fiat_pair">货币对</string>
+    <string name="fiat_pair_add">添加自己的货币对</string>
+    <string name="fiat_pair_code">货币代码，例如 PLN 或 USDT</string>
+    <string name="fiat_pair_help">只要价格服务有对应市场，任何代码都可用。没有时只显示 ELEK。</string>
+    <string name="fiat_order_elek">1 %1$s 的价格 (%2$s)</string>
+    <string name="fiat_order_fiat">1 %1$s 的价格 (%2$s)，已换算</string>
+    <string name="fiat_main">主显示</string>
+    <string name="fiat_main_elek">ELEK 金额 (按你的单位)</string>
+    <string name="fiat_main_fiat">法币金额</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">未找到市场 %1$s。只显示 ELEK。</string>
+    <string name="fiat_status_failed">无法连接价格服务。只显示 ELEK。</string>
+    <string name="fiat_status_loading">正在加载汇率…</string>
+    <string name="fiat_refresh">立即刷新</string>
+    <string name="send_enter_in">输入金额单位</string>
 </resources>

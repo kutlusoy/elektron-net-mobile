@@ -795,4 +795,30 @@
     <string name="wallets_reload_result">%1$d개 추가, 목록에서 %2$d개 제거, %3$d개 불러옴.</string>
     <string name="wallets_reload_none">새로 찾은 항목이 없습니다.</string>
     <string name="wallets_reload_failed">노드가 아직 준비되지 않았습니다.</string>
+    <string name="settings_fiat">법정화폐 가치</string>
+    <string name="fiat_switch">법정화폐 가치 표시</string>
+    <string name="fiat_hint">가격 서비스에 ELEK 시세를 요청합니다. 서비스는 사용자의 IP 주소를 봅니다. 끄면 ELEK만 표시됩니다.</string>
+    <string name="fiat_provider">가격 서비스</string>
+    <string name="fiat_provider_add">서비스 추가</string>
+    <string name="fiat_provider_edit">서비스 편집</string>
+    <string name="fiat_provider_delete">삭제</string>
+    <string name="fiat_provider_name">이름</string>
+    <string name="fiat_provider_url">{BASE}와 {QUOTE}를 포함한 주소 (https)</string>
+    <string name="fiat_provider_path">응답에서 가격의 경로</string>
+    <string name="fiat_provider_help">예: https://api.example.org/ticker/{BASE}-{QUOTE} 및 경로 data.price. 숫자는 목록 항목을 고르고 (data.0.last), *는 객체의 첫 항목을 가져옵니다. {base}와 {quote}는 소문자 형태입니다.</string>
+    <string name="fiat_pair">통화 쌍</string>
+    <string name="fiat_pair_add">직접 쌍 추가</string>
+    <string name="fiat_pair_code">통화 코드, 예: PLN 또는 USDT</string>
+    <string name="fiat_pair_help">서비스에 해당 시장이 있으면 어떤 코드든 동작합니다. 없으면 ELEK만 표시됩니다.</string>
+    <string name="fiat_order_elek">1 %1$s의 가격 (%2$s)</string>
+    <string name="fiat_order_fiat">1 %1$s의 가격 (%2$s), 환산</string>
+    <string name="fiat_main">기본 표시</string>
+    <string name="fiat_main_elek">ELEK 금액 (내 단위)</string>
+    <string name="fiat_main_fiat">법정화폐 금액</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">%1$s 시장을 찾을 수 없습니다. ELEK만 표시됩니다.</string>
+    <string name="fiat_status_failed">가격 서비스에 연결할 수 없습니다. ELEK만 표시됩니다.</string>
+    <string name="fiat_status_loading">시세 불러오는 중…</string>
+    <string name="fiat_refresh">지금 새로고침</string>
+    <string name="send_enter_in">금액 입력 단위</string>
 </resources>

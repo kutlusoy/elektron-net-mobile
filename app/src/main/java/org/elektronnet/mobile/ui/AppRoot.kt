@@ -102,6 +102,14 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     var nodeOnly by remember { mutableStateOf(store?.nodeOnly == true) }
     val shell = walletReady || nodeOnly
 
+    val fiatSettings = org.elektronnet.mobile.ui.theme.FiatState.settings
+    LaunchedEffect(fiatSettings) {
+        while (fiatSettings.enabled) {
+            org.elektronnet.mobile.ui.theme.FiatState.refresh()
+            delay(FIAT_REFRESH_MS)
+        }
+    }
+
     LaunchedEffect(setup) {
         if (setup is SetupStatus.Ready || setup == SetupStatus.NeedsRescan || setup == SetupStatus.Rescanning) storeReady = true
         while (setup == SetupStatus.Waiting || setup == SetupStatus.Rescanning || (setup == SetupStatus.NeedsRescan && !NodeHost.needsRescanPassphrase)) {
@@ -357,3 +365,5 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         )
     }
 }
+
+private const val FIAT_REFRESH_MS = 5 * 60 * 1000L

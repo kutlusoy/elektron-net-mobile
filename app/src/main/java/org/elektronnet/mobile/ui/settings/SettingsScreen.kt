@@ -163,6 +163,7 @@ fun SettingsScreen(
             ToggleRow(R.string.settings_screenshots, R.string.settings_screenshots_hint, ScreenshotMode.allowed) { ScreenshotMode.allowed = it }
         }
         SettingsCard(R.string.settings_language) { LanguagePicker() }
+        SettingsCard(R.string.settings_fiat) { FiatSection() }
         SettingsCard(R.string.settings_units) {
             UnitPicker()
         }

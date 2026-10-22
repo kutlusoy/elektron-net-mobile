@@ -795,4 +795,30 @@
     <string name="wallets_reload_result">Đã thêm %1$d, đã xóa %2$d khỏi danh sách, đã tải %3$d.</string>
     <string name="wallets_reload_none">Không tìm thấy gì mới.</string>
     <string name="wallets_reload_failed">Nút chưa sẵn sàng.</string>
+    <string name="settings_fiat">Giá trị tiền pháp định</string>
+    <string name="fiat_switch">Hiển thị giá trị tiền pháp định</string>
+    <string name="fiat_hint">Hỏi dịch vụ giá về tỷ giá ELEK. Dịch vụ thấy địa chỉ IP của bạn. Tắt: chỉ hiển thị ELEK.</string>
+    <string name="fiat_provider">Dịch vụ giá</string>
+    <string name="fiat_provider_add">Thêm dịch vụ</string>
+    <string name="fiat_provider_edit">Sửa dịch vụ</string>
+    <string name="fiat_provider_delete">Xóa</string>
+    <string name="fiat_provider_name">Tên</string>
+    <string name="fiat_provider_url">Địa chỉ (https) có {BASE} và {QUOTE}</string>
+    <string name="fiat_provider_path">Đường dẫn tới giá trong phản hồi</string>
+    <string name="fiat_provider_help">Ví dụ: https://api.example.org/ticker/{BASE}-{QUOTE} với đường dẫn data.price. Số chọn một mục trong danh sách (data.0.last), * lấy mục đầu tiên của đối tượng. {base} và {quote} là dạng chữ thường.</string>
+    <string name="fiat_pair">Cặp tiền tệ</string>
+    <string name="fiat_pair_add">Thêm cặp riêng</string>
+    <string name="fiat_pair_code">Mã tiền tệ, ví dụ PLN hoặc USDT</string>
+    <string name="fiat_pair_help">Mã nào cũng dùng được nếu dịch vụ có thị trường cho nó. Nếu không có, chỉ hiển thị ELEK.</string>
+    <string name="fiat_order_elek">Giá của 1 %1$s theo %2$s</string>
+    <string name="fiat_order_fiat">Giá của 1 %1$s theo %2$s, đã quy đổi</string>
+    <string name="fiat_main">Hiển thị chính</string>
+    <string name="fiat_main_elek">Số tiền ELEK (theo đơn vị của bạn)</string>
+    <string name="fiat_main_fiat">Số tiền pháp định</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">Không tìm thấy thị trường %1$s. Chỉ hiển thị ELEK.</string>
+    <string name="fiat_status_failed">Không truy cập được dịch vụ giá. Chỉ hiển thị ELEK.</string>
+    <string name="fiat_status_loading">Đang tải tỷ giá…</string>
+    <string name="fiat_refresh">Làm mới ngay</string>
+    <string name="send_enter_in">Nhập số tiền theo</string>
 </resources>

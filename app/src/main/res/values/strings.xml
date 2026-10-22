@@ -806,4 +806,30 @@
     <string name="wallets_reload_result">%1$d added, %2$d removed from the list, %3$d loaded.</string>
     <string name="wallets_reload_none">Nothing new found.</string>
     <string name="wallets_reload_failed">The node is not ready yet.</string>
+    <string name="settings_fiat">Fiat value</string>
+    <string name="fiat_switch">Show fiat value</string>
+    <string name="fiat_hint">Asks a price service for the ELEK rate. The service sees your IP address. Off: only ELEK is shown.</string>
+    <string name="fiat_provider">Price service</string>
+    <string name="fiat_provider_add">Add service</string>
+    <string name="fiat_provider_edit">Edit service</string>
+    <string name="fiat_provider_delete">Delete</string>
+    <string name="fiat_provider_name">Name</string>
+    <string name="fiat_provider_url">Address (https) with {BASE} and {QUOTE}</string>
+    <string name="fiat_provider_path">Path to the price in the answer</string>
+    <string name="fiat_provider_help">Example: https://api.example.org/ticker/{BASE}-{QUOTE} with the path data.price. Numbers pick a list entry (data.0.last), * takes the first entry of an object. {base} and {quote} are the lowercase forms.</string>
+    <string name="fiat_pair">Currency pair</string>
+    <string name="fiat_pair_add">Add own pair</string>
+    <string name="fiat_pair_code">Currency code, for example PLN or USDT</string>
+    <string name="fiat_pair_help">Any code works if the price service has a market for it. If it has none, only ELEK is shown.</string>
+    <string name="fiat_order_elek">Price of 1 %1$s in %2$s</string>
+    <string name="fiat_order_fiat">Price of 1 %1$s in %2$s, converted</string>
+    <string name="fiat_main">Main display</string>
+    <string name="fiat_main_elek">ELEK amounts (in your unit)</string>
+    <string name="fiat_main_fiat">Fiat amounts</string>
+    <string name="fiat_status_ok">1 ELEK = %1$s</string>
+    <string name="fiat_status_nopair">No market %1$s found. Only ELEK is shown.</string>
+    <string name="fiat_status_failed">The price service is not reachable. Only ELEK is shown.</string>
+    <string name="fiat_status_loading">Loading the rate…</string>
+    <string name="fiat_refresh">Refresh now</string>
+    <string name="send_enter_in">Enter amount in</string>
 </resources>

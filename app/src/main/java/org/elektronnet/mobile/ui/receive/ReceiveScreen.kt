@@ -65,6 +65,12 @@ fun ReceiveScreen(onClose: () -> Unit) {
     var amount by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
     var options by remember { mutableStateOf(false) }
+    val fiat = org.elektronnet.mobile.ui.theme.FiatState.current
+    var inFiat by remember { mutableStateOf(false) }
+    val fiatInput = if (inFiat) fiat else null
+    LaunchedEffect(fiat == null) {
+        if (fiat == null && inFiat) { amount = ""; inFiat = false }
+    }
     val synced = NodeHost.latest?.headline is Headline.Synchronized
 
     BackHandler(onBack = onClose)
@@ -92,7 +98,7 @@ fun ReceiveScreen(onClose: () -> Unit) {
             if (failed) Button(onClick = { attempt++ }) { Text(stringResource(R.string.action_retry)) }
             return@Column
         }
-        val model = ReceiveUiModel.build(current, NodeHost.paymentUri, amount, note, synced)
+        val model = ReceiveUiModel.build(current, NodeHost.paymentUri, amount, note, synced, fiatInput)
         QrView(model.qrText)
         Text(
             buildAnnotatedString {
@@ -113,16 +119,43 @@ fun ReceiveScreen(onClose: () -> Unit) {
             Text(stringResource(if (options) R.string.receive_options_hide else R.string.receive_options_show))
         }
         if (options) {
+            if (fiat != null) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.send_enter_in), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    listOf(false to Amount.unitSymbol(), true to fiat.quote).forEach { (fiatMode, name) ->
+                        val choose = {
+                            if (inFiat != fiatMode) {
+                                val lep = model.amountLep
+                                amount = when {
+                                    lep == null -> ""
+                                    fiatMode -> org.elektronnet.mobile.fiat.FiatRates.inputText(lep, fiat)
+                                    else -> Amount.display(lep)
+                                }
+                                inFiat = fiatMode
+                            }
+                        }
+                        if (inFiat == fiatMode) Button(onClick = choose) { Text(name) } else OutlinedButton(onClick = choose) { Text(name) }
+                    }
+                }
+            }
             OutlinedTextField(
                 value = amount,
                 onValueChange = { amount = it },
-                label = { Text(stringResource(R.string.receive_amount, Amount.unitSymbol())) },
+                label = { Text(stringResource(R.string.receive_amount, fiatInput?.quote ?: Amount.unitSymbol())) },
                 isError = model.amountInvalid,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 modifier = Modifier.fillMaxWidth(),
             )
             if (model.amountInvalid) Text(stringResource(R.string.receive_amount_invalid), color = MaterialTheme.colorScheme.error)
+            model.amountLep?.let { lep ->
+                if (inFiat) {
+                    Text("\u2248 " + Amount.displayWithUnit(lep), color = MaterialTheme.colorScheme.primary)
+                } else {
+                    org.elektronnet.mobile.ui.theme.FiatState.text(lep)?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                }
+            }
+            fiat?.let { Text(stringResource(R.string.fiat_status_ok, org.elektronnet.mobile.fiat.FiatRates.format(Amount.LEP_PER_ELEK, it)), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             OutlinedTextField(
                 value = note,
                 onValueChange = { note = it.take(ReceiveUiModel.NOTE_LIMIT) },
