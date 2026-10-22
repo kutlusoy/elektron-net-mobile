@@ -826,4 +826,6 @@
     <string name="fiat_provider_gecko">CoinGecko のシンプル価格アドレスにパスは不要です。受け付けるのは ids=bitcoin のみで、上場がない間は Bitcoin の価格が ELEK の代わりになります。</string>
     <string name="fiat_provider_reject">CoinGecko のアドレスは bitcoin のみ受け付けます。</string>
     <string name="fiat_status_limited">価格サービスがリクエストを制限しています。アプリは後で再試行します。ELEK のみ表示されます。</string>
+    <string name="fiat_fallback">予備のサービス</string>
+    <string name="fiat_fallback_hint">上のサービスが失敗した場合や該当する市場がない場合、ここでオンにしたサービスがその順に試されます。必要なときだけ問い合わせます。</string>
 </resources>

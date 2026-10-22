@@ -826,4 +826,6 @@
     <string name="fiat_provider_gecko">CoinGecko 단순 가격 주소에는 경로가 필요 없습니다. ids=bitcoin만 허용되며, 상장이 없는 동안 Bitcoin 가격이 ELEK을 대신합니다.</string>
     <string name="fiat_provider_reject">CoinGecko 주소는 bitcoin만 허용됩니다.</string>
     <string name="fiat_status_limited">가격 서비스가 요청을 제한합니다. 앱이 나중에 다시 시도합니다. ELEK만 표시됩니다.</string>
+    <string name="fiat_fallback">예비 서비스</string>
+    <string name="fiat_fallback_hint">위 서비스가 실패하거나 해당 시장이 없으면 여기서 켠 서비스를 그 순서대로 시도합니다. 필요할 때만 요청합니다.</string>
 </resources>

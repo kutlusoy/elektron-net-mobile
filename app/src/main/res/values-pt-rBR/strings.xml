@@ -826,4 +826,6 @@
     <string name="fiat_provider_gecko">Um endereço de preço simples da CoinGecko não precisa de caminho. Só ids=bitcoin é aceito, o preço do Bitcoin faz então as vezes do ELEK enquanto não houver listagem.</string>
     <string name="fiat_provider_reject">Endereços da CoinGecko só são aceitos para bitcoin.</string>
     <string name="fiat_status_limited">O serviço de preços limita as solicitações. O app tenta de novo mais tarde. Só o ELEK é mostrado.</string>
+    <string name="fiat_fallback">Serviços de reserva</string>
+    <string name="fiat_fallback_hint">Se o serviço acima falhar ou não tiver esse mercado, os que você ligar aqui são tentados nessa ordem. Só são consultados quando necessário.</string>
 </resources>

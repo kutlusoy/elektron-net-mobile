@@ -8,7 +8,7 @@ import java.util.Currency
 import java.util.Locale
 import org.elektronnet.mobile.node.Json
 
-data class FiatRate(val perElek: BigDecimal, val quote: String, val fetchedAtMs: Long)
+data class FiatRate(val perElek: BigDecimal, val quote: String, val fetchedAtMs: Long, val source: String = "")
 
 sealed interface RateResult {
     data class Found(val rate: FiatRate) : RateResult
@@ -37,7 +37,7 @@ object PriceParser {
     fun rate(provider: PriceProvider, json: String, quote: String, order: PairOrder, now: Long, ticker: String = ELEK_TICKER): FiatRate? {
         val price = extract(json, provider.requestPath(quote, order, ticker))?.takeIf { it.signum() > 0 } ?: return null
         val perElek = if (order == PairOrder.ElekFirst) price else BigDecimal.ONE.divide(price, MathContext(12, RoundingMode.HALF_EVEN))
-        return FiatRate(perElek, quote, now)
+        return FiatRate(perElek, quote, now, provider.name)
     }
 }
 
@@ -47,9 +47,34 @@ object FiatRates {
     const val BACKOFF_MS = 15 * 60_000L
     const val POLL_MS = 5 * 60_000L
 
-    // fetch returns the response body, or null when the service has no such market (HTTP 4xx); it throws on network errors
-    fun refresh(settings: FiatSettings, now: Long, fetch: (String) -> String?): RateResult {
-        val provider = settings.provider
+    // fetch returns the response body, or null when the service has no such market (HTTP 4xx); it throws on network errors.
+    // The chosen service is asked first, the fallbacks one after the other only while no rate was found. skip leaves out
+    // services that are resting after a rate limit answer, onLimited reports one that just answered with it.
+    fun refresh(
+        settings: FiatSettings,
+        now: Long,
+        skip: (PriceProvider) -> Boolean = { false },
+        onLimited: (PriceProvider) -> Unit = {},
+        fetch: (String) -> String?,
+    ): RateResult {
+        val chain = (listOf(settings.provider) + settings.fallbacks).distinctBy { it.id }
+        var worst: RateResult = RateResult.NoPair
+        for (provider in chain) {
+            if (skip(provider)) {
+                worst = RateResult.Limited
+                continue
+            }
+            when (val result = attempt(provider, settings, now, fetch)) {
+                is RateResult.Found -> return result
+                RateResult.Limited -> { onLimited(provider); if (worst != RateResult.Failed) worst = result }
+                RateResult.Failed -> worst = result
+                RateResult.NoPair -> Unit
+            }
+        }
+        return worst
+    }
+
+    private fun attempt(provider: PriceProvider, settings: FiatSettings, now: Long, fetch: (String) -> String?): RateResult {
         val body = try {
             fetch(provider.requestUrl(settings.quote, settings.order, settings.ticker)) ?: return RateResult.NoPair
         } catch (e: RateLimitException) {

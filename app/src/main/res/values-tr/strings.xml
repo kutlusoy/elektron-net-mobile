@@ -826,4 +826,6 @@
     <string name="fiat_provider_gecko">CoinGecko basit fiyat adresi için yol gerekmez. Yalnızca ids=bitcoin kabul edilir, listeleme olmadığı sürece Bitcoin fiyatı ELEK\'in yerini tutar.</string>
     <string name="fiat_provider_reject">CoinGecko adresleri yalnızca bitcoin için kabul edilir.</string>
     <string name="fiat_status_limited">Fiyat hizmeti istekleri sınırlıyor. Uygulama daha sonra tekrar dener. Yalnızca ELEK gösterilir.</string>
+    <string name="fiat_fallback">Yedek hizmetler</string>
+    <string name="fiat_fallback_hint">Yukarıdaki hizmet çalışmazsa veya piyasayı bilmiyorsa, burada açtıklarınız bu sırayla denenir. Yalnızca gerektiğinde sorulurlar.</string>
 </resources>

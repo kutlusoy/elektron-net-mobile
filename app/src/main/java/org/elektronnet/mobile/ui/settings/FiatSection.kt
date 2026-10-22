@@ -10,6 +10,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -48,6 +50,19 @@ fun FiatSection() {
         OutlinedButton(onClick = { adding = true }) { Text(stringResource(R.string.fiat_provider_add)) }
         if (!settings.provider.builtin) {
             OutlinedButton(onClick = { editing = settings.provider }) { Text(stringResource(R.string.fiat_provider_edit)) }
+        }
+    }
+
+    Text(stringResource(R.string.fiat_fallback), style = MaterialTheme.typography.labelLarge)
+    Hint(stringResource(R.string.fiat_fallback_hint))
+    settings.providers.filter { it.id != settings.providerId }.forEach { other ->
+        val position = settings.fallbackIds.indexOf(other.id)
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text((if (position >= 0) "${position + 1}. " else "") + other.name, modifier = Modifier.weight(1f))
+            Switch(
+                checked = position >= 0,
+                onCheckedChange = { on -> FiatState.apply(settings.copy(fallbackIds = if (on) settings.fallbackIds + other.id else settings.fallbackIds - other.id)) },
+            )
         }
     }
 

@@ -826,4 +826,6 @@
     <string name="fiat_provider_gecko">Адресу простой цены CoinGecko путь не нужен. Принимается только ids=bitcoin, цена Bitcoin заменяет ELEK, пока нет листинга.</string>
     <string name="fiat_provider_reject">Адреса CoinGecko принимаются только для bitcoin.</string>
     <string name="fiat_status_limited">Сервис цен ограничивает запросы. Приложение повторит попытку позже. Показывается только ELEK.</string>
+    <string name="fiat_fallback">Резервные сервисы</string>
+    <string name="fiat_fallback_hint">Если верхний сервис не отвечает или не знает рынок, включённые здесь пробуются по порядку. Они опрашиваются только при необходимости.</string>
 </resources>

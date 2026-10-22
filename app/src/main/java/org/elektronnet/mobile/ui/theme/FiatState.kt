@@ -31,7 +31,6 @@ object FiatState {
         if (normalized.enabled != settings.enabled || normalized.providerId != settings.providerId || normalized.quote != settings.quote || normalized.order != settings.order || normalized.provider != settings.provider) {
             rate = null
             status = FiatStatus.Idle
-            backoffUntilMs = 0L
         }
         settings = normalized
         NodeHost.store?.fiat = normalized
@@ -52,25 +51,31 @@ object FiatState {
 
     private var lastKey = ""
     private var lastAttemptMs = 0L
-    private var backoffUntilMs = 0L
+    private val restingUntil = mutableMapOf<String, Long>()
 
     // the same request is never repeated within a minute and a service that answered 429 is left alone for 15 minutes
     suspend fun refresh() {
         val wanted = settings
         if (!wanted.enabled) return
         val now = System.currentTimeMillis()
-        val key = wanted.provider.requestUrl(wanted.quote, wanted.order, wanted.ticker)
-        if (now < backoffUntilMs && key == lastKey) return
+        val key = (listOf(wanted.provider) + wanted.fallbacks).joinToString("|") { it.requestUrl(wanted.quote, wanted.order, wanted.ticker) }
         if (key == lastKey && now - lastAttemptMs < FiatRates.MIN_GAP_MS && now >= lastAttemptMs) return
         lastKey = key
         lastAttemptMs = now
         if (rate == null) status = FiatStatus.Loading
-        val result = withContext(Dispatchers.IO) { FiatRates.refresh(wanted, System.currentTimeMillis(), PriceFetch::get) }
+        val result = withContext(Dispatchers.IO) {
+            FiatRates.refresh(
+                wanted, now,
+                skip = { (restingUntil[it.id] ?: 0L) > now },
+                onLimited = { restingUntil[it.id] = System.currentTimeMillis() + FiatRates.BACKOFF_MS },
+                fetch = PriceFetch::get,
+            )
+        }
         if (settings != wanted) return
         when (result) {
             is RateResult.Found -> { rate = result.rate; status = FiatStatus.Ok }
             RateResult.NoPair -> { rate = null; status = FiatStatus.NoPair }
-            RateResult.Limited -> { backoffUntilMs = System.currentTimeMillis() + FiatRates.BACKOFF_MS; status = FiatStatus.Limited }
+            RateResult.Limited -> status = if (usable() != null) FiatStatus.Ok else FiatStatus.Limited
             RateResult.Failed -> status = if (usable() != null) FiatStatus.Ok else FiatStatus.Failed
         }
     }

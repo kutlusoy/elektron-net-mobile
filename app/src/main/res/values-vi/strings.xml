@@ -826,4 +826,6 @@
     <string name="fiat_provider_gecko">Địa chỉ giá đơn giản của CoinGecko không cần đường dẫn. Chỉ chấp nhận ids=bitcoin, giá Bitcoin khi đó thay cho ELEK khi chưa có niêm yết.</string>
     <string name="fiat_provider_reject">Địa chỉ CoinGecko chỉ được chấp nhận cho bitcoin.</string>
     <string name="fiat_status_limited">Dịch vụ giá giới hạn yêu cầu. Ứng dụng sẽ thử lại sau. Chỉ hiển thị ELEK.</string>
+    <string name="fiat_fallback">Dịch vụ dự phòng</string>
+    <string name="fiat_fallback_hint">Nếu dịch vụ ở trên lỗi hoặc không có thị trường đó, các dịch vụ bạn bật ở đây sẽ được thử theo thứ tự. Chúng chỉ được hỏi khi cần.</string>
 </resources>

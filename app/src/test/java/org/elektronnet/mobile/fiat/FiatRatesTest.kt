@@ -195,3 +195,57 @@ class FiatStandInTest {
         assertEquals(RateResult.Limited, FiatRates.refresh(FiatSettings(enabled = true), 1L) { throw RateLimitException() })
     }
 }
+
+class FiatFallbackTest {
+    private val settings = FiatSettings(enabled = true, quote = "EUR", fallbackIds = listOf("coinbase", "kucoin"))
+
+    @Test
+    fun theNextServiceIsAskedOnlyWhenTheFirstFails() {
+        val asked = mutableListOf<String>()
+        val result = FiatRates.refresh(settings, 1L) { url ->
+            asked.add(url)
+            when {
+                url.contains("binance") -> throw java.io.IOException("down")
+                url.contains("coinbase") -> """{"data":{"amount":"3.5"}}"""
+                else -> error("must not be asked")
+            }
+        } as RateResult.Found
+        assertEquals(2, asked.size)
+        assertEquals("Coinbase", result.rate.source)
+        assertEquals(0, BigDecimal("3.5").compareTo(result.rate.perElek))
+    }
+
+    @Test
+    fun aFirstServiceThatWorksIsTheOnlyOneAsked() {
+        var calls = 0
+        val result = FiatRates.refresh(settings, 1L) { calls++; """{"price":"2"}""" } as RateResult.Found
+        assertEquals(1, calls)
+        assertEquals("Binance", result.rate.source)
+    }
+
+    @Test
+    fun missingMarketsFallThroughAndTheWorstAnswerIsReported() {
+        assertEquals(RateResult.NoPair, FiatRates.refresh(settings, 1L) { null })
+        assertEquals(RateResult.Failed, FiatRates.refresh(settings, 1L) { throw java.io.IOException() })
+        assertEquals(RateResult.Limited, FiatRates.refresh(settings, 1L) { throw RateLimitException() })
+        val limited = mutableListOf<String>()
+        FiatRates.refresh(settings, 1L, onLimited = { limited.add(it.id) }) { throw RateLimitException() }
+        assertEquals(listOf("binance", "coinbase", "kucoin"), limited)
+    }
+
+    @Test
+    fun servicesThatRestAreSkipped() {
+        val asked = mutableListOf<String>()
+        FiatRates.refresh(settings, 1L, skip = { it.id == "binance" }) { url -> asked.add(url); null }
+        assertEquals(2, asked.size)
+        assertEquals(RateResult.Limited, FiatRates.refresh(settings, 1L, skip = { true }) { null })
+    }
+
+    @Test
+    fun theListIsCleanedAndSaved() {
+        val s = FiatSettings(providerId = "coinbase", fallbackIds = listOf("coinbase", "kucoin", "kucoin", "gone", "mexc")).normalized()
+        assertEquals(listOf("kucoin", "mexc"), s.fallbackIds)
+        assertEquals(listOf("kucoin", "mexc"), FiatSettings.decode(s.encode()).fallbackIds)
+        assertEquals(listOf("KuCoin", "MEXC"), s.fallbacks.map { it.name })
+    }
+}

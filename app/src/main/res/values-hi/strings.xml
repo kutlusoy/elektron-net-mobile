@@ -826,4 +826,6 @@
     <string name="fiat_provider_gecko">CoinGecko के सरल मूल्य पते को पथ नहीं चाहिए। केवल ids=bitcoin स्वीकार है, जब तक लिस्टिंग नहीं है, Bitcoin का मूल्य ELEK की जगह लेता है।</string>
     <string name="fiat_provider_reject">CoinGecko के पते केवल bitcoin के लिए स्वीकार हैं।</string>
     <string name="fiat_status_limited">मूल्य सेवा अनुरोधों को सीमित करती है। ऐप बाद में फिर कोशिश करेगा। केवल ELEK दिखता है।</string>
+    <string name="fiat_fallback">बैकअप सेवाएँ</string>
+    <string name="fiat_fallback_hint">यदि ऊपर की सेवा विफल हो या उसमें वह बाज़ार न हो, तो यहाँ चालू की गई सेवाएँ उसी क्रम में आज़माई जाती हैं। उनसे केवल ज़रूरत पड़ने पर पूछा जाता है।</string>
 </resources>

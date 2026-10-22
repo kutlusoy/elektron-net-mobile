@@ -76,9 +76,11 @@ data class FiatSettings(
     val customProviders: List<PriceProvider> = emptyList(),
     val customQuotes: List<String> = emptyList(),
     val ticker: String = ELEK_TICKER,
+    val fallbackIds: List<String> = emptyList(),
 ) {
     val providers: List<PriceProvider> get() = PriceProviders.builtin + customProviders
     val provider: PriceProvider get() = providers.firstOrNull { it.id == providerId } ?: PriceProviders.builtin.first()
+    val fallbacks: List<PriceProvider> get() = fallbackIds.mapNotNull { id -> providers.firstOrNull { it.id == id } }.filter { it.id != provider.id }
     val quotes: List<String> get() = (FiatCodes.standard + customQuotes).distinct()
     val pairLabel: String get() = if (order == PairOrder.ElekFirst) "${ticker}_$quote" else "${quote}_$ticker"
 
@@ -92,6 +94,7 @@ data class FiatSettings(
             providerId = if (known) providerId else PriceProviders.builtin.first().id,
             quote = code,
             ticker = symbol,
+            fallbackIds = fallbackIds.filter { id -> id != providerId && (PriceProviders.builtin + customs).any { it.id == id } }.distinct().take(MAX_FALLBACKS),
             customProviders = customs,
             customQuotes = (extra + code).filter { it !in FiatCodes.standard }.distinct(),
         )
@@ -100,12 +103,13 @@ data class FiatSettings(
     fun encode(): String = Json.stringify(
         linkedMapOf(
             "enabled" to enabled, "provider" to providerId, "quote" to quote, "ticker" to ticker, "order" to order.name, "mainFiat" to mainFiat,
-            "providers" to customProviders.map { it.toMap() }, "quotes" to customQuotes,
+            "providers" to customProviders.map { it.toMap() }, "quotes" to customQuotes, "fallbacks" to fallbackIds,
         ),
     )
 
     companion object {
         const val MAX_CUSTOM = 20
+        const val MAX_FALLBACKS = 5
 
         fun decode(text: String?): FiatSettings {
             val map = runCatching { Json.parse(text ?: return FiatSettings()) as? Map<*, *> }.getOrNull() ?: return FiatSettings()
@@ -119,6 +123,7 @@ data class FiatSettings(
                 mainFiat = map["mainFiat"] as? Boolean ?: defaults.mainFiat,
                 customProviders = (map["providers"] as? List<*>).orEmpty().mapNotNull { (it as? Map<*, *>)?.let(PriceProvider::fromMap) },
                 customQuotes = (map["quotes"] as? List<*>).orEmpty().mapNotNull { it as? String },
+                fallbackIds = (map["fallbacks"] as? List<*>).orEmpty().mapNotNull { it as? String },
             ).normalized()
         }
     }

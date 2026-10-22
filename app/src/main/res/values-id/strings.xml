@@ -826,4 +826,6 @@
     <string name="fiat_provider_gecko">Alamat harga sederhana CoinGecko tidak memerlukan jalur. Hanya ids=bitcoin yang diterima, harga Bitcoin lalu menggantikan ELEK selama belum ada listing.</string>
     <string name="fiat_provider_reject">Alamat CoinGecko hanya diterima untuk bitcoin.</string>
     <string name="fiat_status_limited">Layanan harga membatasi permintaan. Aplikasi mencoba lagi nanti. Hanya ELEK yang ditampilkan.</string>
+    <string name="fiat_fallback">Layanan cadangan</string>
+    <string name="fiat_fallback_hint">Jika layanan di atas gagal atau tidak punya pasar itu, layanan yang Anda aktifkan di sini dicoba berurutan. Layanan ini hanya ditanya saat diperlukan.</string>
 </resources>
