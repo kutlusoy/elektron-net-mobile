@@ -8,14 +8,6 @@ on:
       version:
         description: "Version without the leading v: node version, then -m and the wallet version, for example 4.0.4-m0.1.0"
         required: true
-      build_type:
-        description: "release uses the latest elektron-net tag, nightly uses its main branch"
-        type: choice
-        options: [release, nightly]
-        default: release
-      core_ref:
-        description: "Optional elektron-net tag or commit to build (release builds accept release tags only)"
-        required: false
 
 permissions:
   contents: write
@@ -34,14 +26,8 @@ jobs:
       mobile_version: ${{ steps.v.outputs.mobile_version }}
       version_code: ${{ steps.v.outputs.version_code }}
       prerelease: ${{ steps.v.outputs.prerelease }}
-      build_type: ${{ steps.t.outputs.build_type }}
     steps:
       - uses: actions/checkout@v4
-      - id: t
-        env:
-          INPUT_TYPE: ${{ inputs.build_type }}
-        run: |
-          if [[ "$GITHUB_REF_TYPE" == tag ]]; then echo "build_type=release" >> "$GITHUB_OUTPUT"; else echo "build_type=${INPUT_TYPE:-release}" >> "$GITHUB_OUTPUT"; fi
       - id: v
         env:
           INPUT_VERSION: ${{ inputs.version }}
@@ -55,8 +41,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     env:
-      BUILD_TYPE: ${{ needs.prepare.outputs.build_type }}
-      CORE_REF: ${{ needs.prepare.outputs.build_type == 'release' && format('v{0}', needs.prepare.outputs.node_version) || inputs.core_ref }}
+      BUILD_TYPE: release
+      CORE_REF: ${{ format('v{0}', needs.prepare.outputs.node_version) }}
     steps:
       - uses: actions/checkout@v4
       - name: Pin the NDK checksum
@@ -95,9 +81,7 @@ jobs:
       VERSION_CODE: ${{ needs.prepare.outputs.version_code }}
       NODE_VERSION: ${{ needs.prepare.outputs.node_version }}
       MOBILE_VERSION: ${{ needs.prepare.outputs.mobile_version }}
-      BUILD_TYPE: ${{ needs.prepare.outputs.build_type }}
-    outputs:
-      signed: ${{ steps.sign.outputs.signed }}
+      BUILD_TYPE: release
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -116,42 +100,56 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.14.3"
-      - id: sign
-        name: Prepare signing
+      - name: Prepare signing
         env:
           KEYSTORE_BASE64: ${{ secrets.ELEKTRON_KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.ELEKTRON_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ELEKTRON_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ELEKTRON_KEY_PASSWORD }}
         run: |
-          if [[ -n $KEYSTORE_BASE64 ]]; then
-            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
-            {
-              echo "ELEKTRON_KEYSTORE=$RUNNER_TEMP/release.keystore"
-              echo "ELEKTRON_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
-              echo "ELEKTRON_KEY_ALIAS=$KEY_ALIAS"
-              echo "ELEKTRON_KEY_PASSWORD=${KEY_PASSWORD:-$KEYSTORE_PASSWORD}"
-            } >> "$GITHUB_ENV"
-            echo "signed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "::warning::No release key configured. The APKs are signed with the public test key in app/test-signing and are not for distribution."
-            echo "signed=false" >> "$GITHUB_OUTPUT"
-          fi
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS; do
+            if [[ -z ${!name} ]]; then
+              echo "::error::The repository secret for $name is missing. A release is only built with the release key. Use the prerelease workflow for test builds."
+              exit 1
+            fi
+          done
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          {
+            echo "ELEKTRON_KEYSTORE=$RUNNER_TEMP/release.keystore"
+            echo "ELEKTRON_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+            echo "ELEKTRON_KEY_ALIAS=$KEY_ALIAS"
+            echo "ELEKTRON_KEY_PASSWORD=${KEY_PASSWORD:-$KEYSTORE_PASSWORD}"
+          } >> "$GITHUB_ENV"
       - name: Peer country database
         run: bash tools/fetch-geoip.sh
       - name: Build the APKs
         run: |
-          if [[ ${{ steps.sign.outputs.signed }} == true ]]; then
-            variant=Release; dir=release
-          else
-            variant=Nightly; dir=nightly
-          fi
+          variant=Release; dir=release
           gradle --no-daemon -PappVersionName="$VERSION" -PappVersionCode="$VERSION_CODE" -PappNodeVersion="$NODE_VERSION" \
             ":app:assembleMainnet$variant" ":app:assembleTnet$variant"
           mkdir -p dist
           cp "app/build/outputs/apk/mainnet/$dir/app-mainnet-$dir.apk" "dist/Elektron-Mobile-$VERSION.apk"
           cp "app/build/outputs/apk/tnet/$dir/app-tnet-$dir.apk" "dist/Elektron-Mobile-$VERSION-testnet.apk"
           (cd dist && sha256sum ./*.apk > SHA256SUMS.txt)
+      - name: Check the signing certificate
+        env:
+          EXPECTED_CERT_SHA256: ${{ secrets.ELEKTRON_RELEASE_CERT_SHA256 }}
+        run: |
+          apksigner=$(ls "${ANDROID_HOME:-/usr/local/lib/android/sdk}"/build-tools/*/apksigner | sort -V | tail -1)
+          test_cert=$(keytool -list -v -keystore app/test-signing/elektron-test.jks -storepass elektrontest | sed -n 's/^[[:space:]]*SHA256: *//p' | head -1 | tr -d ':' | tr 'A-F' 'a-f')
+          : > "$RUNNER_TEMP/certs.txt"
+          for apk in dist/*.apk; do
+            "$apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/verify.txt"
+            cert=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' "$RUNNER_TEMP/verify.txt" | head -1)
+            echo "$(basename "$apk"): $cert"
+            [[ -n $cert ]] || { echo "::error::No signing certificate found in $apk"; exit 1; }
+            [[ $cert != "$test_cert" ]] || { echo "::error::$apk is signed with the public test key"; exit 1; }
+            if [[ -n $EXPECTED_CERT_SHA256 && $cert != "$(echo "$EXPECTED_CERT_SHA256" | tr -d ':' | tr 'A-F' 'a-f')" ]]; then
+              echo "::error::$apk certificate $cert does not match ELEKTRON_RELEASE_CERT_SHA256"; exit 1
+            fi
+            echo "$cert" >> "$RUNNER_TEMP/certs.txt"
+          done
+          echo "CERT_SHA256=$(sort -u "$RUNNER_TEMP/certs.txt" | head -1)" >> "$GITHUB_ENV"
       - name: Release notes
         run: |
           manifest=app/src/main/assets/core-manifest/arm64-v8a.env
@@ -170,7 +168,7 @@ jobs:
             echo "| Node ref | $(get CORE_REF_NAME) |"
             echo "| Node commit | $(get CORE_SHA) |"
             echo "| Node library SHA-256 (arm64-v8a) | $(get LIB_SHA256) |"
-            echo "| Signing | $([[ ${{ steps.sign.outputs.signed }} == true ]] && echo 'release key' || echo 'public test key (app/test-signing), not for distribution') |"
+            echo "| Signing certificate SHA-256 | $CERT_SHA256 |"
             echo
             echo "Files:"
             echo
@@ -178,7 +176,7 @@ jobs:
             echo "- \`Elektron-Mobile-$VERSION-testnet.apk\`: the Elektron (T) app (testnet, coins have no value), installs next to the mainnet app"
             echo "- \`SHA256SUMS.txt\`: checksums of both files"
             echo
-            echo "Verify a download with \`sha256sum -c SHA256SUMS.txt\`."
+            echo "Verify a download with \`sha256sum -c SHA256SUMS.txt\`, and compare the signing certificate with \`apksigner verify --print-certs <apk>\`."
             echo
             echo "This is pre-release software. Do not store significant funds before an independent security review. Always keep your recovery phrase offline."
           } > dist/NOTES.md
@@ -194,8 +192,6 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       TAG: ${{ needs.prepare.outputs.tag }}
       VERSION: ${{ needs.prepare.outputs.version }}
-      BUILD_TYPE: ${{ needs.prepare.outputs.build_type }}
-      SIGNED: ${{ needs.apk.outputs.signed }}
       PRERELEASE: ${{ needs.prepare.outputs.prerelease }}
     steps:
       - uses: actions/download-artifact@v4
@@ -208,7 +204,7 @@ jobs:
           TARGET: ${{ github.sha }}
         run: |
           flags=()
-          if [[ $BUILD_TYPE != release || $SIGNED != true || $PRERELEASE == true ]]; then
+          if [[ $PRERELEASE == true ]]; then
             flags+=(--prerelease)
           fi
           if gh release view "$TAG" >/dev/null 2>&1; then
