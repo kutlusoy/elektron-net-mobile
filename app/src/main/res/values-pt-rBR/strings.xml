@@ -840,4 +840,6 @@
     <string name="net_peer_saved">Peer salvo. Ele é usado quando o nó iniciar.</string>
     <string name="net_peer_exists">Este peer já está na lista.</string>
     <string name="net_peer_invalid">Este não é um endereço válido de Tor ou I2P.</string>
+    <string name="balance_reused">Inclui %1$s %2$s em endereços reutilizados.</string>
+    <string name="send_reused_hint">%1$s %2$s em endereços reutilizados não são contados aqui. Escolha-os em Moedas para gastá-los.</string>
 </resources>

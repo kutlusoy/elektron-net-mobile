@@ -840,4 +840,6 @@
     <string name="net_peer_saved">Peer gespeichert. Er wird beim Start des Nodes verwendet.</string>
     <string name="net_peer_exists">Dieser Peer steht schon in der Liste.</string>
     <string name="net_peer_invalid">Das ist keine gültige Adresse für Tor oder I2P.</string>
+    <string name="balance_reused">Enthält %1$s %2$s auf wiederverwendeten Adressen.</string>
+    <string name="send_reused_hint">%1$s %2$s auf wiederverwendeten Adressen sind hier nicht mitgezählt. Wähle sie unter Coins aus, um sie auszugeben.</string>
 </resources>

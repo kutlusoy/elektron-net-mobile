@@ -840,4 +840,6 @@
     <string name="net_peer_saved">Đã lưu peer. Sẽ được dùng khi nút khởi động.</string>
     <string name="net_peer_exists">Peer này đã có trong danh sách.</string>
     <string name="net_peer_invalid">Đây không phải địa chỉ Tor hoặc I2P hợp lệ.</string>
+    <string name="balance_reused">Bao gồm %1$s %2$s trên các địa chỉ đã dùng lại.</string>
+    <string name="send_reused_hint">%1$s %2$s trên các địa chỉ đã dùng lại không được tính ở đây. Hãy chọn chúng trong Coin để chi tiêu.</string>
 </resources>

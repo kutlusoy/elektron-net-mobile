@@ -52,6 +52,8 @@ class SendEngine(
 
     fun spendableLep(): Long = WalletReader(rpc, walletName).balances().trustedLep
 
+    fun reusedLep(): Long = WalletReader(rpc, walletName).balances().usedLep
+
     fun prepare(request: SendRequest): PreparedSend {
         AddressReuse.ensure(rpc, walletName)
         if (request.coins.isEmpty() && !request.max) {

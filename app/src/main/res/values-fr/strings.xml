@@ -840,4 +840,6 @@
     <string name="net_peer_saved">Pair enregistré. Il est utilisé au démarrage du nœud.</string>
     <string name="net_peer_exists">Ce pair est déjà dans la liste.</string>
     <string name="net_peer_invalid">Ce n\'est pas une adresse Tor ou I2P valide.</string>
+    <string name="balance_reused">Comprend %1$s %2$s sur des adresses réutilisées.</string>
+    <string name="send_reused_hint">%1$s %2$s sur des adresses réutilisées ne sont pas comptés ici. Choisis-les dans Pièces pour les dépenser.</string>
 </resources>

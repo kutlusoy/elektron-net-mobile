@@ -23,7 +23,7 @@ data class HistoryRow(
 
 data class HistoryDay(val date: LocalDate, val rows: List<HistoryRow>)
 
-data class BalanceUi(val amountText: String?, val pendingText: String?, val waitingForSync: Boolean, val trustedLep: Long = 0, val pendingLep: Long = 0)
+data class BalanceUi(val amountText: String?, val pendingText: String?, val waitingForSync: Boolean, val trustedLep: Long = 0, val pendingLep: Long = 0, val reusedLep: Long = 0)
 
 enum class HistoryFilter { All, Received, Sent }
 
@@ -73,16 +73,19 @@ object HistoryModel {
         )
     }
 
+    // coins on reused addresses are the wallet's own, Core only keeps them out of "trusted" and of automatic coin selection
     fun balance(balances: Balances?, synced: Boolean, hasHistory: Boolean): BalanceUi {
         if (balances == null) return BalanceUi(null, null, waitingForSync = false)
         val pending = balances.pendingLep + balances.immatureLep
-        val empty = balances.trustedLep == 0L && pending == 0L && !hasHistory
+        val total = balances.trustedLep + balances.usedLep
+        val empty = total == 0L && pending == 0L && !hasHistory
         return BalanceUi(
-            amountText = if (!synced && empty) null else Amount.display(balances.trustedLep),
+            amountText = if (!synced && empty) null else Amount.display(total),
             pendingText = if (pending != 0L) Amount.display(Math.abs(pending)) else null,
             waitingForSync = !synced && empty,
-            trustedLep = balances.trustedLep,
+            trustedLep = total,
             pendingLep = Math.abs(pending),
+            reusedLep = balances.usedLep,
         )
     }
 

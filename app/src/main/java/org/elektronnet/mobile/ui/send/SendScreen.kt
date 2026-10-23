@@ -93,6 +93,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var exportedPsbt by remember { mutableStateOf<String?>(null) }
     var scanning by remember { mutableStateOf(false) }
     var picking by remember { mutableStateOf(false) }
+    var reused by remember { mutableStateOf(0L) }
     var selectedCoins by remember { mutableStateOf<List<org.elektronnet.mobile.wallet.Coin>>(emptyList()) }
     var pickCoins by remember { mutableStateOf(false) }
     var subtractFee by remember { mutableStateOf(false) }
@@ -123,6 +124,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
 
     LaunchedEffect(Unit) {
         available = withContext(Dispatchers.IO) { runCatching { NodeHost.sendEngine(walletName)?.spendableLep() }.getOrNull() }
+        reused = withContext(Dispatchers.IO) { runCatching { NodeHost.sendEngine(walletName)?.reusedLep() }.getOrNull() } ?: 0L
     }
     LaunchedEffect(recipientText, resolved.address) {
         val isLink = recipientText.trim().startsWith(ChainConfig.uriScheme + ":", ignoreCase = true)
@@ -247,6 +249,9 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                 Text(stringResource(R.string.send_amount_title), style = MaterialTheme.typography.headlineSmall)
                 if (available != null) {
                     Text(stringResource(R.string.send_available, Amount.display(spendable), Amount.unitSymbol()), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (reused > 0 && selectedCoins.isEmpty()) {
+                        Text(stringResource(R.string.send_reused_hint, Amount.display(reused), Amount.unitSymbol()), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = { pickCoins = true }) { Text(stringResource(R.string.coinpick_action)) }

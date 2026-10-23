@@ -840,4 +840,6 @@
     <string name="net_peer_saved">Пир сохранён. Он используется при запуске узла.</string>
     <string name="net_peer_exists">Этот пир уже в списке.</string>
     <string name="net_peer_invalid">Это неверный адрес Tor или I2P.</string>
+    <string name="balance_reused">Включает %1$s %2$s на повторно использованных адресах.</string>
+    <string name="send_reused_hint">%1$s %2$s на повторно использованных адресах здесь не учитываются. Выберите их в разделе «Монеты», чтобы потратить.</string>
 </resources>

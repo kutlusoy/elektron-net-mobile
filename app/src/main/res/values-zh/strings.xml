@@ -840,4 +840,6 @@
     <string name="net_peer_saved">已保存节点。将在节点启动时使用。</string>
     <string name="net_peer_exists">此节点已在列表中。</string>
     <string name="net_peer_invalid">这不是有效的 Tor 或 I2P 地址。</string>
+    <string name="balance_reused">包含重复使用地址上的 %1$s %2$s。</string>
+    <string name="send_reused_hint">重复使用地址上的 %1$s %2$s 不计入此处。请在「币」中选择它们来花费。</string>
 </resources>

@@ -840,4 +840,6 @@
     <string name="net_peer_saved">تم حفظ القرين. يُستخدم عند بدء العقدة.</string>
     <string name="net_peer_exists">هذا القرين موجود في القائمة بالفعل.</string>
     <string name="net_peer_invalid">هذا ليس عنوان Tor أو I2P صالحًا.</string>
+    <string name="balance_reused">يشمل %1$s %2$s على عناوين أُعيد استخدامها.</string>
+    <string name="send_reused_hint">لا يُحتسب هنا %1$s %2$s على عناوين أُعيد استخدامها. اخترها من العملات لإنفاقها.</string>
 </resources>

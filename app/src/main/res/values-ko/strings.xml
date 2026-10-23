@@ -840,4 +840,6 @@
     <string name="net_peer_saved">피어를 저장했습니다. 노드가 시작될 때 사용됩니다.</string>
     <string name="net_peer_exists">이 피어는 이미 목록에 있습니다.</string>
     <string name="net_peer_invalid">올바른 Tor 또는 I2P 주소가 아닙니다.</string>
+    <string name="balance_reused">재사용된 주소의 %1$s %2$s를 포함합니다.</string>
+    <string name="send_reused_hint">재사용된 주소의 %1$s %2$s는 여기에 포함되지 않습니다. 사용하려면 코인에서 선택하세요.</string>
 </resources>

@@ -840,4 +840,6 @@
     <string name="net_peer_saved">Eş kaydedildi. Düğüm başlarken kullanılır.</string>
     <string name="net_peer_exists">Bu eş zaten listede.</string>
     <string name="net_peer_invalid">Bu geçerli bir Tor veya I2P adresi değil.</string>
+    <string name="balance_reused">Yeniden kullanılan adreslerdeki %1$s %2$s dahildir.</string>
+    <string name="send_reused_hint">Yeniden kullanılan adreslerdeki %1$s %2$s burada sayılmaz. Harcamak için Coinler bölümünden seçin.</string>
 </resources>

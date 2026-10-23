@@ -840,4 +840,6 @@
     <string name="net_peer_saved">Peer disimpan. Dipakai saat node mulai.</string>
     <string name="net_peer_exists">Peer ini sudah ada di daftar.</string>
     <string name="net_peer_invalid">Ini bukan alamat Tor atau I2P yang valid.</string>
+    <string name="balance_reused">Termasuk %1$s %2$s di alamat yang dipakai ulang.</string>
+    <string name="send_reused_hint">%1$s %2$s di alamat yang dipakai ulang tidak dihitung di sini. Pilih di Koin untuk membelanjakannya.</string>
 </resources>

@@ -851,4 +851,6 @@
     <string name="net_peer_saved">Peer saved. It is used when the node starts.</string>
     <string name="net_peer_exists">This peer is already in the list.</string>
     <string name="net_peer_invalid">This is not a valid address for Tor or I2P.</string>
+    <string name="balance_reused">Includes %1$s %2$s on reused addresses.</string>
+    <string name="send_reused_hint">%1$s %2$s on reused addresses are not counted here. Pick them under Coins to spend them.</string>
 </resources>

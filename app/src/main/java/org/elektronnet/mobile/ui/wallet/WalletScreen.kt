@@ -70,6 +70,9 @@ fun WalletScreen(
                     Text(main, style = MaterialTheme.typography.displaySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                     val other = if (main == elek) fiat else elek
                     other?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    if (balance.reusedLep > 0) {
+                        Text(stringResource(R.string.balance_reused, Amount.display(balance.reusedLep), Amount.unitSymbol()), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                 }
                 balance?.waitingForSync == true ->
                     Text(stringResource(R.string.balance_waiting), style = MaterialTheme.typography.titleMedium)
