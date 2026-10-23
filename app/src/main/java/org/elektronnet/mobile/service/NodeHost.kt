@@ -514,7 +514,6 @@ object NodeHost {
 
     var peerResult: PeerResult? by mutableStateOf(null)
     var peerVersion by mutableStateOf(0)
-    var peerScanRequested by mutableStateOf(false)
 
     // call from a background thread, it talks to the node
     fun addPeer(text: String): PeerResult {

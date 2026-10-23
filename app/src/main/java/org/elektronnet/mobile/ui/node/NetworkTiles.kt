@@ -51,6 +51,9 @@ import org.elektronnet.mobile.ui.model.TileLabel
 import org.elektronnet.mobile.ui.model.TileStatus
 import org.elektronnet.mobile.ui.model.TileValue
 
+// set by the app shell, which owns the full screen scanner
+val LocalPeerScan = androidx.compose.runtime.staticCompositionLocalOf<() -> Unit> { {} }
+
 @Composable
 fun NetworkTilesSection(telemetry: Telemetry?) {
     val services = NodeHost.networkServices
@@ -187,6 +190,7 @@ private fun valueText(value: TileValue): String = when (value) {
 @Composable
 private fun PeerBlock(net: ConnNet, peers: List<String>) {
     val scope = rememberCoroutineScope()
+    val scan = LocalPeerScan.current
     var text by remember { mutableStateOf("") }
     val result = NodeHost.peerResult
     fun add(value: String) {
@@ -216,7 +220,7 @@ private fun PeerBlock(net: ConnNet, peers: List<String>) {
     )
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         OutlinedButton(enabled = text.isNotBlank(), onClick = { add(text) }) { Text(stringResource(R.string.net_peer_add)) }
-        OutlinedButton(onClick = { NodeHost.peerScanRequested = true }) { Text(stringResource(R.string.net_peer_scan)) }
+        OutlinedButton(onClick = scan) { Text(stringResource(R.string.net_peer_scan)) }
     }
     result?.let {
         Text(
