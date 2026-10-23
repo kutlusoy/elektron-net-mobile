@@ -842,4 +842,6 @@
     <string name="net_peer_invalid">有効な Tor または I2P のアドレスではありません。</string>
     <string name="balance_reused">再利用されたアドレスの %1$s %2$s を含みます。</string>
     <string name="send_reused_hint">再利用されたアドレスの %1$s %2$s はここでは数えません。使うには「コイン」で選んでください。</string>
+    <string name="settings_spend_reused">再利用アドレスのコインを自動で使う</string>
+    <string name="settings_spend_reused_hint">オフ (推奨): 再利用アドレスのコインは利用可能に数えず、ほかのコインと混ぜません。1つの再利用アドレスに収まる支払いは、引き続きそのアドレスから先に支払われます。オン: 利用可能として数えられ、ほかのコインで支払いに足りないときに加えられます。アドレスが結びつく可能性があります。</string>
 </resources>

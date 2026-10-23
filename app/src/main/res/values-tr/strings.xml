@@ -842,4 +842,6 @@
     <string name="net_peer_invalid">Bu geçerli bir Tor veya I2P adresi değil.</string>
     <string name="balance_reused">Yeniden kullanılan adreslerdeki %1$s %2$s dahildir.</string>
     <string name="send_reused_hint">Yeniden kullanılan adreslerdeki %1$s %2$s burada sayılmaz. Harcamak için Coinler bölümünden seçin.</string>
+    <string name="settings_spend_reused">Yeniden kullanılan adreslerdeki coinleri otomatik harca</string>
+    <string name="settings_spend_reused_hint">Kapalı (önerilir): yeniden kullanılan adreslerdeki coinler kullanılabilir sayılmaz ve diğer coinlerle hiç karıştırılmaz. Tek bir yeniden kullanılan adrese sığan bir ödeme yine önce o adresten yapılır. Açık: kullanılabilir sayılır ve diğer coinler ödemeye yetmediğinde eklenir. Bu, adresleri birbirine bağlayabilir.</string>
 </resources>

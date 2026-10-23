@@ -136,6 +136,10 @@ class SettingsStore(context: Context) {
         get() = org.elektronnet.mobile.fiat.FiatSettings.decode(prefs.getString(FIAT, null))
         set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
 
+    var spendReused: Boolean
+        get() = prefs.getBoolean(SPEND_REUSED, false)
+        set(value) = prefs.edit().putBoolean(SPEND_REUSED, value).apply()
+
     var nodeOnly: Boolean
         get() = prefs.getBoolean(NODE_ONLY, false)
         set(value) = prefs.edit().putBoolean(NODE_ONLY, value).apply()
@@ -252,6 +256,7 @@ class SettingsStore(context: Context) {
         const val LOCK_GRACE = "lock_grace_ms"
         const val AMOUNT_UNIT = "amount_unit"
         const val FIAT = "fiat"
+        const val SPEND_REUSED = "spend_reused"
         const val NET_PEERS = "net_peers"
         const val NODE_ONLY = "node_only"
         const val NOTIFY_INCOMING = "notify_incoming"

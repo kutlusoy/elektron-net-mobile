@@ -249,7 +249,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                 Text(stringResource(R.string.send_amount_title), style = MaterialTheme.typography.headlineSmall)
                 if (available != null) {
                     Text(stringResource(R.string.send_available, Amount.display(spendable), Amount.unitSymbol()), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    if (reused > 0 && selectedCoins.isEmpty()) {
+                    if (reused > 0 && selectedCoins.isEmpty() && NodeHost.store?.spendReused != true) {
                         Text(stringResource(R.string.send_reused_hint, Amount.display(reused), Amount.unitSymbol()), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }

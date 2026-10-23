@@ -45,12 +45,13 @@ class SendEngine(
     private val addresses: AddressCheck,
     private val walletName: String = WalletBootstrap.DEFAULT_WALLET,
     private val feeFallback: (() -> org.elektronnet.mobile.explorer.RecommendedFees?)? = null,
+    private val spendReused: () -> Boolean = { false },
 ) {
     fun feeOptions(): List<FeeOption> = guard { FeeSource(rpc, feeFallback).options() }
 
     fun feeFloor(): BigDecimal = guard { FeeSource(rpc).floor() }
 
-    fun spendableLep(): Long = WalletReader(rpc, walletName).balances().trustedLep
+    fun spendableLep(): Long = WalletReader(rpc, walletName).balances().let { it.trustedLep + if (spendReused()) it.usedLep else 0L }
 
     fun reusedLep(): Long = WalletReader(rpc, walletName).balances().usedLep
 
@@ -65,7 +66,20 @@ class SendEngine(
                 }
             }
         }
-        return prepareWith(request)
+        return withReusedKeptOut(request) { prepareWith(request) }
+    }
+
+    // Core's funding ignores avoid_reuse, so unless the setting allows it the reused coins are locked for the time of the call
+    private fun <T> withReusedKeptOut(request: SendRequest, block: () -> T): T {
+        if (spendReused() || request.coins.isNotEmpty()) return block()
+        val reused = runCatching { CoinControl(rpc, walletName).coins().filter { it.reused && !it.frozen } }.getOrDefault(emptyList())
+        val outputs = reused.map { linkedMapOf("txid" to it.txid, "vout" to it.vout) }
+        if (outputs.isNotEmpty()) runCatching { rpc.call("lockunspent", listOf(false, outputs), walletName) }
+        try {
+            return block()
+        } finally {
+            if (outputs.isNotEmpty()) runCatching { rpc.call("lockunspent", listOf(true, outputs), walletName) }
+        }
     }
 
     private fun reusedGroups(amount: Long): List<List<Coin>> = runCatching {

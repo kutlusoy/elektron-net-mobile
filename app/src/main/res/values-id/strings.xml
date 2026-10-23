@@ -842,4 +842,6 @@
     <string name="net_peer_invalid">Ini bukan alamat Tor atau I2P yang valid.</string>
     <string name="balance_reused">Termasuk %1$s %2$s di alamat yang dipakai ulang.</string>
     <string name="send_reused_hint">%1$s %2$s di alamat yang dipakai ulang tidak dihitung di sini. Pilih di Koin untuk membelanjakannya.</string>
+    <string name="settings_spend_reused">Belanjakan koin di alamat yang dipakai ulang secara otomatis</string>
+    <string name="settings_spend_reused_hint">Mati (disarankan): koin di alamat yang dipakai ulang tidak dihitung tersedia dan tidak pernah dicampur dengan koin lain. Pembayaran yang muat di satu alamat yang dipakai ulang tetap dibayar dulu dari alamat itu. Hidup: dihitung tersedia dan ditambahkan saat koin lain tidak cukup untuk pembayaran. Ini dapat menghubungkan alamat.</string>
 </resources>

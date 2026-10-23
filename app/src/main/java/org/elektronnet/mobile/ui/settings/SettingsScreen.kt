@@ -155,6 +155,11 @@ fun SettingsScreen(
                 )
                 Hint(stringResource(R.string.settings_lock_delay_hint))
             }
+            var spendReused by remember { mutableStateOf(NodeHost.store?.spendReused == true) }
+            ToggleRow(R.string.settings_spend_reused, R.string.settings_spend_reused_hint, spendReused) {
+                spendReused = it
+                NodeHost.store?.spendReused = it
+            }
             var notifyIncoming by remember { mutableStateOf(NodeHost.store?.notifyIncoming == true) }
             ToggleRow(R.string.notify_incoming_setting, R.string.notify_incoming_hint, notifyIncoming) {
                 notifyIncoming = it
