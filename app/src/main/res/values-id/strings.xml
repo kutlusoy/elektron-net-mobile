@@ -844,4 +844,8 @@
     <string name="send_reused_hint">%1$s %2$s di alamat yang dipakai ulang tidak dihitung di sini. Pilih di Koin untuk membelanjakannya.</string>
     <string name="settings_spend_reused">Belanjakan koin di alamat yang dipakai ulang secara otomatis</string>
     <string name="settings_spend_reused_hint">Hidup (bawaan): koin di alamat yang dipakai ulang dihitung tersedia dan ditambahkan saat koin lain tidak cukup untuk pembayaran, juga saat mengirim semuanya. Mati: tidak dihitung dan tidak pernah dicampur dengan koin lain, dan pembayaran yang muat di satu alamat yang dipakai ulang tetap dibayar dulu dari alamat itu. Matikan jika Anda tidak ingin menghubungkan alamat tersebut.</string>
+    <string name="net_i2p_ipv6">Gunakan IPv6 untuk I2P</string>
+    <string name="net_i2p_ipv6_hint">Matikan jika jaringan Anda tidak punya IPv6. Router I2P berhenti mencoba IPv6 dan baris «Network is unreachable» hilang dari log.</string>
+    <string name="net_tor_awake">Jaga ponsel tetap aktif untuk relay</string>
+    <string name="net_tor_awake_hint">Menahan wake lock parsial selama relay berjalan, agar tetap bisa dijangkau saat layar mati. Ini memakai lebih banyak baterai.</string>
 </resources>

@@ -37,8 +37,8 @@ The node can use four networks in parallel: IPv4 and IPv6 are always on, Tor and
 | Group | Items |
 |---|---|
 | Tor | Use Tor. Routing: next to the normal connections (recommended) or everything through Tor. Role: client only, relay, exit relay |
-| Tor relay | Bandwidth limit (75 KB/s to 8 MB/s), monthly traffic limit (none to 1,000 GB), relay name, contact, relay port (default 9001). For an exit: the exit policy, reduced (recommended) or web only (80 and 443) |
-| I2P | Use I2P. Accept incoming I2P connections. Relay traffic for others, with a bandwidth limit and the share of bandwidth for others |
+| Tor relay | Bandwidth limit (75 KB/s to 8 MB/s), monthly traffic limit (none to 1,000 GB), relay name, contact, relay port (default 9001). For an exit: the exit policy, reduced (recommended) or web only (80 and 443). "Keep the phone awake for the relay" (off by default): the node service holds a partial wake lock while the relay runs, so the relay stays reachable with the screen off, at the cost of battery |
+| I2P | Use I2P. Accept incoming I2P connections. Relay traffic for others, with a bandwidth limit and the share of bandwidth for others. "Use IPv6 for I2P" (on by default): off writes `ipv6 = false` into the router configuration for networks without IPv6, which removes the "Network is unreachable" lines from the log |
 
 The Tor and I2P groups are visible in Settings at all times, their detailed options only while the switch is on. Switching an exit relay on asks for a confirmation that explains that the traffic of other people leaves through the user's IP address.
 

@@ -19,6 +19,7 @@ class NodeService : Service() {
     private var next: ScheduledFuture<*>? = null
     private lateinit var settings: SettingsStore
     private lateinit var incoming: IncomingNotifier
+    private var wakeLock: android.os.PowerManager.WakeLock? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -55,6 +56,21 @@ class NodeService : Service() {
         next = worker.schedule({ tickOnce() }, delayMs, TimeUnit.MILLISECONDS)
     }
 
+    // a relay is only reachable while the CPU runs, so on request the service keeps it awake for as long as the relay is up
+    private fun syncWakeLock(tor: org.elektronnet.mobile.node.TorSettings, running: Boolean) {
+        val wanted = running && tor.enabled && tor.keepAwake && tor.role != org.elektronnet.mobile.node.TorRole.Client
+        val held = wakeLock?.isHeld == true
+        if (wanted && !held) {
+            val power = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+            wakeLock = power.newWakeLock(android.os.PowerManager.PARTIAL_WAKE_LOCK, "elektron:relay").apply {
+                setReferenceCounted(false)
+                acquire()
+            }
+        } else if (!wanted && held) {
+            wakeLock?.release()
+        }
+    }
+
     private fun tickOnce() {
         val delay = try {
             val snapshot = NodeHost.tick()
@@ -64,6 +80,7 @@ class NodeService : Service() {
             }
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val state = settings.load()
+            syncWakeLock(state.network.tor, snapshot.headline !is Headline.Stopped)
             manager.notify(NodeNotification.ID, NodeNotification.build(this, snapshot.headline, state.userPaused))
             runCatching {
                 val wallet = NodeHost.activeWallet
@@ -88,6 +105,7 @@ class NodeService : Service() {
 
     override fun onDestroy() {
         worker.shutdownNow()
+        wakeLock?.takeIf { it.isHeld }?.release()
         Thread { NodeHost.stopNow() }.start()
         super.onDestroy()
     }

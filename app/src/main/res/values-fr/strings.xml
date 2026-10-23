@@ -844,4 +844,8 @@
     <string name="send_reused_hint">%1$s %2$s sur des adresses réutilisées ne sont pas comptés ici. Choisis-les dans Pièces pour les dépenser.</string>
     <string name="settings_spend_reused">Dépenser automatiquement les pièces des adresses réutilisées</string>
     <string name="settings_spend_reused_hint">Activé (par défaut) : les pièces sur des adresses réutilisées comptent comme disponibles et sont ajoutées quand les autres ne couvrent pas un paiement, y compris pour tout envoyer. Désactivé : elles ne comptent pas et ne sont jamais mélangées aux autres, et un paiement qui tient dans une adresse réutilisée est toujours payé d\'abord avec elle. Désactive-le si tu ne veux pas lier ces adresses.</string>
+    <string name="net_i2p_ipv6">Utiliser l\'IPv6 pour I2P</string>
+    <string name="net_i2p_ipv6_hint">Désactive-le si ton réseau n\'a pas d\'IPv6. Le routeur I2P cesse alors d\'essayer l\'IPv6 et les lignes « Network is unreachable » disparaissent du journal.</string>
+    <string name="net_tor_awake">Garder le téléphone éveillé pour le relais</string>
+    <string name="net_tor_awake_hint">Maintient un wake lock partiel tant que le relais tourne, pour qu\'il reste joignable écran éteint. Cela consomme plus de batterie.</string>
 </resources>

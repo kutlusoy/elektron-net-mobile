@@ -844,4 +844,8 @@
     <string name="send_reused_hint">%1$s %2$s em endereços reutilizados não são contados aqui. Escolha-os em Moedas para gastá-los.</string>
     <string name="settings_spend_reused">Gastar automaticamente moedas em endereços reutilizados</string>
     <string name="settings_spend_reused_hint">Ligado (padrão): moedas em endereços reutilizados contam como disponíveis e são adicionadas quando as outras não cobrem um pagamento, também ao enviar tudo. Desligado: não contam e nunca são misturadas com as outras, e um pagamento que cabe em um endereço reutilizado ainda é pago primeiro por ele. Desligue se não quiser vincular esses endereços.</string>
+    <string name="net_i2p_ipv6">Usar IPv6 para I2P</string>
+    <string name="net_i2p_ipv6_hint">Desligue se sua rede não tem IPv6. O roteador I2P deixa de tentar IPv6 e as linhas «Network is unreachable» somem do log.</string>
+    <string name="net_tor_awake">Manter o telefone acordado para o relay</string>
+    <string name="net_tor_awake_hint">Mantém um wake lock parcial enquanto o relay funciona, para que continue acessível com a tela apagada. Usa mais bateria.</string>
 </resources>

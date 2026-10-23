@@ -16,6 +16,7 @@ data class TorSettings(
     val bandwidthKbps: Int = DEFAULT_BANDWIDTH_KBPS,
     val monthlyLimitGb: Int = 0,
     val exitPolicy: ExitPolicyKind = ExitPolicyKind.Reduced,
+    val keepAwake: Boolean = false,
 ) {
     fun normalized(): TorSettings = copy(
         orPort = orPort.coerceIn(MIN_PORT, MAX_PORT),
@@ -44,6 +45,7 @@ data class I2pSettings(
     val transit: Boolean = false,
     val bandwidthKbps: Int = DEFAULT_BANDWIDTH_KBPS,
     val sharePercent: Int = DEFAULT_SHARE_PERCENT,
+    val ipv6: Boolean = true,
 ) {
     fun normalized(): I2pSettings = copy(
         bandwidthKbps = bandwidthKbps.coerceIn(MIN_BANDWIDTH_KBPS, MAX_BANDWIDTH_KBPS),

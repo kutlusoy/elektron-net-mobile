@@ -844,4 +844,8 @@
     <string name="send_reused_hint">%1$s %2$s trên các địa chỉ đã dùng lại không được tính ở đây. Hãy chọn chúng trong Coin để chi tiêu.</string>
     <string name="settings_spend_reused">Tự động chi tiêu coin trên địa chỉ đã dùng lại</string>
     <string name="settings_spend_reused_hint">Bật (mặc định): coin trên địa chỉ đã dùng lại được tính là khả dụng và được thêm vào khi các coin khác không đủ cho một khoản thanh toán, kể cả khi gửi tất cả. Tắt: chúng không được tính và không bao giờ bị trộn với coin khác, và khoản thanh toán vừa trong một địa chỉ đã dùng lại vẫn được trả từ địa chỉ đó trước. Hãy tắt nếu bạn không muốn liên kết các địa chỉ đó.</string>
+    <string name="net_i2p_ipv6">Dùng IPv6 cho I2P</string>
+    <string name="net_i2p_ipv6_hint">Hãy tắt nếu mạng của bạn không có IPv6. Bộ định tuyến I2P sẽ ngừng thử IPv6 và các dòng «Network is unreachable» biến mất khỏi nhật ký.</string>
+    <string name="net_tor_awake">Giữ điện thoại thức cho relay</string>
+    <string name="net_tor_awake_hint">Giữ một wake lock một phần khi relay đang chạy, để nó vẫn truy cập được khi tắt màn hình. Tốn pin hơn.</string>
 </resources>

@@ -129,6 +129,8 @@ class NetworkConfigTest {
         assertTrue("share = 40" in text)
         assertTrue("[http]\nenabled = false" in text)
         assertTrue("notransit = true" in I2pConfig.conf(I2pSettings(enabled = true), File("/data/i2pd"), ports))
+        assertTrue("ipv6 = true" in I2pConfig.conf(I2pSettings(enabled = true), File("/data/i2pd"), ports))
+        assertTrue("ipv6 = false" in I2pConfig.conf(I2pSettings(enabled = true, ipv6 = false), File("/data/i2pd"), ports))
     }
 
     @Test

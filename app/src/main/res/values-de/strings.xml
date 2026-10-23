@@ -38,7 +38,7 @@
     <string name="send_needs_sync">Zum Senden muss die Node synchron sein. Öffne den Tab Node, um den Fortschritt zu sehen.</string>
     <string name="history_empty">Noch keine Zahlungen. Tippe auf Empfangen, um deine erste Adresse zu erhalten.</string>
     <string name="history_limit">Zahlungen, die älter als etwa 137 Tage sind, werden im Netzwerk nicht gespeichert.</string>
-    <string name="node_title_up_to_date">Deine Node ist 100%% synchron.</string>
+    <string name="node_title_up_to_date">Deine Node ist vollständig synchron.</string>
     <string name="node_title_catching_up">Synchronisiere: %1$d%%</string>
     <string name="node_title_paused">Node pausiert</string>
     <string name="node_title_starting">Node startet</string>
@@ -844,4 +844,8 @@
     <string name="send_reused_hint">%1$s %2$s auf wiederverwendeten Adressen sind hier nicht mitgezählt. Wähle sie unter Coins aus, um sie auszugeben.</string>
     <string name="settings_spend_reused">Coins auf wiederverwendeten Adressen automatisch ausgeben</string>
     <string name="settings_spend_reused_hint">An (Standard): Coins auf wiederverwendeten Adressen zählen als verfügbar und werden dazugenommen, wenn die übrigen Coins eine Zahlung nicht decken, auch bei „Alles senden“. Aus: Sie zählen nicht und werden nie mit anderen Coins gemischt, und eine Zahlung, die in eine wiederverwendete Adresse passt, wird weiterhin zuerst daraus bezahlt. Schalte es aus, wenn du solche Adressen nicht verknüpfen willst.</string>
+    <string name="net_i2p_ipv6">IPv6 für I2P verwenden</string>
+    <string name="net_i2p_ipv6_hint">Schalte es aus, wenn dein Netz kein IPv6 hat. Der I2P-Router versucht dann kein IPv6 mehr, und die Zeilen „Network is unreachable“ verschwinden aus dem Log.</string>
+    <string name="net_tor_awake">Telefon für das Relay wach halten</string>
+    <string name="net_tor_awake_hint">Hält einen Teil-Wake-Lock, solange das Relay läuft, damit es bei ausgeschaltetem Bildschirm erreichbar bleibt. Das verbraucht mehr Akku.</string>
 </resources>

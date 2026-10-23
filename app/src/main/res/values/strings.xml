@@ -38,7 +38,7 @@
     <string name="send_needs_sync">Sending needs a synchronized node. Open the Node tab to see the progress.</string>
     <string name="history_empty">No payments yet. Tap Receive to get your first address.</string>
     <string name="history_limit">Payments older than about 137 days are not stored on the network.</string>
-    <string name="node_title_up_to_date">Your node is 100%% synced.</string>
+    <string name="node_title_up_to_date">Your node is fully synced.</string>
     <string name="node_title_catching_up">Syncing: %1$d%%</string>
     <string name="node_title_paused">Node paused</string>
     <string name="node_title_starting">Node starting</string>
@@ -855,4 +855,8 @@
     <string name="send_reused_hint">%1$s %2$s on reused addresses are not counted here. Pick them under Coins to spend them.</string>
     <string name="settings_spend_reused">Spend coins on reused addresses automatically</string>
     <string name="settings_spend_reused_hint">On (default): coins on reused addresses count as available and are added when the other coins do not cover a payment, also when you send everything. Off: they are not counted and never mixed with other coins, and a payment that fits into one reused address is still paid from it first. Switch it off if you do not want to link such addresses.</string>
+    <string name="net_i2p_ipv6">Use IPv6 for I2P</string>
+    <string name="net_i2p_ipv6_hint">Switch it off if your network has no IPv6. The I2P router then stops trying IPv6 and the \"Network is unreachable\" lines disappear from the log.</string>
+    <string name="net_tor_awake">Keep the phone awake for the relay</string>
+    <string name="net_tor_awake_hint">Holds a partial wake lock while the relay runs, so it stays reachable with the screen off. It uses more battery.</string>
 </resources>

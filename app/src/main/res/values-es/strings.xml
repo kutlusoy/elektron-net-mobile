@@ -844,4 +844,8 @@
     <string name="send_reused_hint">%1$s %2$s en direcciones reutilizadas no se cuentan aquí. Elígelos en Monedas para gastarlos.</string>
     <string name="settings_spend_reused">Gastar automáticamente monedas en direcciones reutilizadas</string>
     <string name="settings_spend_reused_hint">Activado (predeterminado): las monedas en direcciones reutilizadas cuentan como disponibles y se añaden cuando las demás no cubren un pago, también al enviar todo. Desactivado: no cuentan y nunca se mezclan con otras, y un pago que cabe en una dirección reutilizada se sigue pagando primero desde ella. Desactívalo si no quieres vincular esas direcciones.</string>
+    <string name="net_i2p_ipv6">Usar IPv6 para I2P</string>
+    <string name="net_i2p_ipv6_hint">Desactívalo si tu red no tiene IPv6. El router I2P deja de probar IPv6 y desaparecen del registro las líneas «Network is unreachable».</string>
+    <string name="net_tor_awake">Mantener el teléfono despierto para el relé</string>
+    <string name="net_tor_awake_hint">Mantiene un wake lock parcial mientras el relé funciona, para que siga accesible con la pantalla apagada. Consume más batería.</string>
 </resources>
