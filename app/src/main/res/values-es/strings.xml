@@ -840,4 +840,8 @@
     <string name="net_peer_saved">Peer guardado. Se usa cuando el nodo arranque.</string>
     <string name="net_peer_exists">Este peer ya está en la lista.</string>
     <string name="net_peer_invalid">No es una dirección válida de Tor o I2P.</string>
+    <string name="balance_reused">Incluye %1$s %2$s en direcciones reutilizadas.</string>
+    <string name="send_reused_hint">%1$s %2$s en direcciones reutilizadas no se cuentan aquí. Elígelos en Monedas para gastarlos.</string>
+    <string name="settings_spend_reused">Gastar automáticamente monedas en direcciones reutilizadas</string>
+    <string name="settings_spend_reused_hint">Activado (predeterminado): las monedas en direcciones reutilizadas cuentan como disponibles y se añaden cuando las demás no cubren un pago, también al enviar todo. Desactivado: no cuentan y nunca se mezclan con otras, y un pago que cabe en una dirección reutilizada se sigue pagando primero desde ella. Desactívalo si no quieres vincular esas direcciones.</string>
 </resources>

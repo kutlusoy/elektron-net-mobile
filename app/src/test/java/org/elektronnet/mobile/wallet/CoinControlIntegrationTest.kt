@@ -209,4 +209,49 @@ class CoinControlIntegrationTest {
         assertTrue(tooBig.review.inputs >= 1)
         assertFalse(env.rpc.call("decodepsbt", listOf(tooBig.psbt), null).toString().contains(reused.txid) && tooBig.review.inputs == 1)
     }
+
+    private fun reusing(env: Env) = SendEngine(env.rpc, AddressCheck(testnet = true, hrp = "bcrt"), spendReused = { true })
+
+    private fun makeReused(env: Env) {
+        env.send.send(env.send.prepare(SendRequest(env.miner, 100_000_000L, false, rate(env))), pass)
+        env.rpc.call("generatetoaddress", listOf(1, env.miner), "miner")
+        env.rpc.call("sendtoaddress", linkedMapOf("address" to env.own, "amount" to 1.5, "fee_rate" to 10), "miner")
+        env.rpc.call("generatetoaddress", listOf(1, env.miner), "miner")
+    }
+
+    @Test
+    fun withTheSettingOnReusedCoinsCountAndCoverPaymentsTheOthersCannot() = withEnv(29062) { env ->
+        makeReused(env)
+        val balances = WalletReader(env.rpc).balances()
+        assertTrue(balances.usedLep > 0)
+        val engine = reusing(env)
+        assertEquals(balances.trustedLep + balances.usedLep, engine.spendableLep())
+        assertEquals(balances.trustedLep, env.send.spendableLep())
+        val amount = balances.trustedLep + 10_000_000L
+        val failure = runCatching { env.send.prepare(SendRequest(env.miner, amount, false, rate(env))) }.exceptionOrNull()
+        assertEquals(SendFailure.InsufficientFunds, (failure as SendException).failure)
+        val prepared = engine.prepare(SendRequest(env.miner, amount, false, rate(env)))
+        assertEquals(amount, prepared.review.amountLep)
+        assertTrue(prepared.review.inputs >= 2)
+    }
+
+    @Test
+    fun withTheSettingOnSendingEverythingTakesTheReusedCoinsToo() = withEnv(29072) { env ->
+        makeReused(env)
+        val balances = WalletReader(env.rpc).balances()
+        val prepared = reusing(env).prepare(SendRequest(env.miner, null, true, rate(env)))
+        assertEquals(balances.trustedLep + balances.usedLep, prepared.review.amountLep + prepared.review.feeLep)
+    }
+
+    @Test
+    fun withTheSettingOffReusedCoinsAreNeverMixedIntoAPaymentAndStayUnlockedAfterwards() = withEnv(29082) { env ->
+        makeReused(env)
+        val reusedCoin = env.coins.coins().first { it.reused }
+        val prepared = env.send.prepare(SendRequest(env.miner, 300_000_000L, false, rate(env)))
+        assertFalse(env.rpc.call("decodepsbt", listOf(prepared.psbt), null).toString().contains(reusedCoin.txid))
+        assertFalse(env.coins.coins().first { it.id == reusedCoin.id }.frozen)
+        val max = env.send.prepare(SendRequest(env.miner, null, true, rate(env)))
+        assertFalse(env.rpc.call("decodepsbt", listOf(max.psbt), null).toString().contains(reusedCoin.txid))
+        assertFalse(env.coins.coins().any { it.frozen })
+    }
 }

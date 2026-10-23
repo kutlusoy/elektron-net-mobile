@@ -122,6 +122,10 @@ class WalletReaderTest {
         val pending = HistoryModel.balance(Balances(100_000_000L, 20_000_000L, 5_000_000L), true, true)
         assertEquals("1", pending.amountText)
         assertEquals("0.25", pending.pendingText)
+        val reused = HistoryModel.balance(Balances(98_98994934L, 0, 0, 40_00000000L), true, true)
+        assertEquals("138.98994934", reused.amountText)
+        assertEquals(40_00000000L, reused.reusedLep)
+        assertEquals("40", HistoryModel.balance(Balances(0, 0, 0, 40_00000000L), true, false).amountText)
         assertNull(HistoryModel.balance(null, true, false).amountText)
         assertNull(HistoryModel.balance(Balances(5, 0, 0), true, true).pendingText)
     }

@@ -840,4 +840,8 @@
     <string name="net_peer_saved">Peer gespeichert. Er wird beim Start des Nodes verwendet.</string>
     <string name="net_peer_exists">Dieser Peer steht schon in der Liste.</string>
     <string name="net_peer_invalid">Das ist keine gültige Adresse für Tor oder I2P.</string>
+    <string name="balance_reused">Enthält %1$s %2$s auf wiederverwendeten Adressen.</string>
+    <string name="send_reused_hint">%1$s %2$s auf wiederverwendeten Adressen sind hier nicht mitgezählt. Wähle sie unter Coins aus, um sie auszugeben.</string>
+    <string name="settings_spend_reused">Coins auf wiederverwendeten Adressen automatisch ausgeben</string>
+    <string name="settings_spend_reused_hint">An (Standard): Coins auf wiederverwendeten Adressen zählen als verfügbar und werden dazugenommen, wenn die übrigen Coins eine Zahlung nicht decken, auch bei „Alles senden“. Aus: Sie zählen nicht und werden nie mit anderen Coins gemischt, und eine Zahlung, die in eine wiederverwendete Adresse passt, wird weiterhin zuerst daraus bezahlt. Schalte es aus, wenn du solche Adressen nicht verknüpfen willst.</string>
 </resources>
