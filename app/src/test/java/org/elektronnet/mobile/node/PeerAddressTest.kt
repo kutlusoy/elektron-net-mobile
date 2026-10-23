@@ -43,3 +43,13 @@ class PeerAddressTest {
         assertFalse(config.copy(network = NetworkSettings(TorSettings(enabled = false), I2pSettings(enabled = true), listOf(onion))).arguments().any { it.startsWith("-addnode=") })
     }
 }
+
+class PeerQrTest {
+    @Test
+    fun anUpperCaseAddressStillParsesSoItCanBeShownAsACompactQrCode() {
+        val onion = "a".repeat(56) + ".onion:8333"
+        assertEquals(onion, PeerAddress.parse(onion.uppercase()))
+        val i2p = "b".repeat(52) + ".b32.i2p"
+        assertEquals("$i2p:0", PeerAddress.parse(i2p.uppercase()))
+    }
+}

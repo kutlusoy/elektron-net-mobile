@@ -117,7 +117,8 @@ private fun NetworkTileCard(tile: NetworkTile, peers: List<String>) {
             title = { Text(stringResource(if (tile.net == ConnNet.Tor) R.string.net_tor_title else R.string.net_i2p_title)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    org.elektronnet.mobile.ui.receive.QrView(address)
+                    // upper case lets the QR code use the compact alphanumeric mode, the scanner lower-cases it again
+                    org.elektronnet.mobile.ui.receive.QrView(address.uppercase())
                     Text(address, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
                 }
             },
