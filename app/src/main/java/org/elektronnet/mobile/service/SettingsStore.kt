@@ -137,7 +137,7 @@ class SettingsStore(context: Context) {
         set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
 
     var spendReused: Boolean
-        get() = prefs.getBoolean(SPEND_REUSED, false)
+        get() = prefs.getBoolean(SPEND_REUSED, true)
         set(value) = prefs.edit().putBoolean(SPEND_REUSED, value).apply()
 
     var nodeOnly: Boolean

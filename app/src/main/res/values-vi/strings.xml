@@ -843,5 +843,5 @@
     <string name="balance_reused">Bao gồm %1$s %2$s trên các địa chỉ đã dùng lại.</string>
     <string name="send_reused_hint">%1$s %2$s trên các địa chỉ đã dùng lại không được tính ở đây. Hãy chọn chúng trong Coin để chi tiêu.</string>
     <string name="settings_spend_reused">Tự động chi tiêu coin trên địa chỉ đã dùng lại</string>
-    <string name="settings_spend_reused_hint">Tắt (khuyến nghị): coin trên địa chỉ đã dùng lại không được tính là khả dụng và không bao giờ bị trộn với coin khác. Khoản thanh toán vừa trong một địa chỉ đã dùng lại vẫn được trả từ địa chỉ đó trước. Bật: chúng được tính là khả dụng và được thêm vào khi các coin khác không đủ cho một khoản thanh toán. Việc này có thể liên kết các địa chỉ.</string>
+    <string name="settings_spend_reused_hint">Bật (mặc định): coin trên địa chỉ đã dùng lại được tính là khả dụng và được thêm vào khi các coin khác không đủ cho một khoản thanh toán, kể cả khi gửi tất cả. Tắt: chúng không được tính và không bao giờ bị trộn với coin khác, và khoản thanh toán vừa trong một địa chỉ đã dùng lại vẫn được trả từ địa chỉ đó trước. Hãy tắt nếu bạn không muốn liên kết các địa chỉ đó.</string>
 </resources>

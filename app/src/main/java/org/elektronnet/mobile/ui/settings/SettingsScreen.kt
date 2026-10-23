@@ -155,7 +155,7 @@ fun SettingsScreen(
                 )
                 Hint(stringResource(R.string.settings_lock_delay_hint))
             }
-            var spendReused by remember { mutableStateOf(NodeHost.store?.spendReused == true) }
+            var spendReused by remember { mutableStateOf(NodeHost.store?.spendReused != false) }
             ToggleRow(R.string.settings_spend_reused, R.string.settings_spend_reused_hint, spendReused) {
                 spendReused = it
                 NodeHost.store?.spendReused = it

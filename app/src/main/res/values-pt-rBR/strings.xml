@@ -843,5 +843,5 @@
     <string name="balance_reused">Inclui %1$s %2$s em endereços reutilizados.</string>
     <string name="send_reused_hint">%1$s %2$s em endereços reutilizados não são contados aqui. Escolha-os em Moedas para gastá-los.</string>
     <string name="settings_spend_reused">Gastar automaticamente moedas em endereços reutilizados</string>
-    <string name="settings_spend_reused_hint">Desligado (recomendado): moedas em endereços reutilizados não contam como disponíveis e nunca são misturadas com as outras. Um pagamento que cabe em um endereço reutilizado ainda é pago primeiro por ele. Ligado: contam como disponíveis e são adicionadas quando as outras não cobrem um pagamento. Isso pode vincular endereços.</string>
+    <string name="settings_spend_reused_hint">Ligado (padrão): moedas em endereços reutilizados contam como disponíveis e são adicionadas quando as outras não cobrem um pagamento, também ao enviar tudo. Desligado: não contam e nunca são misturadas com as outras, e um pagamento que cabe em um endereço reutilizado ainda é pago primeiro por ele. Desligue se não quiser vincular esses endereços.</string>
 </resources>

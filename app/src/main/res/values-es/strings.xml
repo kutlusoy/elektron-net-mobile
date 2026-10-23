@@ -843,5 +843,5 @@
     <string name="balance_reused">Incluye %1$s %2$s en direcciones reutilizadas.</string>
     <string name="send_reused_hint">%1$s %2$s en direcciones reutilizadas no se cuentan aquí. Elígelos en Monedas para gastarlos.</string>
     <string name="settings_spend_reused">Gastar automáticamente monedas en direcciones reutilizadas</string>
-    <string name="settings_spend_reused_hint">Desactivado (recomendado): las monedas en direcciones reutilizadas no cuentan como disponibles y nunca se mezclan con otras. Un pago que cabe en una dirección reutilizada se sigue pagando primero desde ella. Activado: cuentan como disponibles y se añaden cuando las demás no cubren un pago. Esto puede vincular direcciones.</string>
+    <string name="settings_spend_reused_hint">Activado (predeterminado): las monedas en direcciones reutilizadas cuentan como disponibles y se añaden cuando las demás no cubren un pago, también al enviar todo. Desactivado: no cuentan y nunca se mezclan con otras, y un pago que cabe en una dirección reutilizada se sigue pagando primero desde ella. Desactívalo si no quieres vincular esas direcciones.</string>
 </resources>

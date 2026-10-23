@@ -843,5 +843,5 @@
     <string name="balance_reused">Comprend %1$s %2$s sur des adresses réutilisées.</string>
     <string name="send_reused_hint">%1$s %2$s sur des adresses réutilisées ne sont pas comptés ici. Choisis-les dans Pièces pour les dépenser.</string>
     <string name="settings_spend_reused">Dépenser automatiquement les pièces des adresses réutilisées</string>
-    <string name="settings_spend_reused_hint">Désactivé (recommandé) : les pièces sur des adresses réutilisées ne comptent pas comme disponibles et ne sont jamais mélangées aux autres. Un paiement qui tient dans une adresse réutilisée est toujours payé d\'abord avec elle. Activé : elles comptent comme disponibles et sont ajoutées quand les autres ne couvrent pas un paiement. Cela peut lier des adresses.</string>
+    <string name="settings_spend_reused_hint">Activé (par défaut) : les pièces sur des adresses réutilisées comptent comme disponibles et sont ajoutées quand les autres ne couvrent pas un paiement, y compris pour tout envoyer. Désactivé : elles ne comptent pas et ne sont jamais mélangées aux autres, et un paiement qui tient dans une adresse réutilisée est toujours payé d\'abord avec elle. Désactive-le si tu ne veux pas lier ces adresses.</string>
 </resources>

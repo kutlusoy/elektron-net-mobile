@@ -396,7 +396,7 @@ object NodeHost {
     fun explorerTxUrl(txid: String): String? = settings?.explorers?.firstOrNull()?.let { org.elektronnet.mobile.explorer.ExplorerList.txUrl(it, txid) }
 
     fun sendEngine(wallet: String = activeWallet): SendEngine? =
-        runningSupervisor()?.let { SendEngine(it.rpc.asWalletRpc(), addressCheck, wallet, ::explorerFees, { store?.spendReused == true }) }
+        runningSupervisor()?.let { SendEngine(it.rpc.asWalletRpc(), addressCheck, wallet, ::explorerFees, { store?.spendReused != false }) }
 
     fun escrowManager(): EscrowManager? {
         val supervisor = runningSupervisor() ?: return null

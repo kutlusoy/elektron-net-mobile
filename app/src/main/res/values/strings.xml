@@ -854,5 +854,5 @@
     <string name="balance_reused">Includes %1$s %2$s on reused addresses.</string>
     <string name="send_reused_hint">%1$s %2$s on reused addresses are not counted here. Pick them under Coins to spend them.</string>
     <string name="settings_spend_reused">Spend coins on reused addresses automatically</string>
-    <string name="settings_spend_reused_hint">Off (recommended): coins on reused addresses are not counted as available and are never mixed with other coins. A payment that fits into one reused address is still paid from it first. On: they count as available and are added when the other coins do not cover a payment. This can link addresses.</string>
+    <string name="settings_spend_reused_hint">On (default): coins on reused addresses count as available and are added when the other coins do not cover a payment, also when you send everything. Off: they are not counted and never mixed with other coins, and a payment that fits into one reused address is still paid from it first. Switch it off if you do not want to link such addresses.</string>
 </resources>
