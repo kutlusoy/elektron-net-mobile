@@ -168,7 +168,12 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             }
             passphrase = ""
             result.onSuccess {
-                if (escrow != null) exportedPsbt = it else txid = it
+                if (escrow != null) {
+                    exportedPsbt = it
+                    withContext(Dispatchers.IO) { runCatching { NodeHost.escrowManager()?.addLog(escrow.id, org.elektronnet.mobile.wallet.EscrowLogKind.Request, it) } }
+                } else {
+                    txid = it
+                }
                 step = Step.Done
             }
             result.onFailure {

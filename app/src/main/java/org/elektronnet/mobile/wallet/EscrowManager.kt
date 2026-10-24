@@ -7,6 +7,11 @@ enum class EscrowPhase { KeyOnly, Active }
 
 data class Cosigner(val label: String, val key: String)
 
+enum class EscrowLogKind { Request, Signed, Sent }
+
+// a message the user created in this escrow, kept so it can be sent again
+data class EscrowEntry(val kind: EscrowLogKind, val atMs: Long, val text: String)
+
 data class EscrowRecord(
     val id: Int,
     val name: String,
@@ -21,6 +26,7 @@ data class EscrowRecord(
     val currentAddress: String? = null,
     // the wallet whose seed the escrow key comes from, records from before this field belong to the first wallet
     val owner: String = WalletBootstrap.DEFAULT_WALLET,
+    val log: List<EscrowEntry> = emptyList(),
 ) {
     val total: Int get() = cosigners.size + 1
 
@@ -29,6 +35,7 @@ data class EscrowRecord(
         "phase" to phase.name, "required" to required,
         "cosigners" to cosigners.map { linkedMapOf("label" to it.label, "key" to it.key) },
         "descriptor" to descriptor, "address" to currentAddress, "owner" to owner,
+        "log" to log.map { linkedMapOf("kind" to it.kind.name, "at" to it.atMs, "text" to it.text) },
     )
 
     companion object {
@@ -45,6 +52,11 @@ data class EscrowRecord(
             descriptor = m["descriptor"]?.toString(),
             currentAddress = m["address"]?.toString(),
             owner = m["owner"]?.toString() ?: WalletBootstrap.DEFAULT_WALLET,
+            log = (m["log"] as? List<*>).orEmpty().mapNotNull { e ->
+                val row = e as? Map<*, *> ?: return@mapNotNull null
+                val kind = runCatching { EscrowLogKind.valueOf(row["kind"].toString()) }.getOrNull() ?: return@mapNotNull null
+                EscrowEntry(kind, (row["at"] as? Number)?.toLong() ?: 0L, row["text"]?.toString() ?: return@mapNotNull null)
+            },
         )
     }
 }
@@ -195,6 +207,20 @@ class EscrowManager(
         return receive.currentAddress()
     }
 
+    // keeps what the user created or signed so it can be sent again, removed together with the escrow
+    fun addLog(id: Int, kind: EscrowLogKind, text: String, now: Long = System.currentTimeMillis()) {
+        store.save(
+            store.load().map {
+                if (it.id != id || it.owner != mainWallet || it.log.lastOrNull()?.let { last -> last.kind == kind && last.text == text } == true) it
+                else it.copy(log = (it.log + EscrowEntry(kind, now, text)).takeLast(MAX_LOG))
+            },
+        )
+    }
+
+    fun addLogForWallet(walletName: String, kind: EscrowLogKind, text: String) {
+        list().firstOrNull { it.walletName == walletName }?.let { addLog(it.id, kind, text) }
+    }
+
     fun reader(id: Int): WalletReader = WalletReader(rpc, get(id).walletName)
 
     fun walletNames(): List<String> = listOf(mainWallet) + list().filter { it.phase == EscrowPhase.Active }.map { it.walletName }
@@ -320,6 +346,7 @@ class EscrowManager(
 
     companion object {
         const val MAX_KEYS = 15
+        const val MAX_LOG = 100
         const val MAX_NAME = 40
         const val MAX_LABEL = 24
         private const val SETUP_UNLOCK_SECONDS = 60

@@ -395,4 +395,26 @@ class EscrowPerWalletIntegrationTest {
         manager(env, store, "w1").removeEscrow(created.id)
         assertTrue(broken.list().isEmpty())
     }
+
+    @Test
+    fun theMessageHistoryIsKeptAndRemovedWithTheEscrow() = withEnv(29150) { env ->
+        boot(env, "w1", 10)
+        boot(env, "w2", 60)
+        val store = MemoryEscrowStore()
+        val one = manager(env, store, "w1")
+        val two = manager(env, store, "w2")
+        val record = one.createKey("Deal", "Buyer", PASS)
+        one.addLog(record.id, EscrowLogKind.Request, "cHNidP8request", now = 1000L)
+        one.addLog(record.id, EscrowLogKind.Request, "cHNidP8request", now = 2000L)
+        one.addLogForWallet(record.walletName, EscrowLogKind.Signed, "cHNidP8signed")
+        one.addLog(record.id, EscrowLogKind.Sent, "abcd".repeat(16), now = 3000L)
+        two.addLog(record.id, EscrowLogKind.Request, "not mine", now = 4000L)
+        val log = one.get(record.id).log
+        assertEquals(listOf(EscrowLogKind.Request, EscrowLogKind.Signed, EscrowLogKind.Sent), log.map { it.kind })
+        assertEquals(listOf("cHNidP8request", "cHNidP8signed", "abcd".repeat(16)), log.map { it.text })
+        assertEquals(1000L, log.first().atMs)
+        assertEquals(log, MemoryEscrowStore().also { it.save(store.load()) }.load().single().log)
+        one.removeEscrow(record.id)
+        assertTrue(store.load().isEmpty())
+    }
 }

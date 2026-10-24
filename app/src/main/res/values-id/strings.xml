@@ -387,7 +387,7 @@
     <string name="escrow_backup">Bagikan cadangan</string>
     <string name="escrow_backup_hint">Simpan cadangan ini bersama frasa pemulihan Anda. Frasa pemulihan saja tidak dapat memulihkan escrow karena juga membutuhkan kunci orang lain.</string>
     <string name="escrow_remove">Hapus dari perangkat ini</string>
-    <string name="escrow_remove_confirm">Hapus escrow ini dari perangkat ini? Ini hanya bisa dilakukan jika tidak ada koin di dalamnya. Anda dapat memulihkannya nanti dengan cadangan Anda.</string>
+    <string name="escrow_remove_confirm">Hapus escrow ini dari perangkat ini? Ini hanya mungkin jika tidak berisi koin. Riwayat pesan ikut dihapus. Anda dapat memulihkan escrow nanti dengan cadangan Anda, riwayat bukan bagian dari cadangan.</string>
     <string name="escrow_proposal_title">Permintaan pembayaran siap</string>
     <string name="escrow_proposal_body">Persetujuan Anda sudah disertakan. Kirim teks ini ke orang lain. Dibutuhkan minimal %1$d persetujuan sebelum dapat dikirim.</string>
     <string name="escrow_err_name">Masukkan nama untuk kesepakatan.</string>
@@ -890,4 +890,11 @@
     <string name="escrow_send_from">Anda membayar dari escrow, bukan dari dompet Anda sendiri. Jumlah tersedia adalah saldo escrow. Ini membuat permintaan pembayaran yang harus disetujui yang lain. Untuk memasukkan koin ke escrow, gunakan «Setor dari dompet saya» di halaman escrow.</string>
     <string name="escrow_deposit_desc">Pembeli membayar ke escrow.</string>
     <string name="escrow_pay_desc">Penjual mengambil uang dari escrow ke dompetnya sendiri. Untuk itu penjual memasukkan alamat penarikan, biasanya alamat dari dompetnya sendiri. Yang lain harus menyetujui.</string>
+    <string name="escrow_history_title">Riwayat pesan</string>
+    <string name="escrow_history_hint">Apa yang Anda buat atau tandatangani di escrow ini tetap di sini, sehingga Anda dapat mengirimnya lagi. Dihapus bersama escrow.</string>
+    <string name="escrow_log_key">Baris kunci Anda</string>
+    <string name="escrow_log_request">Permintaan pembayaran dibuat</string>
+    <string name="escrow_log_signed">Permintaan pembayaran ditandatangani</string>
+    <string name="escrow_log_sent">Pembayaran terkirim (ID transaksi)</string>
+    <string name="action_show_qr">Tampilkan QR</string>
 </resources>

@@ -387,7 +387,7 @@
     <string name="escrow_backup">バックアップを共有</string>
     <string name="escrow_backup_hint">このバックアップはリカバリーフレーズと一緒に保管してください。エスクローには他の人の鍵も必要なため、リカバリーフレーズだけでは復元できません。</string>
     <string name="escrow_remove">この端末から削除</string>
-    <string name="escrow_remove_confirm">このエスクローをこの端末から削除しますか? コインが残っていない場合のみ可能です。後でバックアップから復元できます。</string>
+    <string name="escrow_remove_confirm">このエスクローをこの端末から削除しますか? コインが入っていない場合のみ可能です。メッセージ履歴も削除されます。バックアップから後で復元できますが、履歴はバックアップに含まれません。</string>
     <string name="escrow_proposal_title">支払いリクエストの準備完了</string>
     <string name="escrow_proposal_body">あなたの承認が含まれています。このテキストを他の人に送ってください。送信するには少なくとも%1$d件の承認が必要です。</string>
     <string name="escrow_err_name">取引の名前を入力してください。</string>
@@ -890,4 +890,11 @@
     <string name="escrow_send_from">あなたのウォレットではなく、エスクローから支払います。使える金額はエスクローの残高です。ほかの人が承認する支払いリクエストが作られます。エスクローにコインを入れるには、エスクローのページの「自分のウォレットから入金」を使ってください。</string>
     <string name="escrow_deposit_desc">買い手がエスクローに支払います。</string>
     <string name="escrow_pay_desc">売り手がエスクローからお金を自分のウォレットに引き出します。そのために売り手が出金先アドレス(通常は自分のウォレットのアドレス)を入力します。ほかの人の承認が必要です。</string>
+    <string name="escrow_history_title">メッセージ履歴</string>
+    <string name="escrow_history_hint">このエスクローで作成または署名したものはここに残り、もう一度送れます。エスクローと一緒に削除されます。</string>
+    <string name="escrow_log_key">あなたの鍵の行</string>
+    <string name="escrow_log_request">支払いリクエストを作成</string>
+    <string name="escrow_log_signed">支払いリクエストに署名</string>
+    <string name="escrow_log_sent">支払いを送信 (トランザクションID)</string>
+    <string name="action_show_qr">QRを表示</string>
 </resources>

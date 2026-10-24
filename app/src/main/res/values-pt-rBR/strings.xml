@@ -387,7 +387,7 @@
     <string name="escrow_backup">Compartilhar backup</string>
     <string name="escrow_backup_hint">Guarde este backup junto com sua frase de recuperação. A frase de recuperação sozinha não restaura um escrow, pois também são necessárias as chaves das outras pessoas.</string>
     <string name="escrow_remove">Remover deste dispositivo</string>
-    <string name="escrow_remove_confirm">Remover este escrow deste dispositivo? Isso só é possível quando ele não tem moedas. Você pode restaurá-lo depois com seu backup.</string>
+    <string name="escrow_remove_confirm">Remover este escrow deste dispositivo? Só é possível quando ele não tem moedas. O histórico de mensagens também é excluído. Você pode restaurar o escrow depois com o seu backup, o histórico não faz parte dele.</string>
     <string name="escrow_proposal_title">Solicitação de pagamento pronta</string>
     <string name="escrow_proposal_body">Sua aprovação está incluída. Envie este texto às outras pessoas. São necessárias pelo menos %1$d aprovações antes que possa ser enviado.</string>
     <string name="escrow_err_name">Digite um nome para o negócio.</string>
@@ -890,4 +890,11 @@
     <string name="escrow_send_from">Você está pagando a partir do escrow, não da sua própria carteira. O valor disponível é o saldo do escrow. Isso cria um pedido de pagamento que os outros precisam aprovar. Para colocar moedas no escrow, use «Depositar da minha carteira» na página do escrow.</string>
     <string name="escrow_deposit_desc">O comprador paga no escrow.</string>
     <string name="escrow_pay_desc">O vendedor retira dinheiro do escrow para a própria carteira. Para isso, informa um endereço de saque, normalmente um endereço da própria carteira. Os outros precisam aprovar.</string>
+    <string name="escrow_history_title">Histórico de mensagens</string>
+    <string name="escrow_history_hint">O que você criou ou assinou neste escrow fica aqui, para poder enviar de novo. É excluído junto com o escrow.</string>
+    <string name="escrow_log_key">Sua linha de chave</string>
+    <string name="escrow_log_request">Pedido de pagamento criado</string>
+    <string name="escrow_log_signed">Pedido de pagamento assinado</string>
+    <string name="escrow_log_sent">Pagamento enviado (ID da transação)</string>
+    <string name="action_show_qr">Mostrar QR</string>
 </resources>

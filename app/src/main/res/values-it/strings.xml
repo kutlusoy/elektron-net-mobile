@@ -387,7 +387,7 @@
     <string name="escrow_backup">Condividi backup</string>
     <string name="escrow_backup_hint">Conserva questo backup insieme alla tua recovery phrase. La recovery phrase da sola non può ripristinare un escrow perché servono anche le chiavi degli altri.</string>
     <string name="escrow_remove">Rimuovi da questo dispositivo</string>
-    <string name="escrow_remove_confirm">Rimuovere questo escrow da questo dispositivo? È possibile solo se non contiene coin. Potrai ripristinarlo più tardi con il tuo backup.</string>
+    <string name="escrow_remove_confirm">Rimuovere questo escrow da questo dispositivo? È possibile solo se non contiene monete. Anche la cronologia dei messaggi viene eliminata. Potrai ripristinare l\'escrow più tardi con il tuo backup, la cronologia non ne fa parte.</string>
     <string name="escrow_proposal_title">Richiesta di pagamento pronta</string>
     <string name="escrow_proposal_body">La tua approvazione è inclusa. Invia questo testo alle altre persone. Servono almeno %1$d approvazioni prima che possa essere inviato.</string>
     <string name="escrow_err_name">Inserisci un nome per l\'accordo.</string>
@@ -890,4 +890,11 @@
     <string name="escrow_send_from">Stai pagando dall\'escrow, non dal tuo wallet. L\'importo disponibile è il saldo dell\'escrow. Questo crea una richiesta di pagamento che gli altri devono approvare. Per mettere monete nell\'escrow usa «Deposita dal mio wallet» nella pagina dell\'escrow.</string>
     <string name="escrow_deposit_desc">L\'acquirente paga nell\'escrow.</string>
     <string name="escrow_pay_desc">Il venditore preleva denaro dall\'escrow nel proprio wallet. Per questo indica un indirizzo di prelievo, di solito un indirizzo del proprio wallet. Gli altri devono approvare.</string>
+    <string name="escrow_history_title">Cronologia dei messaggi</string>
+    <string name="escrow_history_hint">Ciò che hai creato o firmato in questo escrow resta qui, così puoi inviarlo di nuovo. Viene eliminato insieme all\'escrow.</string>
+    <string name="escrow_log_key">La tua riga di chiave</string>
+    <string name="escrow_log_request">Richiesta di pagamento creata</string>
+    <string name="escrow_log_signed">Richiesta di pagamento firmata</string>
+    <string name="escrow_log_sent">Pagamento inviato (ID transazione)</string>
+    <string name="action_show_qr">Mostra QR</string>
 </resources>

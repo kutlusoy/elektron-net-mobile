@@ -387,7 +387,7 @@
     <string name="escrow_backup">Partager la sauvegarde</string>
     <string name="escrow_backup_hint">Conservez cette sauvegarde avec votre phrase de récupération. La phrase de récupération seule ne peut pas restaurer un séquestre car il faut aussi les clés des autres.</string>
     <string name="escrow_remove">Retirer de cet appareil</string>
-    <string name="escrow_remove_confirm">Retirer ce séquestre de cet appareil ? C\'est possible uniquement s\'il ne contient aucune pièce. Vous pourrez le restaurer plus tard avec votre sauvegarde.</string>
+    <string name="escrow_remove_confirm">Retirer cet escrow de cet appareil ? C\'est possible seulement s\'il ne contient aucune pièce. L\'historique des messages est supprimé aussi. Tu pourras restaurer l\'escrow plus tard avec ta sauvegarde, l\'historique n\'en fait pas partie.</string>
     <string name="escrow_proposal_title">Demande de paiement prête</string>
     <string name="escrow_proposal_body">Votre approbation est incluse. Envoyez ce texte aux autres personnes. Au moins %1$d approbations sont nécessaires avant l\'envoi.</string>
     <string name="escrow_err_name">Saisissez un nom pour la transaction.</string>
@@ -890,4 +890,11 @@
     <string name="escrow_send_from">Tu paies depuis l\'escrow, pas depuis ton propre portefeuille. Le montant disponible est le solde de l\'escrow. Cela crée une demande de paiement que les autres doivent approuver. Pour mettre des pièces dans l\'escrow, utilise « Déposer depuis mon portefeuille » sur la page de l\'escrow.</string>
     <string name="escrow_deposit_desc">L\'acheteur paie dans l\'escrow.</string>
     <string name="escrow_pay_desc">Le vendeur retire de l\'argent de l\'escrow vers son propre portefeuille. Pour cela, il indique une adresse de retrait, en général une adresse de son propre portefeuille. Les autres doivent approuver.</string>
+    <string name="escrow_history_title">Historique des messages</string>
+    <string name="escrow_history_hint">Ce que tu as créé ou signé dans cet escrow reste ici pour que tu puisses le renvoyer. Il est supprimé avec l\'escrow.</string>
+    <string name="escrow_log_key">Ta ligne de clé</string>
+    <string name="escrow_log_request">Demande de paiement créée</string>
+    <string name="escrow_log_signed">Demande de paiement signée</string>
+    <string name="escrow_log_sent">Paiement envoyé (ID de transaction)</string>
+    <string name="action_show_qr">Afficher le QR</string>
 </resources>

@@ -387,7 +387,7 @@
     <string name="escrow_backup">Backup teilen</string>
     <string name="escrow_backup_hint">Bewahre dieses Backup zusammen mit deiner Recovery-Phrase auf. Die Recovery-Phrase allein kann ein Escrow nicht wiederherstellen, da dafür auch die Schlüssel der anderen nötig sind.</string>
     <string name="escrow_remove">Von diesem Gerät entfernen</string>
-    <string name="escrow_remove_confirm">Dieses Escrow von diesem Gerät entfernen? Das ist nur möglich, wenn es keine Coins enthält. Du kannst es später mit deinem Backup wiederherstellen.</string>
+    <string name="escrow_remove_confirm">Dieses Escrow von diesem Gerät entfernen? Das geht nur, wenn es keine Coins enthält. Der Nachrichtenverlauf wird mit gelöscht. Du kannst das Escrow später mit deinem Backup wiederherstellen, der Verlauf gehört nicht zum Backup.</string>
     <string name="escrow_proposal_title">Zahlungsanfrage bereit</string>
     <string name="escrow_proposal_body">Deine Zustimmung ist enthalten. Sende diesen Text an die anderen Personen. Mindestens %1$d Zustimmungen werden benötigt, bevor gesendet werden kann.</string>
     <string name="escrow_err_name">Gib einen Namen für das Geschäft ein.</string>
@@ -890,4 +890,11 @@
     <string name="escrow_send_from">Du zahlst aus dem Escrow, nicht aus deiner eigenen Wallet. Verfügbar ist das Guthaben des Escrows. Das erstellt eine Zahlungsanfrage, die die anderen freigeben müssen. Um Coins in das Escrow zu legen, nutze „Aus meiner Wallet einzahlen“ auf der Escrow-Seite.</string>
     <string name="escrow_deposit_desc">Der Käufer zahlt in das Escrow ein.</string>
     <string name="escrow_pay_desc">Der Verkäufer holt Geld aus dem Escrow in seine eigene Wallet. Dafür gibt der Verkäufer eine Auszahlungsadresse an, meist eine Adresse seiner eigenen Wallet. Die anderen müssen zustimmen.</string>
+    <string name="escrow_history_title">Nachrichtenverlauf</string>
+    <string name="escrow_history_hint">Was du in diesem Escrow erstellt oder signiert hast, bleibt hier, damit du es erneut senden kannst. Es wird zusammen mit dem Escrow gelöscht.</string>
+    <string name="escrow_log_key">Deine Schlüsselzeile</string>
+    <string name="escrow_log_request">Zahlungsanfrage erstellt</string>
+    <string name="escrow_log_signed">Zahlungsanfrage signiert</string>
+    <string name="escrow_log_sent">Zahlung gesendet (Transaktions-ID)</string>
+    <string name="action_show_qr">QR zeigen</string>
 </resources>

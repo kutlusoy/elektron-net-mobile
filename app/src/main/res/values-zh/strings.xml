@@ -387,7 +387,7 @@
     <string name="escrow_backup">分享备份</string>
     <string name="escrow_backup_hint">请将此备份与您的恢复短语一起保存。仅凭恢复短语无法恢复托管，因为还需要其他人的密钥。</string>
     <string name="escrow_remove">从此设备移除</string>
-    <string name="escrow_remove_confirm">从此设备移除此托管？仅当其中没有币时才可以。您之后可以用备份恢复它。</string>
+    <string name="escrow_remove_confirm">要从此设备移除这个托管吗？只有在其中没有币时才可以。消息记录也会被删除。你以后可以用备份恢复托管，记录不包含在备份中。</string>
     <string name="escrow_proposal_title">付款请求已就绪</string>
     <string name="escrow_proposal_body">您的批准已包含在内。请将此文本发给其他人。至少需要 %1$d 个批准才能发送。</string>
     <string name="escrow_err_name">请输入交易名称。</string>
@@ -890,4 +890,11 @@
     <string name="escrow_send_from">你是从托管付款，不是从你自己的钱包。可用金额是托管的余额。这会创建一个需要其他人批准的付款请求。要把币放进托管，请使用托管页面上的“从我的钱包存入”。</string>
     <string name="escrow_deposit_desc">买家向托管存入。</string>
     <string name="escrow_pay_desc">卖家把钱从托管取到自己的钱包。为此卖家需要填写一个收款地址，通常是自己钱包的地址。其他人必须批准。</string>
+    <string name="escrow_history_title">消息记录</string>
+    <string name="escrow_history_hint">你在此托管中创建或签名的内容会保留在这里，方便再次发送。它会随托管一起删除。</string>
+    <string name="escrow_log_key">你的密钥行</string>
+    <string name="escrow_log_request">已创建付款请求</string>
+    <string name="escrow_log_signed">已签名付款请求</string>
+    <string name="escrow_log_sent">已发送付款 (交易 ID)</string>
+    <string name="action_show_qr">显示二维码</string>
 </resources>

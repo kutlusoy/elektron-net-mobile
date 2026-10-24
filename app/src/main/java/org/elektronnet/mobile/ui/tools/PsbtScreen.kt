@@ -182,7 +182,9 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
                         signWith = null
                         run {
                             val tools = NodeHost.psbtTools() ?: throw SendException(SendFailure.NodeNotReady)
-                            tools.inspect(tools.sign(text, wallet, pass))
+                            val signed = tools.sign(text, wallet, pass)
+                            runCatching { NodeHost.escrowManager()?.addLogForWallet(wallet, org.elektronnet.mobile.wallet.EscrowLogKind.Signed, signed) }
+                            tools.inspect(signed)
                         }
                     },
                 ) { Text(stringResource(R.string.escrow_sign_action)) }
@@ -215,7 +217,13 @@ private fun broadcast(
     busy(true)
     scope.launch {
         val result = withContext(Dispatchers.IO) {
-            runCatching { NodeHost.psbtTools()?.finalizeAndBroadcast(psbt) ?: throw SendException(SendFailure.NodeNotReady) }
+            runCatching {
+                val tools = NodeHost.psbtTools() ?: throw SendException(SendFailure.NodeNotReady)
+                val owners = runCatching { tools.inspect(psbt).inputs.mapNotNull { it.owner }.distinct() }.getOrDefault(emptyList())
+                val sent = tools.finalizeAndBroadcast(psbt)
+                owners.forEach { owner -> runCatching { NodeHost.escrowManager()?.addLogForWallet(owner, org.elektronnet.mobile.wallet.EscrowLogKind.Sent, sent) } }
+                sent
+            }
         }
         busy(false)
         result.onSuccess(done)

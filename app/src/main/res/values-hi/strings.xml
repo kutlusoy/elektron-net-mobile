@@ -387,7 +387,7 @@
     <string name="escrow_backup">बैकअप साझा करें</string>
     <string name="escrow_backup_hint">इस बैकअप को अपने रिकवरी फ़्रेज़ के साथ रखें। अकेला रिकवरी फ़्रेज़ एस्क्रो रिस्टोर नहीं कर सकता क्योंकि इसके लिए दूसरों की कुंजियाँ भी चाहिए।</string>
     <string name="escrow_remove">इस डिवाइस से हटाएँ</string>
-    <string name="escrow_remove_confirm">इस एस्क्रो को इस डिवाइस से हटाएँ? यह तभी संभव है जब इसमें कोई कॉइन न हो। आप इसे बाद में अपने बैकअप से रिस्टोर कर सकते हैं।</string>
+    <string name="escrow_remove_confirm">इस एस्क्रो को इस डिवाइस से हटाएँ? यह तभी संभव है जब इसमें कोई सिक्का न हो। संदेश इतिहास भी हट जाएगा। आप बाद में अपने बैकअप से एस्क्रो बहाल कर सकते हैं, इतिहास बैकअप का हिस्सा नहीं है।</string>
     <string name="escrow_proposal_title">भुगतान अनुरोध तैयार</string>
     <string name="escrow_proposal_body">आपकी मंज़ूरी शामिल है। यह टेक्स्ट दूसरे लोगों को भेजें। भेजे जाने से पहले कम से कम %1$d मंज़ूरियाँ चाहिए।</string>
     <string name="escrow_err_name">सौदे का नाम दर्ज करें।</string>
@@ -890,4 +890,11 @@
     <string name="escrow_send_from">आप एस्क्रो से भुगतान कर रहे हैं, अपने वॉलेट से नहीं। उपलब्ध राशि एस्क्रो का बैलेंस है। यह भुगतान अनुरोध बनाता है जिसे दूसरों को मंज़ूर करना होगा। एस्क्रो में सिक्के डालने के लिए एस्क्रो पेज पर «मेरे वॉलेट से जमा करें» का उपयोग करें।</string>
     <string name="escrow_deposit_desc">खरीदार एस्क्रो में भुगतान करता है।</string>
     <string name="escrow_pay_desc">विक्रेता एस्क्रो से पैसे अपने वॉलेट में लेता है। इसके लिए वह निकासी का पता देता है, आमतौर पर अपने वॉलेट का कोई पता। बाकी लोगों को मंज़ूरी देनी होगी।</string>
+    <string name="escrow_history_title">संदेश इतिहास</string>
+    <string name="escrow_history_hint">इस एस्क्रो में आपने जो बनाया या हस्ताक्षर किया, वह यहाँ रहता है ताकि आप उसे फिर भेज सकें। यह एस्क्रो के साथ हटा दिया जाता है।</string>
+    <string name="escrow_log_key">आपकी कुंजी-पंक्ति</string>
+    <string name="escrow_log_request">भुगतान अनुरोध बनाया गया</string>
+    <string name="escrow_log_signed">भुगतान अनुरोध पर हस्ताक्षर हुए</string>
+    <string name="escrow_log_sent">भुगतान भेजा गया (लेनदेन ID)</string>
+    <string name="action_show_qr">QR दिखाएँ</string>
 </resources>

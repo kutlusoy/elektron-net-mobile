@@ -22,3 +22,4 @@ This file lists the features this release added. Corrections are not listed.
 
 - "Deposit from my wallet" on the escrow page opens Send with the deposit address filled in, so coins go from the active wallet into the escrow in one step.
 - "Pay out of the escrow" (before "Create a payment") is explained on the page and in the Send screen: it spends the coins that are already in the escrow and creates a payment request that needs the approvals of the others.
+- A message history at the bottom of every escrow: the own key line, every payment request the user created, every payment request the user signed and every payment that was sent (transaction ID), each with Copy, Share and Show QR. It is kept so a message can be sent to the other side again, and it is deleted together with the escrow. It is not part of the backup.

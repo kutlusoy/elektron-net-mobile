@@ -387,7 +387,7 @@
     <string name="escrow_backup">Share backup</string>
     <string name="escrow_backup_hint">Keep this backup together with your recovery phrase. The recovery phrase alone cannot restore an escrow because it also needs the keys of the others.</string>
     <string name="escrow_remove">Remove from this device</string>
-    <string name="escrow_remove_confirm">Remove this escrow from this device? This is only possible when it holds no coins. You can restore it later with your backup.</string>
+    <string name="escrow_remove_confirm">Remove this escrow from this device? This is only possible when it holds no coins. Its message history is deleted too. You can restore the escrow later with your backup, the history is not part of the backup.</string>
     <string name="escrow_proposal_title">Payment request ready</string>
     <string name="escrow_proposal_body">Your approval is included. Send this text to the other people. At least %1$d approvals are needed before it can be sent.</string>
     <string name="escrow_err_name">Enter a name for the deal.</string>
@@ -901,4 +901,11 @@
     <string name="escrow_send_from">You are paying out of the escrow, not out of your own wallet. The available amount is the balance of the escrow. This creates a payment request that the others must approve. To put coins into the escrow, use \"Deposit from my wallet\" on the escrow page.</string>
     <string name="escrow_deposit_desc">The buyer pays into the escrow.</string>
     <string name="escrow_pay_desc">The seller takes money out of the escrow into their own wallet. For this the seller enters a payout address, usually an address of their own wallet. The other people must approve.</string>
+    <string name="escrow_history_title">Message history</string>
+    <string name="escrow_history_hint">What you created or signed in this escrow stays here, so you can send it again. It is deleted together with the escrow.</string>
+    <string name="escrow_log_key">Your key line</string>
+    <string name="escrow_log_request">Payment request created</string>
+    <string name="escrow_log_signed">Payment request signed</string>
+    <string name="escrow_log_sent">Payment sent (transaction ID)</string>
+    <string name="action_show_qr">Show QR</string>
 </resources>

@@ -387,7 +387,7 @@
     <string name="escrow_backup">مشاركة النسخة الاحتياطية</string>
     <string name="escrow_backup_hint">احتفظ بهذه النسخة الاحتياطية مع عبارة الاسترداد. عبارة الاسترداد وحدها لا تستعيد الضمان لأنه يحتاج أيضًا إلى مفاتيح الآخرين.</string>
     <string name="escrow_remove">إزالة من هذا الجهاز</string>
-    <string name="escrow_remove_confirm">إزالة هذا الضمان من هذا الجهاز؟ هذا ممكن فقط عندما لا يحتوي على عملات. يمكنك استعادته لاحقًا بنسختك الاحتياطية.</string>
+    <string name="escrow_remove_confirm">إزالة حساب الضمان هذا من هذا الجهاز؟ هذا ممكن فقط إذا لم يحتوِ على عملات. يُحذف سجل الرسائل أيضًا. يمكنك استعادة حساب الضمان لاحقًا بنسختك الاحتياطية، والسجل ليس جزءًا منها.</string>
     <string name="escrow_proposal_title">طلب الدفعة جاهز</string>
     <string name="escrow_proposal_body">موافقتك مضمّنة. أرسل هذا النص إلى الآخرين. يلزم %1$d موافقات على الأقل قبل أن يمكن إرسالها.</string>
     <string name="escrow_err_name">أدخل اسمًا للصفقة.</string>
@@ -890,4 +890,11 @@
     <string name="escrow_send_from">أنت تدفع من حساب الضمان وليس من محفظتك. المبلغ المتاح هو رصيد الضمان. هذا ينشئ طلب دفع يجب أن يوافق عليه الآخرون. لوضع عملات في الضمان استخدم «الإيداع من محفظتي» في صفحة الضمان.</string>
     <string name="escrow_deposit_desc">المشتري يدفع إلى حساب الضمان.</string>
     <string name="escrow_pay_desc">البائع يسحب المال من حساب الضمان إلى محفظته الخاصة. لذلك يُدخل عنوان سحب، وعادةً عنوانًا من محفظته. يجب أن يوافق الآخرون.</string>
+    <string name="escrow_history_title">سجل الرسائل</string>
+    <string name="escrow_history_hint">ما أنشأته أو وقّعته في حساب الضمان هذا يبقى هنا لتتمكن من إرساله مرة أخرى. يُحذف مع حساب الضمان.</string>
+    <string name="escrow_log_key">سطر مفتاحك</string>
+    <string name="escrow_log_request">تم إنشاء طلب الدفع</string>
+    <string name="escrow_log_signed">تم توقيع طلب الدفع</string>
+    <string name="escrow_log_sent">تم إرسال الدفعة (معرّف المعاملة)</string>
+    <string name="action_show_qr">عرض QR</string>
 </resources>
