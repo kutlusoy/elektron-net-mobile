@@ -11,6 +11,7 @@ import org.elektronnet.mobile.MainActivity
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.policy.PolicyReason
 import org.elektronnet.mobile.runtime.Headline
+import org.elektronnet.mobile.ui.model.ConnectionModel
 
 object NodeNotification {
     const val CHANNEL_ID = "node"
@@ -21,7 +22,8 @@ object NodeNotification {
         (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
     }
 
-    fun build(context: Context, headline: Headline?, paused: Boolean): Notification {
+    fun build(context: Context, headline: Headline?, paused: Boolean, peerNetworks: Map<String, Int> = emptyMap()): Notification {
+        val networks = ConnectionModel.breakdown(peerNetworks)
         val open = PendingIntent.getActivity(
             context,
             0,
@@ -32,6 +34,7 @@ object NodeNotification {
             .setSmallIcon(R.drawable.ic_stat_node)
             .setContentTitle(context.getString(R.string.app_name))
             .setContentText(text(context, headline))
+            .also { if (networks.isNotEmpty()) it.setSubText(networks).setStyle(NotificationCompat.BigTextStyle().bigText(text(context, headline) + "\n" + networks)) }
             .setContentIntent(open)
             .setOngoing(true)
             .setOnlyAlertOnce(true)

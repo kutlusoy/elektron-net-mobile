@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import org.elektronnet.mobile.node.PeerAddress
 import org.elektronnet.mobile.ui.tools.Hint
@@ -50,6 +52,9 @@ import org.elektronnet.mobile.ui.model.NetworkTiles
 import org.elektronnet.mobile.ui.model.TileLabel
 import org.elektronnet.mobile.ui.model.TileStatus
 import org.elektronnet.mobile.ui.model.TileValue
+
+// set by the app shell, which owns the full screen scanner
+val LocalPeerScan = androidx.compose.runtime.staticCompositionLocalOf<() -> Unit> { {} }
 
 @Composable
 fun NetworkTilesSection(telemetry: Telemetry?) {
@@ -103,10 +108,13 @@ private fun NetworkTileCard(tile: NetworkTile, peers: List<String>) {
                 val services = NodeHost.networkServices
                 val lines = (if (tile.net == ConnNet.Tor) services?.torOutput() else services?.i2pOutput()).orEmpty().takeLast(LOG_LINES)
                 val clean = LogSanitizer.clean(lines)
-                Text(clean, style = MaterialTheme.typography.bodySmall, fontFamily = ElektronMono)
+                Column(modifier = Modifier.heightIn(max = 240.dp).verticalScroll(androidx.compose.foundation.rememberScrollState())) {
+                    Text(clean, style = MaterialTheme.typography.bodySmall, fontFamily = ElektronMono)
+                }
                 Row {
                     TextButton(onClick = { clipboard.setText(AnnotatedString(clean)) }) { Text(stringResource(R.string.action_copy)) }
                     TextButton(onClick = { shareText(context, clean) }) { Text(stringResource(R.string.action_share)) }
+                    TextButton(onClick = { NodeHost.clearHelperLog(tile.net == ConnNet.Tor) }) { Text(stringResource(R.string.node_log_clear)) }
                 }
             }
         }
@@ -117,7 +125,8 @@ private fun NetworkTileCard(tile: NetworkTile, peers: List<String>) {
             title = { Text(stringResource(if (tile.net == ConnNet.Tor) R.string.net_tor_title else R.string.net_i2p_title)) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    org.elektronnet.mobile.ui.receive.QrView(address)
+                    // upper case lets the QR code use the compact alphanumeric mode, the scanner lower-cases it again
+                    org.elektronnet.mobile.ui.receive.QrView(address.uppercase())
                     Text(address, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
                 }
             },
@@ -186,6 +195,7 @@ private fun valueText(value: TileValue): String = when (value) {
 @Composable
 private fun PeerBlock(net: ConnNet, peers: List<String>) {
     val scope = rememberCoroutineScope()
+    val scan = LocalPeerScan.current
     var text by remember { mutableStateOf("") }
     val result = NodeHost.peerResult
     fun add(value: String) {
@@ -215,7 +225,7 @@ private fun PeerBlock(net: ConnNet, peers: List<String>) {
     )
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         OutlinedButton(enabled = text.isNotBlank(), onClick = { add(text) }) { Text(stringResource(R.string.net_peer_add)) }
-        OutlinedButton(onClick = { NodeHost.peerScanRequested = true }) { Text(stringResource(R.string.net_peer_scan)) }
+        OutlinedButton(onClick = scan) { Text(stringResource(R.string.net_peer_scan)) }
     }
     result?.let {
         Text(

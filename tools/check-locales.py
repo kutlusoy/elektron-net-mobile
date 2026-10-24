@@ -68,6 +68,8 @@ for name in sorted(os.listdir(RES)):
         for m in re.finditer(r'<string name="([^"]+)"[^>]*>(.*?)</string>', open(path, encoding="utf-8").read(), re.S):
             if stray.search(m.group(2).replace("%%", "")):
                 errors.append(f"{name}/{m.group(1)}: a literal percent sign must be written %%")
+            if "%%" in m.group(2) and not re.search(r"%(\d\$)?[sd]", m.group(2)):
+                errors.append(f"{name}/{m.group(1)}: %% without a placeholder is shown as two percent signs when the string is read without arguments")
 
 for message in errors:
     print("FAIL", message)

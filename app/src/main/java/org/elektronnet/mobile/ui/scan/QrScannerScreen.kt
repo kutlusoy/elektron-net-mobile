@@ -7,6 +7,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
+import android.util.Size
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -96,7 +99,12 @@ private fun CameraPreview(onResult: (String) -> Unit, modifier: Modifier) {
                 val cameraProvider = future.get()
                 provider = cameraProvider
                 val preview = Preview.Builder().build().also { it.surfaceProvider = previewView.surfaceProvider }
+                // the default analysis size (640x480) is too coarse for the dense codes of Tor and I2P addresses shown on another screen
+                val resolution = ResolutionSelector.Builder()
+                    .setResolutionStrategy(ResolutionStrategy(Size(1920, 1080), ResolutionStrategy.FALLBACK_RULE_CLOSEST_LOWER_THEN_HIGHER))
+                    .build()
                 val analysis = ImageAnalysis.Builder()
+                    .setResolutionSelector(resolution)
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
                 analysis.setAnalyzer(executor) { image: ImageProxy ->

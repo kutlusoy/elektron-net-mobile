@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -64,11 +65,14 @@ fun EscrowListScreen(onBack: () -> Unit, onOpen: (Int) -> Unit) {
     var creating by remember { mutableStateOf(false) }
     var restoring by remember { mutableStateOf(false) }
     var reload by remember { mutableStateOf(0) }
-    LaunchedEffect(reload) {
+    LaunchedEffect(reload, NodeHost.activeWallet) {
         records = withContext(Dispatchers.IO) { NodeHost.escrowManager()?.list().orEmpty() }
     }
     ToolPage(stringResource(R.string.escrow_title), onBack) {
         Hint(stringResource(R.string.escrow_intro))
+        Hint(stringResource(R.string.escrow_howto))
+        val owner = NodeHost.wallets.firstOrNull { it.name == NodeHost.activeWallet }
+        Text(stringResource(R.string.escrow_of_wallet, owner?.label?.ifBlank { null } ?: NodeHost.activeWallet), color = MaterialTheme.colorScheme.primary)
         if (records.isEmpty()) Text(stringResource(R.string.escrow_none))
         records.forEach { r ->
             OutlinedButton(onClick = { onOpen(r.id) }, modifier = Modifier.fillMaxWidth()) {
@@ -88,6 +92,7 @@ fun EscrowListScreen(onBack: () -> Unit, onOpen: (Int) -> Unit) {
         EscrowDialog(
             title = stringResource(R.string.escrow_new),
             fields = listOf(R.string.escrow_name, R.string.escrow_my_role),
+            info = R.string.escrow_create_info,
             onDismiss = { creating = false },
             onConfirm = { values, pass, report ->
                 scope.launch {
@@ -129,6 +134,7 @@ private fun EscrowDialog(
     fields: List<Int>,
     onDismiss: () -> Unit,
     onConfirm: (List<String>, String, (Int) -> Unit) -> Unit,
+    info: Int? = null,
 ) {
     val values = remember { mutableStateOf(List(fields.size) { "" }) }
     var passphrase by remember { mutableStateOf("") }
@@ -138,7 +144,8 @@ private fun EscrowDialog(
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(modifier = Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                info?.let { Hint(stringResource(it)) }
                 fields.forEachIndexed { i, label ->
                     OutlinedTextField(
                         value = values.value[i],
@@ -243,12 +250,14 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
             val total = cosigners.size + 1
             Text(stringResource(R.string.escrow_keys_found, cosigners.size))
             if (total >= 2) {
-                val effective = required.coerceIn(2, total)
+                val effective = required.coerceIn(1, total)
+                Text(stringResource(R.string.escrow_threshold_label), style = MaterialTheme.typography.labelLarge)
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    OutlinedButton(onClick = { required = (effective - 1).coerceAtLeast(2) }) { Text("-") }
+                    OutlinedButton(onClick = { required = (effective - 1).coerceAtLeast(1) }) { Text("-") }
                     Text(stringResource(R.string.escrow_threshold, effective, total), style = MaterialTheme.typography.titleMedium)
                     OutlinedButton(onClick = { required = (effective + 1).coerceAtMost(total) }) { Text("+") }
                 }
+                if (effective == 1) Text(stringResource(R.string.escrow_threshold_one), color = MaterialTheme.colorScheme.error)
                 SecretField(
                     value = passphrase,
                     onValueChange = { passphrase = it },

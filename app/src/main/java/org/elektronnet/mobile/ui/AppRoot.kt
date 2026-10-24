@@ -104,12 +104,6 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     val shell = walletReady || nodeOnly
 
     val scope = androidx.compose.runtime.rememberCoroutineScope()
-    LaunchedEffect(NodeHost.peerScanRequested) {
-        if (NodeHost.peerScanRequested) {
-            NodeHost.peerScanRequested = false
-            show(Overlay.PeerScan)
-        }
-    }
     val fiatSettings = org.elektronnet.mobile.ui.theme.FiatState.settings
     LaunchedEffect(fiatSettings) {
         if (fiatSettings.enabled) delay(FIAT_DEBOUNCE_MS)
@@ -168,6 +162,13 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 if (stats != null) telemetry = stats
             }
             delay(5_000)
+        }
+    }
+
+    LaunchedEffect(tab, shell) {
+        while (shell && tab == Tab.Node.ordinal) {
+            if (NodeHost.appVisible) withContext(Dispatchers.IO) { runCatching { NodeHost.refreshStorage() } }
+            delay(STORAGE_REFRESH_MS)
         }
     }
 
@@ -318,7 +319,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     items = histories[NodeHost.activeWallet],
                     onOpenTx = { openTx = it },
                 )
-                Tab.Node -> NodeScreen(
+                Tab.Node -> androidx.compose.runtime.CompositionLocalProvider(org.elektronnet.mobile.ui.node.LocalPeerScan provides { show(Overlay.PeerScan) }) { NodeScreen(
                     model = NodeTabModel.from(snapshot, settings.userPaused),
                     peers = peers,
                     telemetry = telemetry,
@@ -334,7 +335,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     },
                     onStop = onStop,
                     onStart = onStart,
-                )
+                ) }
                 Tab.Settings -> SettingsScreen(
                     settings = settings,
                     onPolicy = {
@@ -387,5 +388,6 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     }
 }
 
+private const val STORAGE_REFRESH_MS = 30_000L
 private const val FIAT_DEBOUNCE_MS = 2_000L
 private const val FIAT_TICK_MS = 15_000L

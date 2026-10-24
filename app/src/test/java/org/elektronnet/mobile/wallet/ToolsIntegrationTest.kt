@@ -189,7 +189,7 @@ class EscrowIntegrationTest {
         val keyA = a.manager.createKey("Deal", "Buyer", PASS)
         val keyB = b.manager.createKey("Deal", "Seller", PASS)
         fun fail(required: Int, others: List<Cosigner>) = (expect { a.manager.activate(keyA.id, required, others, PASS) } as EscrowException).failure
-        assertEquals(EscrowFailure.BadThreshold, fail(1, listOf(Cosigner("S", keyB.myKey))))
+        assertEquals(EscrowFailure.BadThreshold, fail(0, listOf(Cosigner("S", keyB.myKey))))
         assertEquals(EscrowFailure.BadThreshold, fail(3, listOf(Cosigner("S", keyB.myKey))))
         assertEquals(EscrowFailure.DuplicateKey, fail(2, listOf(Cosigner("Me", keyA.myKey))))
         assertEquals(EscrowFailure.DuplicateKey, fail(2, listOf(Cosigner("S", keyB.myKey), Cosigner("S2", keyB.myKey))))
@@ -202,6 +202,21 @@ class EscrowIntegrationTest {
         a.manager.activate(keyA.id, 2, listOf(Cosigner("S", keyB.myKey)), PASS)
         assertEquals(EscrowFailure.NotKeyOnly, (expect { a.manager.activate(keyA.id, 2, listOf(Cosigner("S", keyB.myKey)), PASS) } as EscrowException).failure)
         assertEquals(EscrowFailure.InvalidDescriptor, (expect { a.manager.parseDescriptor("wsh(multi(2,a,b))") } as EscrowException).failure)
+    }
+
+    @Test
+    fun theThresholdIsFree() = withEnv(29055) { env ->
+        val a = Party("A", env.rpc, env.words, 10, env.dir)
+        val b = Party("B", env.rpc, env.words, 50, env.dir)
+        val keyA = a.manager.createKey("Deal", "Buyer", PASS)
+        val keyB = b.manager.createKey("Deal", "Seller", PASS)
+        val oneOfTwo = a.manager.activate(keyA.id, 1, listOf(Cosigner("S", keyB.myKey)), PASS)
+        assertEquals(1, oneOfTwo.required)
+        assertTrue(oneOfTwo.descriptor!!.startsWith("wsh(sortedmulti(1,"))
+        assertEquals(EscrowFailure.BadThreshold, (expect { a.manager.parseDescriptor("wsh(sortedmulti(0,${keyA.myKey}/0/*,${keyB.myKey}/0/*))") } as EscrowException).failure)
+        assertEquals(1, a.manager.parseDescriptor("wsh(sortedmulti(1,${keyA.myKey}/0/*,${keyB.myKey}/0/*))").required)
+        assertEquals(EscrowFailure.BadThreshold, (expect { a.manager.parseDescriptor("wsh(sortedmulti(1,${keyA.myKey}/0/*))") } as EscrowException).failure)
+        assertEquals(15, EscrowManager.MAX_KEYS)
     }
 
     @Test
@@ -302,5 +317,82 @@ class SweepAndMessageIntegrationTest {
         assertEquals(VerifyResult.Valid, env.rpc.call("verifymessage", listOf(legacy, legacySig, "legacy"), null).let { if (it == true) VerifyResult.Valid else VerifyResult.Invalid })
         val locked = (env.rpc.call("getwalletinfo", emptyList<Any?>(), party.main) as Map<*, *>)["unlocked_until"]
         assertEquals(0L, locked)
+    }
+}
+
+class EscrowPerWalletIntegrationTest {
+    private fun boot(env: Env, name: String, entropyByte: Int) {
+        val bip39 = Bip39(env.words)
+        val phrase = bip39.fromEntropy(ByteArray(16) { (entropyByte + it).toByte() })
+        check(WalletBootstrap(env.rpc, bip39, testnet = true, legacy = true, removeWalletFiles = {}, walletName = name).create(phrase, PASS) is BootstrapResult.Created)
+    }
+
+    private fun manager(env: Env, store: EscrowStore, owner: String, removeFiles: (String) -> Unit = { File(env.dir, "regtest/wallets/$it").deleteRecursively() }) =
+        EscrowManager(env.rpc, store, testnet = true, mainWallet = owner, walletPrefix = "escrow", removeWalletFiles = removeFiles)
+
+    @Test
+    fun everyWalletSeesOnlyItsOwnEscrows() = withEnv(29110) { env ->
+        boot(env, "w1", 10)
+        boot(env, "w2", 60)
+        val store = MemoryEscrowStore()
+        val one = manager(env, store, "w1")
+        val two = manager(env, store, "w2")
+        val first = one.createKey("Deal", "Buyer", PASS)
+        assertEquals(listOf(first.id), one.list().map { it.id })
+        assertTrue(two.list().isEmpty())
+        val second = two.createKey("Other", "Seller", PASS)
+        assertNotEquals(first.walletName, second.walletName)
+        assertEquals(listOf(second.id), two.list().map { it.id })
+        assertEquals(listOf(first.id), one.list().map { it.id })
+        assertEquals(EscrowFailure.WalletMissing, (expect { one.get(second.id) } as EscrowException).failure)
+        assertEquals("w1", first.owner)
+        assertEquals("w2", second.owner)
+        assertEquals(0, first.account)
+        assertEquals(0, second.account)
+        assertNotEquals(first.myKey, second.myKey)
+        assertEquals(listOf("w1"), one.walletNames())
+    }
+
+    @Test
+    fun recordsFromBeforeBelongToTheFirstWallet() {
+        val legacy = mapOf("id" to 1, "name" to "Old", "wallet" to "escrow-1", "account" to 0, "myLabel" to "Me", "myKey" to "k", "phase" to "KeyOnly")
+        assertEquals(WalletBootstrap.DEFAULT_WALLET, EscrowRecord.fromMap(legacy).owner)
+    }
+
+    @Test
+    fun anotherEscrowCanBeCreatedAfterDeletingOne() = withEnv(29120) { env ->
+        boot(env, "w1", 10)
+        val store = MemoryEscrowStore()
+        val m = manager(env, store, "w1")
+        val first = m.createKey("Deal", "Buyer", PASS)
+        m.removeEscrow(first.id)
+        assertTrue(m.list().isEmpty())
+        val again = m.createKey("Deal 2", "Buyer", PASS)
+        assertEquals(1, m.list().size)
+        assertEquals(again.id, m.list().single().id)
+    }
+
+    @Test
+    fun aLeftoverWalletFolderDoesNotBlockANewEscrow() = withEnv(29130) { env ->
+        boot(env, "w1", 10)
+        val store = MemoryEscrowStore()
+        val m = manager(env, store, "w1")
+        val first = m.createKey("Deal", "Buyer", PASS)
+        env.rpc.call("unloadwallet", listOf(first.walletName), null)
+        store.save(emptyList())
+        val again = m.createKey("Deal 2", "Buyer", PASS)
+        assertNotEquals(first.walletName, again.walletName)
+    }
+
+    @Test
+    fun aFailedFileRemovalKeepsTheEntryForANewTry() = withEnv(29140) { env ->
+        boot(env, "w1", 10)
+        val store = MemoryEscrowStore()
+        val broken = manager(env, store, "w1") { throw java.io.IOException("locked") }
+        val created = broken.createKey("Deal", "Buyer", PASS)
+        assertEquals(EscrowFailure.Unknown, (expect { broken.removeEscrow(created.id) } as EscrowException).failure)
+        assertEquals(1, broken.list().size)
+        manager(env, store, "w1").removeEscrow(created.id)
+        assertTrue(broken.list().isEmpty())
     }
 }

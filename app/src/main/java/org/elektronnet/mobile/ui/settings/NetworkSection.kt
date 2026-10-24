@@ -108,6 +108,7 @@ private fun RelayOptions(tor: TorSettings, update: (TorSettings) -> Unit) {
         labelFor = { i -> TOR_LIMIT_GB[i].let { if (it == 0) context.getString(R.string.settings_cap_none) else context.getString(R.string.settings_cap_gb, it) } },
         onCommit = { i -> update(tor.copy(monthlyLimitGb = TOR_LIMIT_GB[i])) },
     )
+    ToggleRow(R.string.net_tor_awake, R.string.net_tor_awake_hint, tor.keepAwake) { update(tor.copy(keepAwake = it)) }
     if (tor.role == TorRole.Exit) {
         Text(stringResource(R.string.net_tor_exit_policy), style = MaterialTheme.typography.labelLarge)
         ChoiceRow(tor.exitPolicy == ExitPolicyKind.Reduced, { update(tor.copy(exitPolicy = ExitPolicyKind.Reduced)) }, stringResource(R.string.net_tor_policy_reduced), stringResource(R.string.net_tor_policy_reduced_hint)) {}
@@ -163,6 +164,7 @@ fun I2pSettingsCard(settings: PolicySettings, onPolicy: (PolicySettings) -> Unit
             NewAddressBlock(AddressKind.I2p)
             ToggleRow(R.string.net_i2p_incoming, R.string.net_i2p_incoming_hint, i2p.acceptIncoming) { update(i2p.copy(acceptIncoming = it)) }
             ToggleRow(R.string.net_i2p_transit, R.string.net_i2p_transit_hint, i2p.transit) { update(i2p.copy(transit = it)) }
+            ToggleRow(R.string.net_i2p_ipv6, R.string.net_i2p_ipv6_hint, i2p.ipv6) { update(i2p.copy(ipv6 = it)) }
             val bandwidthIndex = indexAtLeast(I2P_BANDWIDTH, i2p.bandwidthKbps)
             StepSlider(
                 title = R.string.net_i2p_bandwidth,

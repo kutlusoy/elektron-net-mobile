@@ -11,7 +11,7 @@ object I2pConfig {
             appendLine("log = stdout")
             appendLine("loglevel = info")
             appendLine("ipv4 = true")
-            appendLine("ipv6 = true")
+            appendLine("ipv6 = ${i2p.ipv6}")
             appendLine("notransit = ${!i2p.transit}")
             appendLine("floodfill = false")
             appendLine("bandwidth = ${i2p.bandwidthKbps}")

@@ -59,6 +59,7 @@ class SettingsStore(context: Context) {
                 bandwidthKbps = prefs.getInt(TOR_BANDWIDTH, tor.bandwidthKbps),
                 monthlyLimitGb = prefs.getInt(TOR_LIMIT, tor.monthlyLimitGb),
                 exitPolicy = enumOf(prefs.getString(TOR_EXIT_POLICY, null), tor.exitPolicy),
+                keepAwake = prefs.getBoolean(TOR_KEEP_AWAKE, tor.keepAwake),
             ),
             i2p = I2pSettings(
                 enabled = prefs.getBoolean(I2P_ENABLED, i2p.enabled),
@@ -66,6 +67,7 @@ class SettingsStore(context: Context) {
                 transit = prefs.getBoolean(I2P_TRANSIT, i2p.transit),
                 bandwidthKbps = prefs.getInt(I2P_BANDWIDTH, i2p.bandwidthKbps),
                 sharePercent = prefs.getInt(I2P_SHARE, i2p.sharePercent),
+                ipv6 = prefs.getBoolean(I2P_IPV6, i2p.ipv6),
             ),
             peers = manualPeers,
         ).normalized()
@@ -136,6 +138,14 @@ class SettingsStore(context: Context) {
         get() = org.elektronnet.mobile.fiat.FiatSettings.decode(prefs.getString(FIAT, null))
         set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
 
+    var logDays: Int
+        get() = prefs.getInt(LOG_DAYS, DEFAULT_LOG_DAYS)
+        set(value) = prefs.edit().putInt(LOG_DAYS, value).apply()
+
+    var logMaxMb: Int
+        get() = prefs.getInt(LOG_MAX_MB, DEFAULT_LOG_MAX_MB)
+        set(value) = prefs.edit().putInt(LOG_MAX_MB, value).apply()
+
     var spendReused: Boolean
         get() = prefs.getBoolean(SPEND_REUSED, true)
         set(value) = prefs.edit().putBoolean(SPEND_REUSED, value).apply()
@@ -199,11 +209,13 @@ class SettingsStore(context: Context) {
             .putInt(TOR_BANDWIDTH, n.tor.bandwidthKbps)
             .putInt(TOR_LIMIT, n.tor.monthlyLimitGb)
             .putString(TOR_EXIT_POLICY, n.tor.exitPolicy.name)
+            .putBoolean(TOR_KEEP_AWAKE, n.tor.keepAwake)
             .putBoolean(I2P_ENABLED, n.i2p.enabled)
             .putBoolean(I2P_ACCEPT, n.i2p.acceptIncoming)
             .putBoolean(I2P_TRANSIT, n.i2p.transit)
             .putInt(I2P_BANDWIDTH, n.i2p.bandwidthKbps)
             .putInt(I2P_SHARE, n.i2p.sharePercent)
+            .putBoolean(I2P_IPV6, n.i2p.ipv6)
             .apply()
     }
 
@@ -256,6 +268,10 @@ class SettingsStore(context: Context) {
         const val LOCK_GRACE = "lock_grace_ms"
         const val AMOUNT_UNIT = "amount_unit"
         const val FIAT = "fiat"
+        const val LOG_DAYS = "log_days"
+        const val LOG_MAX_MB = "log_max_mb"
+        const val DEFAULT_LOG_DAYS = 7
+        const val DEFAULT_LOG_MAX_MB = 10
         const val SPEND_REUSED = "spend_reused"
         const val NET_PEERS = "net_peers"
         const val NODE_ONLY = "node_only"
@@ -275,6 +291,8 @@ class SettingsStore(context: Context) {
         const val I2P_TRANSIT = "i2p_transit"
         const val I2P_BANDWIDTH = "i2p_bandwidth"
         const val I2P_SHARE = "i2p_share"
+        const val I2P_IPV6 = "i2p_ipv6"
+        const val TOR_KEEP_AWAKE = "tor_keep_awake"
         const val BUDGET_MONTH = "budget_month"
         const val BUDGET_USED = "budget_used"
     }
