@@ -875,4 +875,15 @@
     <string name="storage_app">File dell\'app</string>
     <string name="storage_total">Totale</string>
     <string name="storage_hint">Misurato sul telefono e aggiornato circa ogni 30 secondi. La riga «Spazio blockchain» sopra è il valore indicato dal nodo stesso.</string>
+    <string name="settings_number_group">Separatore delle migliaia</string>
+    <string name="settings_number_group_hint">Raggruppa i numeri lunghi, ad esempio 1.234.567,89. L\'impostazione predefinita segue la tua lingua e il tuo paese.</string>
+    <string name="settings_number_group_char">Carattere per le migliaia</string>
+    <string name="settings_number_decimal_char">Carattere per i decimali</string>
+    <string name="settings_number_example">Esempio: %1$s</string>
+    <string name="settings_number_default_hint">Il valore predefinito per la tua lingua e il tuo paese è %1$s. Puoi scegliere altri caratteri.</string>
+    <string name="number_char_default">Predefinito della lingua</string>
+    <string name="number_char_comma">Virgola (,)</string>
+    <string name="number_char_period">Punto (.)</string>
+    <string name="number_char_space">Spazio</string>
+    <string name="number_char_apostrophe">Apostrofo (\')</string>
 </resources>

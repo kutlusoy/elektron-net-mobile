@@ -886,4 +886,15 @@
     <string name="storage_app">App files</string>
     <string name="storage_total">Total</string>
     <string name="storage_hint">Measured on the phone and refreshed about every 30 seconds. The line \"Blockchain storage\" above is the figure the node reports itself.</string>
+    <string name="settings_number_group">Thousands separator</string>
+    <string name="settings_number_group_hint">Groups long numbers, for example 1,234,567.89. The default follows your language and country.</string>
+    <string name="settings_number_group_char">Character for thousands</string>
+    <string name="settings_number_decimal_char">Character for decimals</string>
+    <string name="settings_number_example">Example: %1$s</string>
+    <string name="settings_number_default_hint">The default for your language and country is %1$s. You can choose other characters.</string>
+    <string name="number_char_default">Language default</string>
+    <string name="number_char_comma">Comma (,)</string>
+    <string name="number_char_period">Period (.)</string>
+    <string name="number_char_space">Space</string>
+    <string name="number_char_apostrophe">Apostrophe (\')</string>
 </resources>

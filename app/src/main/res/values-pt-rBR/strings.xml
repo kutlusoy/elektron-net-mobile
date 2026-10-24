@@ -875,4 +875,15 @@
     <string name="storage_app">Arquivos do app</string>
     <string name="storage_total">Total</string>
     <string name="storage_hint">Medido no telefone e atualizado a cada 30 segundos aproximadamente. A linha «Armazenamento da blockchain» acima é o valor informado pelo próprio nó.</string>
+    <string name="settings_number_group">Separador de milhares</string>
+    <string name="settings_number_group_hint">Agrupa números longos, por exemplo 1.234.567,89. O padrão segue seu idioma e país.</string>
+    <string name="settings_number_group_char">Caractere para milhares</string>
+    <string name="settings_number_decimal_char">Caractere para decimais</string>
+    <string name="settings_number_example">Exemplo: %1$s</string>
+    <string name="settings_number_default_hint">O padrão para seu idioma e país é %1$s. Você pode escolher outros caracteres.</string>
+    <string name="number_char_default">Padrão do idioma</string>
+    <string name="number_char_comma">Vírgula (,)</string>
+    <string name="number_char_period">Ponto (.)</string>
+    <string name="number_char_space">Espaço</string>
+    <string name="number_char_apostrophe">Apóstrofo (\')</string>
 </resources>

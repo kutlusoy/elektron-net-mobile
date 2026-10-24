@@ -875,4 +875,15 @@
     <string name="storage_app">Fichiers de l\'app</string>
     <string name="storage_total">Total</string>
     <string name="storage_hint">Mesuré sur le téléphone et actualisé environ toutes les 30 secondes. La ligne « Stockage de la blockchain » ci-dessus est le chiffre que le nœud indique lui-même.</string>
+    <string name="settings_number_group">Séparateur de milliers</string>
+    <string name="settings_number_group_hint">Regroupe les grands nombres, par exemple 1 234 567,89. La valeur par défaut suit ta langue et ton pays.</string>
+    <string name="settings_number_group_char">Caractère des milliers</string>
+    <string name="settings_number_decimal_char">Caractère des décimales</string>
+    <string name="settings_number_example">Exemple : %1$s</string>
+    <string name="settings_number_default_hint">La valeur par défaut pour ta langue et ton pays est %1$s. Tu peux choisir d\'autres caractères.</string>
+    <string name="number_char_default">Défaut de la langue</string>
+    <string name="number_char_comma">Virgule (,)</string>
+    <string name="number_char_period">Point (.)</string>
+    <string name="number_char_space">Espace</string>
+    <string name="number_char_apostrophe">Apostrophe (\')</string>
 </resources>

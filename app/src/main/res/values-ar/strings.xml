@@ -875,4 +875,15 @@
     <string name="storage_app">ملفات التطبيق</string>
     <string name="storage_total">المجموع</string>
     <string name="storage_hint">يُقاس على الهاتف ويُحدَّث تقريبًا كل 30 ثانية. سطر «تخزين سلسلة الكتل» أعلاه هو الرقم الذي تبلغ عنه العقدة نفسها.</string>
+    <string name="settings_number_group">فاصل الآلاف</string>
+    <string name="settings_number_group_hint">يجمّع الأرقام الطويلة، مثل 1,234,567.89. تتبع القيمة الافتراضية لغتك وبلدك.</string>
+    <string name="settings_number_group_char">الرمز الخاص بالآلاف</string>
+    <string name="settings_number_decimal_char">الرمز الخاص بالكسور العشرية</string>
+    <string name="settings_number_example">مثال: %1$s</string>
+    <string name="settings_number_default_hint">القيمة الافتراضية للغتك وبلدك هي %1$s. يمكنك اختيار رموز أخرى.</string>
+    <string name="number_char_default">الافتراضي حسب اللغة</string>
+    <string name="number_char_comma">فاصلة (,)</string>
+    <string name="number_char_period">نقطة (.)</string>
+    <string name="number_char_space">مسافة</string>
+    <string name="number_char_apostrophe">فاصلة عليا (\')</string>
 </resources>

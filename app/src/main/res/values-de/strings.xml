@@ -875,4 +875,15 @@
     <string name="storage_app">App-Dateien</string>
     <string name="storage_total">Gesamt</string>
     <string name="storage_hint">Auf dem Handy gemessen, etwa alle 30 Sekunden aktualisiert. Die Zeile „Blockchain-Speicher“ oben ist die Zahl, die der Node selbst meldet.</string>
+    <string name="settings_number_group">Tausendertrennung</string>
+    <string name="settings_number_group_hint">Gruppiert lange Zahlen, zum Beispiel 1.234.567,89. Der Standard folgt deiner Sprache und deinem Land.</string>
+    <string name="settings_number_group_char">Zeichen für Tausender</string>
+    <string name="settings_number_decimal_char">Zeichen für Dezimalstellen</string>
+    <string name="settings_number_example">Beispiel: %1$s</string>
+    <string name="settings_number_default_hint">Der Standard für deine Sprache und dein Land ist %1$s. Du kannst andere Zeichen wählen.</string>
+    <string name="number_char_default">Sprachstandard</string>
+    <string name="number_char_comma">Komma (,)</string>
+    <string name="number_char_period">Punkt (.)</string>
+    <string name="number_char_space">Leerzeichen</string>
+    <string name="number_char_apostrophe">Apostroph (\')</string>
 </resources>

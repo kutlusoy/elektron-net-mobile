@@ -875,4 +875,15 @@
     <string name="storage_app">File aplikasi</string>
     <string name="storage_total">Total</string>
     <string name="storage_hint">Diukur di ponsel dan diperbarui sekitar setiap 30 detik. Baris «Penyimpanan blockchain» di atas adalah angka yang dilaporkan node sendiri.</string>
+    <string name="settings_number_group">Pemisah ribuan</string>
+    <string name="settings_number_group_hint">Mengelompokkan angka panjang, misalnya 1.234.567,89. Bawaan mengikuti bahasa dan negara Anda.</string>
+    <string name="settings_number_group_char">Karakter untuk ribuan</string>
+    <string name="settings_number_decimal_char">Karakter untuk desimal</string>
+    <string name="settings_number_example">Contoh: %1$s</string>
+    <string name="settings_number_default_hint">Bawaan untuk bahasa dan negara Anda adalah %1$s. Anda dapat memilih karakter lain.</string>
+    <string name="number_char_default">Bawaan bahasa</string>
+    <string name="number_char_comma">Koma (,)</string>
+    <string name="number_char_period">Titik (.)</string>
+    <string name="number_char_space">Spasi</string>
+    <string name="number_char_apostrophe">Apostrof (\')</string>
 </resources>

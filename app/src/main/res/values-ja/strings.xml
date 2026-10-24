@@ -875,4 +875,15 @@
     <string name="storage_app">アプリのファイル</string>
     <string name="storage_total">合計</string>
     <string name="storage_hint">端末上で測定し、約30秒ごとに更新します。上の「ブロックチェーンのストレージ」行はノード自身が報告する値です。</string>
+    <string name="settings_number_group">桁区切り</string>
+    <string name="settings_number_group_hint">長い数字をグループ化します。例: 1,234,567.89。既定は言語と国に従います。</string>
+    <string name="settings_number_group_char">桁区切りの文字</string>
+    <string name="settings_number_decimal_char">小数点の文字</string>
+    <string name="settings_number_example">例: %1$s</string>
+    <string name="settings_number_default_hint">言語と国の既定は %1$s です。ほかの文字も選べます。</string>
+    <string name="number_char_default">言語の既定</string>
+    <string name="number_char_comma">カンマ (,)</string>
+    <string name="number_char_period">ピリオド (.)</string>
+    <string name="number_char_space">スペース</string>
+    <string name="number_char_apostrophe">アポストロフィ (\')</string>
 </resources>

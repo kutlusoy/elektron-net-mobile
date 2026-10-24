@@ -138,6 +138,18 @@ class SettingsStore(context: Context) {
         get() = org.elektronnet.mobile.fiat.FiatSettings.decode(prefs.getString(FIAT, null))
         set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
 
+    var numberGrouping: Boolean
+        get() = prefs.getBoolean(NUMBER_GROUPING, true)
+        set(value) = prefs.edit().putBoolean(NUMBER_GROUPING, value).apply()
+
+    var numberGroupChar: String
+        get() = prefs.getString(NUMBER_GROUP_CHAR, null) ?: "default"
+        set(value) = prefs.edit().putString(NUMBER_GROUP_CHAR, value).apply()
+
+    var numberDecimalChar: String
+        get() = prefs.getString(NUMBER_DECIMAL_CHAR, null) ?: "default"
+        set(value) = prefs.edit().putString(NUMBER_DECIMAL_CHAR, value).apply()
+
     var logDays: Int
         get() = prefs.getInt(LOG_DAYS, DEFAULT_LOG_DAYS)
         set(value) = prefs.edit().putInt(LOG_DAYS, value).apply()
@@ -268,6 +280,9 @@ class SettingsStore(context: Context) {
         const val LOCK_GRACE = "lock_grace_ms"
         const val AMOUNT_UNIT = "amount_unit"
         const val FIAT = "fiat"
+        const val NUMBER_GROUPING = "number_grouping"
+        const val NUMBER_GROUP_CHAR = "number_group_char"
+        const val NUMBER_DECIMAL_CHAR = "number_decimal_char"
         const val LOG_DAYS = "log_days"
         const val LOG_MAX_MB = "log_max_mb"
         const val DEFAULT_LOG_DAYS = 7

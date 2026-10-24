@@ -875,4 +875,15 @@
     <string name="storage_app">Archivos de la app</string>
     <string name="storage_total">Total</string>
     <string name="storage_hint">Medido en el teléfono y actualizado cada 30 segundos aproximadamente. La línea «Almacenamiento de la cadena» de arriba es la cifra que informa el propio nodo.</string>
+    <string name="settings_number_group">Separador de miles</string>
+    <string name="settings_number_group_hint">Agrupa los números largos, por ejemplo 1.234.567,89. El valor predeterminado sigue tu idioma y país.</string>
+    <string name="settings_number_group_char">Carácter para los miles</string>
+    <string name="settings_number_decimal_char">Carácter para los decimales</string>
+    <string name="settings_number_example">Ejemplo: %1$s</string>
+    <string name="settings_number_default_hint">El valor predeterminado para tu idioma y país es %1$s. Puedes elegir otros caracteres.</string>
+    <string name="number_char_default">Predeterminado del idioma</string>
+    <string name="number_char_comma">Coma (,)</string>
+    <string name="number_char_period">Punto (.)</string>
+    <string name="number_char_space">Espacio</string>
+    <string name="number_char_apostrophe">Apóstrofo (\')</string>
 </resources>

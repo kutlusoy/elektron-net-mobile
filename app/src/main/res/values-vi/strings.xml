@@ -875,4 +875,15 @@
     <string name="storage_app">Tệp ứng dụng</string>
     <string name="storage_total">Tổng cộng</string>
     <string name="storage_hint">Được đo trên điện thoại và làm mới khoảng 30 giây một lần. Dòng «Dung lượng blockchain» ở trên là số liệu do chính nút báo cáo.</string>
+    <string name="settings_number_group">Dấu phân cách hàng nghìn</string>
+    <string name="settings_number_group_hint">Nhóm các số dài, ví dụ 1.234.567,89. Mặc định theo ngôn ngữ và quốc gia của bạn.</string>
+    <string name="settings_number_group_char">Ký tự cho hàng nghìn</string>
+    <string name="settings_number_decimal_char">Ký tự cho phần thập phân</string>
+    <string name="settings_number_example">Ví dụ: %1$s</string>
+    <string name="settings_number_default_hint">Mặc định cho ngôn ngữ và quốc gia của bạn là %1$s. Bạn có thể chọn ký tự khác.</string>
+    <string name="number_char_default">Mặc định của ngôn ngữ</string>
+    <string name="number_char_comma">Dấu phẩy (,)</string>
+    <string name="number_char_period">Dấu chấm (.)</string>
+    <string name="number_char_space">Dấu cách</string>
+    <string name="number_char_apostrophe">Dấu nháy đơn (\')</string>
 </resources>

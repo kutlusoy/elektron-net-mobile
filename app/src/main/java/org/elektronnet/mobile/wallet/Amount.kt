@@ -16,6 +16,9 @@ object Amount {
     var unitProvider: () -> AmountUnit = { AmountUnit.Elek }
     val unit: AmountUnit get() = unitProvider()
 
+    var styleProvider: () -> NumberStyle = { NumberStyle.forLocale(java.util.Locale.getDefault()) }
+    val numberStyle: NumberStyle get() = styleProvider()
+
     fun unitSymbol(): String = unit.symbol
 
     fun parse(text: String, allowComma: Boolean = false): Long? = parseIn(AmountUnit.Elek, text, allowComma)
@@ -37,7 +40,11 @@ object Amount {
         return if (unit.decimals == 0 || !text.contains('.')) text else text.trimEnd('0').trimEnd('.')
     }
 
-    fun display(lep: Long): String = formatIn(unit, lep)
+    // for reading, with the thousands and decimal separators of the user
+    fun display(lep: Long): String = numberStyle.format(formatIn(unit, lep))
+
+    // for text fields, the number is read back by parse
+    fun plain(lep: Long): String = formatIn(unit, lep)
 
     fun displayWithUnit(lep: Long): String = display(lep) + " " + unit.symbol
 }

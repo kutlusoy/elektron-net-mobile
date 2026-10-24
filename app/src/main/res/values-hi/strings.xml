@@ -875,4 +875,15 @@
     <string name="storage_app">ऐप फ़ाइलें</string>
     <string name="storage_total">कुल</string>
     <string name="storage_hint">फ़ोन पर मापा जाता है और लगभग हर 30 सेकंड में ताज़ा होता है। ऊपर की «ब्लॉकचेन स्टोरेज» पंक्ति वह आँकड़ा है जो नोड खुद बताता है।</string>
+    <string name="settings_number_group">हज़ार का विभाजक</string>
+    <string name="settings_number_group_hint">लंबी संख्याओं को समूहित करता है, जैसे 1,234,567.89। डिफ़ॉल्ट आपकी भाषा और देश का अनुसरण करता है।</string>
+    <string name="settings_number_group_char">हज़ार के लिए चिह्न</string>
+    <string name="settings_number_decimal_char">दशमलव के लिए चिह्न</string>
+    <string name="settings_number_example">उदाहरण: %1$s</string>
+    <string name="settings_number_default_hint">आपकी भाषा और देश का डिफ़ॉल्ट %1$s है। आप अन्य चिह्न चुन सकते हैं।</string>
+    <string name="number_char_default">भाषा का डिफ़ॉल्ट</string>
+    <string name="number_char_comma">अल्पविराम (,)</string>
+    <string name="number_char_period">बिंदु (.)</string>
+    <string name="number_char_space">स्पेस</string>
+    <string name="number_char_apostrophe">अपोस्ट्रॉफ़ी (\')</string>
 </resources>

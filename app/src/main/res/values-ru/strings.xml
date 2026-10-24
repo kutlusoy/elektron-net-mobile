@@ -875,4 +875,15 @@
     <string name="storage_app">Файлы приложения</string>
     <string name="storage_total">Итого</string>
     <string name="storage_hint">Измерено на телефоне и обновляется примерно каждые 30 секунд. Строка «Хранилище блокчейна» выше — значение, которое сообщает сам узел.</string>
+    <string name="settings_number_group">Разделитель тысяч</string>
+    <string name="settings_number_group_hint">Группирует длинные числа, например 1 234 567,89. По умолчанию используется формат вашего языка и страны.</string>
+    <string name="settings_number_group_char">Символ для тысяч</string>
+    <string name="settings_number_decimal_char">Символ для десятичных знаков</string>
+    <string name="settings_number_example">Пример: %1$s</string>
+    <string name="settings_number_default_hint">По умолчанию для вашего языка и страны: %1$s. Можно выбрать другие символы.</string>
+    <string name="number_char_default">По умолчанию для языка</string>
+    <string name="number_char_comma">Запятая (,)</string>
+    <string name="number_char_period">Точка (.)</string>
+    <string name="number_char_space">Пробел</string>
+    <string name="number_char_apostrophe">Апостроф (\')</string>
 </resources>

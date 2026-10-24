@@ -875,4 +875,15 @@
     <string name="storage_app">Uygulama dosyaları</string>
     <string name="storage_total">Toplam</string>
     <string name="storage_hint">Telefonda ölçülür ve yaklaşık 30 saniyede bir yenilenir. Yukarıdaki «Blokzincir depolama» satırı düğümün kendi bildirdiği değerdir.</string>
+    <string name="settings_number_group">Binlik ayırıcı</string>
+    <string name="settings_number_group_hint">Uzun sayıları gruplar, örneğin 1.234.567,89. Varsayılan dilinizi ve ülkenizi izler.</string>
+    <string name="settings_number_group_char">Binlikler için karakter</string>
+    <string name="settings_number_decimal_char">Ondalıklar için karakter</string>
+    <string name="settings_number_example">Örnek: %1$s</string>
+    <string name="settings_number_default_hint">Dilinizin ve ülkenizin varsayılanı %1$s. Başka karakterler seçebilirsiniz.</string>
+    <string name="number_char_default">Dil varsayılanı</string>
+    <string name="number_char_comma">Virgül (,)</string>
+    <string name="number_char_period">Nokta (.)</string>
+    <string name="number_char_space">Boşluk</string>
+    <string name="number_char_apostrophe">Kesme işareti (\')</string>
 </resources>
