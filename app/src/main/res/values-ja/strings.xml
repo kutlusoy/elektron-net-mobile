@@ -841,7 +841,7 @@
     <string name="net_peer_exists">このピアはすでに一覧にあります。</string>
     <string name="net_peer_invalid">有効な Tor または I2P のアドレスではありません。</string>
     <string name="balance_reused">再利用されたアドレスの %1$s %2$s を含みます。</string>
-    <string name="send_reused_hint">再利用されたアドレスの %1$s %2$s はここでは数えません。使うには「コイン」で選んでください。</string>
+    <string name="send_reused_hint">再利用されたアドレスの %1$s %2$s はここでは数えません。選ぶには「詳細な支払い」をオンにしてください。</string>
     <string name="settings_spend_reused">再利用アドレスのコインを自動で使う</string>
     <string name="settings_spend_reused_hint">オン (既定): 再利用アドレスのコインは利用可能として数えられ、ほかのコインで支払いに足りないとき、また全額送金のときに加えられます。オフ: 数えられず、ほかのコインと混ぜられません。1つの再利用アドレスに収まる支払いは引き続きそこから先に支払われます。そのようなアドレスを結びつけたくない場合はオフにしてください。</string>
     <string name="net_i2p_ipv6">I2P で IPv6 を使う</string>
@@ -904,4 +904,6 @@
     <string name="send_psbt_ready_title">PSBTの準備ができました</string>
     <string name="send_psbt_ready_signed">あなたの署名が含まれています。このテキストを渡してください。PSBTは「ツール」のPSBTで確認、署名、結合、送信できます。</string>
     <string name="send_psbt_ready_unsigned">まだ署名されていません。署名する人にこのテキストを渡してください。すべての署名がそろった人が「ツール」のPSBTから送信します。</string>
+    <string name="send_advanced">詳細な支払い</string>
+    <string name="send_advanced_hint">コインを選ぶ、手数料を金額から引く、手数料率を自分で決める、またはPSBTだけを作成します。</string>
 </resources>

@@ -93,6 +93,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var noteFromLink by remember { mutableStateOf<String?>(null) }
     var exportedPsbt by remember { mutableStateOf<String?>(null) }
     var psbtOnly by remember { mutableStateOf(false) }
+    var advanced by remember { mutableStateOf(false) }
     var psbtSign by remember { mutableStateOf(true) }
     var scanning by remember { mutableStateOf(false) }
     var picking by remember { mutableStateOf(false) }
@@ -250,6 +251,25 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     OutlinedButton(onClick = { picking = true }) { Text(stringResource(R.string.contacts_title)) }
                 }
                 RecipientMessage(resolved.state, resolved.address, legacyOk) { legacyOk = it }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Switch(
+                        checked = advanced,
+                        onCheckedChange = {
+                            advanced = it
+                            if (!it) {
+                                selectedCoins = emptyList()
+                                subtractFee = false
+                                custom = false
+                                psbtOnly = false
+                                psbtSign = true
+                            }
+                        },
+                    )
+                    Column(modifier = Modifier.padding(start = 12.dp)) {
+                        Text(stringResource(R.string.send_advanced))
+                        Text(stringResource(R.string.send_advanced_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
                 Button(
                     onClick = { step = Step.Amount },
                     enabled = resolved.usable && (resolved.state != RecipientState.Legacy || legacyOk),
@@ -264,11 +284,13 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         Text(stringResource(R.string.send_reused_hint, Amount.display(reused), Amount.unitSymbol()), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = { pickCoins = true }) { Text(stringResource(R.string.coinpick_action)) }
-                    if (selectedCoins.isNotEmpty()) {
-                        Text(stringResource(R.string.coinpick_selected, selectedCoins.size), color = MaterialTheme.colorScheme.primary)
-                        TextButton(onClick = { selectedCoins = emptyList() }) { Text(stringResource(R.string.coinpick_clear)) }
+                if (advanced) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = { pickCoins = true }) { Text(stringResource(R.string.coinpick_action)) }
+                        if (selectedCoins.isNotEmpty()) {
+                            Text(stringResource(R.string.coinpick_selected, selectedCoins.size), color = MaterialTheme.colorScheme.primary)
+                            TextButton(onClick = { selectedCoins = emptyList() }) { Text(stringResource(R.string.coinpick_clear)) }
+                        }
                     }
                 }
                 if (fiat != null) {
@@ -362,7 +384,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                             }
                         }
                     }
-                    if (!max) {
+                    if (advanced && !max) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Switch(checked = subtractFee, onCheckedChange = { subtractFee = it })
                             Column(modifier = Modifier.padding(start = 12.dp)) {
@@ -373,11 +395,13 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     }
                     if (options.none { it.estimated }) Text(stringResource(R.string.send_fee_no_estimate), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     if (options.any { it.fromExplorer }) Text(stringResource(R.string.send_fee_from_explorer), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Switch(checked = custom, onCheckedChange = { custom = it })
-                        Text(stringResource(R.string.send_fee_custom), modifier = Modifier.padding(start = 12.dp))
+                    if (advanced) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Switch(checked = custom, onCheckedChange = { custom = it })
+                            Text(stringResource(R.string.send_fee_custom), modifier = Modifier.padding(start = 12.dp))
+                        }
                     }
-                    if (custom) {
+                    if (advanced && custom) {
                         OutlinedTextField(
                             value = customText,
                             onValueChange = { customText = it },
@@ -419,7 +443,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         FiatLine(review.feeLep)
                     }
                     ReviewLine(stringResource(R.string.send_review_total)) { Text(elek(review.totalLep), style = MaterialTheme.typography.titleLarge); FiatLine(review.totalLep) }
-                    if (escrow == null) {
+                    if (escrow == null && advanced) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Switch(checked = psbtOnly, onCheckedChange = { psbtOnly = it })
                             Column(modifier = Modifier.padding(start = 12.dp)) {

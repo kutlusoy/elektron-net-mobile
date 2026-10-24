@@ -841,7 +841,7 @@
     <string name="net_peer_exists">이 피어는 이미 목록에 있습니다.</string>
     <string name="net_peer_invalid">올바른 Tor 또는 I2P 주소가 아닙니다.</string>
     <string name="balance_reused">재사용된 주소의 %1$s %2$s를 포함합니다.</string>
-    <string name="send_reused_hint">재사용된 주소의 %1$s %2$s는 여기에 포함되지 않습니다. 사용하려면 코인에서 선택하세요.</string>
+    <string name="send_reused_hint">재사용된 주소의 %1$s %2$s는 여기에 포함되지 않습니다. 선택하려면 고급 결제를 켜세요.</string>
     <string name="settings_spend_reused">재사용된 주소의 코인 자동 사용</string>
     <string name="settings_spend_reused_hint">켜기 (기본): 재사용된 주소의 코인은 사용 가능으로 계산되며, 다른 코인으로 결제액이 부족할 때와 전부 보낼 때 추가됩니다. 끄기: 계산되지 않고 다른 코인과 섞이지 않으며, 재사용된 주소 하나에 들어가는 결제는 계속 그 주소에서 먼저 지불됩니다. 그런 주소를 연결하고 싶지 않다면 끄세요.</string>
     <string name="net_i2p_ipv6">I2P에 IPv6 사용</string>
@@ -904,4 +904,6 @@
     <string name="send_psbt_ready_title">PSBT 준비됨</string>
     <string name="send_psbt_ready_signed">내 서명이 포함되어 있습니다. 이 텍스트를 전달하세요. PSBT는 도구, PSBT에서 확인, 서명, 결합, 전송할 수 있습니다.</string>
     <string name="send_psbt_ready_unsigned">아직 서명되지 않았습니다. 이 텍스트를 서명할 사람에게 전달하세요. 모든 서명을 가진 사람이 도구, PSBT에서 보냅니다.</string>
+    <string name="send_advanced">고급 결제</string>
+    <string name="send_advanced_hint">코인 선택, 금액에서 수수료 차감, 직접 수수료율 설정 또는 PSBT만 만들기.</string>
 </resources>

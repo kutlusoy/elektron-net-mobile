@@ -841,7 +841,7 @@
     <string name="net_peer_exists">यह पीयर पहले से सूची में है।</string>
     <string name="net_peer_invalid">यह मान्य Tor या I2P पता नहीं है।</string>
     <string name="balance_reused">दोबारा उपयोग किए गए पतों पर %1$s %2$s शामिल हैं।</string>
-    <string name="send_reused_hint">दोबारा उपयोग किए गए पतों पर %1$s %2$s यहाँ नहीं गिने गए हैं। खर्च करने के लिए इन्हें सिक्कों में चुनें।</string>
+    <string name="send_reused_hint">दोबारा उपयोग किए गए पतों पर %1$s %2$s यहाँ नहीं गिने गए हैं। इन्हें चुनने के लिए उन्नत भुगतान चालू करें।</string>
     <string name="settings_spend_reused">दोबारा उपयोग किए गए पतों के सिक्के अपने आप खर्च करें</string>
     <string name="settings_spend_reused_hint">चालू (डिफ़ॉल्ट): दोबारा उपयोग किए गए पतों के सिक्के उपलब्ध गिने जाते हैं और जब बाकी सिक्के भुगतान के लिए कम पड़ें तो जोड़े जाते हैं, सब कुछ भेजते समय भी। बंद: वे नहीं गिने जाते और कभी दूसरे सिक्कों में मिलाए नहीं जाते, और जो भुगतान ऐसे एक पते में समा जाए वह अब भी पहले उसी से चुकाया जाता है। ऐसे पतों को जोड़ना न चाहें तो इसे बंद करें।</string>
     <string name="net_i2p_ipv6">I2P के लिए IPv6 उपयोग करें</string>
@@ -904,4 +904,6 @@
     <string name="send_psbt_ready_title">PSBT तैयार</string>
     <string name="send_psbt_ready_signed">आपका हस्ताक्षर शामिल है। यह टेक्स्ट आगे दें। PSBT को आप टूल्स, PSBT में जाँच, हस्ताक्षर, संयोजित और भेज सकते हैं।</string>
     <string name="send_psbt_ready_unsigned">इस पर अभी हस्ताक्षर नहीं हुआ। यह टेक्स्ट उसे दें जो हस्ताक्षर करेगा। जिसके पास सभी हस्ताक्षर हों वह इसे टूल्स, PSBT में भेजता है।</string>
+    <string name="send_advanced">उन्नत भुगतान</string>
+    <string name="send_advanced_hint">सिक्के चुनें, राशि में से शुल्क घटाएँ, अपनी शुल्क दर तय करें या केवल PSBT बनाएँ।</string>
 </resources>

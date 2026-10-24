@@ -841,7 +841,7 @@
     <string name="net_peer_exists">Bu eş zaten listede.</string>
     <string name="net_peer_invalid">Bu geçerli bir Tor veya I2P adresi değil.</string>
     <string name="balance_reused">Yeniden kullanılan adreslerdeki %1$s %2$s dahildir.</string>
-    <string name="send_reused_hint">Yeniden kullanılan adreslerdeki %1$s %2$s burada sayılmaz. Harcamak için Coinler bölümünden seçin.</string>
+    <string name="send_reused_hint">Yeniden kullanılan adreslerdeki %1$s %2$s burada sayılmaz. Seçmek için Gelişmiş ödemeyi açın.</string>
     <string name="settings_spend_reused">Yeniden kullanılan adreslerdeki coinleri otomatik harca</string>
     <string name="settings_spend_reused_hint">Açık (varsayılan): yeniden kullanılan adreslerdeki coinler kullanılabilir sayılır ve diğer coinler ödemeye yetmediğinde, hepsini gönderirken de eklenir. Kapalı: sayılmazlar ve diğer coinlerle hiç karıştırılmazlar, tek bir yeniden kullanılan adrese sığan bir ödeme yine önce o adresten yapılır. Bu adresleri bağlamak istemiyorsanız kapatın.</string>
     <string name="net_i2p_ipv6">I2P için IPv6 kullan</string>
@@ -904,4 +904,6 @@
     <string name="send_psbt_ready_title">PSBT hazır</string>
     <string name="send_psbt_ready_signed">İmzanız dahil. Bu metni iletin. Bir PSBT\'yi Araçlar, PSBT altında kontrol edebilir, imzalayabilir, birleştirebilir ve gönderebilirsiniz.</string>
     <string name="send_psbt_ready_unsigned">Henüz imzalanmadı. Bu metni imzalayacak kişiye iletin. Tüm imzalara sahip olan, Araçlar, PSBT altından gönderir.</string>
+    <string name="send_advanced">Gelişmiş ödeme</string>
+    <string name="send_advanced_hint">Coinleri seçin, ücreti tutardan düşün, kendi ücret oranınızı belirleyin veya yalnızca PSBT oluşturun.</string>
 </resources>

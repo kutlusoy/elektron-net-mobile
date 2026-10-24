@@ -841,7 +841,7 @@
     <string name="net_peer_exists">Este peer já está na lista.</string>
     <string name="net_peer_invalid">Este não é um endereço válido de Tor ou I2P.</string>
     <string name="balance_reused">Inclui %1$s %2$s em endereços reutilizados.</string>
-    <string name="send_reused_hint">%1$s %2$s em endereços reutilizados não são contados aqui. Escolha-os em Moedas para gastá-los.</string>
+    <string name="send_reused_hint">%1$s %2$s em endereços reutilizados não são contados aqui. Ative Pagamento avançado para escolhê-los.</string>
     <string name="settings_spend_reused">Gastar automaticamente moedas em endereços reutilizados</string>
     <string name="settings_spend_reused_hint">Ligado (padrão): moedas em endereços reutilizados contam como disponíveis e são adicionadas quando as outras não cobrem um pagamento, também ao enviar tudo. Desligado: não contam e nunca são misturadas com as outras, e um pagamento que cabe em um endereço reutilizado ainda é pago primeiro por ele. Desligue se não quiser vincular esses endereços.</string>
     <string name="net_i2p_ipv6">Usar IPv6 para I2P</string>
@@ -904,4 +904,6 @@
     <string name="send_psbt_ready_title">PSBT pronta</string>
     <string name="send_psbt_ready_signed">Sua assinatura está incluída. Repasse este texto. Você pode verificar, assinar, combinar e enviar uma PSBT em Ferramentas, PSBT.</string>
     <string name="send_psbt_ready_unsigned">Ainda não está assinada. Repasse este texto a quem a assina. Quem tiver todas as assinaturas a envia em Ferramentas, PSBT.</string>
+    <string name="send_advanced">Pagamento avançado</string>
+    <string name="send_advanced_hint">Escolher as moedas, subtrair a taxa do valor, definir sua própria taxa ou apenas criar uma PSBT.</string>
 </resources>

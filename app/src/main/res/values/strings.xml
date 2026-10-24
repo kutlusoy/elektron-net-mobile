@@ -852,7 +852,7 @@
     <string name="net_peer_exists">This peer is already in the list.</string>
     <string name="net_peer_invalid">This is not a valid address for Tor or I2P.</string>
     <string name="balance_reused">Includes %1$s %2$s on reused addresses.</string>
-    <string name="send_reused_hint">%1$s %2$s on reused addresses are not counted here. Pick them under Coins to spend them.</string>
+    <string name="send_reused_hint">%1$s %2$s on reused addresses are not counted here. Turn on Advanced payment to pick them.</string>
     <string name="settings_spend_reused">Spend coins on reused addresses automatically</string>
     <string name="settings_spend_reused_hint">On (default): coins on reused addresses count as available and are added when the other coins do not cover a payment, also when you send everything. Off: they are not counted and never mixed with other coins, and a payment that fits into one reused address is still paid from it first. Switch it off if you do not want to link such addresses.</string>
     <string name="net_i2p_ipv6">Use IPv6 for I2P</string>
@@ -915,4 +915,6 @@
     <string name="send_psbt_ready_title">PSBT ready</string>
     <string name="send_psbt_ready_signed">Your signature is included. Pass this text on. You can check, sign, combine and send a PSBT under Tools, PSBT.</string>
     <string name="send_psbt_ready_unsigned">It is not signed yet. Pass this text to whoever signs it. Whoever holds all signatures sends it under Tools, PSBT.</string>
+    <string name="send_advanced">Advanced payment</string>
+    <string name="send_advanced_hint">Choose the coins, subtract the fee from the amount, set your own fee rate or only create a PSBT.</string>
 </resources>
