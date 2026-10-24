@@ -381,7 +381,7 @@
     <string name="escrow_code_hint">कोई भी कॉइन भेजने से पहले सौदे के हर व्यक्ति को ठीक वही जाँच कोड और वही जमा पता दिखना चाहिए।</string>
     <string name="escrow_deposit">जमा पता</string>
     <string name="escrow_address_hint">इस पते पर कॉइन तभी भेजें जब सभी लोग पुष्टि कर दें कि उन्हें यही पता दिख रहा है।</string>
-    <string name="escrow_pay">भुगतान बनाएँ</string>
+    <string name="escrow_pay">एस्क्रो से भुगतान करें</string>
     <string name="escrow_sign_request">भुगतान अनुरोध जाँचें या साइन करें</string>
     <string name="escrow_sign_action">साइन करें</string>
     <string name="escrow_backup">बैकअप साझा करें</string>
@@ -886,4 +886,7 @@
     <string name="number_char_period">बिंदु (.)</string>
     <string name="number_char_space">स्पेस</string>
     <string name="number_char_apostrophe">अपोस्ट्रॉफ़ी (\')</string>
+    <string name="escrow_deposit_action">मेरे वॉलेट से जमा करें</string>
+    <string name="escrow_pay_hint">«मेरे वॉलेट से जमा करें» आपके अपने वॉलेट से एस्क्रो में सिक्के भेजता है। «एस्क्रो से भुगतान करें» एस्क्रो में पहले से मौजूद सिक्के खर्च करता है: यह भुगतान अनुरोध बनाता है जिसे दूसरों की मंज़ूरी चाहिए।</string>
+    <string name="escrow_send_from">आप एस्क्रो से भुगतान कर रहे हैं, अपने वॉलेट से नहीं। उपलब्ध राशि एस्क्रो का बैलेंस है। यह भुगतान अनुरोध बनाता है जिसे दूसरों को मंज़ूर करना होगा। एस्क्रो में सिक्के डालने के लिए एस्क्रो पेज पर «मेरे वॉलेट से जमा करें» का उपयोग करें।</string>
 </resources>

@@ -381,7 +381,7 @@
     <string name="escrow_code_hint">يجب أن يرى جميع المشاركين في الصفقة رمز التحقق نفسه وعنوان الإيداع نفسه تمامًا قبل إرسال أي عملات.</string>
     <string name="escrow_deposit">عنوان الإيداع</string>
     <string name="escrow_address_hint">أرسل العملات إلى هذا العنوان فقط بعد أن يؤكد الجميع أنهم يرون العنوان نفسه.</string>
-    <string name="escrow_pay">إنشاء دفعة</string>
+    <string name="escrow_pay">الدفع من الضمان</string>
     <string name="escrow_sign_request">فحص طلب دفعة أو توقيعه</string>
     <string name="escrow_sign_action">توقيع</string>
     <string name="escrow_backup">مشاركة النسخة الاحتياطية</string>
@@ -886,4 +886,7 @@
     <string name="number_char_period">نقطة (.)</string>
     <string name="number_char_space">مسافة</string>
     <string name="number_char_apostrophe">فاصلة عليا (\')</string>
+    <string name="escrow_deposit_action">الإيداع من محفظتي</string>
+    <string name="escrow_pay_hint">«الإيداع من محفظتي» يرسل عملات من محفظتك إلى حساب الضمان. «الدفع من الضمان» ينفق العملات الموجودة فيه أصلًا: وينشئ طلب دفع يحتاج إلى موافقة الآخرين.</string>
+    <string name="escrow_send_from">أنت تدفع من حساب الضمان وليس من محفظتك. المبلغ المتاح هو رصيد الضمان. هذا ينشئ طلب دفع يجب أن يوافق عليه الآخرون. لوضع عملات في الضمان استخدم «الإيداع من محفظتي» في صفحة الضمان.</string>
 </resources>

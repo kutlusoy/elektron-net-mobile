@@ -49,6 +49,7 @@ import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.ui.tools.Hint
 import org.elektronnet.mobile.ui.SecureWindow
 import org.elektronnet.mobile.ui.scan.QrScannerScreen
 import org.elektronnet.mobile.ui.model.AmountState
@@ -221,6 +222,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             }
             Text(if (escrow != null) escrow.name else stringResource(R.string.send_title), style = MaterialTheme.typography.titleLarge)
         }
+        if (escrow != null && step != Step.Done) Hint(stringResource(R.string.escrow_send_from))
         failure?.let { Text(stringResource(failureText(it)), color = MaterialTheme.colorScheme.error) }
         when (step) {
             Step.Recipient -> {

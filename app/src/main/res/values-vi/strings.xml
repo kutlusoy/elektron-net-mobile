@@ -381,7 +381,7 @@
     <string name="escrow_code_hint">Mọi người trong thỏa thuận phải thấy cùng một mã kiểm tra và cùng một địa chỉ gửi tiền trước khi gửi bất kỳ coin nào.</string>
     <string name="escrow_deposit">Địa chỉ gửi tiền</string>
     <string name="escrow_address_hint">Chỉ gửi coin đến địa chỉ này sau khi tất cả mọi người xác nhận đã thấy cùng một địa chỉ.</string>
-    <string name="escrow_pay">Tạo giao dịch</string>
+    <string name="escrow_pay">Thanh toán từ escrow</string>
     <string name="escrow_sign_request">Kiểm tra hoặc ký yêu cầu thanh toán</string>
     <string name="escrow_sign_action">Ký</string>
     <string name="escrow_backup">Chia sẻ bản sao lưu</string>
@@ -886,4 +886,7 @@
     <string name="number_char_period">Dấu chấm (.)</string>
     <string name="number_char_space">Dấu cách</string>
     <string name="number_char_apostrophe">Dấu nháy đơn (\')</string>
+    <string name="escrow_deposit_action">Nạp từ ví của tôi</string>
+    <string name="escrow_pay_hint">«Nạp từ ví của tôi» gửi coin từ ví của bạn vào escrow. «Thanh toán từ escrow» chi tiêu số coin đã có trong escrow: tạo yêu cầu thanh toán cần sự chấp thuận của những người khác.</string>
+    <string name="escrow_send_from">Bạn đang thanh toán từ escrow, không phải từ ví của bạn. Số tiền khả dụng là số dư của escrow. Việc này tạo yêu cầu thanh toán mà những người khác phải chấp thuận. Để đưa coin vào escrow, hãy dùng «Nạp từ ví của tôi» trên trang escrow.</string>
 </resources>

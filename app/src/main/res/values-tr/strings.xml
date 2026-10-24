@@ -381,7 +381,7 @@
     <string name="escrow_code_hint">Anlaşmadaki herkes, herhangi bir para gönderilmeden önce tamamen aynı kontrol kodunu ve aynı yatırma adresini görmelidir.</string>
     <string name="escrow_deposit">Yatırma adresi</string>
     <string name="escrow_address_hint">Bu adrese yalnızca herkes aynı adresi gördüğünü onayladıktan sonra para gönderin.</string>
-    <string name="escrow_pay">Ödeme oluştur</string>
+    <string name="escrow_pay">Escrow\'dan öde</string>
     <string name="escrow_sign_request">Ödeme isteğini kontrol et veya imzala</string>
     <string name="escrow_sign_action">İmzala</string>
     <string name="escrow_backup">Yedeği paylaş</string>
@@ -886,4 +886,7 @@
     <string name="number_char_period">Nokta (.)</string>
     <string name="number_char_space">Boşluk</string>
     <string name="number_char_apostrophe">Kesme işareti (\')</string>
+    <string name="escrow_deposit_action">Cüzdanımdan yatır</string>
+    <string name="escrow_pay_hint">«Cüzdanımdan yatır» kendi cüzdanınızdan escrow\'a coin gönderir. «Escrow\'dan öde» escrow\'da zaten bulunan coinleri harcar: diğer kişilerin onayını gerektiren bir ödeme isteği oluşturur.</string>
+    <string name="escrow_send_from">Kendi cüzdanınızdan değil, escrow\'dan ödüyorsunuz. Kullanılabilir tutar escrow bakiyesidir. Bu, diğerlerinin onaylaması gereken bir ödeme isteği oluşturur. Escrow\'a coin yatırmak için escrow sayfasındaki «Cüzdanımdan yatır» seçeneğini kullanın.</string>
 </resources>

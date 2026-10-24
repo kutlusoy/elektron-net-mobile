@@ -381,7 +381,7 @@
     <string name="escrow_code_hint">Todos no negócio devem ver exatamente o mesmo código de verificação e o mesmo endereço de depósito antes de qualquer moeda ser enviada.</string>
     <string name="escrow_deposit">Endereço de depósito</string>
     <string name="escrow_address_hint">Só envie moedas a este endereço depois que todos confirmarem que veem o mesmo endereço.</string>
-    <string name="escrow_pay">Criar um pagamento</string>
+    <string name="escrow_pay">Pagar a partir do escrow</string>
     <string name="escrow_sign_request">Verificar ou assinar uma solicitação de pagamento</string>
     <string name="escrow_sign_action">Assinar</string>
     <string name="escrow_backup">Compartilhar backup</string>
@@ -886,4 +886,7 @@
     <string name="number_char_period">Ponto (.)</string>
     <string name="number_char_space">Espaço</string>
     <string name="number_char_apostrophe">Apóstrofo (\')</string>
+    <string name="escrow_deposit_action">Depositar da minha carteira</string>
+    <string name="escrow_pay_hint">«Depositar da minha carteira» envia moedas da sua própria carteira para o escrow. «Pagar a partir do escrow» gasta as moedas que já estão no escrow: cria um pedido de pagamento que precisa da aprovação dos outros.</string>
+    <string name="escrow_send_from">Você está pagando a partir do escrow, não da sua própria carteira. O valor disponível é o saldo do escrow. Isso cria um pedido de pagamento que os outros precisam aprovar. Para colocar moedas no escrow, use «Depositar da minha carteira» na página do escrow.</string>
 </resources>

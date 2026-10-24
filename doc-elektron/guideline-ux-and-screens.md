@@ -301,3 +301,7 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 
 - Settings, "Unit for amounts", has "Thousands separator" (on by default), "Character for thousands" and "Character for decimals" with an example line. The defaults come from the language and the country (`Locale`, so `1,234,567.89` in English and `1.234.567,89` in German). Overrides: comma, period, space (no-break) and apostrophe for thousands, comma or period for decimals. If both would be the same character, the thousands character is changed.
 - All shown amounts use it (`Amount.display`, fiat values and the unit preview). Everything that is read back uses the plain form (`Amount.plain`): the amount fields in Send and Receive, payment links and CSV. The amount fields accept a comma or a period as decimal separator whatever the display setting is.
+
+### Escrow deposit and payout
+
+- On the escrow page the deposit address has the button "Deposit from my wallet". It opens the normal Send screen of the active wallet with the address filled in. "Pay out of the escrow" opens the Send screen of the escrow wallet: the available amount is the escrow balance and the result is a payment request that needs the approvals of the others. Both buttons carry a short explanation, and the payout screen says on top that it pays out of the escrow and not out of the user's own wallet.

@@ -381,7 +381,7 @@
     <string name="escrow_code_hint">Tutti i partecipanti all\'accordo devono vedere esattamente lo stesso codice di controllo e lo stesso indirizzo di deposito prima di inviare qualsiasi coin.</string>
     <string name="escrow_deposit">Indirizzo di deposito</string>
     <string name="escrow_address_hint">Invia coin a questo indirizzo solo dopo che tutti hanno confermato di vedere lo stesso indirizzo.</string>
-    <string name="escrow_pay">Crea un pagamento</string>
+    <string name="escrow_pay">Paga dall\'escrow</string>
     <string name="escrow_sign_request">Controlla o firma una richiesta di pagamento</string>
     <string name="escrow_sign_action">Firma</string>
     <string name="escrow_backup">Condividi backup</string>
@@ -886,4 +886,7 @@
     <string name="number_char_period">Punto (.)</string>
     <string name="number_char_space">Spazio</string>
     <string name="number_char_apostrophe">Apostrofo (\')</string>
+    <string name="escrow_deposit_action">Deposita dal mio wallet</string>
+    <string name="escrow_pay_hint">«Deposita dal mio wallet» invia monete dal tuo wallet all\'escrow. «Paga dall\'escrow» spende le monete già presenti nell\'escrow: crea una richiesta di pagamento che richiede l\'approvazione degli altri.</string>
+    <string name="escrow_send_from">Stai pagando dall\'escrow, non dal tuo wallet. L\'importo disponibile è il saldo dell\'escrow. Questo crea una richiesta di pagamento che gli altri devono approvare. Per mettere monete nell\'escrow usa «Deposita dal mio wallet» nella pagina dell\'escrow.</string>
 </resources>

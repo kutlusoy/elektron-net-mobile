@@ -178,7 +178,7 @@ private fun EscrowDialog(
 }
 
 @Composable
-fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Unit, onPsbt: () -> Unit) {
+fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Unit, onPsbt: () -> Unit, onDeposit: (String) -> Unit = {}) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var record by remember { mutableStateOf<EscrowRecord?>(null) }
@@ -302,8 +302,10 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
                 Text(org.elektronnet.mobile.wallet.AddressFormat.grouped(a), fontFamily = ElektronMono)
                 Hint(stringResource(R.string.escrow_address_hint))
                 OutlinedButton(onClick = { copyText(context, "address", a) }) { Text(stringResource(R.string.action_copy)) }
+                Button(onClick = { onDeposit(a) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_deposit_action)) }
             }
-            Button(onClick = { onPay(r) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_pay)) }
+            Hint(stringResource(R.string.escrow_pay_hint))
+            OutlinedButton(onClick = { onPay(r) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_pay)) }
             OutlinedButton(onClick = onPsbt, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_sign_request)) }
             items.forEach { tx ->
                 val row = HistoryModel.row(tx)

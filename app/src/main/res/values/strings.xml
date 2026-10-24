@@ -381,7 +381,7 @@
     <string name="escrow_code_hint">Everyone in the deal must see exactly the same check code and the same deposit address before any coins are sent.</string>
     <string name="escrow_deposit">Deposit address</string>
     <string name="escrow_address_hint">Only send coins to this address after all people confirmed that they see the same address.</string>
-    <string name="escrow_pay">Create a payment</string>
+    <string name="escrow_pay">Pay out of the escrow</string>
     <string name="escrow_sign_request">Check or sign a payment request</string>
     <string name="escrow_sign_action">Sign</string>
     <string name="escrow_backup">Share backup</string>
@@ -897,4 +897,7 @@
     <string name="number_char_period">Period (.)</string>
     <string name="number_char_space">Space</string>
     <string name="number_char_apostrophe">Apostrophe (\')</string>
+    <string name="escrow_deposit_action">Deposit from my wallet</string>
+    <string name="escrow_pay_hint">\"Deposit from my wallet\" sends coins from your own wallet into the escrow. \"Pay out of the escrow\" spends the coins that are already in the escrow: it creates a payment request that needs the approvals of the other people.</string>
+    <string name="escrow_send_from">You are paying out of the escrow, not out of your own wallet. The available amount is the balance of the escrow. This creates a payment request that the others must approve. To put coins into the escrow, use \"Deposit from my wallet\" on the escrow page.</string>
 </resources>

@@ -381,7 +381,7 @@
     <string name="escrow_code_hint">コインを送る前に、取引の全員がまったく同じ確認コードと同じ入金アドレスを見ている必要があります。</string>
     <string name="escrow_deposit">入金アドレス</string>
     <string name="escrow_address_hint">全員が同じアドレスを見ていることを確認してから、このアドレスにコインを送ってください。</string>
-    <string name="escrow_pay">支払いを作成</string>
+    <string name="escrow_pay">エスクローから支払う</string>
     <string name="escrow_sign_request">支払いリクエストを確認または署名</string>
     <string name="escrow_sign_action">署名</string>
     <string name="escrow_backup">バックアップを共有</string>
@@ -886,4 +886,7 @@
     <string name="number_char_period">ピリオド (.)</string>
     <string name="number_char_space">スペース</string>
     <string name="number_char_apostrophe">アポストロフィ (\')</string>
+    <string name="escrow_deposit_action">自分のウォレットから入金</string>
+    <string name="escrow_pay_hint">「自分のウォレットから入金」は、あなたのウォレットからエスクローへコインを送ります。「エスクローから支払う」は、すでにエスクローにあるコインを使います。ほかの人の承認が必要な支払いリクエストを作ります。</string>
+    <string name="escrow_send_from">あなたのウォレットではなく、エスクローから支払います。使える金額はエスクローの残高です。ほかの人が承認する支払いリクエストが作られます。エスクローにコインを入れるには、エスクローのページの「自分のウォレットから入金」を使ってください。</string>
 </resources>

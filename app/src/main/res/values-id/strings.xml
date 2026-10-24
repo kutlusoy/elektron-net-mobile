@@ -381,7 +381,7 @@
     <string name="escrow_code_hint">Semua pihak dalam kesepakatan harus melihat kode pemeriksa dan alamat setoran yang persis sama sebelum koin apa pun dikirim.</string>
     <string name="escrow_deposit">Alamat setoran</string>
     <string name="escrow_address_hint">Kirim koin ke alamat ini hanya setelah semua orang mengonfirmasi bahwa mereka melihat alamat yang sama.</string>
-    <string name="escrow_pay">Buat pembayaran</string>
+    <string name="escrow_pay">Bayar dari escrow</string>
     <string name="escrow_sign_request">Periksa atau tanda tangani permintaan pembayaran</string>
     <string name="escrow_sign_action">Tanda tangani</string>
     <string name="escrow_backup">Bagikan cadangan</string>
@@ -886,4 +886,7 @@
     <string name="number_char_period">Titik (.)</string>
     <string name="number_char_space">Spasi</string>
     <string name="number_char_apostrophe">Apostrof (\')</string>
+    <string name="escrow_deposit_action">Setor dari dompet saya</string>
+    <string name="escrow_pay_hint">«Setor dari dompet saya» mengirim koin dari dompet Anda sendiri ke escrow. «Bayar dari escrow» membelanjakan koin yang sudah ada di escrow: ini membuat permintaan pembayaran yang butuh persetujuan orang lain.</string>
+    <string name="escrow_send_from">Anda membayar dari escrow, bukan dari dompet Anda sendiri. Jumlah tersedia adalah saldo escrow. Ini membuat permintaan pembayaran yang harus disetujui yang lain. Untuk memasukkan koin ke escrow, gunakan «Setor dari dompet saya» di halaman escrow.</string>
 </resources>
