@@ -26,3 +26,8 @@ This file lists the features this release added. Corrections are not listed.
 ## Node screen
 
 - The buttons under the live log and the Tor and I2P logs wrap onto a second line when they do not fit, instead of squeezing the last button into a vertical text.
+
+## Number format
+
+- The default separators follow the device language and region on a fresh install. Choosing the app language that equals the device language keeps the device region (for example German in Switzerland keeps the apostrophe).
+- Languages with their own digits (Arabic) no longer mix their separators with Latin digits: they use comma and period.

@@ -47,4 +47,19 @@ class NumberStyleTest {
             Amount.styleProvider = before
         }
     }
+
+    @org.junit.Test
+    fun scriptsWithTheirOwnDigitsStillGetLatinSeparators() {
+        val ar = NumberStyle.forLocale(java.util.Locale.forLanguageTag("ar"))
+        org.junit.Assert.assertEquals("1,234.5", ar.format("1234.5"))
+    }
+
+    @org.junit.Test
+    fun everyAppLanguageYieldsDistinctSeparators() {
+        org.elektronnet.mobile.ui.model.LanguageChoices.choices.forEach {
+            val style = NumberStyle.forLocale(java.util.Locale.forLanguageTag(it.tag))
+            org.junit.Assert.assertNotEquals(style.group, style.decimal)
+            org.junit.Assert.assertTrue(it.tag, style.format("1234567.5").startsWith("1"))
+        }
+    }
 }
