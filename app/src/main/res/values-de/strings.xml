@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">Bei 1 Schlüssel kann jeder Schlüsselinhaber allein ausgeben. Das ist kein Escrow-Schutz.</string>
     <string name="escrow_create_info">Das erzeugt deinen eigenen Schlüssel für das Geschäft. Die Zahl der Freigaben wählst du später in Schritt 2, nachdem du die Schlüssel der anderen hinzugefügt hast. Die Passphrase dieser Wallet entsperrt den Schlüssel einmal. Die Schlüsselzeile, die du bekommst, kann nichts ausgeben.</string>
     <string name="escrow_howto">So funktioniert ein Escrow:\n1. Alle im Geschäft legen hier ein Escrow an und bekommen eine Schlüsselzeile.\n2. Alle senden ihre Schlüsselzeile an die anderen und fügen die Zeilen der anderen hinzu.\n3. Alle wählen dieselbe Zahl an Freigaben, zum Beispiel 2 von 3, und erstellen die Escrow-Wallet. Vorher muss nichts festgelegt werden.\n4. Vergleicht den Prüfcode und die Einzahlungsadresse. Sie müssen für alle identisch sein.\n5. Sende Coins an die Einzahlungsadresse. Zum Bezahlen erstellt eine Person eine Zahlung, die anderen signieren sie, bis genug Freigaben da sind.</string>
+    <string name="settings_log_days">Logs aufbewahren für</string>
+    <string name="settings_log_days_value">%1$d Tage</string>
+    <string name="settings_log_size">Maximale Größe pro Log-Datei</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">Gilt für die Logs von Node, Tor und I2P. Ältere Zeilen und alles über der Größe werden etwa einmal pro Stunde entfernt. Wallet-Dateien werden nie angefasst.</string>
+    <string name="settings_log_clean">Logs jetzt bereinigen</string>
+    <string name="settings_log_freed">%1$s freigegeben.</string>
+    <string name="node_log_clear">Leeren</string>
+    <string name="storage_title">Speicherbelegung</string>
+    <string name="storage_loading">Wird gemessen…</string>
+    <string name="storage_blocks">Blöcke</string>
+    <string name="storage_index">Header und Block-Index</string>
+    <string name="storage_utxo">UTXO-Set</string>
+    <string name="storage_snapshots">Snapshots</string>
+    <string name="storage_wallet">Wallet: %1$s</string>
+    <string name="storage_tor">Tor-Daten</string>
+    <string name="storage_i2p">I2P-Daten</string>
+    <string name="storage_logs">Logs</string>
+    <string name="storage_other_node">Übrige Node-Daten</string>
+    <string name="storage_app">App-Dateien</string>
+    <string name="storage_total">Gesamt</string>
+    <string name="storage_hint">Auf dem Handy gemessen, etwa alle 30 Sekunden aktualisiert. Die Zeile „Blockchain-Speicher“ oben ist die Zahl, die der Node selbst meldet.</string>
 </resources>

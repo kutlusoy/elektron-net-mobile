@@ -271,6 +271,7 @@ private fun LogSection(show: Boolean, onShow: (Boolean) -> Unit, lines: List<Str
                             TextButton(onClick = { org.elektronnet.mobile.ui.tools.shareText(context, org.elektronnet.mobile.node.LogSanitizer.clean(lines)) }) {
                                 Text(stringResource(R.string.node_log_share))
                             }
+                            TextButton(onClick = { NodeHost.clearNodeLog() }) { Text(stringResource(R.string.node_log_clear)) }
                         }
                     }
                 }
@@ -299,6 +300,7 @@ private fun TelemetrySection(details: NodeDetails, telemetry: org.elektronnet.mo
                 TelemetryRow(stringResource(R.string.telemetry_storage), telemetry?.sizeOnDisk?.let(TelemetryFormat::bytes) ?: dash)
             }
         }
+        StorageCard()
         GlassCard {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.net_card), style = MaterialTheme.typography.titleMedium)
@@ -516,3 +518,36 @@ private fun ChainEventsCard(schedule: org.elektronnet.mobile.node.ChainSchedule,
 }
 
 private enum class Confirm { Stop, Pause }
+
+@Composable
+private fun StorageCard() {
+    val report = NodeHost.storageReport
+    val labels = NodeHost.wallets.associate { it.name to it.label.ifBlank { it.name } }
+    GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.storage_title), style = MaterialTheme.typography.titleMedium)
+            if (report == null) {
+                Text(stringResource(R.string.storage_loading), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            } else {
+                report.items.forEach { item ->
+                    val name = when (item.kind) {
+                        org.elektronnet.mobile.node.StorageKind.Blocks -> stringResource(R.string.storage_blocks)
+                        org.elektronnet.mobile.node.StorageKind.Index -> stringResource(R.string.storage_index)
+                        org.elektronnet.mobile.node.StorageKind.Utxo -> stringResource(R.string.storage_utxo)
+                        org.elektronnet.mobile.node.StorageKind.Snapshots -> stringResource(R.string.storage_snapshots)
+                        org.elektronnet.mobile.node.StorageKind.Wallet -> stringResource(R.string.storage_wallet, labels[item.name] ?: item.name)
+                        org.elektronnet.mobile.node.StorageKind.Tor -> stringResource(R.string.storage_tor)
+                        org.elektronnet.mobile.node.StorageKind.I2p -> stringResource(R.string.storage_i2p)
+                        org.elektronnet.mobile.node.StorageKind.Logs -> stringResource(R.string.storage_logs)
+                        org.elektronnet.mobile.node.StorageKind.OtherNode -> stringResource(R.string.storage_other_node)
+                        org.elektronnet.mobile.node.StorageKind.App -> stringResource(R.string.storage_app)
+                    }
+                    TelemetryRow(name, TelemetryFormat.bytes(item.bytes))
+                }
+                androidx.compose.material3.HorizontalDivider()
+                TelemetryRow(stringResource(R.string.storage_total), TelemetryFormat.bytes(report.total))
+            }
+            Text(stringResource(R.string.storage_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}

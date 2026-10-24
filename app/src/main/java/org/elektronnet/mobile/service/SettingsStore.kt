@@ -138,6 +138,14 @@ class SettingsStore(context: Context) {
         get() = org.elektronnet.mobile.fiat.FiatSettings.decode(prefs.getString(FIAT, null))
         set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
 
+    var logDays: Int
+        get() = prefs.getInt(LOG_DAYS, DEFAULT_LOG_DAYS)
+        set(value) = prefs.edit().putInt(LOG_DAYS, value).apply()
+
+    var logMaxMb: Int
+        get() = prefs.getInt(LOG_MAX_MB, DEFAULT_LOG_MAX_MB)
+        set(value) = prefs.edit().putInt(LOG_MAX_MB, value).apply()
+
     var spendReused: Boolean
         get() = prefs.getBoolean(SPEND_REUSED, true)
         set(value) = prefs.edit().putBoolean(SPEND_REUSED, value).apply()
@@ -260,6 +268,10 @@ class SettingsStore(context: Context) {
         const val LOCK_GRACE = "lock_grace_ms"
         const val AMOUNT_UNIT = "amount_unit"
         const val FIAT = "fiat"
+        const val LOG_DAYS = "log_days"
+        const val LOG_MAX_MB = "log_max_mb"
+        const val DEFAULT_LOG_DAYS = 7
+        const val DEFAULT_LOG_MAX_MB = 10
         const val SPEND_REUSED = "spend_reused"
         const val NET_PEERS = "net_peers"
         const val NODE_ONLY = "node_only"

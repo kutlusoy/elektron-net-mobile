@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">Con 1 chiave ogni titolare può spendere da solo. Non è una protezione escrow.</string>
     <string name="escrow_create_info">Questo crea la tua chiave per l\'accordo. Il numero di approvazioni lo scegli dopo, al passo 2, quando hai aggiunto le chiavi degli altri. La passphrase di questo wallet sblocca la chiave una volta. La riga di chiave che ricevi non può spendere nulla.</string>
     <string name="escrow_howto">Come funziona un escrow:\n1. Tutti nell\'accordo creano qui un escrow e ricevono una riga di chiave.\n2. Tutti inviano la propria riga agli altri e aggiungono le righe degli altri.\n3. Tutti scelgono lo stesso numero di approvazioni, ad esempio 2 su 3, e creano il wallet escrow. Prima di questo passo non va deciso nulla.\n4. Confrontate il codice di controllo e l\'indirizzo di deposito. Devono essere identici per tutti.\n5. Invia monete all\'indirizzo di deposito. Per pagare, una persona crea un pagamento e gli altri lo firmano finché ci sono abbastanza approvazioni.</string>
+    <string name="settings_log_days">Conserva i log per</string>
+    <string name="settings_log_days_value">%1$d giorni</string>
+    <string name="settings_log_size">Dimensione massima per file di log</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">Vale per i log di nodo, Tor e I2P. Le righe più vecchie e tutto ciò che supera la dimensione vengono rimossi circa una volta all\'ora. I file dei wallet non vengono mai toccati.</string>
+    <string name="settings_log_clean">Pulisci i log ora</string>
+    <string name="settings_log_freed">Liberati %1$s.</string>
+    <string name="node_log_clear">Svuota</string>
+    <string name="storage_title">Uso dello spazio</string>
+    <string name="storage_loading">Misurazione in corso…</string>
+    <string name="storage_blocks">Blocchi</string>
+    <string name="storage_index">Header e indice dei blocchi</string>
+    <string name="storage_utxo">Insieme UTXO</string>
+    <string name="storage_snapshots">Snapshot</string>
+    <string name="storage_wallet">Wallet: %1$s</string>
+    <string name="storage_tor">Dati di Tor</string>
+    <string name="storage_i2p">Dati di I2P</string>
+    <string name="storage_logs">Log</string>
+    <string name="storage_other_node">Altri dati del nodo</string>
+    <string name="storage_app">File dell\'app</string>
+    <string name="storage_total">Totale</string>
+    <string name="storage_hint">Misurato sul telefono e aggiornato circa ogni 30 secondi. La riga «Spazio blockchain» sopra è il valore indicato dal nodo stesso.</string>
 </resources>

@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">Dengan 1 kunci, setiap pemegang kunci bisa membelanjakan sendiri. Ini bukan perlindungan escrow.</string>
     <string name="escrow_create_info">Ini membuat kunci Anda sendiri untuk kesepakatan. Jumlah persetujuan Anda pilih nanti, di langkah 2, setelah menambahkan kunci orang lain. Frasa sandi dompet ini membuka kunci satu kali. Baris kunci yang Anda terima tidak dapat membelanjakan apa pun.</string>
     <string name="escrow_howto">Cara kerja escrow:\n1. Semua dalam kesepakatan membuat escrow di sini dan mendapat satu baris kunci.\n2. Semua mengirim barisnya ke yang lain dan menambahkan baris yang lain.\n3. Semua memilih jumlah persetujuan yang sama, misalnya 2 dari 3, dan membuat dompet escrow. Tidak ada yang perlu diputuskan sebelum langkah ini.\n4. Bandingkan kode periksa dan alamat setoran. Keduanya harus identik untuk semua.\n5. Kirim koin ke alamat setoran. Untuk membayar, satu orang membuat pembayaran dan yang lain menandatanganinya sampai persetujuan cukup.</string>
+    <string name="settings_log_days">Simpan log selama</string>
+    <string name="settings_log_days_value">%1$d hari</string>
+    <string name="settings_log_size">Ukuran maksimum per file log</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">Berlaku untuk log node, Tor, dan I2P. Baris yang lebih lama dan semua yang melebihi ukuran dihapus sekitar sekali per jam. File dompet tidak pernah disentuh.</string>
+    <string name="settings_log_clean">Bersihkan log sekarang</string>
+    <string name="settings_log_freed">%1$s dibebaskan.</string>
+    <string name="node_log_clear">Kosongkan</string>
+    <string name="storage_title">Penggunaan penyimpanan</string>
+    <string name="storage_loading">Mengukur…</string>
+    <string name="storage_blocks">Blok</string>
+    <string name="storage_index">Header dan indeks blok</string>
+    <string name="storage_utxo">Set UTXO</string>
+    <string name="storage_snapshots">Snapshot</string>
+    <string name="storage_wallet">Dompet: %1$s</string>
+    <string name="storage_tor">Data Tor</string>
+    <string name="storage_i2p">Data I2P</string>
+    <string name="storage_logs">Log</string>
+    <string name="storage_other_node">Data node lainnya</string>
+    <string name="storage_app">File aplikasi</string>
+    <string name="storage_total">Total</string>
+    <string name="storage_hint">Diukur di ponsel dan diperbarui sekitar setiap 30 detik. Baris «Penyimpanan blockchain» di atas adalah angka yang dilaporkan node sendiri.</string>
 </resources>

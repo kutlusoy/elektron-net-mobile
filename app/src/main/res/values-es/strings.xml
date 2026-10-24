@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">Con 1 clave, cada titular puede gastar solo. No es una protección de escrow.</string>
     <string name="escrow_create_info">Esto crea tu propia clave para el trato. El número de aprobaciones lo eliges después, en el paso 2, cuando hayas añadido las claves de los demás. La contraseña de este monedero desbloquea la clave una vez. La línea de clave que recibes no sirve para gastar.</string>
     <string name="escrow_howto">Cómo funciona un escrow:\n1. Todos en el trato crean aquí un escrow y reciben una línea de clave.\n2. Todos envían su línea a los demás y añaden las líneas de los demás.\n3. Todos eligen el mismo número de aprobaciones, por ejemplo 2 de 3, y crean el monedero escrow. Nada se decide antes de este paso.\n4. Comparad el código de control y la dirección de depósito. Deben ser idénticos para todos.\n5. Envía monedas a la dirección de depósito. Para pagar, una persona crea un pago y los demás lo firman hasta tener suficientes aprobaciones.</string>
+    <string name="settings_log_days">Conservar los registros durante</string>
+    <string name="settings_log_days_value">%1$d días</string>
+    <string name="settings_log_size">Tamaño máximo por archivo de registro</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">Se aplica a los registros del nodo, Tor e I2P. Las líneas más antiguas y todo lo que supere el tamaño se eliminan aproximadamente cada hora. Los archivos de monederos nunca se tocan.</string>
+    <string name="settings_log_clean">Limpiar registros ahora</string>
+    <string name="settings_log_freed">Liberado: %1$s.</string>
+    <string name="node_log_clear">Vaciar</string>
+    <string name="storage_title">Uso de almacenamiento</string>
+    <string name="storage_loading">Midiendo…</string>
+    <string name="storage_blocks">Bloques</string>
+    <string name="storage_index">Cabeceras e índice de bloques</string>
+    <string name="storage_utxo">Conjunto UTXO</string>
+    <string name="storage_snapshots">Instantáneas</string>
+    <string name="storage_wallet">Monedero: %1$s</string>
+    <string name="storage_tor">Datos de Tor</string>
+    <string name="storage_i2p">Datos de I2P</string>
+    <string name="storage_logs">Registros</string>
+    <string name="storage_other_node">Otros datos del nodo</string>
+    <string name="storage_app">Archivos de la app</string>
+    <string name="storage_total">Total</string>
+    <string name="storage_hint">Medido en el teléfono y actualizado cada 30 segundos aproximadamente. La línea «Almacenamiento de la cadena» de arriba es la cifra que informa el propio nodo.</string>
 </resources>

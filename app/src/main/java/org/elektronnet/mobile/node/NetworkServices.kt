@@ -32,6 +32,14 @@ class NetworkServices(
 
     fun i2pOutput(): List<String> = i2p?.service?.output?.snapshot().orEmpty()
 
+    fun clearTorOutput() {
+        tor?.service?.output?.clear()
+    }
+
+    fun clearI2pOutput() {
+        i2p?.service?.output?.clear()
+    }
+
     @Synchronized
     fun sync(network: NetworkSettings, active: Boolean) {
         val settings = network.normalized()

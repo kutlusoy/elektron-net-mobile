@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">1 कुंजी पर हर कुंजी धारक अकेले खर्च कर सकता है। यह एस्क्रो सुरक्षा नहीं है।</string>
     <string name="escrow_create_info">यह सौदे के लिए आपकी अपनी कुंजी बनाता है। मंज़ूरियों की संख्या आप बाद में, दूसरों की कुंजियाँ जोड़ने के बाद, चरण 2 में चुनते हैं। इस वॉलेट का पासफ़्रेज़ कुंजी को एक बार खोलता है। आपको मिली कुंजी-पंक्ति से कुछ खर्च नहीं हो सकता।</string>
     <string name="escrow_howto">एस्क्रो कैसे काम करता है:\n1. सौदे में सभी यहाँ एक एस्क्रो बनाते हैं और एक कुंजी-पंक्ति पाते हैं।\n2. सब अपनी पंक्ति दूसरों को भेजते हैं और दूसरों की पंक्तियाँ जोड़ते हैं।\n3. सब मंज़ूरियों की वही संख्या चुनते हैं, जैसे 3 में से 2, और एस्क्रो वॉलेट बनाते हैं। इस चरण से पहले कुछ तय करने की ज़रूरत नहीं।\n4. जाँच कोड और जमा पता मिलाएँ। ये सबके लिए एक जैसे होने चाहिए।\n5. जमा पते पर सिक्के भेजें। भुगतान के लिए एक व्यक्ति भुगतान बनाता है और बाकी तब तक हस्ताक्षर करते हैं जब तक पर्याप्त मंज़ूरियाँ न हों।</string>
+    <string name="settings_log_days">लॉग इतने समय तक रखें</string>
+    <string name="settings_log_days_value">%1$d दिन</string>
+    <string name="settings_log_size">प्रति लॉग फ़ाइल अधिकतम आकार</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">यह नोड, Tor और I2P के लॉग पर लागू होता है। पुरानी पंक्तियाँ और आकार से ऊपर का सब कुछ लगभग हर घंटे हटाया जाता है। वॉलेट फ़ाइलों को कभी छुआ नहीं जाता।</string>
+    <string name="settings_log_clean">लॉग अभी साफ़ करें</string>
+    <string name="settings_log_freed">%1$s खाली किया गया।</string>
+    <string name="node_log_clear">साफ़ करें</string>
+    <string name="storage_title">स्टोरेज उपयोग</string>
+    <string name="storage_loading">मापा जा रहा है…</string>
+    <string name="storage_blocks">ब्लॉक</string>
+    <string name="storage_index">हेडर और ब्लॉक इंडेक्स</string>
+    <string name="storage_utxo">UTXO सेट</string>
+    <string name="storage_snapshots">स्नैपशॉट</string>
+    <string name="storage_wallet">वॉलेट: %1$s</string>
+    <string name="storage_tor">Tor डेटा</string>
+    <string name="storage_i2p">I2P डेटा</string>
+    <string name="storage_logs">लॉग</string>
+    <string name="storage_other_node">नोड का अन्य डेटा</string>
+    <string name="storage_app">ऐप फ़ाइलें</string>
+    <string name="storage_total">कुल</string>
+    <string name="storage_hint">फ़ोन पर मापा जाता है और लगभग हर 30 सेकंड में ताज़ा होता है। ऊपर की «ब्लॉकचेन स्टोरेज» पंक्ति वह आँकड़ा है जो नोड खुद बताता है।</string>
 </resources>

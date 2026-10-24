@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">1 anahtarla her anahtar sahibi tek başına harcayabilir. Bu bir escrow koruması değildir.</string>
     <string name="escrow_create_info">Bu, anlaşma için kendi anahtarını oluşturur. Onay sayısını daha sonra, diğerlerinin anahtarlarını ekledikten sonra 2. adımda seçersin. Bu cüzdanın parolası anahtarı bir kez açar. Aldığın anahtar satırı hiçbir şey harcayamaz.</string>
     <string name="escrow_howto">Escrow nasıl çalışır:\n1. Anlaşmadaki herkes burada bir escrow oluşturur ve bir anahtar satırı alır.\n2. Herkes satırını diğerlerine gönderir ve diğerlerinin satırlarını ekler.\n3. Herkes aynı onay sayısını seçer, örneğin 3 üzerinden 2, ve escrow cüzdanını oluşturur. Bu adımdan önce hiçbir şeye karar vermek gerekmez.\n4. Kontrol kodunu ve yatırma adresini karşılaştırın. Herkes için aynı olmalıdır.\n5. Yatırma adresine coin gönder. Ödemek için bir kişi ödeme oluşturur, diğerleri yeterli onay olana kadar imzalar.</string>
+    <string name="settings_log_days">Günlükleri şu süre sakla</string>
+    <string name="settings_log_days_value">%1$d gün</string>
+    <string name="settings_log_size">Günlük dosyası başına en büyük boyut</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">Düğüm, Tor ve I2P günlükleri için geçerlidir. Daha eski satırlar ve boyutu aşan her şey yaklaşık saatte bir silinir. Cüzdan dosyalarına asla dokunulmaz.</string>
+    <string name="settings_log_clean">Günlükleri şimdi temizle</string>
+    <string name="settings_log_freed">%1$s boşaltıldı.</string>
+    <string name="node_log_clear">Temizle</string>
+    <string name="storage_title">Depolama kullanımı</string>
+    <string name="storage_loading">Ölçülüyor…</string>
+    <string name="storage_blocks">Bloklar</string>
+    <string name="storage_index">Başlıklar ve blok dizini</string>
+    <string name="storage_utxo">UTXO kümesi</string>
+    <string name="storage_snapshots">Anlık görüntüler</string>
+    <string name="storage_wallet">Cüzdan: %1$s</string>
+    <string name="storage_tor">Tor verileri</string>
+    <string name="storage_i2p">I2P verileri</string>
+    <string name="storage_logs">Günlükler</string>
+    <string name="storage_other_node">Diğer düğüm verileri</string>
+    <string name="storage_app">Uygulama dosyaları</string>
+    <string name="storage_total">Toplam</string>
+    <string name="storage_hint">Telefonda ölçülür ve yaklaşık 30 saniyede bir yenilenir. Yukarıdaki «Blokzincir depolama» satırı düğümün kendi bildirdiği değerdir.</string>
 </resources>

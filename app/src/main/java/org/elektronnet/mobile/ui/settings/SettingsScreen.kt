@@ -133,6 +133,7 @@ fun SettingsScreen(
                 onCommit = { i -> onPolicy(settings.copy(storageFloorBytes = FLOOR_CHOICES[i] * GIB)) },
             )
             Hint(stringResource(R.string.settings_floor_hint))
+            LogSettingsSection()
         }
         GlassCard {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) { ExplorerSection(explorers, onExplorers) }

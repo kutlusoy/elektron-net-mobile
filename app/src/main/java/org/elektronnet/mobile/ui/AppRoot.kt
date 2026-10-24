@@ -165,6 +165,13 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         }
     }
 
+    LaunchedEffect(tab, shell) {
+        while (shell && tab == Tab.Node.ordinal) {
+            if (NodeHost.appVisible) withContext(Dispatchers.IO) { runCatching { NodeHost.refreshStorage() } }
+            delay(STORAGE_REFRESH_MS)
+        }
+    }
+
     BrandBackground {
     Scaffold(
         containerColor = androidx.compose.ui.graphics.Color.Transparent,
@@ -381,5 +388,6 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     }
 }
 
+private const val STORAGE_REFRESH_MS = 30_000L
 private const val FIAT_DEBOUNCE_MS = 2_000L
 private const val FIAT_TICK_MS = 15_000L

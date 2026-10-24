@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">鍵が1つの場合、各鍵の保持者が単独で使えます。これはエスクローの保護ではありません。</string>
     <string name="escrow_create_info">これは取引用のあなた自身の鍵を作ります。承認数は後のステップ2で、ほかの人の鍵を追加してから選びます。このウォレットのパスフレーズは鍵を一度だけ解除します。受け取る鍵の行では何も使えません。</string>
     <string name="escrow_howto">エスクローの仕組み:\n1. 取引の全員がここでエスクローを作り、鍵の行を受け取ります。\n2. 全員が自分の行をほかの人に送り、ほかの人の行を追加します。\n3. 全員が同じ承認数、例えば3人中2人を選び、エスクローウォレットを作ります。この手順の前に決めることはありません。\n4. 確認コードと入金アドレスを比べます。全員で同一でなければなりません。\n5. 入金アドレスにコインを送ります。支払うときは1人が支払いを作り、ほかの人が十分な承認になるまで署名します。</string>
+    <string name="settings_log_days">ログの保持期間</string>
+    <string name="settings_log_days_value">%1$d 日</string>
+    <string name="settings_log_size">ログファイルごとの最大サイズ</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">ノード、Tor、I2P のログに適用されます。古い行とサイズを超える分は約1時間ごとに削除されます。ウォレットのファイルには一切触れません。</string>
+    <string name="settings_log_clean">今すぐログを整理</string>
+    <string name="settings_log_freed">%1$s を解放しました。</string>
+    <string name="node_log_clear">クリア</string>
+    <string name="storage_title">ストレージ使用量</string>
+    <string name="storage_loading">測定中…</string>
+    <string name="storage_blocks">ブロック</string>
+    <string name="storage_index">ヘッダーとブロックインデックス</string>
+    <string name="storage_utxo">UTXO セット</string>
+    <string name="storage_snapshots">スナップショット</string>
+    <string name="storage_wallet">ウォレット: %1$s</string>
+    <string name="storage_tor">Tor のデータ</string>
+    <string name="storage_i2p">I2P のデータ</string>
+    <string name="storage_logs">ログ</string>
+    <string name="storage_other_node">その他のノードデータ</string>
+    <string name="storage_app">アプリのファイル</string>
+    <string name="storage_total">合計</string>
+    <string name="storage_hint">端末上で測定し、約30秒ごとに更新します。上の「ブロックチェーンのストレージ」行はノード自身が報告する値です。</string>
 </resources>

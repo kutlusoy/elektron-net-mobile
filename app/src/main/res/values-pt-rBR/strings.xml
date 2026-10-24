@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">Com 1 chave, cada titular pode gastar sozinho. Isso não é proteção de escrow.</string>
     <string name="escrow_create_info">Isto cria sua própria chave para o acordo. O número de aprovações você escolhe depois, no passo 2, após adicionar as chaves dos outros. A senha desta carteira desbloqueia a chave uma vez. A linha de chave que você recebe não serve para gastar.</string>
     <string name="escrow_howto">Como funciona um escrow:\n1. Todos no acordo criam aqui um escrow e recebem uma linha de chave.\n2. Todos enviam a linha aos outros e adicionam as linhas dos outros.\n3. Todos escolhem o mesmo número de aprovações, por exemplo 2 de 3, e criam a carteira escrow. Nada precisa ser decidido antes deste passo.\n4. Comparem o código de verificação e o endereço de depósito. Devem ser idênticos para todos.\n5. Envie moedas ao endereço de depósito. Para pagar, uma pessoa cria um pagamento e os outros o assinam até haver aprovações suficientes.</string>
+    <string name="settings_log_days">Manter os logs por</string>
+    <string name="settings_log_days_value">%1$d dias</string>
+    <string name="settings_log_size">Tamanho máximo por arquivo de log</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">Vale para os logs do nó, Tor e I2P. Linhas mais antigas e tudo acima do tamanho são removidos cerca de uma vez por hora. Arquivos de carteira nunca são tocados.</string>
+    <string name="settings_log_clean">Limpar logs agora</string>
+    <string name="settings_log_freed">%1$s liberados.</string>
+    <string name="node_log_clear">Limpar</string>
+    <string name="storage_title">Uso de armazenamento</string>
+    <string name="storage_loading">Medindo…</string>
+    <string name="storage_blocks">Blocos</string>
+    <string name="storage_index">Cabeçalhos e índice de blocos</string>
+    <string name="storage_utxo">Conjunto UTXO</string>
+    <string name="storage_snapshots">Snapshots</string>
+    <string name="storage_wallet">Carteira: %1$s</string>
+    <string name="storage_tor">Dados do Tor</string>
+    <string name="storage_i2p">Dados do I2P</string>
+    <string name="storage_logs">Logs</string>
+    <string name="storage_other_node">Outros dados do nó</string>
+    <string name="storage_app">Arquivos do app</string>
+    <string name="storage_total">Total</string>
+    <string name="storage_hint">Medido no telefone e atualizado a cada 30 segundos aproximadamente. A linha «Armazenamento da blockchain» acima é o valor informado pelo próprio nó.</string>
 </resources>

@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">只选 1 把密钥时，每位持钥人都可以单独花费。这不是托管保护。</string>
     <string name="escrow_create_info">这会为本次交易创建你自己的密钥。批准数稍后在第 2 步、添加完其他人的密钥后再选。此钱包的口令只解锁一次密钥。你得到的密钥行不能花费任何东西。</string>
     <string name="escrow_howto">托管如何运作：\n1. 交易中每个人在此创建托管并得到一行密钥。\n2. 每个人把自己的行发给其他人，并添加其他人的行。\n3. 所有人选择相同的批准数，例如 3 人中的 2 人，然后创建托管钱包。在此步骤之前无需决定任何事。\n4. 比较校验码和存款地址。所有人必须完全相同。\n5. 向存款地址转入币。付款时由一人创建付款，其他人签名，直到批准数足够。</string>
+    <string name="settings_log_days">日志保留时间</string>
+    <string name="settings_log_days_value">%1$d 天</string>
+    <string name="settings_log_size">每个日志文件的最大大小</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">适用于节点、Tor 和 I2P 的日志。较旧的行和超出大小的部分大约每小时清理一次。钱包文件绝不会被触碰。</string>
+    <string name="settings_log_clean">立即清理日志</string>
+    <string name="settings_log_freed">已释放 %1$s。</string>
+    <string name="node_log_clear">清空</string>
+    <string name="storage_title">存储占用</string>
+    <string name="storage_loading">正在测量…</string>
+    <string name="storage_blocks">区块</string>
+    <string name="storage_index">区块头和区块索引</string>
+    <string name="storage_utxo">UTXO 集</string>
+    <string name="storage_snapshots">快照</string>
+    <string name="storage_wallet">钱包：%1$s</string>
+    <string name="storage_tor">Tor 数据</string>
+    <string name="storage_i2p">I2P 数据</string>
+    <string name="storage_logs">日志</string>
+    <string name="storage_other_node">其他节点数据</string>
+    <string name="storage_app">应用文件</string>
+    <string name="storage_total">总计</string>
+    <string name="storage_hint">在手机上测量，约每 30 秒刷新一次。上方“区块链存储”一行是节点自己报告的数值。</string>
 </resources>

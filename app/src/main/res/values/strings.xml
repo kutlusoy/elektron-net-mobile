@@ -864,4 +864,26 @@
     <string name="escrow_threshold_one">With 1 key, every key holder can spend alone. This is not an escrow protection.</string>
     <string name="escrow_create_info">This creates your own key for the deal. You choose the number of approvals later, in step 2, after you added the keys of the others. The passphrase of this wallet unlocks the key once. The key line you get cannot be used to spend.</string>
     <string name="escrow_howto">How an escrow works:\n1. Everyone in the deal creates an escrow here and gets a key line.\n2. Everyone sends the key line to the others and adds the lines of the others.\n3. Everyone chooses the same number of approvals, for example 2 of 3, and creates the escrow wallet. Nothing has to be decided before this step.\n4. Compare the check code and the deposit address. They must be identical for everyone.\n5. Send coins to the deposit address. To pay, one person creates a payment, the others sign it until enough approvals are there.</string>
+    <string name="settings_log_days">Keep logs for</string>
+    <string name="settings_log_days_value">%1$d days</string>
+    <string name="settings_log_size">Maximum size per log file</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">Applies to the logs of the node, Tor and I2P. Older lines and everything above the size are removed about once an hour. Wallet files are never touched.</string>
+    <string name="settings_log_clean">Clean logs now</string>
+    <string name="settings_log_freed">Freed %1$s.</string>
+    <string name="node_log_clear">Clear</string>
+    <string name="storage_title">Storage use</string>
+    <string name="storage_loading">Measuring…</string>
+    <string name="storage_blocks">Blocks</string>
+    <string name="storage_index">Headers and block index</string>
+    <string name="storage_utxo">UTXO set</string>
+    <string name="storage_snapshots">Snapshots</string>
+    <string name="storage_wallet">Wallet: %1$s</string>
+    <string name="storage_tor">Tor data</string>
+    <string name="storage_i2p">I2P data</string>
+    <string name="storage_logs">Logs</string>
+    <string name="storage_other_node">Other node data</string>
+    <string name="storage_app">App files</string>
+    <string name="storage_total">Total</string>
+    <string name="storage_hint">Measured on the phone and refreshed about every 30 seconds. The line \"Blockchain storage\" above is the figure the node reports itself.</string>
 </resources>

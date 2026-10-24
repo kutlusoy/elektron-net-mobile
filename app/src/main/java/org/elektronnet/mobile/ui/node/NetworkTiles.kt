@@ -15,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import org.elektronnet.mobile.node.PeerAddress
 import org.elektronnet.mobile.ui.tools.Hint
@@ -106,10 +108,13 @@ private fun NetworkTileCard(tile: NetworkTile, peers: List<String>) {
                 val services = NodeHost.networkServices
                 val lines = (if (tile.net == ConnNet.Tor) services?.torOutput() else services?.i2pOutput()).orEmpty().takeLast(LOG_LINES)
                 val clean = LogSanitizer.clean(lines)
-                Text(clean, style = MaterialTheme.typography.bodySmall, fontFamily = ElektronMono)
+                Column(modifier = Modifier.heightIn(max = 240.dp).verticalScroll(androidx.compose.foundation.rememberScrollState())) {
+                    Text(clean, style = MaterialTheme.typography.bodySmall, fontFamily = ElektronMono)
+                }
                 Row {
                     TextButton(onClick = { clipboard.setText(AnnotatedString(clean)) }) { Text(stringResource(R.string.action_copy)) }
                     TextButton(onClick = { shareText(context, clean) }) { Text(stringResource(R.string.action_share)) }
+                    TextButton(onClick = { NodeHost.clearHelperLog(tile.net == ConnNet.Tor) }) { Text(stringResource(R.string.node_log_clear)) }
                 }
             }
         }

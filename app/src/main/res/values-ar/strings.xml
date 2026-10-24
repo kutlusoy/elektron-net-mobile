@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">مع مفتاح واحد يستطيع كل صاحب مفتاح الإنفاق وحده. هذه ليست حماية ضمان.</string>
     <string name="escrow_create_info">هذا ينشئ مفتاحك الخاص للصفقة. تختار عدد الموافقات لاحقًا في الخطوة 2 بعد إضافة مفاتيح الآخرين. عبارة مرور هذه المحفظة تفتح المفتاح مرة واحدة. سطر المفتاح الذي تحصل عليه لا يمكنه إنفاق شيء.</string>
     <string name="escrow_howto">كيف يعمل الضمان:\n1. ينشئ كل من في الصفقة حساب ضمان هنا ويحصل على سطر مفتاح.\n2. يرسل الجميع سطرهم إلى الآخرين ويضيفون سطور الآخرين.\n3. يختار الجميع عدد الموافقات نفسه، مثلًا 2 من 3، وينشئون محفظة الضمان. لا شيء يُحدد قبل هذه الخطوة.\n4. قارنوا رمز التحقق وعنوان الإيداع. يجب أن يكونا متطابقين للجميع.\n5. أرسل عملات إلى عنوان الإيداع. للدفع ينشئ شخص دفعة ويوقعها الآخرون حتى تكتمل الموافقات.</string>
+    <string name="settings_log_days">الاحتفاظ بالسجلات لمدة</string>
+    <string name="settings_log_days_value">%1$d أيام</string>
+    <string name="settings_log_size">أقصى حجم لكل ملف سجل</string>
+    <string name="settings_log_size_value">%1$d ميغابايت</string>
+    <string name="settings_log_hint">ينطبق على سجلات العقدة وTor وI2P. تُحذف الأسطر الأقدم وكل ما يتجاوز الحجم تقريبًا مرة كل ساعة. لا تُمس ملفات المحافظ أبدًا.</string>
+    <string name="settings_log_clean">تنظيف السجلات الآن</string>
+    <string name="settings_log_freed">تم تحرير %1$s.</string>
+    <string name="node_log_clear">مسح</string>
+    <string name="storage_title">استخدام التخزين</string>
+    <string name="storage_loading">جارٍ القياس…</string>
+    <string name="storage_blocks">الكتل</string>
+    <string name="storage_index">الرؤوس وفهرس الكتل</string>
+    <string name="storage_utxo">مجموعة UTXO</string>
+    <string name="storage_snapshots">اللقطات</string>
+    <string name="storage_wallet">المحفظة: %1$s</string>
+    <string name="storage_tor">بيانات Tor</string>
+    <string name="storage_i2p">بيانات I2P</string>
+    <string name="storage_logs">السجلات</string>
+    <string name="storage_other_node">بيانات العقدة الأخرى</string>
+    <string name="storage_app">ملفات التطبيق</string>
+    <string name="storage_total">المجموع</string>
+    <string name="storage_hint">يُقاس على الهاتف ويُحدَّث تقريبًا كل 30 ثانية. سطر «تخزين سلسلة الكتل» أعلاه هو الرقم الذي تبلغ عنه العقدة نفسها.</string>
 </resources>

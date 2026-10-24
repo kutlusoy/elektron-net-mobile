@@ -2,7 +2,7 @@ package org.elektronnet.mobile.node
 
 import java.util.ArrayDeque
 
-class OutputBuffer(private val capacity: Int = 2_000) {
+class OutputBuffer(private val capacity: Int = 1_000) {
     private val lines = ArrayDeque<String>()
     private val listeners = java.util.concurrent.CopyOnWriteArrayList<(String) -> Unit>()
 
@@ -17,6 +17,10 @@ class OutputBuffer(private val capacity: Int = 2_000) {
             lines.addLast(line)
         }
         listeners.forEach { it(line) }
+    }
+
+    fun clear() {
+        synchronized(lines) { lines.clear() }
     }
 
     fun snapshot(): List<String> = synchronized(lines) { lines.toList() }

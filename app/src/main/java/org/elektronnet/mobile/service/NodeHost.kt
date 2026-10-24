@@ -232,6 +232,7 @@ object NodeHost {
         val snapshot = current.tick()
         settings?.saveBudget(current.budget)
         latest = snapshot
+        cleanLogsIfDue()
         maintainWallets(snapshot)
         return snapshot
     }
@@ -488,6 +489,7 @@ object NodeHost {
     }
 
     private const val FEE_CACHE_MS = 60_000L
+    private const val LOG_CLEAN_EVERY_MS = 60 * 60 * 1000L
 
     val paymentUri: PaymentUri = PaymentUri(ChainConfig.uriScheme, AddressCheck(ChainConfig.isTestnet))
 
@@ -541,6 +543,46 @@ object NodeHost {
         controller?.current?.takeIf { it.state == NodeState.Running }?.let { runCatching { it.rpc.call("addnode", listOf(arg, "remove")) } }
         peerResult = null
         peerVersion++
+    }
+
+    var storageReport: org.elektronnet.mobile.node.StorageReport? by mutableStateOf(null)
+
+    fun refreshStorage() {
+        val app = appContext ?: return
+        storageReport = org.elektronnet.mobile.node.StorageScan.scan(app.filesDir, ChainConfig.datadirName, Chain.fromBuildName(ChainConfig.chain).subdir)
+    }
+
+    private fun logFiles(): List<File> {
+        val app = appContext ?: return emptyList()
+        val chain = Chain.fromBuildName(ChainConfig.chain)
+        val dir = datadir?.let { if (chain.subdir.isEmpty()) it else File(it, chain.subdir) }
+        val node = dir?.listFiles().orEmpty().filter { it.isFile && it.name.startsWith("debug.log") }
+        val helpers = File(app.filesDir, "network").walkTopDown().filter { it.isFile && it.name.contains(".log") }.toList()
+        return node + helpers
+    }
+
+    @Volatile
+    private var lastLogClean = 0L
+
+    // trims the log files of the node, Tor and I2P to the days and size from the settings, call from a background thread
+    fun cleanLogs(): org.elektronnet.mobile.node.LogCleaner.Result {
+        val store = settings ?: return org.elektronnet.mobile.node.LogCleaner.Result(0, 0)
+        lastLogClean = System.currentTimeMillis()
+        return org.elektronnet.mobile.node.LogCleaner.clean(logFiles(), store.logDays, store.logMaxMb * 1024L * 1024L, lastLogClean)
+    }
+
+    private fun cleanLogsIfDue() {
+        if (System.currentTimeMillis() - lastLogClean < LOG_CLEAN_EVERY_MS) return
+        lastLogClean = System.currentTimeMillis()
+        Thread { runCatching { cleanLogs() } }.start()
+    }
+
+    fun clearNodeLog() {
+        controller?.current?.output?.clear()
+    }
+
+    fun clearHelperLog(tor: Boolean) {
+        networkServices?.let { if (tor) it.clearTorOutput() else it.clearI2pOutput() }
     }
 
     fun telemetry(): org.elektronnet.mobile.node.Telemetry? {

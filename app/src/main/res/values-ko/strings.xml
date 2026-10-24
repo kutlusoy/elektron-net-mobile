@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">키가 1개이면 각 키 보유자가 혼자 사용할 수 있습니다. 에스크로 보호가 아닙니다.</string>
     <string name="escrow_create_info">거래를 위한 나만의 키를 만듭니다. 승인 수는 나중에 2단계에서, 다른 사람의 키를 추가한 뒤에 고릅니다. 이 지갑의 비밀문구는 키를 한 번 해제합니다. 받는 키 줄로는 아무것도 사용할 수 없습니다.</string>
     <string name="escrow_howto">에스크로 작동 방식:\n1. 거래의 모든 사람이 여기서 에스크로를 만들고 키 줄을 받습니다.\n2. 모두 자기 줄을 다른 사람에게 보내고 다른 사람의 줄을 추가합니다.\n3. 모두 같은 승인 수(예: 3명 중 2명)를 고르고 에스크로 지갑을 만듭니다. 이 단계 전에는 정할 것이 없습니다.\n4. 확인 코드와 입금 주소를 비교하세요. 모두 같아야 합니다.\n5. 입금 주소로 코인을 보내세요. 결제하려면 한 사람이 결제를 만들고 승인이 충분해질 때까지 다른 사람이 서명합니다.</string>
+    <string name="settings_log_days">로그 보관 기간</string>
+    <string name="settings_log_days_value">%1$d일</string>
+    <string name="settings_log_size">로그 파일당 최대 크기</string>
+    <string name="settings_log_size_value">%1$d MB</string>
+    <string name="settings_log_hint">노드, Tor, I2P의 로그에 적용됩니다. 오래된 줄과 크기를 넘는 부분은 약 한 시간에 한 번 삭제됩니다. 지갑 파일은 절대 건드리지 않습니다.</string>
+    <string name="settings_log_clean">지금 로그 정리</string>
+    <string name="settings_log_freed">%1$s 확보했습니다.</string>
+    <string name="node_log_clear">지우기</string>
+    <string name="storage_title">저장 공간 사용량</string>
+    <string name="storage_loading">측정 중…</string>
+    <string name="storage_blocks">블록</string>
+    <string name="storage_index">헤더와 블록 인덱스</string>
+    <string name="storage_utxo">UTXO 세트</string>
+    <string name="storage_snapshots">스냅샷</string>
+    <string name="storage_wallet">지갑: %1$s</string>
+    <string name="storage_tor">Tor 데이터</string>
+    <string name="storage_i2p">I2P 데이터</string>
+    <string name="storage_logs">로그</string>
+    <string name="storage_other_node">기타 노드 데이터</string>
+    <string name="storage_app">앱 파일</string>
+    <string name="storage_total">합계</string>
+    <string name="storage_hint">휴대폰에서 측정하며 약 30초마다 갱신됩니다. 위의 «블록체인 저장소» 줄은 노드가 직접 보고하는 값입니다.</string>
 </resources>

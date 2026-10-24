@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">При 1 ключе каждый владелец ключа может тратить в одиночку. Это не защита эскроу.</string>
     <string name="escrow_create_info">Это создаёт ваш собственный ключ для сделки. Число подтверждений вы выберете позже, на шаге 2, после добавления ключей других. Парольная фраза этого кошелька один раз разблокирует ключ. Полученная строка ключа ничего не может потратить.</string>
     <string name="escrow_howto">Как работает эскроу:\n1. Каждый участник создаёт здесь эскроу и получает строку ключа.\n2. Каждый отправляет свою строку другим и добавляет строки других.\n3. Все выбирают одно и то же число подтверждений, например 2 из 3, и создают кошелёк эскроу. До этого шага ничего решать не нужно.\n4. Сравните контрольный код и адрес для вклада. Они должны совпадать у всех.\n5. Отправьте монеты на адрес для вклада. Чтобы заплатить, один человек создаёт платёж, остальные подписывают его, пока не наберётся достаточно подтверждений.</string>
+    <string name="settings_log_days">Хранить журналы</string>
+    <string name="settings_log_days_value">%1$d дн.</string>
+    <string name="settings_log_size">Максимальный размер файла журнала</string>
+    <string name="settings_log_size_value">%1$d МБ</string>
+    <string name="settings_log_hint">Относится к журналам узла, Tor и I2P. Старые строки и всё сверх размера удаляются примерно раз в час. Файлы кошельков не затрагиваются никогда.</string>
+    <string name="settings_log_clean">Очистить журналы сейчас</string>
+    <string name="settings_log_freed">Освобождено: %1$s.</string>
+    <string name="node_log_clear">Очистить</string>
+    <string name="storage_title">Использование памяти</string>
+    <string name="storage_loading">Измерение…</string>
+    <string name="storage_blocks">Блоки</string>
+    <string name="storage_index">Заголовки и индекс блоков</string>
+    <string name="storage_utxo">Набор UTXO</string>
+    <string name="storage_snapshots">Снимки</string>
+    <string name="storage_wallet">Кошелёк: %1$s</string>
+    <string name="storage_tor">Данные Tor</string>
+    <string name="storage_i2p">Данные I2P</string>
+    <string name="storage_logs">Журналы</string>
+    <string name="storage_other_node">Прочие данные узла</string>
+    <string name="storage_app">Файлы приложения</string>
+    <string name="storage_total">Итого</string>
+    <string name="storage_hint">Измерено на телефоне и обновляется примерно каждые 30 секунд. Строка «Хранилище блокчейна» выше — значение, которое сообщает сам узел.</string>
 </resources>

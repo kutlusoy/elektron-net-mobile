@@ -853,4 +853,26 @@
     <string name="escrow_threshold_one">Avec 1 clé, chaque détenteur peut dépenser seul. Ce n\'est pas une protection d\'escrow.</string>
     <string name="escrow_create_info">Cela crée ta propre clé pour l\'accord. Tu choisis le nombre d\'approbations plus tard, à l\'étape 2, après avoir ajouté les clés des autres. La phrase secrète de ce portefeuille déverrouille la clé une fois. La ligne de clé que tu reçois ne peut rien dépenser.</string>
     <string name="escrow_howto">Comment fonctionne un escrow :\n1. Chaque participant crée ici un escrow et reçoit une ligne de clé.\n2. Chacun envoie sa ligne aux autres et ajoute les lignes des autres.\n3. Chacun choisit le même nombre d\'approbations, par exemple 2 sur 3, et crée le portefeuille escrow. Rien n\'est à décider avant cette étape.\n4. Comparez le code de contrôle et l\'adresse de dépôt. Ils doivent être identiques pour tous.\n5. Envoie des pièces à l\'adresse de dépôt. Pour payer, une personne crée un paiement et les autres le signent jusqu\'à obtenir assez d\'approbations.</string>
+    <string name="settings_log_days">Conserver les journaux pendant</string>
+    <string name="settings_log_days_value">%1$d jours</string>
+    <string name="settings_log_size">Taille maximale par fichier journal</string>
+    <string name="settings_log_size_value">%1$d Mo</string>
+    <string name="settings_log_hint">S\'applique aux journaux du nœud, de Tor et d\'I2P. Les lignes plus anciennes et tout ce qui dépasse la taille sont supprimés environ une fois par heure. Les fichiers de portefeuille ne sont jamais touchés.</string>
+    <string name="settings_log_clean">Nettoyer les journaux maintenant</string>
+    <string name="settings_log_freed">%1$s libérés.</string>
+    <string name="node_log_clear">Vider</string>
+    <string name="storage_title">Espace utilisé</string>
+    <string name="storage_loading">Mesure en cours…</string>
+    <string name="storage_blocks">Blocs</string>
+    <string name="storage_index">En-têtes et index des blocs</string>
+    <string name="storage_utxo">Ensemble UTXO</string>
+    <string name="storage_snapshots">Instantanés</string>
+    <string name="storage_wallet">Portefeuille : %1$s</string>
+    <string name="storage_tor">Données Tor</string>
+    <string name="storage_i2p">Données I2P</string>
+    <string name="storage_logs">Journaux</string>
+    <string name="storage_other_node">Autres données du nœud</string>
+    <string name="storage_app">Fichiers de l\'app</string>
+    <string name="storage_total">Total</string>
+    <string name="storage_hint">Mesuré sur le téléphone et actualisé environ toutes les 30 secondes. La ligne « Stockage de la blockchain » ci-dessus est le chiffre que le nœud indique lui-même.</string>
 </resources>
