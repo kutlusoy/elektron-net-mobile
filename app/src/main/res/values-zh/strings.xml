@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">已签名付款请求</string>
     <string name="escrow_log_sent">已发送付款 (交易 ID)</string>
     <string name="action_show_qr">显示二维码</string>
+    <string name="send_psbt_only">只创建 PSBT，不发送</string>
+    <string name="send_psbt_only_hint">用于把付款交给另一台设备或另一个人。在有人签名并发送 PSBT 之前，币保持原位。</string>
+    <string name="send_psbt_sign">用我的密钥签名</string>
+    <string name="send_psbt_create">创建 PSBT</string>
+    <string name="send_psbt_ready_title">PSBT 已就绪</string>
+    <string name="send_psbt_ready_signed">其中包含你的签名。请把这段文本传出去。你可以在“工具”的 PSBT 中检查、签名、合并和发送 PSBT。</string>
+    <string name="send_psbt_ready_unsigned">尚未签名。请把这段文本交给要签名的人。拥有全部签名的人在“工具”的 PSBT 中发送。</string>
 </resources>

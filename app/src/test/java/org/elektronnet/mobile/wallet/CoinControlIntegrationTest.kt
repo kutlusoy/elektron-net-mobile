@@ -254,4 +254,23 @@ class CoinControlIntegrationTest {
         assertFalse(env.rpc.call("decodepsbt", listOf(max.psbt), null).toString().contains(reusedCoin.txid))
         assertFalse(env.coins.coins().any { it.frozen })
     }
+
+    @Test
+    fun aPaymentCanBeHandedOverAsAnUnsignedOrSignedPsbtInsteadOfBeingSent() = withEnv(29092) { env ->
+        val tools = PsbtTools(env.rpc) { listOf("elektron") }
+        val prepared = env.send.prepare(SendRequest(env.miner, 100_000_000L, false, rate(env)))
+        val unsigned = tools.inspect(prepared.psbt)
+        assertEquals(PsbtStatus.NeedsSignatures, unsigned.status)
+        assertEquals(listOf("elektron"), unsigned.signableBy)
+        assertTrue(unsigned.outputs.any { it.address == env.miner && it.amountLep == 100_000_000L })
+        val before = WalletReader(env.rpc).balances().trustedLep
+        val signed = env.send.sign(prepared, pass).psbt
+        val view = tools.inspect(signed)
+        assertTrue(view.status == PsbtStatus.ReadyToFinalize || view.status == PsbtStatus.Final)
+        assertEquals(before, WalletReader(env.rpc).balances().trustedLep)
+        val txid = tools.finalizeAndBroadcast(signed)
+        assertEquals(64, txid.length)
+        env.rpc.call("generatetoaddress", listOf(1, env.miner), "miner")
+        assertTrue(WalletReader(env.rpc).balances().trustedLep < before)
+    }
 }

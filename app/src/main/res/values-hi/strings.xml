@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">भुगतान अनुरोध पर हस्ताक्षर हुए</string>
     <string name="escrow_log_sent">भुगतान भेजा गया (लेनदेन ID)</string>
     <string name="action_show_qr">QR दिखाएँ</string>
+    <string name="send_psbt_only">केवल PSBT बनाएँ, भेजें नहीं</string>
+    <string name="send_psbt_only_hint">भुगतान किसी अन्य डिवाइस या व्यक्ति को देने के लिए। जब तक कोई PSBT पर हस्ताक्षर करके भेजता नहीं, सिक्के वहीं रहते हैं जहाँ हैं।</string>
+    <string name="send_psbt_sign">मेरी कुंजी से हस्ताक्षर करें</string>
+    <string name="send_psbt_create">PSBT बनाएँ</string>
+    <string name="send_psbt_ready_title">PSBT तैयार</string>
+    <string name="send_psbt_ready_signed">आपका हस्ताक्षर शामिल है। यह टेक्स्ट आगे दें। PSBT को आप टूल्स, PSBT में जाँच, हस्ताक्षर, संयोजित और भेज सकते हैं।</string>
+    <string name="send_psbt_ready_unsigned">इस पर अभी हस्ताक्षर नहीं हुआ। यह टेक्स्ट उसे दें जो हस्ताक्षर करेगा। जिसके पास सभी हस्ताक्षर हों वह इसे टूल्स, PSBT में भेजता है।</string>
 </resources>

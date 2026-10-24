@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">تم توقيع طلب الدفع</string>
     <string name="escrow_log_sent">تم إرسال الدفعة (معرّف المعاملة)</string>
     <string name="action_show_qr">عرض QR</string>
+    <string name="send_psbt_only">إنشاء PSBT فقط دون إرسال</string>
+    <string name="send_psbt_only_hint">لتمرير الدفعة إلى جهاز أو شخص آخر. تبقى العملات في مكانها إلى أن يوقّع أحدهم PSBT ويرسلها.</string>
+    <string name="send_psbt_sign">التوقيع بمفتاحي</string>
+    <string name="send_psbt_create">إنشاء PSBT</string>
+    <string name="send_psbt_ready_title">PSBT جاهزة</string>
+    <string name="send_psbt_ready_signed">توقيعك مضمَّن. مرّر هذا النص. يمكنك فحص PSBT وتوقيعها ودمجها وإرسالها ضمن الأدوات، PSBT.</string>
+    <string name="send_psbt_ready_unsigned">لم تُوقَّع بعد. مرّر هذا النص إلى من سيوقّعها. من يملك كل التوقيعات يرسلها ضمن الأدوات، PSBT.</string>
 </resources>

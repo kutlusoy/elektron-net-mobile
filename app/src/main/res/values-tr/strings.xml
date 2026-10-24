@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">Ödeme isteği imzalandı</string>
     <string name="escrow_log_sent">Ödeme gönderildi (işlem kimliği)</string>
     <string name="action_show_qr">QR göster</string>
+    <string name="send_psbt_only">Yalnızca PSBT oluştur, gönderme</string>
+    <string name="send_psbt_only_hint">Ödemeyi başka bir cihaza veya kişiye vermek için. Biri PSBT\'yi imzalayıp gönderene kadar coinler olduğu yerde kalır.</string>
+    <string name="send_psbt_sign">Anahtarımla imzala</string>
+    <string name="send_psbt_create">PSBT oluştur</string>
+    <string name="send_psbt_ready_title">PSBT hazır</string>
+    <string name="send_psbt_ready_signed">İmzanız dahil. Bu metni iletin. Bir PSBT\'yi Araçlar, PSBT altında kontrol edebilir, imzalayabilir, birleştirebilir ve gönderebilirsiniz.</string>
+    <string name="send_psbt_ready_unsigned">Henüz imzalanmadı. Bu metni imzalayacak kişiye iletin. Tüm imzalara sahip olan, Araçlar, PSBT altından gönderir.</string>
 </resources>

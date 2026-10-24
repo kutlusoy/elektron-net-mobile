@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">Запрос платежа подписан</string>
     <string name="escrow_log_sent">Платёж отправлен (ID транзакции)</string>
     <string name="action_show_qr">Показать QR</string>
+    <string name="send_psbt_only">Только создать PSBT, не отправлять</string>
+    <string name="send_psbt_only_hint">Чтобы передать платёж другому устройству или человеку. Монеты остаются на месте, пока кто-то не подпишет и не отправит PSBT.</string>
+    <string name="send_psbt_sign">Подписать моим ключом</string>
+    <string name="send_psbt_create">Создать PSBT</string>
+    <string name="send_psbt_ready_title">PSBT готова</string>
+    <string name="send_psbt_ready_signed">Ваша подпись включена. Передайте этот текст дальше. PSBT можно проверить, подписать, объединить и отправить в разделе «Инструменты», PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Она ещё не подписана. Передайте этот текст тому, кто её подпишет. У кого есть все подписи, тот отправляет её в разделе «Инструменты», PSBT.</string>
 </resources>

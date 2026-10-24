@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">Zahlungsanfrage signiert</string>
     <string name="escrow_log_sent">Zahlung gesendet (Transaktions-ID)</string>
     <string name="action_show_qr">QR zeigen</string>
+    <string name="send_psbt_only">Nur eine PSBT erstellen, nicht senden</string>
+    <string name="send_psbt_only_hint">Zum Weitergeben der Zahlung an ein anderes Gerät oder eine andere Person. Die Coins bleiben, wo sie sind, bis jemand die PSBT signiert und sendet.</string>
+    <string name="send_psbt_sign">Mit meinem Schlüssel signieren</string>
+    <string name="send_psbt_create">PSBT erstellen</string>
+    <string name="send_psbt_ready_title">PSBT bereit</string>
+    <string name="send_psbt_ready_signed">Deine Signatur ist enthalten. Gib diesen Text weiter. Eine PSBT kannst du unter Werkzeuge, PSBT prüfen, signieren, kombinieren und senden.</string>
+    <string name="send_psbt_ready_unsigned">Sie ist noch nicht signiert. Gib diesen Text an den weiter, der sie signiert. Wer alle Signaturen hat, sendet sie unter Werkzeuge, PSBT.</string>
 </resources>

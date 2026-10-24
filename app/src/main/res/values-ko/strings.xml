@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">결제 요청 서명됨</string>
     <string name="escrow_log_sent">결제 전송됨 (거래 ID)</string>
     <string name="action_show_qr">QR 표시</string>
+    <string name="send_psbt_only">PSBT만 만들고 보내지 않기</string>
+    <string name="send_psbt_only_hint">결제를 다른 기기나 사람에게 넘기기 위한 것입니다. 누군가 PSBT에 서명해 보내기 전까지 코인은 그대로 있습니다.</string>
+    <string name="send_psbt_sign">내 키로 서명</string>
+    <string name="send_psbt_create">PSBT 만들기</string>
+    <string name="send_psbt_ready_title">PSBT 준비됨</string>
+    <string name="send_psbt_ready_signed">내 서명이 포함되어 있습니다. 이 텍스트를 전달하세요. PSBT는 도구, PSBT에서 확인, 서명, 결합, 전송할 수 있습니다.</string>
+    <string name="send_psbt_ready_unsigned">아직 서명되지 않았습니다. 이 텍스트를 서명할 사람에게 전달하세요. 모든 서명을 가진 사람이 도구, PSBT에서 보냅니다.</string>
 </resources>

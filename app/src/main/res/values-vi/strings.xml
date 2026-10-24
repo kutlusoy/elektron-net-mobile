@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">Đã ký yêu cầu thanh toán</string>
     <string name="escrow_log_sent">Đã gửi thanh toán (ID giao dịch)</string>
     <string name="action_show_qr">Hiện QR</string>
+    <string name="send_psbt_only">Chỉ tạo PSBT, không gửi</string>
+    <string name="send_psbt_only_hint">Để chuyển khoản thanh toán cho thiết bị hoặc người khác. Coin vẫn ở nguyên chỗ cho đến khi ai đó ký và gửi PSBT.</string>
+    <string name="send_psbt_sign">Ký bằng khóa của tôi</string>
+    <string name="send_psbt_create">Tạo PSBT</string>
+    <string name="send_psbt_ready_title">PSBT đã sẵn sàng</string>
+    <string name="send_psbt_ready_signed">Chữ ký của bạn đã được đưa vào. Hãy chuyển văn bản này đi. Bạn có thể kiểm tra, ký, kết hợp và gửi PSBT trong Công cụ, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Chưa được ký. Hãy chuyển văn bản này cho người sẽ ký. Ai có đủ chữ ký sẽ gửi nó trong Công cụ, PSBT.</string>
 </resources>

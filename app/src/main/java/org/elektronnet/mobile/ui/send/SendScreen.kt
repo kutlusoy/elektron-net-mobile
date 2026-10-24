@@ -92,6 +92,8 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var txid by remember { mutableStateOf<String?>(null) }
     var noteFromLink by remember { mutableStateOf<String?>(null) }
     var exportedPsbt by remember { mutableStateOf<String?>(null) }
+    var psbtOnly by remember { mutableStateOf(false) }
+    var psbtSign by remember { mutableStateOf(true) }
     var scanning by remember { mutableStateOf(false) }
     var picking by remember { mutableStateOf(false) }
     var reused by remember { mutableStateOf(0L) }
@@ -163,7 +165,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             val result = withContext(Dispatchers.IO) {
                 runCatching {
                     val engine = NodeHost.sendEngine(walletName) ?: throw SendException(SendFailure.NodeNotReady)
-                    if (escrow != null) engine.sign(ready, pass).psbt else engine.send(ready, pass)
+                    if (escrow != null || psbtOnly) engine.sign(ready, pass).psbt else engine.send(ready, pass)
                 }
             }
             passphrase = ""
@@ -171,6 +173,8 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                 if (escrow != null) {
                     exportedPsbt = it
                     withContext(Dispatchers.IO) { runCatching { NodeHost.escrowManager()?.addLog(escrow.id, org.elektronnet.mobile.wallet.EscrowLogKind.Request, it) } }
+                } else if (psbtOnly) {
+                    exportedPsbt = it
                 } else {
                     txid = it
                 }
@@ -415,7 +419,33 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         FiatLine(review.feeLep)
                     }
                     ReviewLine(stringResource(R.string.send_review_total)) { Text(elek(review.totalLep), style = MaterialTheme.typography.titleLarge); FiatLine(review.totalLep) }
-                    Button(onClick = { step = Step.Confirm }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(if (escrow != null) R.string.escrow_sign_action else R.string.action_send)) }
+                    if (escrow == null) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Switch(checked = psbtOnly, onCheckedChange = { psbtOnly = it })
+                            Column(modifier = Modifier.padding(start = 12.dp)) {
+                                Text(stringResource(R.string.send_psbt_only))
+                                Text(stringResource(R.string.send_psbt_only_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                        if (psbtOnly) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Switch(checked = psbtSign, onCheckedChange = { psbtSign = it })
+                                Text(stringResource(R.string.send_psbt_sign), modifier = Modifier.padding(start = 12.dp))
+                            }
+                        }
+                    }
+                    Button(
+                        onClick = {
+                            val ready = prepared
+                            if (psbtOnly && !psbtSign && ready != null) {
+                                exportedPsbt = ready.psbt
+                                step = Step.Done
+                            } else {
+                                step = Step.Confirm
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text(stringResource(if (escrow != null) R.string.escrow_sign_action else if (psbtOnly) R.string.send_psbt_create else R.string.action_send)) }
                 }
             }
             Step.Confirm -> {
@@ -441,8 +471,13 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             Step.Done -> {
                 val psbt = exportedPsbt
                 if (psbt != null) {
-                    Text(stringResource(R.string.escrow_proposal_title), style = MaterialTheme.typography.headlineSmall)
-                    Text(stringResource(R.string.escrow_proposal_body, escrow?.required ?: 2))
+                    if (escrow != null) {
+                        Text(stringResource(R.string.escrow_proposal_title), style = MaterialTheme.typography.headlineSmall)
+                        Text(stringResource(R.string.escrow_proposal_body, escrow.required))
+                    } else {
+                        Text(stringResource(R.string.send_psbt_ready_title), style = MaterialTheme.typography.headlineSmall)
+                        Text(stringResource(if (psbtSign) R.string.send_psbt_ready_signed else R.string.send_psbt_ready_unsigned))
+                    }
                     Text(psbt, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall, maxLines = 8)
                     if (psbt.length <= org.elektronnet.mobile.ui.tools.PSBT_QR_LIMIT) org.elektronnet.mobile.ui.receive.QrView(psbt)
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {

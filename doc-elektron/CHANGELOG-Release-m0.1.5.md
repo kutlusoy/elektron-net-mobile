@@ -11,7 +11,7 @@ This file lists the features this release added. Corrections are not listed.
 
 ---
 
-**Status:** in preparation, branch `m0.1.5`.
+**Status:** in preparation, branch `m0.1.5`. Followed by [`CHANGELOG-Release-m0.1.6.md`](./CHANGELOG-Release-m0.1.6.md).
 
 ## Settings
 

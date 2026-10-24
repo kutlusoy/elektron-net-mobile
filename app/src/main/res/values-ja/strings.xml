@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">支払いリクエストに署名</string>
     <string name="escrow_log_sent">支払いを送信 (トランザクションID)</string>
     <string name="action_show_qr">QRを表示</string>
+    <string name="send_psbt_only">PSBTだけ作成し、送信しない</string>
+    <string name="send_psbt_only_hint">支払いを別の端末や人に渡すためのものです。誰かがPSBTに署名して送信するまで、コインはそのままです。</string>
+    <string name="send_psbt_sign">自分の鍵で署名する</string>
+    <string name="send_psbt_create">PSBTを作成</string>
+    <string name="send_psbt_ready_title">PSBTの準備ができました</string>
+    <string name="send_psbt_ready_signed">あなたの署名が含まれています。このテキストを渡してください。PSBTは「ツール」のPSBTで確認、署名、結合、送信できます。</string>
+    <string name="send_psbt_ready_unsigned">まだ署名されていません。署名する人にこのテキストを渡してください。すべての署名がそろった人が「ツール」のPSBTから送信します。</string>
 </resources>

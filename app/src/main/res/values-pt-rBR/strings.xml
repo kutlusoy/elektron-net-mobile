@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">Pedido de pagamento assinado</string>
     <string name="escrow_log_sent">Pagamento enviado (ID da transação)</string>
     <string name="action_show_qr">Mostrar QR</string>
+    <string name="send_psbt_only">Apenas criar uma PSBT, não enviar</string>
+    <string name="send_psbt_only_hint">Para passar o pagamento a outro dispositivo ou pessoa. As moedas ficam onde estão até alguém assinar e enviar a PSBT.</string>
+    <string name="send_psbt_sign">Assinar com minha chave</string>
+    <string name="send_psbt_create">Criar PSBT</string>
+    <string name="send_psbt_ready_title">PSBT pronta</string>
+    <string name="send_psbt_ready_signed">Sua assinatura está incluída. Repasse este texto. Você pode verificar, assinar, combinar e enviar uma PSBT em Ferramentas, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Ainda não está assinada. Repasse este texto a quem a assina. Quem tiver todas as assinaturas a envia em Ferramentas, PSBT.</string>
 </resources>

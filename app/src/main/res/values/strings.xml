@@ -908,4 +908,11 @@
     <string name="escrow_log_signed">Payment request signed</string>
     <string name="escrow_log_sent">Payment sent (transaction ID)</string>
     <string name="action_show_qr">Show QR</string>
+    <string name="send_psbt_only">Only create a PSBT, do not send</string>
+    <string name="send_psbt_only_hint">For handing the payment to another device or person. The coins stay where they are until someone signs and sends the PSBT.</string>
+    <string name="send_psbt_sign">Sign it with my key</string>
+    <string name="send_psbt_create">Create PSBT</string>
+    <string name="send_psbt_ready_title">PSBT ready</string>
+    <string name="send_psbt_ready_signed">Your signature is included. Pass this text on. You can check, sign, combine and send a PSBT under Tools, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">It is not signed yet. Pass this text to whoever signs it. Whoever holds all signatures sends it under Tools, PSBT.</string>
 </resources>

@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">Richiesta di pagamento firmata</string>
     <string name="escrow_log_sent">Pagamento inviato (ID transazione)</string>
     <string name="action_show_qr">Mostra QR</string>
+    <string name="send_psbt_only">Crea solo una PSBT, non inviare</string>
+    <string name="send_psbt_only_hint">Per passare il pagamento a un altro dispositivo o a un\'altra persona. Le monete restano dove sono finché qualcuno firma e invia la PSBT.</string>
+    <string name="send_psbt_sign">Firmala con la mia chiave</string>
+    <string name="send_psbt_create">Crea PSBT</string>
+    <string name="send_psbt_ready_title">PSBT pronta</string>
+    <string name="send_psbt_ready_signed">La tua firma è inclusa. Passa questo testo. Puoi controllare, firmare, combinare e inviare una PSBT in Strumenti, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Non è ancora firmata. Passa questo testo a chi la firma. Chi ha tutte le firme la invia in Strumenti, PSBT.</string>
 </resources>

@@ -897,4 +897,11 @@
     <string name="escrow_log_signed">Permintaan pembayaran ditandatangani</string>
     <string name="escrow_log_sent">Pembayaran terkirim (ID transaksi)</string>
     <string name="action_show_qr">Tampilkan QR</string>
+    <string name="send_psbt_only">Hanya buat PSBT, jangan kirim</string>
+    <string name="send_psbt_only_hint">Untuk menyerahkan pembayaran ke perangkat atau orang lain. Koin tetap di tempatnya sampai seseorang menandatangani dan mengirim PSBT.</string>
+    <string name="send_psbt_sign">Tandatangani dengan kunci saya</string>
+    <string name="send_psbt_create">Buat PSBT</string>
+    <string name="send_psbt_ready_title">PSBT siap</string>
+    <string name="send_psbt_ready_signed">Tanda tangan Anda sudah termasuk. Teruskan teks ini. Anda dapat memeriksa, menandatangani, menggabungkan, dan mengirim PSBT di Alat, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Belum ditandatangani. Teruskan teks ini ke yang akan menandatangani. Yang memegang semua tanda tangan mengirimnya di Alat, PSBT.</string>
 </resources>
