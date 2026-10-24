@@ -909,7 +909,7 @@
     <string name="update_channel_test">Você usa uma versão de teste (chave de teste pública). Só são oferecidas versões de teste mais novas.</string>
     <string name="update_channel_release">Você usa a linha de lançamentos. Candidatas a lançamento e lançamentos finais são oferecidos, só o mais recente aparece.</string>
     <string name="update_auto">Verificar automaticamente</string>
-    <string name="update_auto_hint">Enquanto o app está aberto, ele consulta o github.com uma vez por dia. Desative para verificar só manualmente.</string>
+    <string name="update_auto_hint">Enquanto o app está aberto, ele pergunta ao github.com uma vez por dia se há uma versão mais nova. Se estiver desativado, as atualizações só são verificadas manualmente.</string>
     <string name="update_note_test">Uma versão de teste mais nova. Ela é assinada com a chave de teste pública e serve só para testes.</string>
     <string name="update_note_candidate">Uma candidata a lançamento. Você também pode esperar o lançamento final, nada obriga você a atualizar.</string>
     <string name="update_dismiss">Depois</string>

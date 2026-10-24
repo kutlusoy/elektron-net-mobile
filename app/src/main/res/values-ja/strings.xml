@@ -909,7 +909,7 @@
     <string name="update_channel_test">テストビルド（公開テスト鍵）を使用しています。より新しいテストビルドだけが提示されます。</string>
     <string name="update_channel_release">リリース系列を使用しています。リリース候補と正式リリースが提示され、最新のものだけが表示されます。</string>
     <string name="update_auto">自動で確認</string>
-    <string name="update_auto_hint">アプリを開いている間、1日1回 github.com に問い合わせます。オフにすると手動でのみ確認します。</string>
+    <string name="update_auto_hint">アプリを開いている間、1日1回 github.com に新しいバージョンがあるか問い合わせます。オフの場合、更新は手動でのみ確認されます。</string>
     <string name="update_note_test">より新しいテストビルドです。公開テスト鍵で署名されており、テスト専用です。</string>
     <string name="update_note_candidate">リリース候補です。正式リリースを待つこともでき、更新は強制されません。</string>
     <string name="update_dismiss">後で</string>

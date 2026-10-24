@@ -909,7 +909,7 @@
     <string name="update_channel_test">Kamu memakai build uji (kunci uji publik). Hanya build uji yang lebih baru yang ditawarkan.</string>
     <string name="update_channel_release">Kamu memakai jalur rilis. Kandidat rilis dan rilis final ditawarkan, hanya yang terbaru yang ditampilkan.</string>
     <string name="update_auto">Periksa otomatis</string>
-    <string name="update_auto_hint">Selama aplikasi terbuka, aplikasi bertanya ke github.com sekali sehari. Matikan untuk memeriksa secara manual saja.</string>
+    <string name="update_auto_hint">Selama aplikasi terbuka, aplikasi bertanya ke github.com sekali sehari apakah ada versi yang lebih baru. Jika dimatikan, pembaruan hanya diperiksa secara manual.</string>
     <string name="update_note_test">Build uji yang lebih baru. Ditandatangani dengan kunci uji publik dan hanya untuk pengujian.</string>
     <string name="update_note_candidate">Kandidat rilis. Kamu juga bisa menunggu rilis final, tidak ada keharusan memperbarui.</string>
     <string name="update_dismiss">Nanti</string>

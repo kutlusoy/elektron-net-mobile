@@ -909,7 +909,7 @@
     <string name="update_channel_test">تستخدم نسخة اختبار (مفتاح اختبار عام). تُعرض فقط نسخ الاختبار الأحدث.</string>
     <string name="update_channel_release">تستخدم خط الإصدارات. تُعرض الإصدارات المرشحة والإصدارات النهائية، ويظهر الأحدث فقط.</string>
     <string name="update_auto">التحقق تلقائيًا</string>
-    <string name="update_auto_hint">أثناء فتح التطبيق يسأل github.com مرة في اليوم. أوقفه للتحقق يدويًا فقط.</string>
+    <string name="update_auto_hint">أثناء فتح التطبيق يسأل github.com مرة في اليوم عن إصدار أحدث. عند إيقافه تُفحص التحديثات يدويًا فقط.</string>
     <string name="update_note_test">نسخة اختبار أحدث. موقّعة بمفتاح الاختبار العام ومخصصة للاختبار فقط.</string>
     <string name="update_note_candidate">إصدار مرشح. يمكنك أيضًا انتظار الإصدار النهائي، ولا شيء يجبرك على التحديث.</string>
     <string name="update_dismiss">لاحقًا</string>

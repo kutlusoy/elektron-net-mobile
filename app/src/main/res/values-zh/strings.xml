@@ -909,7 +909,7 @@
     <string name="update_channel_test">你使用的是测试版（公开测试密钥）。只会提供更新的测试版。</string>
     <string name="update_channel_release">你使用的是正式发布线。会提供候选版本和正式版本，只显示最新的一个。</string>
     <string name="update_auto">自动检查</string>
-    <string name="update_auto_hint">应用打开期间，每天向 github.com 查询一次。关闭后只能手动检查。</string>
+    <string name="update_auto_hint">应用打开期间，每天向 github.com 查询一次是否有更新的版本。关闭时，只会手动检查更新。</string>
     <string name="update_note_test">一个更新的测试版。它使用公开测试密钥签名，仅用于测试。</string>
     <string name="update_note_candidate">这是候选版本。你也可以等待正式版本，没有任何强制更新。</string>
     <string name="update_dismiss">稍后</string>

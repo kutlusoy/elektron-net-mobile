@@ -909,7 +909,7 @@
     <string name="update_channel_test">테스트 빌드(공개 테스트 키)를 사용 중입니다. 더 새로운 테스트 빌드만 제공됩니다.</string>
     <string name="update_channel_release">릴리스 계열을 사용 중입니다. 릴리스 후보와 정식 릴리스가 제공되며 가장 최신 항목만 표시됩니다.</string>
     <string name="update_auto">자동으로 확인</string>
-    <string name="update_auto_hint">앱이 열려 있는 동안 하루에 한 번 github.com에 문의합니다. 끄면 수동으로만 확인합니다.</string>
+    <string name="update_auto_hint">앱이 열려 있는 동안 하루에 한 번 github.com에 더 새로운 버전이 있는지 문의합니다. 꺼져 있으면 업데이트는 수동으로만 확인됩니다.</string>
     <string name="update_note_test">더 새로운 테스트 빌드입니다. 공개 테스트 키로 서명되었으며 테스트 전용입니다.</string>
     <string name="update_note_candidate">릴리스 후보입니다. 정식 릴리스를 기다려도 되며 업데이트가 강제되지 않습니다.</string>
     <string name="update_dismiss">나중에</string>

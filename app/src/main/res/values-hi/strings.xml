@@ -909,7 +909,7 @@
     <string name="update_channel_test">आप टेस्ट बिल्ड (सार्वजनिक टेस्ट की) इस्तेमाल कर रहे हैं। केवल नए टेस्ट बिल्ड दिखाए जाते हैं।</string>
     <string name="update_channel_release">आप रिलीज़ लाइन इस्तेमाल कर रहे हैं। रिलीज़ कैंडिडेट और अंतिम रिलीज़ दिखाए जाते हैं, केवल सबसे नया दिखता है।</string>
     <string name="update_auto">अपने आप जाँचें</string>
-    <string name="update_auto_hint">ऐप खुला रहने पर यह दिन में एक बार github.com से पूछता है। केवल हाथ से जाँचने के लिए इसे बंद करें।</string>
+    <string name="update_auto_hint">ऐप खुला रहने पर यह दिन में एक बार github.com से नए संस्करण के बारे में पूछता है। बंद होने पर अपडेट केवल हाथ से जाँचे जाते हैं।</string>
     <string name="update_note_test">एक नया टेस्ट बिल्ड। यह सार्वजनिक टेस्ट की से साइन है और केवल टेस्ट के लिए है।</string>
     <string name="update_note_candidate">यह रिलीज़ कैंडिडेट है। आप अंतिम रिलीज़ का इंतज़ार भी कर सकते हैं, अपडेट के लिए कोई मजबूरी नहीं है।</string>
     <string name="update_dismiss">बाद में</string>
