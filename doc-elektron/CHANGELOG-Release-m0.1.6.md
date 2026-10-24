@@ -31,3 +31,9 @@ This file lists the features this release added. Corrections are not listed.
 
 - The default separators follow the device language and region on a fresh install. Choosing the app language that equals the device language keeps the device region (for example German in Switzerland keeps the apostrophe).
 - Languages with their own digits (Arabic) no longer mix their separators with Latin digits: they use comma and period.
+
+## Updates
+
+- The app checks for a newer version once a day while it is open (Settings, Updates, "Check automatically", on by default, a failed check is repeated after an hour). The automatic check is silent: it only shows something when a newer version exists. The button "Check for updates" still works by hand.
+- Updates follow the line of builds: a test build (public test key) is only offered newer test builds, the release line is offered release candidates and releases. Only the newest one is shown, so a test build never points to a release that it cannot be updated to.
+- A found update is shown as a banner on the wallet screen and in Settings with a button to the release page. "Later" hides the banner until a newer version appears. A release candidate carries the note that the user can wait for the final release and is not forced to update.

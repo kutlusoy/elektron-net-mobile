@@ -906,4 +906,11 @@
     <string name="send_psbt_ready_unsigned">Sie ist noch nicht signiert. Gib diesen Text an den weiter, der sie signiert. Wer alle Signaturen hat, sendet sie unter Werkzeuge, PSBT.</string>
     <string name="send_advanced">Erweiterte Zahlung</string>
     <string name="send_advanced_hint">Coins auswählen, die Gebühr vom Betrag abziehen, eigene Gebühr festlegen oder nur eine PSBT erstellen.</string>
+    <string name="update_channel_test">Du nutzt einen Test-Build (öffentlicher Testschlüssel). Es werden nur neuere Test-Builds angeboten.</string>
+    <string name="update_channel_release">Du nutzt die Release-Linie. Release Candidates und endgültige Releases werden angeboten, gezeigt wird nur das neueste.</string>
+    <string name="update_auto">Automatisch prüfen</string>
+    <string name="update_auto_hint">Solange die App offen ist, fragt sie einmal am Tag bei github.com nach. Schalte es aus, um nur von Hand zu prüfen.</string>
+    <string name="update_note_test">Ein neuerer Test-Build. Er ist mit dem öffentlichen Testschlüssel signiert und nur zum Testen gedacht.</string>
+    <string name="update_note_candidate">Ein Release Candidate. Du kannst auch auf das endgültige Release warten, nichts zwingt dich zum Update.</string>
+    <string name="update_dismiss">Später</string>
 </resources>

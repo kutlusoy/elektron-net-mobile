@@ -104,6 +104,12 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     val shell = walletReady || nodeOnly
 
     val scope = androidx.compose.runtime.rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        while (true) {
+            if (NodeHost.appVisible) org.elektronnet.mobile.ui.theme.UpdateState.checkIfDue()
+            delay(UPDATE_TICK_MS)
+        }
+    }
     val fiatSettings = org.elektronnet.mobile.ui.theme.FiatState.settings
     LaunchedEffect(fiatSettings) {
         if (fiatSettings.enabled) delay(FIAT_DEBOUNCE_MS)
@@ -290,6 +296,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         onContacts = { show(Overlay.Contacts) },
                     )
                     NodeHost.restoreNotice?.let { RestoreNotice { NodeHost.restoreNotice = null } }
+                    org.elektronnet.mobile.ui.settings.UpdateBanner()
                     SetupBanner(
                         status = setup,
                         needsPassphrase = NodeHost.needsRescanPassphrase,
@@ -390,4 +397,5 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
 
 private const val STORAGE_REFRESH_MS = 30_000L
 private const val FIAT_DEBOUNCE_MS = 2_000L
+private const val UPDATE_TICK_MS = 15L * 60 * 1000
 private const val FIAT_TICK_MS = 15_000L

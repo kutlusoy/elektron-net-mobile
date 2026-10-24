@@ -906,4 +906,11 @@
     <string name="send_psbt_ready_unsigned">इस पर अभी हस्ताक्षर नहीं हुआ। यह टेक्स्ट उसे दें जो हस्ताक्षर करेगा। जिसके पास सभी हस्ताक्षर हों वह इसे टूल्स, PSBT में भेजता है।</string>
     <string name="send_advanced">उन्नत भुगतान</string>
     <string name="send_advanced_hint">सिक्के चुनें, राशि में से शुल्क घटाएँ, अपनी शुल्क दर तय करें या केवल PSBT बनाएँ।</string>
+    <string name="update_channel_test">आप टेस्ट बिल्ड (सार्वजनिक टेस्ट की) इस्तेमाल कर रहे हैं। केवल नए टेस्ट बिल्ड दिखाए जाते हैं।</string>
+    <string name="update_channel_release">आप रिलीज़ लाइन इस्तेमाल कर रहे हैं। रिलीज़ कैंडिडेट और अंतिम रिलीज़ दिखाए जाते हैं, केवल सबसे नया दिखता है।</string>
+    <string name="update_auto">अपने आप जाँचें</string>
+    <string name="update_auto_hint">ऐप खुला रहने पर यह दिन में एक बार github.com से पूछता है। केवल हाथ से जाँचने के लिए इसे बंद करें।</string>
+    <string name="update_note_test">एक नया टेस्ट बिल्ड। यह सार्वजनिक टेस्ट की से साइन है और केवल टेस्ट के लिए है।</string>
+    <string name="update_note_candidate">यह रिलीज़ कैंडिडेट है। आप अंतिम रिलीज़ का इंतज़ार भी कर सकते हैं, अपडेट के लिए कोई मजबूरी नहीं है।</string>
+    <string name="update_dismiss">बाद में</string>
 </resources>

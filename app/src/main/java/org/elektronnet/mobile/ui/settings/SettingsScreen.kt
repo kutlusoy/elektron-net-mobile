@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.RadioButton
 import androidx.compose.ui.semantics.Role
 import org.elektronnet.mobile.ui.model.ThemeMode
+import org.elektronnet.mobile.ui.theme.UpdateState
+import org.elektronnet.mobile.ui.theme.UpdateStatus
 import org.elektronnet.mobile.ui.theme.Palette
 import org.elektronnet.mobile.ui.theme.Palettes
 import androidx.compose.foundation.layout.Column
@@ -25,9 +27,6 @@ import androidx.compose.material3.Switch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.elektronnet.mobile.node.UpdateCheck
-import org.elektronnet.mobile.node.UpdateFetch
-import org.elektronnet.mobile.node.UpdateResult
 import org.elektronnet.mobile.ui.theme.UnitState
 import org.elektronnet.mobile.wallet.Amount
 import org.elektronnet.mobile.wallet.AmountUnit
@@ -242,37 +241,21 @@ private fun unitLabel(unit: AmountUnit): Int = when (unit) {
 
 @Composable
 private fun UpdateChecker() {
-    val context = LocalContext.current
     val scope = androidx.compose.runtime.rememberCoroutineScope()
-    var busy by remember { mutableStateOf(false) }
-    var result by remember { mutableStateOf<UpdateResult?>(null) }
-    var failed by remember { mutableStateOf(false) }
+    val busy = UpdateState.status == UpdateStatus.Checking
     Hint(stringResource(R.string.update_hint))
+    Hint(stringResource(if (UpdateState.testBuild) R.string.update_channel_test else R.string.update_channel_release))
+    ToggleRow(R.string.update_auto, R.string.update_auto_hint, UpdateState.auto) { UpdateState.setAuto(it) }
     androidx.compose.material3.OutlinedButton(
         enabled = !busy,
-        onClick = {
-            busy = true
-            failed = false
-            result = null
-            scope.launch {
-                val json = withContext(Dispatchers.IO) { runCatching { UpdateFetch.tags() }.getOrNull() }
-                busy = false
-                if (json == null) failed = true else result = UpdateCheck.evaluate(BuildConfig.VERSION_NAME, BuildConfig.MOBILE_VERSION, json)
-            }
-        },
+        onClick = { scope.launch { UpdateState.check() } },
         modifier = Modifier.fillMaxWidth(),
     ) { Text(stringResource(if (busy) R.string.update_checking else R.string.update_check)) }
-    if (failed) Text(stringResource(R.string.update_failed), color = MaterialTheme.colorScheme.error)
-    when (val r = result) {
-        is UpdateResult.Newer -> {
-            Text(stringResource(R.string.update_available, r.tag), color = MaterialTheme.colorScheme.primary)
-            androidx.compose.material3.TextButton(onClick = {
-                context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(UpdateCheck.RELEASE_URL + r.tag)))
-            }) { Text(stringResource(R.string.update_open)) }
-        }
-        UpdateResult.UpToDate -> Text(stringResource(R.string.update_latest))
-        UpdateResult.Unknown -> Text(stringResource(R.string.update_failed), color = MaterialTheme.colorScheme.error)
-        null -> Unit
+    if (UpdateState.status == UpdateStatus.Failed) Text(stringResource(R.string.update_failed), color = MaterialTheme.colorScheme.error)
+    val offer = UpdateState.offer
+    when {
+        offer != null -> UpdateOffer(offer)
+        UpdateState.status == UpdateStatus.UpToDate -> Text(stringResource(R.string.update_latest))
     }
 }
 

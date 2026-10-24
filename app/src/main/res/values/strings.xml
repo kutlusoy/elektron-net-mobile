@@ -917,4 +917,11 @@
     <string name="send_psbt_ready_unsigned">It is not signed yet. Pass this text to whoever signs it. Whoever holds all signatures sends it under Tools, PSBT.</string>
     <string name="send_advanced">Advanced payment</string>
     <string name="send_advanced_hint">Choose the coins, subtract the fee from the amount, set your own fee rate or only create a PSBT.</string>
+    <string name="update_channel_test">You use a test build (public test key). Only newer test builds are offered.</string>
+    <string name="update_channel_release">You use the release line. Release candidates and final releases are offered, only the newest one is shown.</string>
+    <string name="update_auto">Check automatically</string>
+    <string name="update_auto_hint">While the app is open it asks github.com once a day. Switch it off to check only by hand.</string>
+    <string name="update_note_test">A newer test build. It is signed with the public test key and is for testing only.</string>
+    <string name="update_note_candidate">A release candidate. You can also wait for the final release, nothing forces you to update.</string>
+    <string name="update_dismiss">Later</string>
 </resources>

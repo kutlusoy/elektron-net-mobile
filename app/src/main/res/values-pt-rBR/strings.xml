@@ -906,4 +906,11 @@
     <string name="send_psbt_ready_unsigned">Ainda não está assinada. Repasse este texto a quem a assina. Quem tiver todas as assinaturas a envia em Ferramentas, PSBT.</string>
     <string name="send_advanced">Pagamento avançado</string>
     <string name="send_advanced_hint">Escolher as moedas, subtrair a taxa do valor, definir sua própria taxa ou apenas criar uma PSBT.</string>
+    <string name="update_channel_test">Você usa uma versão de teste (chave de teste pública). Só são oferecidas versões de teste mais novas.</string>
+    <string name="update_channel_release">Você usa a linha de lançamentos. Candidatas a lançamento e lançamentos finais são oferecidos, só o mais recente aparece.</string>
+    <string name="update_auto">Verificar automaticamente</string>
+    <string name="update_auto_hint">Enquanto o app está aberto, ele consulta o github.com uma vez por dia. Desative para verificar só manualmente.</string>
+    <string name="update_note_test">Uma versão de teste mais nova. Ela é assinada com a chave de teste pública e serve só para testes.</string>
+    <string name="update_note_candidate">Uma candidata a lançamento. Você também pode esperar o lançamento final, nada obriga você a atualizar.</string>
+    <string name="update_dismiss">Depois</string>
 </resources>

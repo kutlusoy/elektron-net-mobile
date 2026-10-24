@@ -906,4 +906,11 @@
     <string name="send_psbt_ready_unsigned">Она ещё не подписана. Передайте этот текст тому, кто её подпишет. У кого есть все подписи, тот отправляет её в разделе «Инструменты», PSBT.</string>
     <string name="send_advanced">Расширенный платёж</string>
     <string name="send_advanced_hint">Выбрать монеты, вычесть комиссию из суммы, задать свою комиссию или только создать PSBT.</string>
+    <string name="update_channel_test">Вы используете тестовую сборку (публичный тестовый ключ). Предлагаются только более новые тестовые сборки.</string>
+    <string name="update_channel_release">Вы используете линию релизов. Предлагаются релиз-кандидаты и финальные релизы, показывается только самый новый.</string>
+    <string name="update_auto">Проверять автоматически</string>
+    <string name="update_auto_hint">Пока приложение открыто, оно раз в день запрашивает github.com. Отключите, чтобы проверять только вручную.</string>
+    <string name="update_note_test">Более новая тестовая сборка. Она подписана публичным тестовым ключом и предназначена только для тестов.</string>
+    <string name="update_note_candidate">Релиз-кандидат. Можно подождать финальный релиз, обновляться не обязательно.</string>
+    <string name="update_dismiss">Позже</string>
 </resources>

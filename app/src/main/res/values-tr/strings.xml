@@ -906,4 +906,11 @@
     <string name="send_psbt_ready_unsigned">Henüz imzalanmadı. Bu metni imzalayacak kişiye iletin. Tüm imzalara sahip olan, Araçlar, PSBT altından gönderir.</string>
     <string name="send_advanced">Gelişmiş ödeme</string>
     <string name="send_advanced_hint">Coinleri seçin, ücreti tutardan düşün, kendi ücret oranınızı belirleyin veya yalnızca PSBT oluşturun.</string>
+    <string name="update_channel_test">Test sürümü kullanıyorsun (herkese açık test anahtarı). Yalnızca daha yeni test sürümleri sunulur.</string>
+    <string name="update_channel_release">Yayın hattını kullanıyorsun. Sürüm adayları ve nihai sürümler sunulur, yalnızca en yenisi gösterilir.</string>
+    <string name="update_auto">Otomatik denetle</string>
+    <string name="update_auto_hint">Uygulama açıkken günde bir kez github.com\'a sorar. Yalnızca elle denetlemek için kapat.</string>
+    <string name="update_note_test">Daha yeni bir test sürümü. Herkese açık test anahtarıyla imzalıdır ve yalnızca test içindir.</string>
+    <string name="update_note_candidate">Bir sürüm adayı. Nihai sürümü de bekleyebilirsin, güncellemeye zorlanmazsın.</string>
+    <string name="update_dismiss">Sonra</string>
 </resources>

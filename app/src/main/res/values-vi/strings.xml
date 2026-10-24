@@ -906,4 +906,11 @@
     <string name="send_psbt_ready_unsigned">Chưa được ký. Hãy chuyển văn bản này cho người sẽ ký. Ai có đủ chữ ký sẽ gửi nó trong Công cụ, PSBT.</string>
     <string name="send_advanced">Thanh toán nâng cao</string>
     <string name="send_advanced_hint">Chọn coin, trừ phí khỏi số tiền, đặt mức phí riêng hoặc chỉ tạo PSBT.</string>
+    <string name="update_channel_test">Bạn dùng bản thử nghiệm (khóa thử nghiệm công khai). Chỉ các bản thử nghiệm mới hơn được đề xuất.</string>
+    <string name="update_channel_release">Bạn dùng nhánh phát hành. Bản ứng viên và bản chính thức được đề xuất, chỉ hiển thị bản mới nhất.</string>
+    <string name="update_auto">Tự động kiểm tra</string>
+    <string name="update_auto_hint">Khi ứng dụng đang mở, ứng dụng hỏi github.com mỗi ngày một lần. Tắt để chỉ kiểm tra thủ công.</string>
+    <string name="update_note_test">Một bản thử nghiệm mới hơn. Bản này được ký bằng khóa thử nghiệm công khai và chỉ dùng để thử nghiệm.</string>
+    <string name="update_note_candidate">Một bản ứng viên phát hành. Bạn cũng có thể chờ bản chính thức, không có gì buộc bạn phải cập nhật.</string>
+    <string name="update_dismiss">Để sau</string>
 </resources>

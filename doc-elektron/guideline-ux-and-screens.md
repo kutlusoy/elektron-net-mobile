@@ -315,3 +315,8 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 
 - The deposit address of an escrow rotates only after a `Request` or `Signed` entry was added to its message history that is newer than the address (`EscrowManager.address`). Sharing a message or a deposit does not rotate it.
 - The key account (BIP 48 account level of the escrow key) comes from a per-wallet counter that only grows (`EscrowStore.nextAccount`). It is never reused, so a deleted deal cannot leak its coins into a new one with the same partners.
+
+## Update notice (m0.1.6)
+
+- `UpdateState` (checks, saved result, hidden tag) feeds `UpdateBanner` on the wallet screen and the Updates card in Settings. The channel comes from the build type, the kind of a release from `UpdateCheck.kindOf` (test build title, `-rcN` suffix, GitHub pre-release flag).
+- The banner shows the version, a note for test builds and release candidates, "Open release page" and "Later".

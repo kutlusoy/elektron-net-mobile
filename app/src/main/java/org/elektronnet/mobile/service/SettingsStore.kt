@@ -144,6 +144,27 @@ class SettingsStore(context: Context) {
         get() = org.elektronnet.mobile.fiat.FiatSettings.decode(prefs.getString(FIAT, null))
         set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
 
+    var updateAuto: Boolean
+        get() = prefs.getBoolean(UPDATE_AUTO, true)
+        set(value) = prefs.edit().putBoolean(UPDATE_AUTO, value).apply()
+
+    var updateLastOkMs: Long
+        get() = prefs.getLong(UPDATE_LAST_OK, 0L)
+        set(value) = prefs.edit().putLong(UPDATE_LAST_OK, value).apply()
+
+    var updateLastAttemptMs: Long
+        get() = prefs.getLong(UPDATE_LAST_ATTEMPT, 0L)
+        set(value) = prefs.edit().putLong(UPDATE_LAST_ATTEMPT, value).apply()
+
+    // "<kind>|<tag>" of the newest release found, empty when there is none
+    var updateOffer: String
+        get() = prefs.getString(UPDATE_OFFER, null) ?: ""
+        set(value) = prefs.edit().putString(UPDATE_OFFER, value).apply()
+
+    var updateDismissed: String
+        get() = prefs.getString(UPDATE_DISMISSED, null) ?: ""
+        set(value) = prefs.edit().putString(UPDATE_DISMISSED, value).apply()
+
     var numberGrouping: Boolean
         get() = prefs.getBoolean(NUMBER_GROUPING, true)
         set(value) = prefs.edit().putBoolean(NUMBER_GROUPING, value).apply()
@@ -287,6 +308,11 @@ class SettingsStore(context: Context) {
         const val AMOUNT_UNIT = "amount_unit"
         const val FIAT = "fiat"
         const val ESCROW_ACCOUNT = "escrow_next_account"
+        const val UPDATE_AUTO = "update_auto"
+        const val UPDATE_LAST_OK = "update_last_ok"
+        const val UPDATE_LAST_ATTEMPT = "update_last_attempt"
+        const val UPDATE_OFFER = "update_offer"
+        const val UPDATE_DISMISSED = "update_dismissed"
         const val NUMBER_GROUPING = "number_grouping"
         const val NUMBER_GROUP_CHAR = "number_group_char"
         const val NUMBER_DECIMAL_CHAR = "number_decimal_char"
