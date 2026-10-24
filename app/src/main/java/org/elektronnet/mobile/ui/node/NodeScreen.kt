@@ -165,12 +165,12 @@ fun NodeScreen(
                 OutlinedButton(onClick = onOpenConsole) { Text(stringResource(R.string.node_expert_open)) }
             }
         }
-        MaintenanceCard(onRestart = onStart)
         if (model.details != null) {
             TelemetrySection(model.details, telemetry)
             StorageCard()
             PeerSection(peers, showGeoCredit)
         }
+        MaintenanceCard(onRestart = onStart)
     }
 }
 
