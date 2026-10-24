@@ -478,7 +478,7 @@
     <string name="rescan_action">Buscar monedas antiguas</string>
     <string name="rescan_hint">Analiza el conjunto actual de monedas de la red en busca de monedas que pertenezcan a este monedero. No vuelve a descargar la cadena de bloques.</string>
     <string name="rescan_body">Introduce la frase de contraseña de este monedero. La búsqueda puede tardar unos minutos. Mantén la app abierta.</string>
-    <string name="rescan_needs_sync">El nodo debe estar completamente sincronizado primero.</string>
+    <string name="rescan_needs_sync">El nodo debe estar sincronizado primero.</string>
     <string name="rescan_start">Iniciar búsqueda</string>
     <string name="rescan_done_full">Listo. El saldo ahora incluye todas las monedas de este monedero que aún existen en la red.</string>
     <string name="rescan_done_partial">Listo para los bloques que el nodo aún almacena. No se pudieron buscar las monedas más antiguas porque este nodo no puede analizar el conjunto de monedas.</string>

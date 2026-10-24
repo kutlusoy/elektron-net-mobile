@@ -478,7 +478,7 @@
     <string name="rescan_action">이전 코인 검색</string>
     <string name="rescan_hint">네트워크의 현재 코인 집합에서 이 지갑에 속한 코인을 검색합니다. 블록체인을 다시 다운로드하지 않습니다.</string>
     <string name="rescan_body">이 지갑의 암호를 입력하세요. 검색에는 몇 분 걸릴 수 있습니다. 앱을 열어 두세요.</string>
-    <string name="rescan_needs_sync">먼저 노드가 완전히 동기화되어야 합니다.</string>
+    <string name="rescan_needs_sync">먼저 노드가 동기화되어야 합니다.</string>
     <string name="rescan_start">검색 시작</string>
     <string name="rescan_done_full">완료되었습니다. 이제 잔액에 네트워크에 아직 존재하는 이 지갑의 모든 코인이 포함됩니다.</string>
     <string name="rescan_done_partial">노드가 아직 저장하고 있는 블록까지 완료되었습니다. 이 노드는 코인 집합을 스캔할 수 없어 더 오래된 코인은 검색하지 못했습니다.</string>

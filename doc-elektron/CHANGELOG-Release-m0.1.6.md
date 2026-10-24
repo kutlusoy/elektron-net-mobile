@@ -37,3 +37,7 @@ This file lists the features this release added. Corrections are not listed.
 - With the switch "Check automatically" in Settings, Updates (off by default) the app checks for a newer version once a day while it is open, and makes up for it at once when the app was not open for more than a day. A failed check is repeated after an hour. The automatic check is silent: it only shows something when a newer version exists. The button "Check for updates" still works by hand.
 - Updates follow the line of builds: a test build (public test key) is only offered newer test builds, the release line is offered release candidates and releases. Only the newest one is shown, so a test build never points to a release that it cannot be updated to.
 - A found update is shown as a banner on the wallet screen and in Settings with a button to the release page. "Later" hides the banner until a newer version appears. A release candidate carries the note that the user can wait for the final release and is not forced to update.
+
+## Wording
+
+- The node status texts say "synced" and "synchronized" without "fully" (and its translations).

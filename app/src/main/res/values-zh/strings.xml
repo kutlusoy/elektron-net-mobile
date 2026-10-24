@@ -478,7 +478,7 @@
     <string name="rescan_action">搜索更早的币</string>
     <string name="rescan_hint">扫描网络当前的币集合，查找属于此钱包的币。不会重新下载区块链。</string>
     <string name="rescan_body">请输入此钱包的口令。搜索可能需要几分钟。请保持应用打开。</string>
-    <string name="rescan_needs_sync">节点必须先完全同步。</string>
+    <string name="rescan_needs_sync">节点必须先同步。</string>
     <string name="rescan_start">开始搜索</string>
     <string name="rescan_done_full">完成。余额现在包含此钱包在网络上仍然存在的所有币。</string>
     <string name="rescan_done_partial">已完成节点仍存储的区块部分。由于此节点无法扫描币集合，更早的币无法搜索。</string>

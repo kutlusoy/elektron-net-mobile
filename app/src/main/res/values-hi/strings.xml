@@ -478,7 +478,7 @@
     <string name="rescan_action">पुराने कॉइन खोजें</string>
     <string name="rescan_hint">नेटवर्क के मौजूदा कॉइन सेट में इस वॉलेट के कॉइन खोजता है। यह ब्लॉकचेन दोबारा डाउनलोड नहीं करता।</string>
     <string name="rescan_body">इस वॉलेट का पासफ़्रेज़ दर्ज करें। खोज में कुछ मिनट लग सकते हैं। ऐप खुला रखें।</string>
-    <string name="rescan_needs_sync">पहले नोड का पूरी तरह सिंक होना ज़रूरी है।</string>
+    <string name="rescan_needs_sync">पहले नोड का सिंक होना ज़रूरी है।</string>
     <string name="rescan_start">खोज शुरू करें</string>
     <string name="rescan_done_full">हो गया। बैलेंस में अब इस वॉलेट का हर वह कॉइन शामिल है जो नेटवर्क पर अब भी मौजूद है।</string>
     <string name="rescan_done_partial">उन ब्लॉक के लिए हो गया जो नोड अब भी रखता है। पुराने कॉइन नहीं खोजे जा सके क्योंकि यह नोड कॉइन सेट स्कैन नहीं कर सकता।</string>

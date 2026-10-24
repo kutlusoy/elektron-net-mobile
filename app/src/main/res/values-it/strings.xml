@@ -478,7 +478,7 @@
     <string name="rescan_action">Cerca coin più vecchi</string>
     <string name="rescan_hint">Analizza l\'insieme attuale dei coin della rete alla ricerca di quelli che appartengono a questo wallet. Non scarica di nuovo la blockchain.</string>
     <string name="rescan_body">Inserisci la passphrase di questo wallet. La ricerca può richiedere alcuni minuti. Tieni l\'app aperta.</string>
-    <string name="rescan_needs_sync">Prima il nodo deve essere completamente sincronizzato.</string>
+    <string name="rescan_needs_sync">Prima il nodo deve essere sincronizzato.</string>
     <string name="rescan_start">Avvia ricerca</string>
     <string name="rescan_done_full">Fatto. Il saldo ora include ogni coin di questo wallet che esiste ancora sulla rete.</string>
     <string name="rescan_done_partial">Fatto per i blocchi che il nodo conserva ancora. I coin più vecchi non hanno potuto essere cercati perché questo nodo non può analizzare l\'insieme dei coin.</string>

@@ -478,7 +478,7 @@
     <string name="rescan_action">البحث عن عملات أقدم</string>
     <string name="rescan_hint">يفحص مجموعة العملات الحالية في الشبكة بحثًا عن عملات تخص هذه المحفظة. لا يعيد تنزيل سلسلة الكتل.</string>
     <string name="rescan_body">أدخل عبارة مرور هذه المحفظة. قد يستغرق البحث بضع دقائق. أبقِ التطبيق مفتوحًا.</string>
-    <string name="rescan_needs_sync">يجب أن تكون العقدة متزامنة بالكامل أولًا.</string>
+    <string name="rescan_needs_sync">يجب أن تكون العقدة متزامنة أولًا.</string>
     <string name="rescan_start">بدء البحث</string>
     <string name="rescan_done_full">تم. يشمل الرصيد الآن كل عملة في هذه المحفظة لا تزال موجودة على الشبكة.</string>
     <string name="rescan_done_partial">تم للكتل التي لا تزال العقدة تخزنها. تعذّر البحث عن العملات الأقدم لأن هذه العقدة لا تستطيع فحص مجموعة العملات.</string>

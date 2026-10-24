@@ -478,7 +478,7 @@
     <string name="rescan_action">Tìm coin cũ hơn</string>
     <string name="rescan_hint">Quét tập coin hiện tại của mạng để tìm coin thuộc về ví này. Không tải lại blockchain.</string>
     <string name="rescan_body">Nhập passphrase của ví này. Việc tìm kiếm có thể mất vài phút. Hãy giữ ứng dụng mở.</string>
-    <string name="rescan_needs_sync">Node phải được đồng bộ hoàn toàn trước.</string>
+    <string name="rescan_needs_sync">Node phải được đồng bộ trước.</string>
     <string name="rescan_start">Bắt đầu tìm</string>
     <string name="rescan_done_full">Xong. Số dư giờ đã bao gồm mọi coin của ví này còn tồn tại trên mạng.</string>
     <string name="rescan_done_partial">Xong với các khối node vẫn còn lưu. Không thể tìm coin cũ hơn vì node này không thể quét tập coin.</string>

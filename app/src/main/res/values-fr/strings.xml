@@ -478,7 +478,7 @@
     <string name="rescan_action">Chercher des pièces plus anciennes</string>
     <string name="rescan_hint">Analyse l\'ensemble actuel des pièces du réseau pour trouver celles qui appartiennent à ce portefeuille. La blockchain n\'est pas retéléchargée.</string>
     <string name="rescan_body">Saisissez la phrase secrète de ce portefeuille. La recherche peut prendre quelques minutes. Gardez l\'app ouverte.</string>
-    <string name="rescan_needs_sync">Le nœud doit d\'abord être entièrement synchronisé.</string>
+    <string name="rescan_needs_sync">Le nœud doit d\'abord être synchronisé.</string>
     <string name="rescan_start">Lancer la recherche</string>
     <string name="rescan_done_full">Terminé. Le solde inclut maintenant toutes les pièces de ce portefeuille qui existent encore sur le réseau.</string>
     <string name="rescan_done_partial">Terminé pour les blocs que le nœud stocke encore. Les pièces plus anciennes n\'ont pas pu être recherchées car ce nœud ne peut pas analyser l\'ensemble des pièces.</string>

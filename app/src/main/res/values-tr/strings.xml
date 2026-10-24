@@ -478,7 +478,7 @@
     <string name="rescan_action">Eski paraları ara</string>
     <string name="rescan_hint">Ağın güncel para kümesini bu cüzdana ait paralar için tarar. Blokzinciri yeniden indirmez.</string>
     <string name="rescan_body">Bu cüzdanın parolasını girin. Arama birkaç dakika sürebilir. Uygulamayı açık tutun.</string>
-    <string name="rescan_needs_sync">Önce düğüm tamamen senkronize olmalı.</string>
+    <string name="rescan_needs_sync">Önce düğüm senkronize olmalı.</string>
     <string name="rescan_start">Aramayı başlat</string>
     <string name="rescan_done_full">Bitti. Bakiye artık bu cüzdanın ağda hâlâ var olan tüm paralarını içeriyor.</string>
     <string name="rescan_done_partial">Düğümün hâlâ sakladığı bloklar için bitti. Bu düğüm para kümesini tarayamadığı için daha eski paralar aranamadı.</string>

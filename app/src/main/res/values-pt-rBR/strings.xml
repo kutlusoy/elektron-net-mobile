@@ -478,7 +478,7 @@
     <string name="rescan_action">Procurar moedas mais antigas</string>
     <string name="rescan_hint">Examina o conjunto atual de moedas da rede em busca de moedas que pertencem a esta carteira. Não baixa a blockchain novamente.</string>
     <string name="rescan_body">Digite a passphrase desta carteira. A busca pode levar alguns minutos. Mantenha o app aberto.</string>
-    <string name="rescan_needs_sync">O nó precisa estar totalmente sincronizado primeiro.</string>
+    <string name="rescan_needs_sync">O nó precisa estar sincronizado primeiro.</string>
     <string name="rescan_start">Iniciar busca</string>
     <string name="rescan_done_full">Concluído. O saldo agora inclui todas as moedas desta carteira que ainda existem na rede.</string>
     <string name="rescan_done_partial">Concluído para os blocos que o nó ainda armazena. Moedas mais antigas não puderam ser pesquisadas porque este nó não consegue examinar o conjunto de moedas.</string>

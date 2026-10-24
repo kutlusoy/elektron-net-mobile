@@ -478,7 +478,7 @@
     <string name="rescan_action">古いコインを検索</string>
     <string name="rescan_hint">ネットワークの現在のコインセットから、このウォレットに属するコインをスキャンします。ブロックチェーンを再ダウンロードするわけではありません。</string>
     <string name="rescan_body">このウォレットのパスフレーズを入力してください。検索には数分かかることがあります。アプリを開いたままにしてください。</string>
-    <string name="rescan_needs_sync">先にノードを完全に同期する必要があります。</string>
+    <string name="rescan_needs_sync">先にノードを同期する必要があります。</string>
     <string name="rescan_start">検索を開始</string>
     <string name="rescan_done_full">完了しました。残高に、ネットワーク上にまだ存在するこのウォレットのすべてのコインが含まれるようになりました。</string>
     <string name="rescan_done_partial">ノードがまだ保存しているブロックについては完了しました。このノードはコインセットをスキャンできないため、それより古いコインは検索できませんでした。</string>

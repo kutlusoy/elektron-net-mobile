@@ -478,7 +478,7 @@
     <string name="rescan_action">Cari koin yang lebih lama</string>
     <string name="rescan_hint">Memindai kumpulan koin jaringan saat ini untuk koin milik dompet ini. Tidak mengunduh blockchain lagi.</string>
     <string name="rescan_body">Masukkan passphrase dompet ini. Pencarian bisa memakan waktu beberapa menit. Biarkan aplikasi tetap terbuka.</string>
-    <string name="rescan_needs_sync">Node harus tersinkron penuh terlebih dahulu.</string>
+    <string name="rescan_needs_sync">Node harus tersinkron terlebih dahulu.</string>
     <string name="rescan_start">Mulai pencarian</string>
     <string name="rescan_done_full">Selesai. Saldo sekarang mencakup setiap koin dompet ini yang masih ada di jaringan.</string>
     <string name="rescan_done_partial">Selesai untuk blok yang masih disimpan node. Koin yang lebih lama tidak dapat dicari karena node ini tidak dapat memindai kumpulan koin.</string>
