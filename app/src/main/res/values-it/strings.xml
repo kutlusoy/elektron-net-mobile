@@ -369,10 +369,10 @@
     <string name="escrow_continue">Continua</string>
     <string name="escrow_setup">Configurazione in corso</string>
     <string name="escrow_threshold">Servono %1$d approvazioni su %2$d</string>
-    <string name="escrow_step_share">Passo 1: condividi la tua chiave</string>
-    <string name="escrow_share_hint">Invia questa riga alle altre persone. Permette di includerti ma non può essere usata per spendere nulla.</string>
-    <string name="escrow_step_collect">Passo 2: aggiungi le chiavi degli altri</string>
-    <string name="escrow_collect_hint">Incolla le righe ricevute, una per riga, nella forma Ruolo: chiave.</string>
+    <string name="escrow_step_share">Passo 1 di 3: condividi la tua chiave</string>
+    <string name="escrow_share_hint">Invia questa riga a tutti gli altri dell\'accordo: copiala, condividila o falla scansionare come QR code. Serve solo a includerti e non può spendere nulla. Gli altri fanno lo stesso con la loro riga.</string>
+    <string name="escrow_step_collect">Passo 2 di 3: aggiungi le chiavi degli altri e scegli il numero di approvazioni</string>
+    <string name="escrow_collect_hint">Incolla o scansiona le righe ricevute, una per riga, nel formato Ruolo: chiave. Poi scegli quante chiavi devono approvare un pagamento. Tutti nell\'accordo devono usare le stesse chiavi e lo stesso numero, altrimenti gli indirizzi differiscono. Il passo 3 è il pulsante qui sotto.</string>
     <string name="escrow_keys_field">Chiavi delle altre persone</string>
     <string name="escrow_keys_found">Chiavi trovate: %1$d</string>
     <string name="escrow_activate">Crea il wallet escrow</string>
@@ -395,8 +395,8 @@
     <string name="escrow_err_key">Una delle chiavi non è valida. Copiala di nuovo per intero.</string>
     <string name="escrow_err_duplicate">La stessa chiave compare due volte, oppure questo escrow esiste già.</string>
     <string name="escrow_err_network">Una delle chiavi appartiene a un\'altra rete.</string>
-    <string name="escrow_err_threshold">Il numero di approvazioni richieste deve essere almeno 2 e non superiore al numero di persone.</string>
-    <string name="escrow_err_many">Troppe persone. Il limite è 7.</string>
+    <string name="escrow_err_threshold">Il numero di approvazioni richieste deve essere almeno 1 e non superiore al numero di persone.</string>
+    <string name="escrow_err_many">Troppe persone. Il limite è 15.</string>
     <string name="escrow_err_descriptor">Il testo di backup non è un descriptor escrow valido.</string>
     <string name="escrow_err_not_ours">Nessuna delle chiavi in questo backup appartiene al tuo wallet.</string>
     <string name="escrow_err_state">Questo passo non è disponibile per questo escrow.</string>
@@ -851,4 +851,6 @@
     <string name="escrow_of_wallet">Escrow del wallet %1$s. Ogni wallet ha i suoi.</string>
     <string name="escrow_threshold_label">Quante chiavi devono approvare un pagamento</string>
     <string name="escrow_threshold_one">Con 1 chiave ogni titolare può spendere da solo. Non è una protezione escrow.</string>
+    <string name="escrow_create_info">Questo crea la tua chiave per l\'accordo. Il numero di approvazioni lo scegli dopo, al passo 2, quando hai aggiunto le chiavi degli altri. La passphrase di questo wallet sblocca la chiave una volta. La riga di chiave che ricevi non può spendere nulla.</string>
+    <string name="escrow_howto">Come funziona un escrow:\n1. Tutti nell\'accordo creano qui un escrow e ricevono una riga di chiave.\n2. Tutti inviano la propria riga agli altri e aggiungono le righe degli altri.\n3. Tutti scelgono lo stesso numero di approvazioni, ad esempio 2 su 3, e creano il wallet escrow. Prima di questo passo non va deciso nulla.\n4. Confrontate il codice di controllo e l\'indirizzo di deposito. Devono essere identici per tutti.\n5. Invia monete all\'indirizzo di deposito. Per pagare, una persona crea un pagamento e gli altri lo firmano finché ci sono abbastanza approvazioni.</string>
 </resources>

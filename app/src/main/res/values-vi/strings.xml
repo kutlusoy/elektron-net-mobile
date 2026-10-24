@@ -369,10 +369,10 @@
     <string name="escrow_continue">Tiếp tục</string>
     <string name="escrow_setup">Đang thiết lập</string>
     <string name="escrow_threshold">Cần %1$d trong %2$d người phê duyệt</string>
-    <string name="escrow_step_share">Bước 1: chia sẻ khóa của bạn</string>
-    <string name="escrow_share_hint">Gửi dòng này cho những người khác. Nó cho phép họ thêm bạn vào nhưng không thể dùng để chi tiêu bất cứ thứ gì.</string>
-    <string name="escrow_step_collect">Bước 2: thêm khóa của những người khác</string>
-    <string name="escrow_collect_hint">Dán các dòng bạn đã nhận, mỗi dòng một khóa, theo dạng Vai trò: khóa.</string>
+    <string name="escrow_step_share">Bước 1/3: chia sẻ khóa của bạn</string>
+    <string name="escrow_share_hint">Gửi dòng này cho mọi người còn lại trong giao dịch: sao chép, chia sẻ hoặc để họ quét mã QR. Nó chỉ cho phép họ thêm bạn vào và không thể chi tiêu gì. Những người khác làm tương tự với dòng của họ.</string>
+    <string name="escrow_step_collect">Bước 2/3: thêm khóa của người khác và chọn số phê duyệt</string>
+    <string name="escrow_collect_hint">Dán hoặc quét các dòng nhận được, mỗi dòng một khóa, theo dạng Vai trò: khóa. Sau đó chọn cần bao nhiêu khóa để phê duyệt một khoản thanh toán. Mọi người trong giao dịch phải dùng cùng các khóa và cùng một số, nếu không địa chỉ sẽ khác nhau. Bước 3 là nút bên dưới.</string>
     <string name="escrow_keys_field">Khóa của những người khác</string>
     <string name="escrow_keys_found">Số khóa tìm thấy: %1$d</string>
     <string name="escrow_activate">Tạo ví escrow</string>
@@ -395,8 +395,8 @@
     <string name="escrow_err_key">Một trong các khóa không hợp lệ. Hãy sao chép lại đầy đủ.</string>
     <string name="escrow_err_duplicate">Cùng một khóa xuất hiện hai lần, hoặc escrow này đã tồn tại.</string>
     <string name="escrow_err_network">Một trong các khóa thuộc về mạng khác.</string>
-    <string name="escrow_err_threshold">Số phê duyệt cần thiết phải ít nhất là 2 và không vượt quá số người.</string>
-    <string name="escrow_err_many">Quá nhiều người. Giới hạn là 7.</string>
+    <string name="escrow_err_threshold">Số phê duyệt cần thiết phải ít nhất là 1 và không vượt quá số người.</string>
+    <string name="escrow_err_many">Quá nhiều người. Giới hạn là 15.</string>
     <string name="escrow_err_descriptor">Văn bản sao lưu không phải là descriptor escrow hợp lệ.</string>
     <string name="escrow_err_not_ours">Không khóa nào trong bản sao lưu này thuộc về ví của bạn.</string>
     <string name="escrow_err_state">Bước này không khả dụng cho escrow này.</string>
@@ -851,4 +851,6 @@
     <string name="escrow_of_wallet">Escrow của ví %1$s. Mỗi ví có escrow riêng.</string>
     <string name="escrow_threshold_label">Cần bao nhiêu khóa để chấp thuận một khoản thanh toán</string>
     <string name="escrow_threshold_one">Với 1 khóa, mỗi người giữ khóa có thể chi tiêu một mình. Đây không phải là bảo vệ escrow.</string>
+    <string name="escrow_create_info">Việc này tạo khóa riêng của bạn cho giao dịch. Số phê duyệt bạn chọn sau, ở bước 2, sau khi thêm khóa của người khác. Cụm mật khẩu của ví này mở khóa một lần. Dòng khóa bạn nhận được không thể chi tiêu gì.</string>
+    <string name="escrow_howto">Cách escrow hoạt động:\n1. Mọi người trong giao dịch tạo một escrow ở đây và nhận một dòng khóa.\n2. Mọi người gửi dòng của mình cho người khác và thêm các dòng của người khác.\n3. Mọi người chọn cùng một số phê duyệt, ví dụ 2 trên 3, rồi tạo ví escrow. Không cần quyết định gì trước bước này.\n4. So sánh mã kiểm tra và địa chỉ gửi tiền. Chúng phải giống hệt nhau với mọi người.\n5. Gửi coin đến địa chỉ gửi tiền. Để thanh toán, một người tạo khoản thanh toán và những người khác ký cho đến khi đủ phê duyệt.</string>
 </resources>

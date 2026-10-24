@@ -369,10 +369,10 @@
     <string name="escrow_continue">Continue</string>
     <string name="escrow_setup">Setup in progress</string>
     <string name="escrow_threshold">%1$d of %2$d must approve</string>
-    <string name="escrow_step_share">Step 1: share your key</string>
-    <string name="escrow_share_hint">Send this line to the other people. It lets them include you but cannot be used to spend anything.</string>
-    <string name="escrow_step_collect">Step 2: add the keys of the others</string>
-    <string name="escrow_collect_hint">Paste the lines you received, one per line, in the form Role: key.</string>
+    <string name="escrow_step_share">Step 1 of 3: share your key</string>
+    <string name="escrow_share_hint">Send this line to everyone else in the deal: copy it, share it or let them scan the QR code. It only lets them include you and cannot be used to spend anything. Everyone else does the same with their own line.</string>
+    <string name="escrow_step_collect">Step 2 of 3: add the keys of the others and choose the number of approvals</string>
+    <string name="escrow_collect_hint">Paste or scan the lines you received, one per line, in the form Role: key. Then choose how many keys must approve a payment. Everyone in the deal must use the same keys and the same number, otherwise the addresses differ. Step 3 is the button below.</string>
     <string name="escrow_keys_field">Keys of the other people</string>
     <string name="escrow_keys_found">Keys found: %1$d</string>
     <string name="escrow_activate">Create the escrow wallet</string>
@@ -395,8 +395,8 @@
     <string name="escrow_err_key">One of the keys is not valid. Copy it again completely.</string>
     <string name="escrow_err_duplicate">The same key appears twice, or this escrow already exists.</string>
     <string name="escrow_err_network">One of the keys belongs to another network.</string>
-    <string name="escrow_err_threshold">The number of required approvals must be at least 2 and not more than the number of people.</string>
-    <string name="escrow_err_many">Too many people. The limit is 7.</string>
+    <string name="escrow_err_threshold">The number of required approvals must be at least 1 and not more than the number of people.</string>
+    <string name="escrow_err_many">Too many people. The limit is 15.</string>
     <string name="escrow_err_descriptor">The backup text is not a valid escrow descriptor.</string>
     <string name="escrow_err_not_ours">None of the keys in this backup belongs to your wallet.</string>
     <string name="escrow_err_state">This step is not available for this escrow.</string>
@@ -862,4 +862,6 @@
     <string name="escrow_of_wallet">Escrows of wallet %1$s. Every wallet has its own escrows.</string>
     <string name="escrow_threshold_label">How many keys must approve a payment</string>
     <string name="escrow_threshold_one">With 1 key, every key holder can spend alone. This is not an escrow protection.</string>
+    <string name="escrow_create_info">This creates your own key for the deal. You choose the number of approvals later, in step 2, after you added the keys of the others. The passphrase of this wallet unlocks the key once. The key line you get cannot be used to spend.</string>
+    <string name="escrow_howto">How an escrow works:\n1. Everyone in the deal creates an escrow here and gets a key line.\n2. Everyone sends the key line to the others and adds the lines of the others.\n3. Everyone chooses the same number of approvals, for example 2 of 3, and creates the escrow wallet. Nothing has to be decided before this step.\n4. Compare the check code and the deposit address. They must be identical for everyone.\n5. Send coins to the deposit address. To pay, one person creates a payment, the others sign it until enough approvals are there.</string>
 </resources>

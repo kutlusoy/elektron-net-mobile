@@ -369,10 +369,10 @@
     <string name="escrow_continue">続ける</string>
     <string name="escrow_setup">設定中</string>
     <string name="escrow_threshold">%2$d人中%1$d人の承認が必要</string>
-    <string name="escrow_step_share">ステップ1: 自分の鍵を共有</string>
-    <string name="escrow_share_hint">この行を他の人に送ってください。あなたを加えるために使われますが、何かを使うことには利用できません。</string>
-    <string name="escrow_step_collect">ステップ2: 他の人の鍵を追加</string>
-    <string name="escrow_collect_hint">受け取った行を1行ずつ、「役割: 鍵」の形式で貼り付けてください。</string>
+    <string name="escrow_step_share">ステップ1/3: 鍵を共有する</string>
+    <string name="escrow_share_hint">この行を取引の全員に送ってください。コピー、共有、またはQRコードをスキャンしてもらいます。相手があなたを含めるためだけのもので、何も使えません。ほかの人も自分の行で同じことをします。</string>
+    <string name="escrow_step_collect">ステップ2/3: ほかの人の鍵を追加し、承認数を選ぶ</string>
+    <string name="escrow_collect_hint">受け取った行を、1行に1つ、役割: 鍵の形で貼り付けるかスキャンします。次に、支払いを承認する鍵の数を選びます。取引の全員が同じ鍵と同じ数を使う必要があります。そうでないとアドレスが異なります。ステップ3は下のボタンです。</string>
     <string name="escrow_keys_field">他の人の鍵</string>
     <string name="escrow_keys_found">見つかった鍵: %1$d</string>
     <string name="escrow_activate">エスクローウォレットを作成</string>
@@ -395,8 +395,8 @@
     <string name="escrow_err_key">鍵の1つが無効です。もう一度すべてをコピーしてください。</string>
     <string name="escrow_err_duplicate">同じ鍵が2回含まれているか、このエスクローはすでに存在します。</string>
     <string name="escrow_err_network">鍵の1つが別のネットワークのものです。</string>
-    <string name="escrow_err_threshold">必要な承認数は2以上、かつ人数以下にしてください。</string>
-    <string name="escrow_err_many">人数が多すぎます。上限は7人です。</string>
+    <string name="escrow_err_threshold">必要な承認数は1以上、かつ人数以下でなければなりません。</string>
+    <string name="escrow_err_many">人数が多すぎます。上限は15です。</string>
     <string name="escrow_err_descriptor">バックアップテキストは有効なエスクローディスクリプターではありません。</string>
     <string name="escrow_err_not_ours">このバックアップの鍵のどれもあなたのウォレットのものではありません。</string>
     <string name="escrow_err_state">このエスクローではこのステップは利用できません。</string>
@@ -851,4 +851,6 @@
     <string name="escrow_of_wallet">ウォレット %1$s のエスクロー。エスクローはウォレットごとに別々です。</string>
     <string name="escrow_threshold_label">支払いの承認に必要な鍵の数</string>
     <string name="escrow_threshold_one">鍵が1つの場合、各鍵の保持者が単独で使えます。これはエスクローの保護ではありません。</string>
+    <string name="escrow_create_info">これは取引用のあなた自身の鍵を作ります。承認数は後のステップ2で、ほかの人の鍵を追加してから選びます。このウォレットのパスフレーズは鍵を一度だけ解除します。受け取る鍵の行では何も使えません。</string>
+    <string name="escrow_howto">エスクローの仕組み:\n1. 取引の全員がここでエスクローを作り、鍵の行を受け取ります。\n2. 全員が自分の行をほかの人に送り、ほかの人の行を追加します。\n3. 全員が同じ承認数、例えば3人中2人を選び、エスクローウォレットを作ります。この手順の前に決めることはありません。\n4. 確認コードと入金アドレスを比べます。全員で同一でなければなりません。\n5. 入金アドレスにコインを送ります。支払うときは1人が支払いを作り、ほかの人が十分な承認になるまで署名します。</string>
 </resources>

@@ -369,10 +369,10 @@
     <string name="escrow_continue">Lanjutkan</string>
     <string name="escrow_setup">Penyiapan sedang berlangsung</string>
     <string name="escrow_threshold">%1$d dari %2$d harus menyetujui</string>
-    <string name="escrow_step_share">Langkah 1: bagikan kunci Anda</string>
-    <string name="escrow_share_hint">Kirim baris ini ke orang lain. Baris ini memungkinkan mereka menyertakan Anda tetapi tidak dapat dipakai untuk membelanjakan apa pun.</string>
-    <string name="escrow_step_collect">Langkah 2: tambahkan kunci orang lain</string>
-    <string name="escrow_collect_hint">Tempel baris yang Anda terima, satu per baris, dalam bentuk Peran: kunci.</string>
+    <string name="escrow_step_share">Langkah 1 dari 3: bagikan kunci Anda</string>
+    <string name="escrow_share_hint">Kirim baris ini ke semua orang lain dalam kesepakatan: salin, bagikan, atau minta mereka memindai kode QR. Baris ini hanya memungkinkan mereka menyertakan Anda dan tidak dapat membelanjakan apa pun. Yang lain melakukan hal yang sama dengan baris mereka.</string>
+    <string name="escrow_step_collect">Langkah 2 dari 3: tambahkan kunci orang lain dan pilih jumlah persetujuan</string>
+    <string name="escrow_collect_hint">Tempel atau pindai baris yang diterima, satu per baris, dalam bentuk Peran: kunci. Lalu pilih berapa kunci yang harus menyetujui pembayaran. Semua dalam kesepakatan harus memakai kunci yang sama dan jumlah yang sama, jika tidak alamatnya berbeda. Langkah 3 adalah tombol di bawah.</string>
     <string name="escrow_keys_field">Kunci orang lain</string>
     <string name="escrow_keys_found">Kunci ditemukan: %1$d</string>
     <string name="escrow_activate">Buat dompet escrow</string>
@@ -395,8 +395,8 @@
     <string name="escrow_err_key">Salah satu kunci tidak valid. Salin lagi secara lengkap.</string>
     <string name="escrow_err_duplicate">Kunci yang sama muncul dua kali, atau escrow ini sudah ada.</string>
     <string name="escrow_err_network">Salah satu kunci milik jaringan lain.</string>
-    <string name="escrow_err_threshold">Jumlah persetujuan yang dibutuhkan harus minimal 2 dan tidak lebih dari jumlah orang.</string>
-    <string name="escrow_err_many">Terlalu banyak orang. Batasnya 7.</string>
+    <string name="escrow_err_threshold">Jumlah persetujuan yang diperlukan minimal 1 dan tidak lebih dari jumlah orang.</string>
+    <string name="escrow_err_many">Terlalu banyak orang. Batasnya 15.</string>
     <string name="escrow_err_descriptor">Teks cadangan bukan deskriptor escrow yang valid.</string>
     <string name="escrow_err_not_ours">Tidak ada kunci dalam cadangan ini yang milik dompet Anda.</string>
     <string name="escrow_err_state">Langkah ini tidak tersedia untuk escrow ini.</string>
@@ -851,4 +851,6 @@
     <string name="escrow_of_wallet">Escrow dompet %1$s. Setiap dompet punya escrow sendiri.</string>
     <string name="escrow_threshold_label">Berapa kunci yang harus menyetujui pembayaran</string>
     <string name="escrow_threshold_one">Dengan 1 kunci, setiap pemegang kunci bisa membelanjakan sendiri. Ini bukan perlindungan escrow.</string>
+    <string name="escrow_create_info">Ini membuat kunci Anda sendiri untuk kesepakatan. Jumlah persetujuan Anda pilih nanti, di langkah 2, setelah menambahkan kunci orang lain. Frasa sandi dompet ini membuka kunci satu kali. Baris kunci yang Anda terima tidak dapat membelanjakan apa pun.</string>
+    <string name="escrow_howto">Cara kerja escrow:\n1. Semua dalam kesepakatan membuat escrow di sini dan mendapat satu baris kunci.\n2. Semua mengirim barisnya ke yang lain dan menambahkan baris yang lain.\n3. Semua memilih jumlah persetujuan yang sama, misalnya 2 dari 3, dan membuat dompet escrow. Tidak ada yang perlu diputuskan sebelum langkah ini.\n4. Bandingkan kode periksa dan alamat setoran. Keduanya harus identik untuk semua.\n5. Kirim koin ke alamat setoran. Untuk membayar, satu orang membuat pembayaran dan yang lain menandatanganinya sampai persetujuan cukup.</string>
 </resources>

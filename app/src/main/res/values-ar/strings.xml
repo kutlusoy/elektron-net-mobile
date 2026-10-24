@@ -369,10 +369,10 @@
     <string name="escrow_continue">متابعة</string>
     <string name="escrow_setup">الإعداد جارٍ</string>
     <string name="escrow_threshold">يجب أن يوافق %1$d من %2$d</string>
-    <string name="escrow_step_share">الخطوة 1: شارك مفتاحك</string>
-    <string name="escrow_share_hint">أرسل هذا السطر إلى الآخرين. يتيح لهم تضمينك لكن لا يمكن استخدامه لإنفاق أي شيء.</string>
-    <string name="escrow_step_collect">الخطوة 2: أضف مفاتيح الآخرين</string>
-    <string name="escrow_collect_hint">الصق الأسطر التي استلمتها، سطرًا لكل مفتاح، بالصيغة الدور: المفتاح.</string>
+    <string name="escrow_step_share">الخطوة 1 من 3: شارك مفتاحك</string>
+    <string name="escrow_share_hint">أرسل هذا السطر إلى كل من في الصفقة: انسخه أو شاركه أو دعهم يمسحون رمز QR. يسمح لهم فقط بضمك ولا يمكنه إنفاق شيء. يفعل الآخرون الأمر نفسه بسطرهم.</string>
+    <string name="escrow_step_collect">الخطوة 2 من 3: أضف مفاتيح الآخرين واختر عدد الموافقات</string>
+    <string name="escrow_collect_hint">الصق السطور التي استلمتها أو امسحها، سطرًا لكل مفتاح، بصيغة الدور: المفتاح. ثم اختر عدد المفاتيح التي يجب أن توافق على الدفعة. يجب أن يستخدم الجميع في الصفقة المفاتيح نفسها والعدد نفسه وإلا اختلفت العناوين. الخطوة 3 هي الزر بالأسفل.</string>
     <string name="escrow_keys_field">مفاتيح الآخرين</string>
     <string name="escrow_keys_found">المفاتيح المكتشفة: %1$d</string>
     <string name="escrow_activate">إنشاء محفظة الضمان</string>
@@ -395,8 +395,8 @@
     <string name="escrow_err_key">أحد المفاتيح غير صالح. انسخه مرة أخرى كاملًا.</string>
     <string name="escrow_err_duplicate">المفتاح نفسه يظهر مرتين، أو هذا الضمان موجود بالفعل.</string>
     <string name="escrow_err_network">أحد المفاتيح يخص شبكة أخرى.</string>
-    <string name="escrow_err_threshold">يجب ألا يقل عدد الموافقات المطلوبة عن 2 ولا يزيد على عدد الأشخاص.</string>
-    <string name="escrow_err_many">عدد الأشخاص كبير جدًا. الحد هو 7.</string>
+    <string name="escrow_err_threshold">يجب ألا يقل عدد الموافقات المطلوبة عن 1 وألا يزيد عن عدد الأشخاص.</string>
+    <string name="escrow_err_many">عدد الأشخاص كبير جدًا. الحد 15.</string>
     <string name="escrow_err_descriptor">نص النسخة الاحتياطية ليس واصف ضمان صالحًا.</string>
     <string name="escrow_err_not_ours">لا يخص أي من المفاتيح في هذه النسخة الاحتياطية محفظتك.</string>
     <string name="escrow_err_state">هذه الخطوة غير متاحة لهذا الضمان.</string>
@@ -851,4 +851,6 @@
     <string name="escrow_of_wallet">حسابات الضمان للمحفظة %1$s. لكل محفظة حسابات ضمان خاصة بها.</string>
     <string name="escrow_threshold_label">كم مفتاحًا يجب أن يوافق على الدفعة</string>
     <string name="escrow_threshold_one">مع مفتاح واحد يستطيع كل صاحب مفتاح الإنفاق وحده. هذه ليست حماية ضمان.</string>
+    <string name="escrow_create_info">هذا ينشئ مفتاحك الخاص للصفقة. تختار عدد الموافقات لاحقًا في الخطوة 2 بعد إضافة مفاتيح الآخرين. عبارة مرور هذه المحفظة تفتح المفتاح مرة واحدة. سطر المفتاح الذي تحصل عليه لا يمكنه إنفاق شيء.</string>
+    <string name="escrow_howto">كيف يعمل الضمان:\n1. ينشئ كل من في الصفقة حساب ضمان هنا ويحصل على سطر مفتاح.\n2. يرسل الجميع سطرهم إلى الآخرين ويضيفون سطور الآخرين.\n3. يختار الجميع عدد الموافقات نفسه، مثلًا 2 من 3، وينشئون محفظة الضمان. لا شيء يُحدد قبل هذه الخطوة.\n4. قارنوا رمز التحقق وعنوان الإيداع. يجب أن يكونا متطابقين للجميع.\n5. أرسل عملات إلى عنوان الإيداع. للدفع ينشئ شخص دفعة ويوقعها الآخرون حتى تكتمل الموافقات.</string>
 </resources>

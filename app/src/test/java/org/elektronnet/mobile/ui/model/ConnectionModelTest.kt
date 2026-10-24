@@ -32,8 +32,8 @@ class ConnectionModelTest {
 
     @Test
     fun breakdownListsTheNetworksWithPeers() {
-        assertEquals("IPv4 9 \u00b7 IPv6 2 \u00b7 Tor 1 \u00b7 I2P 1", ConnectionModel.breakdown(mapOf("ipv4" to 9, "ipv6" to 2, "onion" to 1, "i2p" to 1)))
-        assertEquals("IPv4 5", ConnectionModel.breakdown(mapOf("ipv4" to 5, "onion" to 0)))
+        assertEquals("IPv4: 9 \u00b7 IPv6: 2 \u00b7 Tor: 1 \u00b7 I2P: 1", ConnectionModel.breakdown(mapOf("ipv4" to 9, "ipv6" to 2, "onion" to 1, "i2p" to 1)))
+        assertEquals("IPv4: 5", ConnectionModel.breakdown(mapOf("ipv4" to 5, "onion" to 0)))
         assertEquals("", ConnectionModel.breakdown(emptyMap()))
     }
 }

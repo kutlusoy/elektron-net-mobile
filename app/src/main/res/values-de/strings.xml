@@ -369,10 +369,10 @@
     <string name="escrow_continue">Weiter</string>
     <string name="escrow_setup">Einrichtung läuft</string>
     <string name="escrow_threshold">%1$d von %2$d müssen zustimmen</string>
-    <string name="escrow_step_share">Schritt 1: Deinen Schlüssel teilen</string>
-    <string name="escrow_share_hint">Sende diese Zeile an die anderen Personen. Damit können sie dich einbeziehen, sie kann aber nicht zum Ausgeben verwendet werden.</string>
-    <string name="escrow_step_collect">Schritt 2: Die Schlüssel der anderen hinzufügen</string>
-    <string name="escrow_collect_hint">Füge die erhaltenen Zeilen ein, eine pro Zeile, in der Form Rolle: Schlüssel.</string>
+    <string name="escrow_step_share">Schritt 1 von 3: Schlüssel teilen</string>
+    <string name="escrow_share_hint">Sende diese Zeile an alle anderen im Geschäft: kopieren, teilen oder den QR-Code scannen lassen. Sie erlaubt nur, dich einzubeziehen, und kann nichts ausgeben. Alle anderen machen dasselbe mit ihrer Zeile.</string>
+    <string name="escrow_step_collect">Schritt 2 von 3: Schlüssel der anderen hinzufügen und Zahl der Freigaben wählen</string>
+    <string name="escrow_collect_hint">Füge die erhaltenen Zeilen ein oder scanne sie, eine pro Zeile, in der Form Rolle: Schlüssel. Wähle dann, wie viele Schlüssel eine Zahlung freigeben müssen. Alle im Geschäft müssen dieselben Schlüssel und dieselbe Zahl verwenden, sonst unterscheiden sich die Adressen. Schritt 3 ist der Knopf unten.</string>
     <string name="escrow_keys_field">Schlüssel der anderen Personen</string>
     <string name="escrow_keys_found">Gefundene Schlüssel: %1$d</string>
     <string name="escrow_activate">Escrow-Wallet erstellen</string>
@@ -395,8 +395,8 @@
     <string name="escrow_err_key">Einer der Schlüssel ist ungültig. Kopiere ihn noch einmal vollständig.</string>
     <string name="escrow_err_duplicate">Derselbe Schlüssel kommt doppelt vor, oder dieses Escrow existiert bereits.</string>
     <string name="escrow_err_network">Einer der Schlüssel gehört zu einem anderen Netzwerk.</string>
-    <string name="escrow_err_threshold">Die Zahl der nötigen Zustimmungen muss mindestens 2 und höchstens so groß wie die Zahl der Personen sein.</string>
-    <string name="escrow_err_many">Zu viele Personen. Das Limit ist 7.</string>
+    <string name="escrow_err_threshold">Die Zahl der nötigen Freigaben muss mindestens 1 sein und darf die Zahl der Personen nicht übersteigen.</string>
+    <string name="escrow_err_many">Zu viele Personen. Das Limit ist 15.</string>
     <string name="escrow_err_descriptor">Der Backup-Text ist kein gültiger Escrow-Deskriptor.</string>
     <string name="escrow_err_not_ours">Keiner der Schlüssel in diesem Backup gehört zu deiner Wallet.</string>
     <string name="escrow_err_state">Dieser Schritt ist für dieses Escrow nicht verfügbar.</string>
@@ -851,4 +851,6 @@
     <string name="escrow_of_wallet">Escrows der Wallet %1$s. Jede Wallet hat ihre eigenen Escrows.</string>
     <string name="escrow_threshold_label">Wie viele Schlüssel müssen eine Zahlung freigeben</string>
     <string name="escrow_threshold_one">Bei 1 Schlüssel kann jeder Schlüsselinhaber allein ausgeben. Das ist kein Escrow-Schutz.</string>
+    <string name="escrow_create_info">Das erzeugt deinen eigenen Schlüssel für das Geschäft. Die Zahl der Freigaben wählst du später in Schritt 2, nachdem du die Schlüssel der anderen hinzugefügt hast. Die Passphrase dieser Wallet entsperrt den Schlüssel einmal. Die Schlüsselzeile, die du bekommst, kann nichts ausgeben.</string>
+    <string name="escrow_howto">So funktioniert ein Escrow:\n1. Alle im Geschäft legen hier ein Escrow an und bekommen eine Schlüsselzeile.\n2. Alle senden ihre Schlüsselzeile an die anderen und fügen die Zeilen der anderen hinzu.\n3. Alle wählen dieselbe Zahl an Freigaben, zum Beispiel 2 von 3, und erstellen die Escrow-Wallet. Vorher muss nichts festgelegt werden.\n4. Vergleicht den Prüfcode und die Einzahlungsadresse. Sie müssen für alle identisch sein.\n5. Sende Coins an die Einzahlungsadresse. Zum Bezahlen erstellt eine Person eine Zahlung, die anderen signieren sie, bis genug Freigaben da sind.</string>
 </resources>

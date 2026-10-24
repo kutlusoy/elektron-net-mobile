@@ -22,7 +22,7 @@ object ConnectionModel {
 
     // for example "IPv4 9 · Tor 2 · I2P 1", empty when no peer is connected
     fun breakdown(peerNetworks: Map<String, Int>): String =
-        ConnNet.entries.mapNotNull { net -> (peerNetworks[net.key] ?: 0).takeIf { it > 0 }?.let { "${net.label} $it" } }.joinToString(" \u00b7 ")
+        ConnNet.entries.mapNotNull { net -> (peerNetworks[net.key] ?: 0).takeIf { it > 0 }?.let { "${net.label}: $it" } }.joinToString(" \u00b7 ")
 
     fun count(peerNetworks: List<String>): Map<String, Int> = peerNetworks.filter { it.isNotEmpty() }.groupingBy { it }.eachCount()
 }

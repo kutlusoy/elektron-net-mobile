@@ -369,10 +369,10 @@
     <string name="escrow_continue">Devam</string>
     <string name="escrow_setup">Kurulum sürüyor</string>
     <string name="escrow_threshold">%1$d / %2$d onay gerekli</string>
-    <string name="escrow_step_share">Adım 1: anahtarınızı paylaşın</string>
-    <string name="escrow_share_hint">Bu satırı diğer kişilere gönderin. Sizi dahil etmelerini sağlar ama hiçbir şeyi harcamak için kullanılamaz.</string>
-    <string name="escrow_step_collect">Adım 2: diğerlerinin anahtarlarını ekleyin</string>
-    <string name="escrow_collect_hint">Aldığınız satırları her satıra bir tane gelecek şekilde, Rol: anahtar biçiminde yapıştırın.</string>
+    <string name="escrow_step_share">Adım 1/3: anahtarını paylaş</string>
+    <string name="escrow_share_hint">Bu satırı anlaşmadaki herkese gönder: kopyala, paylaş veya QR kodunu taratın. Yalnızca seni dahil etmelerini sağlar ve hiçbir şey harcayamaz. Diğerleri de kendi satırlarıyla aynısını yapar.</string>
+    <string name="escrow_step_collect">Adım 2/3: diğerlerinin anahtarlarını ekle ve onay sayısını seç</string>
+    <string name="escrow_collect_hint">Aldığın satırları, her satıra bir tane, Rol: anahtar biçiminde yapıştır veya tara. Sonra bir ödemeyi kaç anahtarın onaylaması gerektiğini seç. Anlaşmadaki herkes aynı anahtarları ve aynı sayıyı kullanmalıdır, aksi halde adresler farklı olur. 3. adım aşağıdaki düğmedir.</string>
     <string name="escrow_keys_field">Diğer kişilerin anahtarları</string>
     <string name="escrow_keys_found">Bulunan anahtar: %1$d</string>
     <string name="escrow_activate">Emanet cüzdanını oluştur</string>
@@ -395,8 +395,8 @@
     <string name="escrow_err_key">Anahtarlardan biri geçerli değil. Yeniden ve eksiksiz kopyalayın.</string>
     <string name="escrow_err_duplicate">Aynı anahtar iki kez görünüyor veya bu emanet zaten var.</string>
     <string name="escrow_err_network">Anahtarlardan biri başka bir ağa ait.</string>
-    <string name="escrow_err_threshold">Gereken onay sayısı en az 2 olmalı ve kişi sayısını aşmamalı.</string>
-    <string name="escrow_err_many">Çok fazla kişi. Sınır 7.</string>
+    <string name="escrow_err_threshold">Gereken onay sayısı en az 1 olmalı ve kişi sayısını aşmamalıdır.</string>
+    <string name="escrow_err_many">Çok fazla kişi. Sınır 15.</string>
     <string name="escrow_err_descriptor">Yedek metni geçerli bir emanet descriptor\'ı değil.</string>
     <string name="escrow_err_not_ours">Bu yedekteki anahtarların hiçbiri cüzdanınıza ait değil.</string>
     <string name="escrow_err_state">Bu adım bu emanet için kullanılamıyor.</string>
@@ -851,4 +851,6 @@
     <string name="escrow_of_wallet">%1$s cüzdanının escrow işlemleri. Her cüzdanın kendi escrow işlemleri vardır.</string>
     <string name="escrow_threshold_label">Bir ödemeyi kaç anahtar onaylamalı</string>
     <string name="escrow_threshold_one">1 anahtarla her anahtar sahibi tek başına harcayabilir. Bu bir escrow koruması değildir.</string>
+    <string name="escrow_create_info">Bu, anlaşma için kendi anahtarını oluşturur. Onay sayısını daha sonra, diğerlerinin anahtarlarını ekledikten sonra 2. adımda seçersin. Bu cüzdanın parolası anahtarı bir kez açar. Aldığın anahtar satırı hiçbir şey harcayamaz.</string>
+    <string name="escrow_howto">Escrow nasıl çalışır:\n1. Anlaşmadaki herkes burada bir escrow oluşturur ve bir anahtar satırı alır.\n2. Herkes satırını diğerlerine gönderir ve diğerlerinin satırlarını ekler.\n3. Herkes aynı onay sayısını seçer, örneğin 3 üzerinden 2, ve escrow cüzdanını oluşturur. Bu adımdan önce hiçbir şeye karar vermek gerekmez.\n4. Kontrol kodunu ve yatırma adresini karşılaştırın. Herkes için aynı olmalıdır.\n5. Yatırma adresine coin gönder. Ödemek için bir kişi ödeme oluşturur, diğerleri yeterli onay olana kadar imzalar.</string>
 </resources>
