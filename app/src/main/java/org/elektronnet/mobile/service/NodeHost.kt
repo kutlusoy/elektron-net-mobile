@@ -398,7 +398,7 @@ object NodeHost {
     fun sendEngine(wallet: String = activeWallet): SendEngine? =
         runningSupervisor()?.let { SendEngine(it.rpc.asWalletRpc(), addressCheck, wallet, ::explorerFees, { store?.spendReused != false }) }
 
-    fun escrowManager(): EscrowManager? {
+    fun escrowManager(wallet: String = activeWallet): EscrowManager? {
         val supervisor = runningSupervisor() ?: return null
         val store = settings ?: return null
         val root = datadir ?: return null
@@ -407,6 +407,7 @@ object NodeHost {
             rpc = supervisor.rpc.asWalletRpc(),
             store = store.escrowStore(),
             testnet = ChainConfig.isTestnet,
+            mainWallet = wallet,
             removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name")) },
         )
     }
@@ -414,8 +415,9 @@ object NodeHost {
     fun psbtTools(): PsbtTools? {
         val supervisor = runningSupervisor() ?: return null
         val store = settings ?: return null
+        val owner = activeWallet
         return PsbtTools(supervisor.rpc.asWalletRpc()) {
-            walletNames() + store.escrowStore().load().filter { it.phase == org.elektronnet.mobile.wallet.EscrowPhase.Active }.map { it.walletName }
+            listOf(owner) + store.escrowStore().load().filter { it.owner == owner && it.phase == org.elektronnet.mobile.wallet.EscrowPhase.Active }.map { it.walletName }
         }
     }
 

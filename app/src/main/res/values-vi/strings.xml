@@ -848,4 +848,5 @@
     <string name="net_i2p_ipv6_hint">Hãy tắt nếu mạng của bạn không có IPv6. Bộ định tuyến I2P sẽ ngừng thử IPv6 và các dòng «Network is unreachable» biến mất khỏi nhật ký.</string>
     <string name="net_tor_awake">Giữ điện thoại thức cho relay</string>
     <string name="net_tor_awake_hint">Giữ một wake lock một phần khi relay đang chạy, để nó vẫn truy cập được khi tắt màn hình. Tốn pin hơn.</string>
+    <string name="escrow_of_wallet">Escrow của ví %1$s. Mỗi ví có escrow riêng.</string>
 </resources>

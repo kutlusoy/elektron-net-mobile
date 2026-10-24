@@ -848,4 +848,5 @@
     <string name="net_i2p_ipv6_hint">如果你的网络没有 IPv6，请关闭。I2P 路由器将不再尝试 IPv6，日志中的“Network is unreachable”行也会消失。</string>
     <string name="net_tor_awake">为中继保持手机唤醒</string>
     <string name="net_tor_awake_hint">在中继运行期间持有部分唤醒锁，使其在屏幕关闭时仍可访问。会消耗更多电量。</string>
+    <string name="escrow_of_wallet">钱包 %1$s 的托管。每个钱包有自己的托管。</string>
 </resources>

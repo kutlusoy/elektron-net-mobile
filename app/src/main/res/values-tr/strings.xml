@@ -848,4 +848,5 @@
     <string name="net_i2p_ipv6_hint">Ağınızda IPv6 yoksa kapatın. I2P yönlendiricisi IPv6 denemeyi bırakır ve günlükteki «Network is unreachable» satırları kaybolur.</string>
     <string name="net_tor_awake">Röle için telefonu uyanık tut</string>
     <string name="net_tor_awake_hint">Röle çalıştığı sürece kısmi bir uyanık tutma kilidi tutar, böylece ekran kapalıyken de erişilebilir kalır. Daha fazla pil harcar.</string>
+    <string name="escrow_of_wallet">%1$s cüzdanının escrow işlemleri. Her cüzdanın kendi escrow işlemleri vardır.</string>
 </resources>

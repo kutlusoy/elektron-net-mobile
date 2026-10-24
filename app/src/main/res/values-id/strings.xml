@@ -848,4 +848,5 @@
     <string name="net_i2p_ipv6_hint">Matikan jika jaringan Anda tidak punya IPv6. Router I2P berhenti mencoba IPv6 dan baris «Network is unreachable» hilang dari log.</string>
     <string name="net_tor_awake">Jaga ponsel tetap aktif untuk relay</string>
     <string name="net_tor_awake_hint">Menahan wake lock parsial selama relay berjalan, agar tetap bisa dijangkau saat layar mati. Ini memakai lebih banyak baterai.</string>
+    <string name="escrow_of_wallet">Escrow dompet %1$s. Setiap dompet punya escrow sendiri.</string>
 </resources>

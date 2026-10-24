@@ -848,4 +848,5 @@
     <string name="net_i2p_ipv6_hint">यदि आपके नेटवर्क में IPv6 नहीं है तो इसे बंद करें। तब I2P राउटर IPv6 आज़माना बंद कर देता है और लॉग से «Network is unreachable» की पंक्तियाँ गायब हो जाती हैं।</string>
     <string name="net_tor_awake">रिले के लिए फ़ोन को जागा रखें</string>
     <string name="net_tor_awake_hint">रिले चलने तक आंशिक वेक लॉक रखता है, ताकि स्क्रीन बंद होने पर भी वह पहुँच में रहे। इससे बैटरी अधिक खर्च होती है।</string>
+    <string name="escrow_of_wallet">वॉलेट %1$s के एस्क्रो। हर वॉलेट के अपने एस्क्रो होते हैं।</string>
 </resources>

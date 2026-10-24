@@ -848,4 +848,5 @@
     <string name="net_i2p_ipv6_hint">أوقفه إذا لم تكن شبكتك تدعم IPv6. يتوقف موجّه I2P عن تجربة IPv6 وتختفي أسطر «Network is unreachable» من السجل.</string>
     <string name="net_tor_awake">إبقاء الهاتف مستيقظًا من أجل المرحّل</string>
     <string name="net_tor_awake_hint">يُبقي قفل تنبيه جزئيًا ما دام المرحّل يعمل، ليبقى متاحًا والشاشة مطفأة. يستهلك بطارية أكثر.</string>
+    <string name="escrow_of_wallet">حسابات الضمان للمحفظة %1$s. لكل محفظة حسابات ضمان خاصة بها.</string>
 </resources>

@@ -848,4 +848,5 @@
     <string name="net_i2p_ipv6_hint">Disattivalo se la tua rete non ha IPv6. Il router I2P smette di provare IPv6 e le righe «Network is unreachable» spariscono dal log.</string>
     <string name="net_tor_awake">Tieni il telefono sveglio per il relay</string>
     <string name="net_tor_awake_hint">Mantiene un wake lock parziale finché il relay è attivo, così resta raggiungibile con lo schermo spento. Consuma più batteria.</string>
+    <string name="escrow_of_wallet">Escrow del wallet %1$s. Ogni wallet ha i suoi.</string>
 </resources>

@@ -848,4 +848,5 @@
     <string name="net_i2p_ipv6_hint">네트워크에 IPv6가 없다면 끄세요. I2P 라우터가 IPv6를 시도하지 않게 되어 로그의 «Network is unreachable» 줄이 사라집니다.</string>
     <string name="net_tor_awake">릴레이를 위해 휴대폰 깨워 두기</string>
     <string name="net_tor_awake_hint">릴레이가 실행되는 동안 부분 웨이크 락을 유지하여 화면이 꺼져 있어도 접속할 수 있게 합니다. 배터리를 더 사용합니다.</string>
+    <string name="escrow_of_wallet">지갑 %1$s의 에스크로입니다. 지갑마다 자기 에스크로가 따로 있습니다.</string>
 </resources>

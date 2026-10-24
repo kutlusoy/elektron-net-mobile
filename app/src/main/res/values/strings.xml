@@ -859,4 +859,5 @@
     <string name="net_i2p_ipv6_hint">Switch it off if your network has no IPv6. The I2P router then stops trying IPv6 and the \"Network is unreachable\" lines disappear from the log.</string>
     <string name="net_tor_awake">Keep the phone awake for the relay</string>
     <string name="net_tor_awake_hint">Holds a partial wake lock while the relay runs, so it stays reachable with the screen off. It uses more battery.</string>
+    <string name="escrow_of_wallet">Escrows of wallet %1$s. Every wallet has its own escrows.</string>
 </resources>

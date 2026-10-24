@@ -64,11 +64,13 @@ fun EscrowListScreen(onBack: () -> Unit, onOpen: (Int) -> Unit) {
     var creating by remember { mutableStateOf(false) }
     var restoring by remember { mutableStateOf(false) }
     var reload by remember { mutableStateOf(0) }
-    LaunchedEffect(reload) {
+    LaunchedEffect(reload, NodeHost.activeWallet) {
         records = withContext(Dispatchers.IO) { NodeHost.escrowManager()?.list().orEmpty() }
     }
     ToolPage(stringResource(R.string.escrow_title), onBack) {
         Hint(stringResource(R.string.escrow_intro))
+        val owner = NodeHost.wallets.firstOrNull { it.name == NodeHost.activeWallet }
+        Text(stringResource(R.string.escrow_of_wallet, owner?.label?.ifBlank { null } ?: NodeHost.activeWallet), color = MaterialTheme.colorScheme.primary)
         if (records.isEmpty()) Text(stringResource(R.string.escrow_none))
         records.forEach { r ->
             OutlinedButton(onClick = { onOpen(r.id) }, modifier = Modifier.fillMaxWidth()) {

@@ -19,6 +19,8 @@ data class EscrowRecord(
     val cosigners: List<Cosigner> = emptyList(),
     val descriptor: String? = null,
     val currentAddress: String? = null,
+    // the wallet whose seed the escrow key comes from, records from before this field belong to the first wallet
+    val owner: String = WalletBootstrap.DEFAULT_WALLET,
 ) {
     val total: Int get() = cosigners.size + 1
 
@@ -26,7 +28,7 @@ data class EscrowRecord(
         "id" to id, "name" to name, "wallet" to walletName, "account" to account, "myLabel" to myLabel, "myKey" to myKey,
         "phase" to phase.name, "required" to required,
         "cosigners" to cosigners.map { linkedMapOf("label" to it.label, "key" to it.key) },
-        "descriptor" to descriptor, "address" to currentAddress,
+        "descriptor" to descriptor, "address" to currentAddress, "owner" to owner,
     )
 
     companion object {
@@ -42,6 +44,7 @@ data class EscrowRecord(
             cosigners = (m["cosigners"] as? List<*>).orEmpty().map { Cosigner((it as Map<*, *>)["label"].toString(), it["key"].toString()) },
             descriptor = m["descriptor"]?.toString(),
             currentAddress = m["address"]?.toString(),
+            owner = m["owner"]?.toString() ?: WalletBootstrap.DEFAULT_WALLET,
         )
     }
 }
@@ -77,16 +80,18 @@ class EscrowManager(
     private val coinType = if (testnet) Descriptors.COIN_TYPE_TESTNET else Descriptors.COIN_TYPE_ELEKTRON
     private val keyPrefix = if (testnet) "tpub" else "xpub"
 
-    fun list(): List<EscrowRecord> = store.load()
+    fun list(): List<EscrowRecord> = store.load().filter { it.owner == mainWallet }
 
-    fun get(id: Int): EscrowRecord = store.load().firstOrNull { it.id == id } ?: throw EscrowException(EscrowFailure.WalletMissing)
+    fun get(id: Int): EscrowRecord = store.load().firstOrNull { it.id == id && it.owner == mainWallet } ?: throw EscrowException(EscrowFailure.WalletMissing)
 
     fun createKey(name: String, myLabel: String, passphrase: String, fixedAccount: Int? = null): EscrowRecord {
         val trimmed = name.trim().take(MAX_NAME)
         if (trimmed.isEmpty()) throw EscrowException(EscrowFailure.NameMissing)
         val records = store.load()
-        val account = fixedAccount ?: ((records.maxOfOrNull { it.account } ?: -1) + 1)
-        val id = (records.maxOfOrNull { it.id } ?: 0) + 1
+        val account = fixedAccount ?: ((records.filter { it.owner == mainWallet }.maxOfOrNull { it.account } ?: -1) + 1)
+        val onNode = namesOnNode()
+        var id = (records.maxOfOrNull { it.id } ?: 0) + 1
+        while ("$walletPrefix-$id" in onNode) id++
         val wallet = "$walletPrefix-$id"
         var master: String? = masterKey(passphrase)
         var created = false
@@ -105,12 +110,12 @@ class EscrowManager(
             val listed = guard { (rpc.call("listdescriptors", emptyList<Any?>(), wallet) as Map<*, *>)["descriptors"] as List<*> }
             val text = listed.map { (it as Map<*, *>)["desc"].toString() }.firstOrNull { KEY_FROM_DESC.containsMatchIn(it) } ?: throw EscrowException(EscrowFailure.Unknown)
             val key = KEY_FROM_DESC.find(text)!!.groupValues[1]
-            val record = EscrowRecord(id, trimmed, wallet, account, myLabel.trim().take(MAX_LABEL).ifEmpty { "Me" }, key, EscrowPhase.KeyOnly)
+            val record = EscrowRecord(id, trimmed, wallet, account, myLabel.trim().take(MAX_LABEL).ifEmpty { "Me" }, key, EscrowPhase.KeyOnly, owner = mainWallet)
             store.save(records + record)
             return record
         } catch (e: Exception) {
             if (created) {
-                runCatching { rpc.call("unloadwallet", listOf(wallet), null) }
+                runCatching { rpc.call("unloadwallet", linkedMapOf("wallet_name" to wallet, "load_on_startup" to false), null) }
                 runCatching { removeWalletFiles(wallet) }
             }
             throw e
@@ -156,7 +161,7 @@ class EscrowManager(
         if (mine.size != 1) throw EscrowException(EscrowFailure.NotOurKey)
         val path = Regex("""^\[[0-9a-f]{8}/48h/${coinType}h/(\d+)h/2h]""").find(mine.single()) ?: throw EscrowException(EscrowFailure.NotOurKey)
         val account = path.groupValues[1].toInt()
-        if (store.load().any { it.account == account }) throw EscrowException(EscrowFailure.DuplicateKey)
+        if (list().any { it.account == account }) throw EscrowException(EscrowFailure.DuplicateKey)
         val key = createKey(name, labels[mine.single()] ?: "Me", passphrase, account)
         val others = parsed.keys.filter { it != mine.single() }.map { Cosigner(labels[it].orEmpty(), it) }
         return activate(key.id, parsed.required, others, passphrase)
@@ -192,7 +197,7 @@ class EscrowManager(
 
     fun reader(id: Int): WalletReader = WalletReader(rpc, get(id).walletName)
 
-    fun walletNames(): List<String> = listOf(mainWallet) + store.load().filter { it.phase == EscrowPhase.Active }.map { it.walletName }
+    fun walletNames(): List<String> = listOf(mainWallet) + list().filter { it.phase == EscrowPhase.Active }.map { it.walletName }
 
     fun backupText(id: Int): String {
         val record = get(id)
@@ -214,8 +219,13 @@ class EscrowManager(
             val balances = WalletReader(rpc, record.walletName).balances()
             if (balances.trustedLep + balances.pendingLep + balances.immatureLep != 0L) throw EscrowException(EscrowFailure.HasFunds)
         }
-        runCatching { rpc.call("unloadwallet", listOf(record.walletName), null) }
-        runCatching { removeWalletFiles(record.walletName) }
+        runCatching { rpc.call("unloadwallet", linkedMapOf("wallet_name" to record.walletName, "load_on_startup" to false), null) }
+        // the keys must be gone before the entry is, a leftover folder keeps the entry so the removal can be repeated
+        try {
+            removeWalletFiles(record.walletName)
+        } catch (e: Exception) {
+            throw EscrowException(EscrowFailure.Unknown, e.message ?: "")
+        }
         store.save(store.load().filter { it.id != id })
     }
 
@@ -293,6 +303,10 @@ class EscrowManager(
             throw EscrowException(if (e.code == WRONG_PASSPHRASE) EscrowFailure.WrongPassphrase else if (e.inWarmup) EscrowFailure.NodeNotReady else EscrowFailure.Unknown, e.message ?: "")
         }
     }
+
+    private fun namesOnNode(): Set<String> = runCatching {
+        ((rpc.call("listwalletdir", emptyList<Any?>(), null) as Map<*, *>)["wallets"] as List<*>).map { (it as Map<*, *>)["name"].toString() }.toSet()
+    }.getOrDefault(emptySet())
 
     private fun lockQuietly(wallet: String) {
         runCatching { rpc.call("walletlock", emptyList<Any?>(), wallet) }
