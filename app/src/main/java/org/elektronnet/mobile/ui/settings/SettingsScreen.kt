@@ -172,6 +172,7 @@ fun SettingsScreen(
         SettingsCard(R.string.settings_fiat) { FiatSection() }
         SettingsCard(R.string.settings_units) {
             UnitPicker()
+            NumberFormatSection()
         }
         SettingsCard(R.string.settings_appearance) { AppearanceSection(ui, onUi) }
         SettingsCard(R.string.settings_about) {
@@ -208,7 +209,6 @@ private fun UnitPicker() {
     val saved = UnitState.current
     var position by remember(saved) { mutableStateOf(saved.ordinal.toFloat()) }
     val shown = AmountUnit.entries[position.roundToInt().coerceIn(0, AmountUnit.entries.lastIndex)]
-    val number = java.text.NumberFormat.getIntegerInstance()
     Text(stringResource(unitLabel(shown)), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
     Slider(
         value = position,
@@ -225,7 +225,7 @@ private fun UnitPicker() {
         AmountUnit.entries.forEach { Text(it.symbol, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
     }
     Text(
-        "1 ELEK = " + number.format(Amount.formatIn(shown, Amount.LEP_PER_ELEK).toLong()) + " " + shown.symbol,
+        "1 ELEK = " + Amount.numberStyle.format(Amount.formatIn(shown, Amount.LEP_PER_ELEK)) + " " + shown.symbol,
         style = MaterialTheme.typography.headlineSmall,
         fontFamily = ElektronMono,
     )

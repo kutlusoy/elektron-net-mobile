@@ -4,14 +4,12 @@
 - **Date:** October 24, 2026
 - **Audience:** Testers, maintainers and users who want to know what a release added
 - **Reference implementation:** [`elektron-net-mobile`](https://github.com/kutlusoy/elektron-net-mobile) `app/`, release names look like `v<node version>-m0.1.4` (see `guideline-distribution-and-signing.md` section 8.1)
-- **See also:** [`CHANGELOG-Release-m0.1.3.md`](./CHANGELOG-Release-m0.1.3.md), [`guideline-escrow-psbt-and-tools.md`](./guideline-escrow-psbt-and-tools.md), [`guideline-tor-and-i2p.md`](./guideline-tor-and-i2p.md), [`guideline-ux-and-screens.md`](./guideline-ux-and-screens.md)
+- **See also:** [`CHANGELOG-Release-m0.1.3.md`](./CHANGELOG-Release-m0.1.3.md), [`CHANGELOG-Release-m0.1.5.md`](./CHANGELOG-Release-m0.1.5.md), [`guideline-escrow-psbt-and-tools.md`](./guideline-escrow-psbt-and-tools.md), [`guideline-tor-and-i2p.md`](./guideline-tor-and-i2p.md), [`guideline-ux-and-screens.md`](./guideline-ux-and-screens.md)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet
 
 This file lists the features this release added. Corrections are not listed.
 
 ---
-
-**Status:** in preparation, the next test build.
 
 ## Escrow and PSBT
 

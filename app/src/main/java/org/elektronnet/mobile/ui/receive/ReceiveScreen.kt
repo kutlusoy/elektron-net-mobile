@@ -129,7 +129,7 @@ fun ReceiveScreen(onClose: () -> Unit) {
                                 amount = when {
                                     lep == null -> ""
                                     fiatMode -> org.elektronnet.mobile.fiat.FiatRates.inputText(lep, fiat)
-                                    else -> Amount.display(lep)
+                                    else -> Amount.plain(lep)
                                 }
                                 inFiat = fiatMode
                             }

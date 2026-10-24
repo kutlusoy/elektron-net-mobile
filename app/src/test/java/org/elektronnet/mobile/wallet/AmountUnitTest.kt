@@ -48,10 +48,15 @@ class AmountUnitTest {
     @Test
     fun displayFollowsTheProvider() {
         Amount.unitProvider = { AmountUnit.Bit }
+        val style = Amount.styleProvider
+        Amount.styleProvider = { NumberStyle.forLocale(java.util.Locale.US) }
         try {
+            assertEquals("1,000,000 bit", Amount.displayWithUnit(oneElek))
+            Amount.styleProvider = { NumberStyle.forLocale(java.util.Locale.US, grouping = false) }
             assertEquals("1000000 bit", Amount.displayWithUnit(oneElek))
         } finally {
             Amount.unitProvider = { AmountUnit.Elek }
+            Amount.styleProvider = style
         }
         assertEquals("1 ELEK", Amount.displayWithUnit(oneElek))
     }

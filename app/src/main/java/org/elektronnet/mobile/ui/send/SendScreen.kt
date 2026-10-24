@@ -49,6 +49,7 @@ import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.ui.tools.Hint
 import org.elektronnet.mobile.ui.SecureWindow
 import org.elektronnet.mobile.ui.scan.QrScannerScreen
 import org.elektronnet.mobile.ui.model.AmountState
@@ -129,7 +130,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     LaunchedEffect(recipientText, resolved.address) {
         val isLink = recipientText.trim().startsWith(ChainConfig.uriScheme + ":", ignoreCase = true)
         if (isLink && resolved.usable && step == Step.Recipient) {
-            resolved.amountLep?.let { amountText = Amount.display(it); max = false; inFiat = false }
+            resolved.amountLep?.let { amountText = Amount.plain(it); max = false; inFiat = false }
             noteFromLink = resolved.note
         }
     }
@@ -167,7 +168,12 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             }
             passphrase = ""
             result.onSuccess {
-                if (escrow != null) exportedPsbt = it else txid = it
+                if (escrow != null) {
+                    exportedPsbt = it
+                    withContext(Dispatchers.IO) { runCatching { NodeHost.escrowManager()?.addLog(escrow.id, org.elektronnet.mobile.wallet.EscrowLogKind.Request, it) } }
+                } else {
+                    txid = it
+                }
                 step = Step.Done
             }
             result.onFailure {
@@ -221,6 +227,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             }
             Text(if (escrow != null) escrow.name else stringResource(R.string.send_title), style = MaterialTheme.typography.titleLarge)
         }
+        if (escrow != null && step != Step.Done) Hint(stringResource(R.string.escrow_send_from))
         failure?.let { Text(stringResource(failureText(it)), color = MaterialTheme.colorScheme.error) }
         when (step) {
             Step.Recipient -> {
@@ -270,7 +277,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                                     amountText = when {
                                         lep == null -> ""
                                         fiatMode -> FiatRates.inputText(lep, fiat)
-                                        else -> Amount.display(lep)
+                                        else -> Amount.plain(lep)
                                     }
                                     inFiat = fiatMode
                                 }
@@ -280,7 +287,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     }
                 }
                 OutlinedTextField(
-                    value = if (max) (if (fiatInput != null) FiatRates.inputText(spendable, fiatInput) else Amount.display(spendable)) else amountText,
+                    value = if (max) (if (fiatInput != null) FiatRates.inputText(spendable, fiatInput) else Amount.plain(spendable)) else amountText,
                     onValueChange = { amountText = it; max = false },
                     label = { Text(stringResource(R.string.receive_amount, fiatInput?.quote ?: Amount.unitSymbol())) },
                     enabled = !max,

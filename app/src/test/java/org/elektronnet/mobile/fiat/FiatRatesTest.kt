@@ -72,14 +72,16 @@ class FiatRatesTest {
 
     @Test
     fun formatsAmounts() {
+        val us = org.elektronnet.mobile.wallet.NumberStyle.forLocale(Locale.US)
+        val de = org.elektronnet.mobile.wallet.NumberStyle.forLocale(Locale.GERMANY)
         val rate = FiatRate(BigDecimal("1.5"), "EUR", 0L)
-        assertEquals("3.00 EUR", FiatRates.format(200_000_000L, rate, Locale.US))
-        assertEquals("1,500.00 EUR", FiatRates.format(100_000_000_000L, rate, Locale.US))
-        assertEquals("3,00 EUR", FiatRates.format(200_000_000L, rate, Locale.GERMANY))
-        assertEquals("150 JPY", FiatRates.format(100_000_000L, FiatRate(BigDecimal("150"), "JPY", 0L), Locale.US))
-        assertEquals("0.000015 EUR", FiatRates.format(1_000L, rate, Locale.US))
-        assertEquals("0.00 EUR", FiatRates.format(0L, rate, Locale.US))
-        assertEquals("1.50 FOO", FiatRates.format(100_000_000L, FiatRate(BigDecimal("1.5"), "FOO", 0L), Locale.US))
+        assertEquals("3.00 EUR", FiatRates.format(200_000_000L, rate, us))
+        assertEquals("1,500.00 EUR", FiatRates.format(100_000_000_000L, rate, us))
+        assertEquals("3,00 EUR", FiatRates.format(200_000_000L, rate, de))
+        assertEquals("150 JPY", FiatRates.format(100_000_000L, FiatRate(BigDecimal("150"), "JPY", 0L), us))
+        assertEquals("0.000015 EUR", FiatRates.format(1_000L, rate, us))
+        assertEquals("0.00 EUR", FiatRates.format(0L, rate, us))
+        assertEquals("1.50 FOO", FiatRates.format(100_000_000L, FiatRate(BigDecimal("1.5"), "FOO", 0L), us))
     }
 
     @Test

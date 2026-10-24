@@ -62,6 +62,7 @@ fun ToolsScreen(onClose: () -> Unit, start: ToolsPage = ToolsPage.Hub) {
             onBack = { page = Page.Escrows },
             onPay = { paying = it },
             onPsbt = { page = Page.Psbt },
+            onDeposit = { NodeHost.incomingUri = it },
         )
         page == Page.Psbt -> PsbtScreen(labels, onBack = backToHub)
         page == Page.Sweep -> SweepScreen(onBack = backToHub)

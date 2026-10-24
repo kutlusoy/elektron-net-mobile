@@ -178,7 +178,7 @@ private fun EscrowDialog(
 }
 
 @Composable
-fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Unit, onPsbt: () -> Unit) {
+fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Unit, onPsbt: () -> Unit, onDeposit: (String) -> Unit = {}) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var record by remember { mutableStateOf<EscrowRecord?>(null) }
@@ -302,8 +302,11 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
                 Text(org.elektronnet.mobile.wallet.AddressFormat.grouped(a), fontFamily = ElektronMono)
                 Hint(stringResource(R.string.escrow_address_hint))
                 OutlinedButton(onClick = { copyText(context, "address", a) }) { Text(stringResource(R.string.action_copy)) }
+                Button(onClick = { onDeposit(a) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_deposit_action)) }
+                Hint(stringResource(R.string.escrow_deposit_desc))
             }
-            Button(onClick = { onPay(r) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_pay)) }
+            OutlinedButton(onClick = { onPay(r) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_pay)) }
+            Hint(stringResource(R.string.escrow_pay_desc))
             OutlinedButton(onClick = onPsbt, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_sign_request)) }
             items.forEach { tx ->
                 val row = HistoryModel.row(tx)
@@ -319,6 +322,7 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
                 }
             }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_backup)) }
             Hint(stringResource(R.string.escrow_backup_hint))
+            EscrowHistory(r)
         }
         TextButton(onClick = { confirmRemove = true }) { Text(stringResource(R.string.escrow_remove), color = MaterialTheme.colorScheme.error) }
     }
@@ -357,4 +361,41 @@ private fun escrowErrorText(failure: EscrowFailure): Int = when (failure) {
     EscrowFailure.ImportFailed -> R.string.escrow_err_import
     EscrowFailure.NodeNotReady -> R.string.fr_err_node
     EscrowFailure.Unknown -> R.string.send_err_unknown
+}
+
+@Composable
+private fun EscrowHistory(r: EscrowRecord) {
+    val context = LocalContext.current
+    val format = remember { java.time.format.DateTimeFormatter.ofLocalizedDateTime(java.time.format.FormatStyle.MEDIUM) }
+    Text(stringResource(R.string.escrow_history_title), style = MaterialTheme.typography.titleMedium)
+    Hint(stringResource(R.string.escrow_history_hint))
+    val keyLine = r.myLabel + ": " + r.myKey
+    HistoryEntry(stringResource(R.string.escrow_log_key), null, keyLine, context)
+    r.log.reversed().forEach { entry ->
+        val title = stringResource(
+            when (entry.kind) {
+                org.elektronnet.mobile.wallet.EscrowLogKind.Request -> R.string.escrow_log_request
+                org.elektronnet.mobile.wallet.EscrowLogKind.Signed -> R.string.escrow_log_signed
+                org.elektronnet.mobile.wallet.EscrowLogKind.Sent -> R.string.escrow_log_sent
+            },
+        )
+        val time = if (entry.atMs > 0) format.format(java.time.Instant.ofEpochMilli(entry.atMs).atZone(java.time.ZoneId.systemDefault())) else null
+        HistoryEntry(title, time, entry.text, context)
+    }
+}
+
+@Composable
+private fun HistoryEntry(title: String, time: String?, text: String, context: android.content.Context) {
+    var qr by remember { mutableStateOf(false) }
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+        Text(title, style = MaterialTheme.typography.labelLarge)
+        time?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        Text(if (text.length > 80) text.take(60) + "\u2026" + text.takeLast(12) else text, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = { copyText(context, "escrow message", text) }) { Text(stringResource(R.string.action_copy)) }
+            OutlinedButton(onClick = { shareText(context, text) }) { Text(stringResource(R.string.action_share)) }
+            if (text.length <= PSBT_QR_LIMIT) OutlinedButton(onClick = { qr = !qr }) { Text(stringResource(R.string.action_show_qr)) }
+        }
+        if (qr) QrView(text)
+    }
 }

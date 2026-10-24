@@ -3,9 +3,7 @@ package org.elektronnet.mobile.fiat
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
-import java.text.NumberFormat
 import java.util.Currency
-import java.util.Locale
 import org.elektronnet.mobile.node.Json
 
 data class FiatRate(val perElek: BigDecimal, val quote: String, val fetchedAtMs: Long, val source: String = "")
@@ -106,15 +104,15 @@ object FiatRates {
     fun inputText(lep: Long, rate: FiatRate): String =
         value(lep, rate).setScale(digits(rate.quote), RoundingMode.HALF_UP).stripTrailingZeros().toPlainString()
 
-    fun format(lep: Long, rate: FiatRate, locale: Locale = Locale.getDefault()): String {
+    fun format(lep: Long, rate: FiatRate, style: org.elektronnet.mobile.wallet.NumberStyle = org.elektronnet.mobile.wallet.Amount.numberStyle): String {
         val value = value(lep, rate)
         val digits = digits(rate.quote)
         val tiny = value.signum() != 0 && value.abs() < BigDecimal.ONE.movePointLeft(digits)
-        val format = NumberFormat.getInstance(locale).apply {
-            minimumFractionDigits = digits
-            maximumFractionDigits = if (tiny) maxOf(digits, 6) else digits
-            roundingMode = RoundingMode.HALF_UP
+        var plain = value.setScale(if (tiny) maxOf(digits, 6) else digits, RoundingMode.HALF_UP).toPlainString()
+        if (tiny && plain.contains('.')) {
+            val minimum = plain.indexOf('.') + 1 + digits
+            while (plain.length > minimum && plain.endsWith("0")) plain = plain.dropLast(1)
         }
-        return format.format(value) + " " + rate.quote
+        return style.format(plain) + " " + rate.quote
     }
 }
