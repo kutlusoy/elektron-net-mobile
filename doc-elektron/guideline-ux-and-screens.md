@@ -285,3 +285,5 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 - The key of a new escrow is derived from the active wallet, the account number counts per wallet, and the wallet names of escrows (`escrow-<n>`) are unique across all wallets. A name that already exists in the node's wallet folder is skipped, so a leftover folder never blocks a new escrow.
 - Removing an escrow unloads its wallet (without load on startup) and deletes its folder. If the folder cannot be deleted, the entry stays and an error is shown, so the removal can be repeated.
 - The PSBT tools look at the active wallet and its own escrows only: ownership of inputs and outputs, the net amount per wallet and the wallets that can sign are limited to those. A PSBT that belongs to another wallet shows "no input of this wallet" until that wallet is active.
+
+- **Status notification:** next to the text ("Synchronized at block N, M peers") the notification shows the peers by network as its sub text and in the expanded text, for example "IPv4 9 · IPv6 2 · Tor 1 · I2P 1". Only networks with at least one peer are listed.

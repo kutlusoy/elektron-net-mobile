@@ -81,7 +81,7 @@ class NodeService : Service() {
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val state = settings.load()
             syncWakeLock(state.network.tor, snapshot.headline !is Headline.Stopped)
-            manager.notify(NodeNotification.ID, NodeNotification.build(this, snapshot.headline, state.userPaused))
+            manager.notify(NodeNotification.ID, NodeNotification.build(this, snapshot.headline, state.userPaused, snapshot.peerNetworks))
             runCatching {
                 val wallet = NodeHost.activeWallet
                 NodeHost.walletReader()?.transactions(INCOMING_WINDOW)?.let { incoming.check(wallet, it) }
