@@ -889,5 +889,5 @@
     <string name="escrow_deposit_action">自分のウォレットから入金</string>
     <string name="escrow_send_from">あなたのウォレットではなく、エスクローから支払います。使える金額はエスクローの残高です。ほかの人が承認する支払いリクエストが作られます。エスクローにコインを入れるには、エスクローのページの「自分のウォレットから入金」を使ってください。</string>
     <string name="escrow_deposit_desc">買い手がエスクローに支払います。</string>
-    <string name="escrow_pay_desc">売り手がエスクローからお金を自分のウォレットに引き出します。ほかの人の承認が必要です。</string>
+    <string name="escrow_pay_desc">売り手がエスクローからお金を自分のウォレットに引き出します。そのために売り手が出金先アドレス(通常は自分のウォレットのアドレス)を入力します。ほかの人の承認が必要です。</string>
 </resources>

@@ -889,5 +889,5 @@
     <string name="escrow_deposit_action">Setor dari dompet saya</string>
     <string name="escrow_send_from">Anda membayar dari escrow, bukan dari dompet Anda sendiri. Jumlah tersedia adalah saldo escrow. Ini membuat permintaan pembayaran yang harus disetujui yang lain. Untuk memasukkan koin ke escrow, gunakan «Setor dari dompet saya» di halaman escrow.</string>
     <string name="escrow_deposit_desc">Pembeli membayar ke escrow.</string>
-    <string name="escrow_pay_desc">Penjual mengambil uang dari escrow ke dompetnya sendiri. Yang lain harus menyetujui.</string>
+    <string name="escrow_pay_desc">Penjual mengambil uang dari escrow ke dompetnya sendiri. Untuk itu penjual memasukkan alamat penarikan, biasanya alamat dari dompetnya sendiri. Yang lain harus menyetujui.</string>
 </resources>

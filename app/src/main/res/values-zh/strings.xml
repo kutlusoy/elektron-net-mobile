@@ -889,5 +889,5 @@
     <string name="escrow_deposit_action">从我的钱包存入</string>
     <string name="escrow_send_from">你是从托管付款，不是从你自己的钱包。可用金额是托管的余额。这会创建一个需要其他人批准的付款请求。要把币放进托管，请使用托管页面上的“从我的钱包存入”。</string>
     <string name="escrow_deposit_desc">买家向托管存入。</string>
-    <string name="escrow_pay_desc">卖家把钱从托管取到自己的钱包。其他人必须批准。</string>
+    <string name="escrow_pay_desc">卖家把钱从托管取到自己的钱包。为此卖家需要填写一个收款地址，通常是自己钱包的地址。其他人必须批准。</string>
 </resources>

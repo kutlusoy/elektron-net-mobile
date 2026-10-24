@@ -889,5 +889,5 @@
     <string name="escrow_deposit_action">Nạp từ ví của tôi</string>
     <string name="escrow_send_from">Bạn đang thanh toán từ escrow, không phải từ ví của bạn. Số tiền khả dụng là số dư của escrow. Việc này tạo yêu cầu thanh toán mà những người khác phải chấp thuận. Để đưa coin vào escrow, hãy dùng «Nạp từ ví của tôi» trên trang escrow.</string>
     <string name="escrow_deposit_desc">Người mua trả tiền vào escrow.</string>
-    <string name="escrow_pay_desc">Người bán lấy tiền từ escrow về ví của mình. Những người khác phải chấp thuận.</string>
+    <string name="escrow_pay_desc">Người bán lấy tiền từ escrow về ví của mình. Để làm vậy, người bán nhập một địa chỉ rút tiền, thường là địa chỉ của ví mình. Những người khác phải chấp thuận.</string>
 </resources>

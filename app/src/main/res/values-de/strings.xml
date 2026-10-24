@@ -889,5 +889,5 @@
     <string name="escrow_deposit_action">Aus meiner Wallet einzahlen</string>
     <string name="escrow_send_from">Du zahlst aus dem Escrow, nicht aus deiner eigenen Wallet. Verfügbar ist das Guthaben des Escrows. Das erstellt eine Zahlungsanfrage, die die anderen freigeben müssen. Um Coins in das Escrow zu legen, nutze „Aus meiner Wallet einzahlen“ auf der Escrow-Seite.</string>
     <string name="escrow_deposit_desc">Der Käufer zahlt in das Escrow ein.</string>
-    <string name="escrow_pay_desc">Der Verkäufer holt Geld aus dem Escrow in seine eigene Wallet. Die anderen müssen zustimmen.</string>
+    <string name="escrow_pay_desc">Der Verkäufer holt Geld aus dem Escrow in seine eigene Wallet. Dafür gibt der Verkäufer eine Auszahlungsadresse an, meist eine Adresse seiner eigenen Wallet. Die anderen müssen zustimmen.</string>
 </resources>

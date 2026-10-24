@@ -889,5 +889,5 @@
     <string name="escrow_deposit_action">Deposita dal mio wallet</string>
     <string name="escrow_send_from">Stai pagando dall\'escrow, non dal tuo wallet. L\'importo disponibile è il saldo dell\'escrow. Questo crea una richiesta di pagamento che gli altri devono approvare. Per mettere monete nell\'escrow usa «Deposita dal mio wallet» nella pagina dell\'escrow.</string>
     <string name="escrow_deposit_desc">L\'acquirente paga nell\'escrow.</string>
-    <string name="escrow_pay_desc">Il venditore preleva denaro dall\'escrow nel proprio wallet. Gli altri devono approvare.</string>
+    <string name="escrow_pay_desc">Il venditore preleva denaro dall\'escrow nel proprio wallet. Per questo indica un indirizzo di prelievo, di solito un indirizzo del proprio wallet. Gli altri devono approvare.</string>
 </resources>
