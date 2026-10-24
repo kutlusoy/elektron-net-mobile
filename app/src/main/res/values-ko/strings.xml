@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">개인키의 코인을 내 지갑으로 옮기기</string>
     <string name="tools_msg_desc">주소가 내 것임을 증명하거나 다른 사람의 증명을 확인</string>
     <string name="escrow_title">에스크로</string>
-    <string name="escrow_intro">에스크로는 예를 들어 구매자, 판매자, 중립적인 제3자가 각각 키를 하나씩 가지는 공동 지갑입니다. 결제하려면 세 명 중 두 명의 승인이 필요합니다. 혼자서는 아무도 쓸 수 없습니다.</string>
+    <string name="escrow_intro">에스크로는 공유 지갑입니다. 여러 사람이 각각 키를 하나씩 가지며, 결제를 승인해야 하는 수를 직접 정합니다. 예를 들어 구매자, 판매자, 중립적인 제3자 중 3명 중 2명입니다. 1을 고르지 않는 한 혼자서는 사용할 수 없습니다.</string>
     <string name="escrow_none">아직 에스크로 지갑이 없습니다.</string>
     <string name="escrow_new">새 에스크로 만들기</string>
     <string name="escrow_restore">백업에서 에스크로 복원</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">릴레이를 위해 휴대폰 깨워 두기</string>
     <string name="net_tor_awake_hint">릴레이가 실행되는 동안 부분 웨이크 락을 유지하여 화면이 꺼져 있어도 접속할 수 있게 합니다. 배터리를 더 사용합니다.</string>
     <string name="escrow_of_wallet">지갑 %1$s의 에스크로입니다. 지갑마다 자기 에스크로가 따로 있습니다.</string>
+    <string name="escrow_threshold_label">결제를 승인해야 하는 키의 수</string>
+    <string name="escrow_threshold_one">키가 1개이면 각 키 보유자가 혼자 사용할 수 있습니다. 에스크로 보호가 아닙니다.</string>
 </resources>

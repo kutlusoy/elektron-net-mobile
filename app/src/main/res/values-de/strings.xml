@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">Die Coins eines privaten Schlüssels in deine Wallet verschieben</string>
     <string name="tools_msg_desc">Beweisen, dass eine Adresse dir gehört, oder den Beweis eines anderen prüfen</string>
     <string name="escrow_title">Escrow</string>
-    <string name="escrow_intro">Ein Escrow ist eine gemeinsame Wallet, in der zum Beispiel Käufer, Verkäufer und eine neutrale dritte Person je einen Schlüssel halten. Für eine Zahlung müssen zwei der drei zustimmen. Niemand kann allein ausgeben.</string>
+    <string name="escrow_intro">Ein Escrow ist eine gemeinsame Wallet. Mehrere Personen halten je einen Schlüssel, und du bestimmst, wie viele davon eine Zahlung freigeben müssen, zum Beispiel 2 von 3 mit Käufer, Verkäufer und einer neutralen Person. Niemand kann allein ausgeben, außer du wählst 1.</string>
     <string name="escrow_none">Noch keine Escrow-Wallets.</string>
     <string name="escrow_new">Neues Escrow erstellen</string>
     <string name="escrow_restore">Escrow aus einem Backup wiederherstellen</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">Telefon für das Relay wach halten</string>
     <string name="net_tor_awake_hint">Hält einen Teil-Wake-Lock, solange das Relay läuft, damit es bei ausgeschaltetem Bildschirm erreichbar bleibt. Das verbraucht mehr Akku.</string>
     <string name="escrow_of_wallet">Escrows der Wallet %1$s. Jede Wallet hat ihre eigenen Escrows.</string>
+    <string name="escrow_threshold_label">Wie viele Schlüssel müssen eine Zahlung freigeben</string>
+    <string name="escrow_threshold_one">Bei 1 Schlüssel kann jeder Schlüsselinhaber allein ausgeben. Das ist kein Escrow-Schutz.</string>
 </resources>

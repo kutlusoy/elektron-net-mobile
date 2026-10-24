@@ -133,7 +133,7 @@ class EscrowManager(
         val all = listOf(record.myKey) + keys.map { it.key }
         if (all.map(::keyCore).toSet().size != all.size) throw EscrowException(EscrowFailure.DuplicateKey)
         if (all.size > MAX_KEYS) throw EscrowException(EscrowFailure.TooManyKeys)
-        if (required < 2 || required > all.size) throw EscrowException(EscrowFailure.BadThreshold)
+        if (all.size < 2 || required < 1 || required > all.size) throw EscrowException(EscrowFailure.BadThreshold)
         val master = masterKey(passphrase)
         try {
             unlock(record.walletName, passphrase, SETUP_UNLOCK_SECONDS)
@@ -246,7 +246,7 @@ class EscrowManager(
             normalizeKey(part.removeSuffix("/0/*"))
         }
         keys.forEach { checkKey(it) }
-        if (required < 2 || required > keys.size || keys.size > MAX_KEYS) throw EscrowException(EscrowFailure.BadThreshold)
+        if (keys.size < 2 || required < 1 || required > keys.size || keys.size > MAX_KEYS) throw EscrowException(EscrowFailure.BadThreshold)
         return ParsedDescriptor(required, keys)
     }
 
@@ -319,7 +319,7 @@ class EscrowManager(
     }
 
     companion object {
-        const val MAX_KEYS = 7
+        const val MAX_KEYS = 15
         const val MAX_NAME = 40
         const val MAX_LABEL = 24
         private const val SETUP_UNLOCK_SECONDS = 60

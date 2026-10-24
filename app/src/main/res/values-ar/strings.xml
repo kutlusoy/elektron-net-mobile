@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">انقل عملات مفتاح خاص إلى محفظتك</string>
     <string name="tools_msg_desc">أثبت أن عنوانًا يخصك أو تحقق من إثبات شخص آخر</string>
     <string name="escrow_title">الضمان</string>
-    <string name="escrow_intro">الضمان محفظة مشتركة يحتفظ فيها مثلًا المشتري والبائع وطرف ثالث محايد بمفتاح واحد لكل منهم. تحتاج الدفعة إلى موافقة اثنين من الثلاثة. لا يستطيع أحد الإنفاق وحده.</string>
+    <string name="escrow_intro">حساب الضمان محفظة مشتركة. يحمل عدة أشخاص مفتاحًا لكل منهم، وأنت تحدد عدد من يجب أن يوافق على الدفعة، مثلًا 2 من 3 مع مشترٍ وبائع وشخص محايد. لا يستطيع أحد الإنفاق وحده إلا إذا اخترت 1.</string>
     <string name="escrow_none">لا توجد محافظ ضمان بعد.</string>
     <string name="escrow_new">إنشاء ضمان جديد</string>
     <string name="escrow_restore">استعادة ضمان من نسخة احتياطية</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">إبقاء الهاتف مستيقظًا من أجل المرحّل</string>
     <string name="net_tor_awake_hint">يُبقي قفل تنبيه جزئيًا ما دام المرحّل يعمل، ليبقى متاحًا والشاشة مطفأة. يستهلك بطارية أكثر.</string>
     <string name="escrow_of_wallet">حسابات الضمان للمحفظة %1$s. لكل محفظة حسابات ضمان خاصة بها.</string>
+    <string name="escrow_threshold_label">كم مفتاحًا يجب أن يوافق على الدفعة</string>
+    <string name="escrow_threshold_one">مع مفتاح واحد يستطيع كل صاحب مفتاح الإنفاق وحده. هذه ليست حماية ضمان.</string>
 </resources>

@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">Mova as moedas de uma chave privada para a sua carteira</string>
     <string name="tools_msg_desc">Prove que um endereço é seu ou verifique a prova de outra pessoa</string>
     <string name="escrow_title">Escrow</string>
-    <string name="escrow_intro">Um escrow é uma carteira compartilhada em que, por exemplo, comprador, vendedor e uma terceira pessoa neutra guardam uma chave cada. Um pagamento precisa da aprovação de duas das três. Ninguém gasta sozinho.</string>
+    <string name="escrow_intro">Um escrow é uma carteira compartilhada. Várias pessoas têm uma chave cada, e você escolhe quantas precisam aprovar um pagamento, por exemplo 2 de 3 com comprador, vendedor e uma pessoa neutra. Ninguém pode gastar sozinho, a menos que você escolha 1.</string>
     <string name="escrow_none">Nenhuma carteira escrow ainda.</string>
     <string name="escrow_new">Criar um novo escrow</string>
     <string name="escrow_restore">Restaurar um escrow de um backup</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">Manter o telefone acordado para o relay</string>
     <string name="net_tor_awake_hint">Mantém um wake lock parcial enquanto o relay funciona, para que continue acessível com a tela apagada. Usa mais bateria.</string>
     <string name="escrow_of_wallet">Escrows da carteira %1$s. Cada carteira tem os seus.</string>
+    <string name="escrow_threshold_label">Quantas chaves precisam aprovar um pagamento</string>
+    <string name="escrow_threshold_one">Com 1 chave, cada titular pode gastar sozinho. Isso não é proteção de escrow.</string>
 </resources>

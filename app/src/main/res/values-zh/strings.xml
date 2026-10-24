@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">将某个私钥中的币转入您的钱包</string>
     <string name="tools_msg_desc">证明某个地址属于您，或检查他人的证明</string>
     <string name="escrow_title">托管</string>
-    <string name="escrow_intro">托管是一种共享钱包，例如买家、卖家和中立第三方各持有一个密钥。一笔付款需要三人中的两人批准。任何人都无法单独花费。</string>
+    <string name="escrow_intro">托管是一个共享钱包。几个人各持一把密钥，由你决定需要多少人批准一笔付款，例如买家、卖家和中立第三方三人中的两人。除非你选择 1，否则没人能单独花费。</string>
     <string name="escrow_none">还没有托管钱包。</string>
     <string name="escrow_new">创建新的托管</string>
     <string name="escrow_restore">从备份恢复托管</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">为中继保持手机唤醒</string>
     <string name="net_tor_awake_hint">在中继运行期间持有部分唤醒锁，使其在屏幕关闭时仍可访问。会消耗更多电量。</string>
     <string name="escrow_of_wallet">钱包 %1$s 的托管。每个钱包有自己的托管。</string>
+    <string name="escrow_threshold_label">需要多少把密钥批准一笔付款</string>
+    <string name="escrow_threshold_one">只选 1 把密钥时，每位持钥人都可以单独花费。这不是托管保护。</string>
 </resources>

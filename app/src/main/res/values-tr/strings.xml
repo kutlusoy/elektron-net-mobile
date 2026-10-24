@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">Bir özel anahtardaki paraları cüzdanınıza taşıyın</string>
     <string name="tools_msg_desc">Bir adresin size ait olduğunu kanıtlayın veya başkasının kanıtını kontrol edin</string>
     <string name="escrow_title">Emanet</string>
-    <string name="escrow_intro">Emanet, örneğin alıcı, satıcı ve tarafsız bir üçüncü kişinin her birinin bir anahtar tuttuğu ortak bir cüzdandır. Bir ödemenin üçten ikisinin onayına ihtiyacı vardır. Hiç kimse tek başına harcayamaz.</string>
+    <string name="escrow_intro">Escrow ortak bir cüzdandır. Birkaç kişi birer anahtar tutar ve bir ödemeyi kaç kişinin onaylaması gerektiğini siz seçersiniz, örneğin alıcı, satıcı ve tarafsız bir kişiyle 3 üzerinden 2. 1 seçmezseniz kimse tek başına harcayamaz.</string>
     <string name="escrow_none">Henüz emanet cüzdanı yok.</string>
     <string name="escrow_new">Yeni emanet oluştur</string>
     <string name="escrow_restore">Yedekten emanet geri yükle</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">Röle için telefonu uyanık tut</string>
     <string name="net_tor_awake_hint">Röle çalıştığı sürece kısmi bir uyanık tutma kilidi tutar, böylece ekran kapalıyken de erişilebilir kalır. Daha fazla pil harcar.</string>
     <string name="escrow_of_wallet">%1$s cüzdanının escrow işlemleri. Her cüzdanın kendi escrow işlemleri vardır.</string>
+    <string name="escrow_threshold_label">Bir ödemeyi kaç anahtar onaylamalı</string>
+    <string name="escrow_threshold_one">1 anahtarla her anahtar sahibi tek başına harcayabilir. Bu bir escrow koruması değildir.</string>
 </resources>

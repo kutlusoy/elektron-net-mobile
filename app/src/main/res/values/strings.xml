@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">Move the coins of a private key into your wallet</string>
     <string name="tools_msg_desc">Prove that an address is yours or check someone else\'s proof</string>
     <string name="escrow_title">Escrow</string>
-    <string name="escrow_intro">An escrow is a shared wallet where, for example, buyer, seller and a neutral third person each hold one key. A payment needs two of the three to approve it. Nobody can spend alone.</string>
+    <string name="escrow_intro">An escrow is a shared wallet. Several people each hold one key, and you choose how many of them must approve a payment, for example 2 of 3 with buyer, seller and a neutral person. Nobody can spend alone unless you choose 1.</string>
     <string name="escrow_none">No escrow wallets yet.</string>
     <string name="escrow_new">Create a new escrow</string>
     <string name="escrow_restore">Restore an escrow from a backup</string>
@@ -860,4 +860,6 @@
     <string name="net_tor_awake">Keep the phone awake for the relay</string>
     <string name="net_tor_awake_hint">Holds a partial wake lock while the relay runs, so it stays reachable with the screen off. It uses more battery.</string>
     <string name="escrow_of_wallet">Escrows of wallet %1$s. Every wallet has its own escrows.</string>
+    <string name="escrow_threshold_label">How many keys must approve a payment</string>
+    <string name="escrow_threshold_one">With 1 key, every key holder can spend alone. This is not an escrow protection.</string>
 </resources>

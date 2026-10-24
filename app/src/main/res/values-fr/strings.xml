@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">Déplacer les pièces d\'une clé privée vers votre portefeuille</string>
     <string name="tools_msg_desc">Prouver qu\'une adresse est à vous ou vérifier la preuve de quelqu\'un d\'autre</string>
     <string name="escrow_title">Séquestre</string>
-    <string name="escrow_intro">Un séquestre est un portefeuille partagé où, par exemple, l\'acheteur, le vendeur et un tiers neutre détiennent chacun une clé. Un paiement nécessite l\'approbation de deux des trois. Personne ne peut dépenser seul.</string>
+    <string name="escrow_intro">Un escrow est un portefeuille partagé. Plusieurs personnes détiennent chacune une clé, et tu choisis combien doivent approuver un paiement, par exemple 2 sur 3 avec acheteur, vendeur et une personne neutre. Personne ne peut dépenser seul, sauf si tu choisis 1.</string>
     <string name="escrow_none">Aucun portefeuille de séquestre pour l\'instant.</string>
     <string name="escrow_new">Créer un nouveau séquestre</string>
     <string name="escrow_restore">Restaurer un séquestre depuis une sauvegarde</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">Garder le téléphone éveillé pour le relais</string>
     <string name="net_tor_awake_hint">Maintient un wake lock partiel tant que le relais tourne, pour qu\'il reste joignable écran éteint. Cela consomme plus de batterie.</string>
     <string name="escrow_of_wallet">Escrows du portefeuille %1$s. Chaque portefeuille a les siens.</string>
+    <string name="escrow_threshold_label">Combien de clés doivent approuver un paiement</string>
+    <string name="escrow_threshold_one">Avec 1 clé, chaque détenteur peut dépenser seul. Ce n\'est pas une protection d\'escrow.</string>
 </resources>

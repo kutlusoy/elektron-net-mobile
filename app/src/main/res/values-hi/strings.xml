@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">किसी प्राइवेट कुंजी के कॉइन अपने वॉलेट में ले आएँ</string>
     <string name="tools_msg_desc">साबित करें कि कोई पता आपका है या किसी और का प्रमाण जाँचें</string>
     <string name="escrow_title">एस्क्रो</string>
-    <string name="escrow_intro">एस्क्रो एक साझा वॉलेट है जिसमें, जैसे, खरीदार, विक्रेता और एक निष्पक्ष तीसरा व्यक्ति, हर एक के पास एक कुंजी होती है। भुगतान के लिए तीन में से दो की मंज़ूरी चाहिए। कोई अकेला खर्च नहीं कर सकता।</string>
+    <string name="escrow_intro">एस्क्रो एक साझा वॉलेट है। कई लोग एक-एक कुंजी रखते हैं, और आप तय करते हैं कि भुगतान को कितनों की मंज़ूरी चाहिए, जैसे खरीदार, विक्रेता और एक तटस्थ व्यक्ति के साथ 3 में से 2। जब तक आप 1 न चुनें, कोई अकेले खर्च नहीं कर सकता।</string>
     <string name="escrow_none">अभी कोई एस्क्रो वॉलेट नहीं।</string>
     <string name="escrow_new">नया एस्क्रो बनाएँ</string>
     <string name="escrow_restore">बैकअप से एस्क्रो रिस्टोर करें</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">रिले के लिए फ़ोन को जागा रखें</string>
     <string name="net_tor_awake_hint">रिले चलने तक आंशिक वेक लॉक रखता है, ताकि स्क्रीन बंद होने पर भी वह पहुँच में रहे। इससे बैटरी अधिक खर्च होती है।</string>
     <string name="escrow_of_wallet">वॉलेट %1$s के एस्क्रो। हर वॉलेट के अपने एस्क्रो होते हैं।</string>
+    <string name="escrow_threshold_label">भुगतान को कितनी कुंजियों की मंज़ूरी चाहिए</string>
+    <string name="escrow_threshold_one">1 कुंजी पर हर कुंजी धारक अकेले खर्च कर सकता है। यह एस्क्रो सुरक्षा नहीं है।</string>
 </resources>

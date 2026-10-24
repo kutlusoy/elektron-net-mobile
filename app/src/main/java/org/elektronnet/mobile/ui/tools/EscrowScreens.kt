@@ -245,12 +245,14 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
             val total = cosigners.size + 1
             Text(stringResource(R.string.escrow_keys_found, cosigners.size))
             if (total >= 2) {
-                val effective = required.coerceIn(2, total)
+                val effective = required.coerceIn(1, total)
+                Text(stringResource(R.string.escrow_threshold_label), style = MaterialTheme.typography.labelLarge)
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    OutlinedButton(onClick = { required = (effective - 1).coerceAtLeast(2) }) { Text("-") }
+                    OutlinedButton(onClick = { required = (effective - 1).coerceAtLeast(1) }) { Text("-") }
                     Text(stringResource(R.string.escrow_threshold, effective, total), style = MaterialTheme.typography.titleMedium)
                     OutlinedButton(onClick = { required = (effective + 1).coerceAtMost(total) }) { Text("+") }
                 }
+                if (effective == 1) Text(stringResource(R.string.escrow_threshold_one), color = MaterialTheme.colorScheme.error)
                 SecretField(
                     value = passphrase,
                     onValueChange = { passphrase = it },

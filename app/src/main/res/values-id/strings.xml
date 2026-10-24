@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">Pindahkan koin dari sebuah kunci privat ke dompet Anda</string>
     <string name="tools_msg_desc">Buktikan bahwa sebuah alamat milik Anda atau periksa bukti orang lain</string>
     <string name="escrow_title">Escrow</string>
-    <string name="escrow_intro">Escrow adalah dompet bersama di mana, misalnya, pembeli, penjual, dan pihak ketiga netral masing-masing memegang satu kunci. Sebuah pembayaran membutuhkan persetujuan dua dari tiga. Tidak ada yang bisa membelanjakan sendirian.</string>
+    <string name="escrow_intro">Escrow adalah dompet bersama. Beberapa orang memegang satu kunci masing-masing, dan Anda menentukan berapa yang harus menyetujui pembayaran, misalnya 2 dari 3 dengan pembeli, penjual, dan orang netral. Tidak ada yang bisa membelanjakan sendiri kecuali Anda memilih 1.</string>
     <string name="escrow_none">Belum ada dompet escrow.</string>
     <string name="escrow_new">Buat escrow baru</string>
     <string name="escrow_restore">Pulihkan escrow dari cadangan</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">Jaga ponsel tetap aktif untuk relay</string>
     <string name="net_tor_awake_hint">Menahan wake lock parsial selama relay berjalan, agar tetap bisa dijangkau saat layar mati. Ini memakai lebih banyak baterai.</string>
     <string name="escrow_of_wallet">Escrow dompet %1$s. Setiap dompet punya escrow sendiri.</string>
+    <string name="escrow_threshold_label">Berapa kunci yang harus menyetujui pembayaran</string>
+    <string name="escrow_threshold_one">Dengan 1 kunci, setiap pemegang kunci bisa membelanjakan sendiri. Ini bukan perlindungan escrow.</string>
 </resources>

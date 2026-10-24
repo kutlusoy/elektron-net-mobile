@@ -189,7 +189,7 @@ class EscrowIntegrationTest {
         val keyA = a.manager.createKey("Deal", "Buyer", PASS)
         val keyB = b.manager.createKey("Deal", "Seller", PASS)
         fun fail(required: Int, others: List<Cosigner>) = (expect { a.manager.activate(keyA.id, required, others, PASS) } as EscrowException).failure
-        assertEquals(EscrowFailure.BadThreshold, fail(1, listOf(Cosigner("S", keyB.myKey))))
+        assertEquals(EscrowFailure.BadThreshold, fail(0, listOf(Cosigner("S", keyB.myKey))))
         assertEquals(EscrowFailure.BadThreshold, fail(3, listOf(Cosigner("S", keyB.myKey))))
         assertEquals(EscrowFailure.DuplicateKey, fail(2, listOf(Cosigner("Me", keyA.myKey))))
         assertEquals(EscrowFailure.DuplicateKey, fail(2, listOf(Cosigner("S", keyB.myKey), Cosigner("S2", keyB.myKey))))
@@ -202,6 +202,21 @@ class EscrowIntegrationTest {
         a.manager.activate(keyA.id, 2, listOf(Cosigner("S", keyB.myKey)), PASS)
         assertEquals(EscrowFailure.NotKeyOnly, (expect { a.manager.activate(keyA.id, 2, listOf(Cosigner("S", keyB.myKey)), PASS) } as EscrowException).failure)
         assertEquals(EscrowFailure.InvalidDescriptor, (expect { a.manager.parseDescriptor("wsh(multi(2,a,b))") } as EscrowException).failure)
+    }
+
+    @Test
+    fun theThresholdIsFree() = withEnv(29055) { env ->
+        val a = Party("A", env.rpc, env.words, 10, env.dir)
+        val b = Party("B", env.rpc, env.words, 50, env.dir)
+        val keyA = a.manager.createKey("Deal", "Buyer", PASS)
+        val keyB = b.manager.createKey("Deal", "Seller", PASS)
+        val oneOfTwo = a.manager.activate(keyA.id, 1, listOf(Cosigner("S", keyB.myKey)), PASS)
+        assertEquals(1, oneOfTwo.required)
+        assertTrue(oneOfTwo.descriptor!!.startsWith("wsh(sortedmulti(1,"))
+        assertEquals(EscrowFailure.BadThreshold, (expect { a.manager.parseDescriptor("wsh(sortedmulti(0,${keyA.myKey}/0/*,${keyB.myKey}/0/*))") } as EscrowException).failure)
+        assertEquals(1, a.manager.parseDescriptor("wsh(sortedmulti(1,${keyA.myKey}/0/*,${keyB.myKey}/0/*))").required)
+        assertEquals(EscrowFailure.BadThreshold, (expect { a.manager.parseDescriptor("wsh(sortedmulti(1,${keyA.myKey}/0/*))") } as EscrowException).failure)
+        assertEquals(15, EscrowManager.MAX_KEYS)
     }
 
     @Test

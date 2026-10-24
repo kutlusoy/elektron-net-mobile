@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">秘密鍵のコインを自分のウォレットに移動</string>
     <string name="tools_msg_desc">アドレスが自分のものであることを証明、または他の人の証明を確認</string>
     <string name="escrow_title">エスクロー</string>
-    <string name="escrow_intro">エスクローは共有ウォレットで、たとえば買い手、売り手、中立の第三者がそれぞれ1つの鍵を持ちます。支払いには3人中2人の承認が必要です。誰も単独では使えません。</string>
+    <string name="escrow_intro">エスクローは共有ウォレットです。複数の人がそれぞれ鍵を1つ持ち、支払いを承認する人数を選べます。例えば買い手、売り手、中立の第三者で3人中2人です。1を選ばない限り、1人だけでは使えません。</string>
     <string name="escrow_none">エスクローウォレットはまだありません。</string>
     <string name="escrow_new">新しいエスクローを作成</string>
     <string name="escrow_restore">バックアップからエスクローを復元</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">リレーのために端末をスリープさせない</string>
     <string name="net_tor_awake_hint">リレーが動作している間、部分的なウェイクロックを保持し、画面オフでも到達可能なままにします。バッテリーの消費が増えます。</string>
     <string name="escrow_of_wallet">ウォレット %1$s のエスクロー。エスクローはウォレットごとに別々です。</string>
+    <string name="escrow_threshold_label">支払いの承認に必要な鍵の数</string>
+    <string name="escrow_threshold_one">鍵が1つの場合、各鍵の保持者が単独で使えます。これはエスクローの保護ではありません。</string>
 </resources>

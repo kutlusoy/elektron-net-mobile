@@ -359,7 +359,7 @@
     <string name="tools_sweep_desc">Mueve las monedas de una clave privada a tu monedero</string>
     <string name="tools_msg_desc">Demuestra que una dirección es tuya o comprueba la prueba de otra persona</string>
     <string name="escrow_title">Depósito en garantía</string>
-    <string name="escrow_intro">Un depósito en garantía es un monedero compartido donde, por ejemplo, comprador, vendedor y un tercero neutral tienen cada uno una clave. Un pago necesita la aprobación de dos de los tres. Nadie puede gastar solo.</string>
+    <string name="escrow_intro">Un escrow es un monedero compartido. Varias personas tienen una clave cada una, y tú eliges cuántas deben aprobar un pago, por ejemplo 2 de 3 con comprador, vendedor y una persona neutral. Nadie puede gastar solo, salvo que elijas 1.</string>
     <string name="escrow_none">Aún no hay depósitos en garantía.</string>
     <string name="escrow_new">Crear un depósito en garantía nuevo</string>
     <string name="escrow_restore">Restaurar un depósito en garantía desde una copia de seguridad</string>
@@ -849,4 +849,6 @@
     <string name="net_tor_awake">Mantener el teléfono despierto para el relé</string>
     <string name="net_tor_awake_hint">Mantiene un wake lock parcial mientras el relé funciona, para que siga accesible con la pantalla apagada. Consume más batería.</string>
     <string name="escrow_of_wallet">Escrows del monedero %1$s. Cada monedero tiene los suyos.</string>
+    <string name="escrow_threshold_label">Cuántas claves deben aprobar un pago</string>
+    <string name="escrow_threshold_one">Con 1 clave, cada titular puede gastar solo. No es una protección de escrow.</string>
 </resources>
