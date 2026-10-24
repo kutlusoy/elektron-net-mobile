@@ -22,3 +22,7 @@ This file lists the features this release added. Corrections are not listed.
 
 - The deposit address of an escrow is kept until a signed payment request or a signature is saved in the message history of that escrow. Only then the next deposit address is created. Sharing the first message or receiving funds no longer changes it.
 - A new escrow never reuses the key account of an earlier one, also not after the earlier one was deleted. A new deal with the same partners therefore has its own keys, address and check code, and no longer shows amounts of a finished and deleted deal. Funds that still sit on the old deal belong to its old keys and can be reached by restoring that escrow from its backup.
+
+## Node screen
+
+- The buttons under the live log and the Tor and I2P logs wrap onto a second line when they do not fit, instead of squeezing the last button into a vertical text.
