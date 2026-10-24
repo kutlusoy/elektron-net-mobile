@@ -887,6 +887,7 @@
     <string name="number_char_space">مسافة</string>
     <string name="number_char_apostrophe">فاصلة عليا (\')</string>
     <string name="escrow_deposit_action">الإيداع من محفظتي</string>
-    <string name="escrow_pay_hint">«الإيداع من محفظتي» يرسل عملات من محفظتك إلى حساب الضمان. «الدفع من الضمان» ينفق العملات الموجودة فيه أصلًا: وينشئ طلب دفع يحتاج إلى موافقة الآخرين.</string>
     <string name="escrow_send_from">أنت تدفع من حساب الضمان وليس من محفظتك. المبلغ المتاح هو رصيد الضمان. هذا ينشئ طلب دفع يجب أن يوافق عليه الآخرون. لوضع عملات في الضمان استخدم «الإيداع من محفظتي» في صفحة الضمان.</string>
+    <string name="escrow_deposit_desc">المشتري يدفع إلى حساب الضمان.</string>
+    <string name="escrow_pay_desc">البائع يسحب المال من حساب الضمان إلى محفظته الخاصة. يجب أن يوافق الآخرون.</string>
 </resources>

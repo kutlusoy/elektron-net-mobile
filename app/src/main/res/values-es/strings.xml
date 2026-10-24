@@ -887,6 +887,7 @@
     <string name="number_char_space">Espacio</string>
     <string name="number_char_apostrophe">Apóstrofo (\')</string>
     <string name="escrow_deposit_action">Depositar desde mi monedero</string>
-    <string name="escrow_pay_hint">«Depositar desde mi monedero» envía monedas de tu propio monedero al escrow. «Pagar desde el escrow» gasta las monedas que ya están en el escrow: crea una solicitud de pago que necesita la aprobación de los demás.</string>
     <string name="escrow_send_from">Pagas desde el escrow, no desde tu propio monedero. Lo disponible es el saldo del escrow. Esto crea una solicitud de pago que los demás deben aprobar. Para poner monedas en el escrow, usa «Depositar desde mi monedero» en la página del escrow.</string>
+    <string name="escrow_deposit_desc">El comprador paga al escrow.</string>
+    <string name="escrow_pay_desc">El vendedor retira dinero del escrow a su propio monedero. Los demás deben aprobarlo.</string>
 </resources>

@@ -887,6 +887,7 @@
     <string name="number_char_space">Spasi</string>
     <string name="number_char_apostrophe">Apostrof (\')</string>
     <string name="escrow_deposit_action">Setor dari dompet saya</string>
-    <string name="escrow_pay_hint">«Setor dari dompet saya» mengirim koin dari dompet Anda sendiri ke escrow. «Bayar dari escrow» membelanjakan koin yang sudah ada di escrow: ini membuat permintaan pembayaran yang butuh persetujuan orang lain.</string>
     <string name="escrow_send_from">Anda membayar dari escrow, bukan dari dompet Anda sendiri. Jumlah tersedia adalah saldo escrow. Ini membuat permintaan pembayaran yang harus disetujui yang lain. Untuk memasukkan koin ke escrow, gunakan «Setor dari dompet saya» di halaman escrow.</string>
+    <string name="escrow_deposit_desc">Pembeli membayar ke escrow.</string>
+    <string name="escrow_pay_desc">Penjual mengambil uang dari escrow ke dompetnya sendiri. Yang lain harus menyetujui.</string>
 </resources>

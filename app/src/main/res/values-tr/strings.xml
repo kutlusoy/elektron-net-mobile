@@ -887,6 +887,7 @@
     <string name="number_char_space">Boşluk</string>
     <string name="number_char_apostrophe">Kesme işareti (\')</string>
     <string name="escrow_deposit_action">Cüzdanımdan yatır</string>
-    <string name="escrow_pay_hint">«Cüzdanımdan yatır» kendi cüzdanınızdan escrow\'a coin gönderir. «Escrow\'dan öde» escrow\'da zaten bulunan coinleri harcar: diğer kişilerin onayını gerektiren bir ödeme isteği oluşturur.</string>
     <string name="escrow_send_from">Kendi cüzdanınızdan değil, escrow\'dan ödüyorsunuz. Kullanılabilir tutar escrow bakiyesidir. Bu, diğerlerinin onaylaması gereken bir ödeme isteği oluşturur. Escrow\'a coin yatırmak için escrow sayfasındaki «Cüzdanımdan yatır» seçeneğini kullanın.</string>
+    <string name="escrow_deposit_desc">Alıcı escrow\'a öder.</string>
+    <string name="escrow_pay_desc">Satıcı parayı escrow\'dan kendi cüzdanına alır. Diğerlerinin onaylaması gerekir.</string>
 </resources>

@@ -887,6 +887,7 @@
     <string name="number_char_space">Espaço</string>
     <string name="number_char_apostrophe">Apóstrofo (\')</string>
     <string name="escrow_deposit_action">Depositar da minha carteira</string>
-    <string name="escrow_pay_hint">«Depositar da minha carteira» envia moedas da sua própria carteira para o escrow. «Pagar a partir do escrow» gasta as moedas que já estão no escrow: cria um pedido de pagamento que precisa da aprovação dos outros.</string>
     <string name="escrow_send_from">Você está pagando a partir do escrow, não da sua própria carteira. O valor disponível é o saldo do escrow. Isso cria um pedido de pagamento que os outros precisam aprovar. Para colocar moedas no escrow, use «Depositar da minha carteira» na página do escrow.</string>
+    <string name="escrow_deposit_desc">O comprador paga no escrow.</string>
+    <string name="escrow_pay_desc">O vendedor retira dinheiro do escrow para a própria carteira. Os outros precisam aprovar.</string>
 </resources>

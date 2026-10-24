@@ -887,6 +887,7 @@
     <string name="number_char_space">Dấu cách</string>
     <string name="number_char_apostrophe">Dấu nháy đơn (\')</string>
     <string name="escrow_deposit_action">Nạp từ ví của tôi</string>
-    <string name="escrow_pay_hint">«Nạp từ ví của tôi» gửi coin từ ví của bạn vào escrow. «Thanh toán từ escrow» chi tiêu số coin đã có trong escrow: tạo yêu cầu thanh toán cần sự chấp thuận của những người khác.</string>
     <string name="escrow_send_from">Bạn đang thanh toán từ escrow, không phải từ ví của bạn. Số tiền khả dụng là số dư của escrow. Việc này tạo yêu cầu thanh toán mà những người khác phải chấp thuận. Để đưa coin vào escrow, hãy dùng «Nạp từ ví của tôi» trên trang escrow.</string>
+    <string name="escrow_deposit_desc">Người mua trả tiền vào escrow.</string>
+    <string name="escrow_pay_desc">Người bán lấy tiền từ escrow về ví của mình. Những người khác phải chấp thuận.</string>
 </resources>

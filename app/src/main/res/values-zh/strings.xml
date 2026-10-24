@@ -887,6 +887,7 @@
     <string name="number_char_space">空格</string>
     <string name="number_char_apostrophe">撇号 (\')</string>
     <string name="escrow_deposit_action">从我的钱包存入</string>
-    <string name="escrow_pay_hint">“从我的钱包存入”会把你自己钱包里的币发送到托管。“从托管付款”会花费已在托管里的币：它会创建需要其他人批准的付款请求。</string>
     <string name="escrow_send_from">你是从托管付款，不是从你自己的钱包。可用金额是托管的余额。这会创建一个需要其他人批准的付款请求。要把币放进托管，请使用托管页面上的“从我的钱包存入”。</string>
+    <string name="escrow_deposit_desc">买家向托管存入。</string>
+    <string name="escrow_pay_desc">卖家把钱从托管取到自己的钱包。其他人必须批准。</string>
 </resources>

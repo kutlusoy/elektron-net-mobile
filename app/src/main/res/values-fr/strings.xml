@@ -887,6 +887,7 @@
     <string name="number_char_space">Espace</string>
     <string name="number_char_apostrophe">Apostrophe (\')</string>
     <string name="escrow_deposit_action">Déposer depuis mon portefeuille</string>
-    <string name="escrow_pay_hint">« Déposer depuis mon portefeuille » envoie des pièces de ton propre portefeuille vers l\'escrow. « Payer depuis l\'escrow » dépense les pièces déjà dans l\'escrow : cela crée une demande de paiement qui nécessite l\'approbation des autres.</string>
     <string name="escrow_send_from">Tu paies depuis l\'escrow, pas depuis ton propre portefeuille. Le montant disponible est le solde de l\'escrow. Cela crée une demande de paiement que les autres doivent approuver. Pour mettre des pièces dans l\'escrow, utilise « Déposer depuis mon portefeuille » sur la page de l\'escrow.</string>
+    <string name="escrow_deposit_desc">L\'acheteur paie dans l\'escrow.</string>
+    <string name="escrow_pay_desc">Le vendeur retire de l\'argent de l\'escrow vers son propre portefeuille. Les autres doivent approuver.</string>
 </resources>

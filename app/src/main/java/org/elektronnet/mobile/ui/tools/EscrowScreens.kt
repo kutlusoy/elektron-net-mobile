@@ -303,9 +303,10 @@ fun EscrowDetailScreen(id: Int, onBack: () -> Unit, onPay: (EscrowRecord) -> Uni
                 Hint(stringResource(R.string.escrow_address_hint))
                 OutlinedButton(onClick = { copyText(context, "address", a) }) { Text(stringResource(R.string.action_copy)) }
                 Button(onClick = { onDeposit(a) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_deposit_action)) }
+                Hint(stringResource(R.string.escrow_deposit_desc))
             }
-            Hint(stringResource(R.string.escrow_pay_hint))
             OutlinedButton(onClick = { onPay(r) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_pay)) }
+            Hint(stringResource(R.string.escrow_pay_desc))
             OutlinedButton(onClick = onPsbt, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.escrow_sign_request)) }
             items.forEach { tx ->
                 val row = HistoryModel.row(tx)

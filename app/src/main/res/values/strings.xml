@@ -898,6 +898,7 @@
     <string name="number_char_space">Space</string>
     <string name="number_char_apostrophe">Apostrophe (\')</string>
     <string name="escrow_deposit_action">Deposit from my wallet</string>
-    <string name="escrow_pay_hint">\"Deposit from my wallet\" sends coins from your own wallet into the escrow. \"Pay out of the escrow\" spends the coins that are already in the escrow: it creates a payment request that needs the approvals of the other people.</string>
     <string name="escrow_send_from">You are paying out of the escrow, not out of your own wallet. The available amount is the balance of the escrow. This creates a payment request that the others must approve. To put coins into the escrow, use \"Deposit from my wallet\" on the escrow page.</string>
+    <string name="escrow_deposit_desc">The buyer pays into the escrow.</string>
+    <string name="escrow_pay_desc">The seller takes money out of the escrow into their own wallet. The other people must approve.</string>
 </resources>
