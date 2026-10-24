@@ -245,7 +245,7 @@ private fun UpdateChecker() {
     val busy = UpdateState.status == UpdateStatus.Checking
     Hint(stringResource(R.string.update_hint))
     Hint(stringResource(if (UpdateState.testBuild) R.string.update_channel_test else R.string.update_channel_release))
-    ToggleRow(R.string.update_auto, R.string.update_auto_hint, UpdateState.auto) { UpdateState.setAuto(it) }
+    ToggleRow(R.string.update_auto, R.string.update_auto_hint, UpdateState.auto) { UpdateState.turnAuto(it) }
     androidx.compose.material3.OutlinedButton(
         enabled = !busy,
         onClick = { scope.launch { UpdateState.check() } },

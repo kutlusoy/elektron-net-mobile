@@ -36,7 +36,7 @@ object UpdateState {
         offer = decode(store.updateOffer)?.takeIf { stillNewer(it) }
     }
 
-    fun setAuto(on: Boolean) {
+    fun turnAuto(on: Boolean) {
         auto = on
         NodeHost.store?.updateAuto = on
     }
