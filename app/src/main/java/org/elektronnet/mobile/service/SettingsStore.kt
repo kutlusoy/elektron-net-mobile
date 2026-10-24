@@ -145,7 +145,7 @@ class SettingsStore(context: Context) {
         set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
 
     var updateAuto: Boolean
-        get() = prefs.getBoolean(UPDATE_AUTO, true)
+        get() = prefs.getBoolean(UPDATE_AUTO, false)
         set(value) = prefs.edit().putBoolean(UPDATE_AUTO, value).apply()
 
     var updateLastOkMs: Long

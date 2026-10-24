@@ -397,5 +397,5 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
 
 private const val STORAGE_REFRESH_MS = 30_000L
 private const val FIAT_DEBOUNCE_MS = 2_000L
-private const val UPDATE_TICK_MS = 15L * 60 * 1000
+private const val UPDATE_TICK_MS = 60L * 1000
 private const val FIAT_TICK_MS = 15_000L

@@ -550,7 +550,7 @@ Escrow (multisig wallets with M of N approvals), PSBT handling (check, sign, com
 | S29 | Node only mode holds no key material until the user creates a wallet, and adding a wallet needs no node restart (§3.7) | MUST |
 
 | S30 | Cleartext traffic is refused app wide except to `127.0.0.1`, `localhost` and onion hosts (network security config), so the local RPC works and no other http request can leave the app | MUST |
-| S31 | The only outbound request not tied to an explorer is the update check (once a day while the app is open, can be switched off in Settings, or started by hand). It asks `api.github.com` for the releases of this repository, sends no identifiers and is limited to 1 MB of reply | MUST |
+| S31 | The only outbound request not tied to an explorer is the update check (off by default, once a day while the app is open when switched on in Settings, or started by hand). It asks `api.github.com` for the releases of this repository, sends no identifiers and is limited to 1 MB of reply | MUST |
 **Trust model disclosure text (in-app and docs):** the node verifies every block since its snapshot base or since genesis, enforces the per-block UTXO attestation, and checks a downloaded snapshot against the committed hash. It cannot validate reorgs deeper than the snapshot base, and a fresh snapshot bootstrap trusts the on-chain attestation committed by proof of work. This is the network's documented model, and the app must not describe it as "full archival verification".
 
 ## 10. Repository Layout (proposal)

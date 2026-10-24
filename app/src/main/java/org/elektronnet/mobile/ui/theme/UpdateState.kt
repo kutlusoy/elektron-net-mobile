@@ -18,7 +18,7 @@ object UpdateState {
     // the debug and nightly builds carry the public test key, only the release build the release key
     val testBuild: Boolean = BuildConfig.BUILD_TYPE != "release"
 
-    var auto by mutableStateOf(true)
+    var auto by mutableStateOf(false)
         private set
     var status by mutableStateOf(UpdateStatus.Idle)
         private set
