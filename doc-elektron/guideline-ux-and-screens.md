@@ -310,3 +310,8 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 ### PSBT instead of sending
 
 - Send keeps its simple form. The switch "Advanced payment" under the address field (off by default, switching it off resets the choices below) shows the extra options: "Choose coins" in the amount step, "subtract the fee from the amount" and the custom fee in the fee step and the PSBT switches in the review step. With it on, at the review step of Send (not in the escrow payout, which always creates a PSBT), the switch "Only create a PSBT, do not send" changes the last button to "Create PSBT". A second switch "Sign it with my key" (on by default) chooses between a PSBT with the signature of the wallet, which asks for the passphrase, and an unsigned PSBT, which needs no passphrase and is shown at once. The result page names the state (signed or not signed yet) and offers Copy, Share and a QR code when the text is short enough. Nothing is sent and no coins are locked. The PSBT is the same one the review showed, so it carries the amounts and the key origin information that other signers need.
+
+## Escrow deposit address and key accounts (m0.1.6)
+
+- The deposit address of an escrow rotates only after a `Request` or `Signed` entry was added to its message history that is newer than the address (`EscrowManager.address`). Sharing a message or a deposit does not rotate it.
+- The key account (BIP 48 account level of the escrow key) comes from a per-wallet counter that only grows (`EscrowStore.nextAccount`). It is never reused, so a deleted deal cannot leak its coins into a new one with the same partners.

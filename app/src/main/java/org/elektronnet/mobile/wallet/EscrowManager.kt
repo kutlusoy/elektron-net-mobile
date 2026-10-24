@@ -27,6 +27,8 @@ data class EscrowRecord(
     // the wallet whose seed the escrow key comes from, records from before this field belong to the first wallet
     val owner: String = WalletBootstrap.DEFAULT_WALLET,
     val log: List<EscrowEntry> = emptyList(),
+    // when the current deposit address was issued, a new one only follows after the user signed something later
+    val addressAt: Long = 0L,
 ) {
     val total: Int get() = cosigners.size + 1
 
@@ -35,6 +37,7 @@ data class EscrowRecord(
         "phase" to phase.name, "required" to required,
         "cosigners" to cosigners.map { linkedMapOf("label" to it.label, "key" to it.key) },
         "descriptor" to descriptor, "address" to currentAddress, "owner" to owner,
+        "addressAt" to addressAt,
         "log" to log.map { linkedMapOf("kind" to it.kind.name, "at" to it.atMs, "text" to it.text) },
     )
 
@@ -52,6 +55,7 @@ data class EscrowRecord(
             descriptor = m["descriptor"]?.toString(),
             currentAddress = m["address"]?.toString(),
             owner = m["owner"]?.toString() ?: WalletBootstrap.DEFAULT_WALLET,
+            addressAt = (m["addressAt"] as? Number)?.toLong() ?: 0L,
             log = (m["log"] as? List<*>).orEmpty().mapNotNull { e ->
                 val row = e as? Map<*, *> ?: return@mapNotNull null
                 val kind = runCatching { EscrowLogKind.valueOf(row["kind"].toString()) }.getOrNull() ?: return@mapNotNull null
@@ -64,10 +68,19 @@ data class EscrowRecord(
 interface EscrowStore {
     fun load(): List<EscrowRecord>
     fun save(records: List<EscrowRecord>)
+
+    // key account numbers are never used twice per wallet, not even after an escrow was deleted
+    fun nextAccount(owner: String): Int
+    fun setNextAccount(owner: String, value: Int)
 }
 
 class MemoryEscrowStore : EscrowStore {
     private var json: String = "[]"
+    private val accounts = HashMap<String, Int>()
+    override fun nextAccount(owner: String): Int = accounts[owner] ?: 0
+    override fun setNextAccount(owner: String, value: Int) {
+        accounts[owner] = value
+    }
     override fun load(): List<EscrowRecord> = (Json.parse(json) as List<*>).map { EscrowRecord.fromMap(it as Map<*, *>) }
     override fun save(records: List<EscrowRecord>) {
         json = Json.stringify(records.map { it.toMap() })
@@ -100,7 +113,7 @@ class EscrowManager(
         val trimmed = name.trim().take(MAX_NAME)
         if (trimmed.isEmpty()) throw EscrowException(EscrowFailure.NameMissing)
         val records = store.load()
-        val account = fixedAccount ?: ((records.filter { it.owner == mainWallet }.maxOfOrNull { it.account } ?: -1) + 1)
+        val account = fixedAccount ?: maxOf(store.nextAccount(mainWallet), (records.filter { it.owner == mainWallet }.maxOfOrNull { it.account } ?: -1) + 1)
         val onNode = namesOnNode()
         var id = (records.maxOfOrNull { it.id } ?: 0) + 1
         while ("$walletPrefix-$id" in onNode) id++
@@ -124,6 +137,7 @@ class EscrowManager(
             val key = KEY_FROM_DESC.find(text)!!.groupValues[1]
             val record = EscrowRecord(id, trimmed, wallet, account, myLabel.trim().take(MAX_LABEL).ifEmpty { "Me" }, key, EscrowPhase.KeyOnly, owner = mainWallet)
             store.save(records + record)
+            store.setNextAccount(mainWallet, maxOf(store.nextAccount(mainWallet), account + 1))
             return record
         } catch (e: Exception) {
             if (created) {
@@ -158,7 +172,7 @@ class EscrowManager(
             importAll(record.walletName, specs, ESCROW_LOOKAHEAD)
             val publicDesc = publicDescriptor(required, all, 0)
             val address = guard { rpc.call("getnewaddress", linkedMapOf("address_type" to "bech32"), record.walletName).toString() }
-            val updated = record.copy(phase = EscrowPhase.Active, required = required, cosigners = keys, descriptor = publicDesc, currentAddress = address)
+            val updated = record.copy(phase = EscrowPhase.Active, required = required, cosigners = keys, descriptor = publicDesc, currentAddress = address, addressAt = System.currentTimeMillis())
             store.save(store.load().map { if (it.id == id) updated else it })
             return updated
         } finally {
@@ -194,14 +208,19 @@ class EscrowManager(
         }
     }
 
+    // The deposit address stays the same until the user has signed something (a payment request created or signed) after
+    // it was issued, so everyone in the deal keeps seeing the address they compared, also after the coins arrived.
     fun address(id: Int): String {
         val record = get(id)
         if (record.phase != EscrowPhase.Active) throw EscrowException(EscrowFailure.NotActive)
+        val stored = record.currentAddress
+        val signedSince = record.log.any { (it.kind == EscrowLogKind.Request || it.kind == EscrowLogKind.Signed) && it.atMs > record.addressAt }
+        if (stored != null && !signedSince) return stored
         val receive = ReceiveWallet(rpc, object : AddressStore {
             override var current: String?
                 get() = record.currentAddress
                 set(value) {
-                    store.save(store.load().map { if (it.id == id) it.copy(currentAddress = value) else it })
+                    store.save(store.load().map { if (it.id == id) it.copy(currentAddress = value, addressAt = System.currentTimeMillis()) else it })
                 }
         }, record.walletName)
         return receive.currentAddress()

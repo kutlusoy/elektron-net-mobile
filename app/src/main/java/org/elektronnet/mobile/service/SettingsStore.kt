@@ -117,6 +117,12 @@ class SettingsStore(context: Context) {
         override fun save(records: List<EscrowRecord>) {
             prefs.edit().putString(ESCROWS, Json.stringify(records.map { it.toMap() })).apply()
         }
+
+        override fun nextAccount(owner: String): Int = prefs.getInt("$ESCROW_ACCOUNT.$owner", 0)
+
+        override fun setNextAccount(owner: String, value: Int) {
+            prefs.edit().putInt("$ESCROW_ACCOUNT.$owner", value).apply()
+        }
     }
 
     var rescanPending: Boolean
@@ -280,6 +286,7 @@ class SettingsStore(context: Context) {
         const val LOCK_GRACE = "lock_grace_ms"
         const val AMOUNT_UNIT = "amount_unit"
         const val FIAT = "fiat"
+        const val ESCROW_ACCOUNT = "escrow_next_account"
         const val NUMBER_GROUPING = "number_grouping"
         const val NUMBER_GROUP_CHAR = "number_group_char"
         const val NUMBER_DECIMAL_CHAR = "number_decimal_char"
