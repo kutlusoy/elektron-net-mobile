@@ -168,6 +168,7 @@ fun NodeScreen(
         MaintenanceCard(onRestart = onStart)
         if (model.details != null) {
             TelemetrySection(model.details, telemetry)
+            StorageCard()
             PeerSection(peers, showGeoCredit)
         }
     }
@@ -300,7 +301,6 @@ private fun TelemetrySection(details: NodeDetails, telemetry: org.elektronnet.mo
                 TelemetryRow(stringResource(R.string.telemetry_storage), telemetry?.sizeOnDisk?.let(TelemetryFormat::bytes) ?: dash)
             }
         }
-        StorageCard()
         GlassCard {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.net_card), style = MaterialTheme.typography.titleMedium)
