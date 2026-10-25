@@ -684,7 +684,7 @@
     <string name="settings_seconds">%1$d s</string>
     <string name="settings_minutes">%1$d min</string>
     <string name="settings_screenshots">Allow screenshots</string>
-    <string name="settings_screenshots_hint">Temporary, for tutorials. Ends when the app is closed or locked. Recovery words become capturable, so be careful.</string>
+    <string name="settings_screenshots_hint">Temporary, for tutorials. Ends when the app is closed or locked. Screens with recovery words, passphrases, the lock and the console stay protected.</string>
     <string name="screenshot_banner">Screenshots are on</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_system">System language</string>

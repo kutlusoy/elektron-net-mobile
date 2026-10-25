@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d s</string>
     <string name="settings_minutes">%1$d min</string>
     <string name="settings_screenshots">Consenti screenshot</string>
-    <string name="settings_screenshots_hint">Temporaneo, per i tutorial. Termina quando l\'app viene chiusa o bloccata. Le parole di recupero diventano catturabili, quindi fai attenzione.</string>
+    <string name="settings_screenshots_hint">Temporaneo, per i tutorial. Termina alla chiusura o al blocco dell\'app. Le schermate con parole di recupero, passphrase, blocco e console restano protette.</string>
     <string name="screenshot_banner">Gli screenshot sono attivi</string>
     <string name="settings_language">Lingua</string>
     <string name="settings_language_system">Lingua di sistema</string>

@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d ث</string>
     <string name="settings_minutes">%1$d د</string>
     <string name="settings_screenshots">السماح بلقطات الشاشة</string>
-    <string name="settings_screenshots_hint">مؤقت، للشروحات. ينتهي عند إغلاق التطبيق أو قفله. ستصبح كلمات الاسترداد قابلة للالتقاط، فاحرص على الحذر.</string>
+    <string name="settings_screenshots_hint">مؤقت، للشروحات. ينتهي عند إغلاق التطبيق أو قفله. تبقى شاشات كلمات الاستعادة وعبارات المرور والقفل ووحدة التحكم محمية.</string>
     <string name="screenshot_banner">لقطات الشاشة مفعّلة</string>
     <string name="settings_language">اللغة</string>
     <string name="settings_language_system">لغة النظام</string>

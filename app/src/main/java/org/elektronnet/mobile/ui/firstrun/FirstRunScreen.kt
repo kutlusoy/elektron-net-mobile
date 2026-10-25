@@ -96,7 +96,7 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
         FirstRunStep.PhraseDice, FirstRunStep.PhraseTouch, FirstRunStep.PhraseShow, FirstRunStep.PhraseQuiz, FirstRunStep.PassphraseNew,
         FirstRunStep.RestoreEnter, FirstRunStep.PassphraseRestore, FirstRunStep.Restoring,
     )
-    SecureWindow(secureStep)
+    SecureWindow(secureStep, always = true)
 
     BackHandler(enabled = FirstRunFlow.back(state) != null || addWallet) { FirstRunFlow.back(state)?.let { state = it } ?: onCancel() }
 

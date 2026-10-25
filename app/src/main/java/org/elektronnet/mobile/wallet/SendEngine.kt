@@ -223,7 +223,7 @@ class SendEngine(
     }
 
     private fun lockQuietly() {
-        runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+        WalletLock.lock(rpc, walletName)
     }
 
     private fun <T> guard(block: () -> T): T = try {

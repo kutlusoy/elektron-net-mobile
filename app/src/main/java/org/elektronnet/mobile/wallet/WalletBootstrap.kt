@@ -45,7 +45,7 @@ class WalletBootstrap(
         } catch (e: RpcException) {
             return RescanOutcome.Failed(if (e.inWarmup) BootstrapFailure.NodeNotReady else BootstrapFailure.Unknown)
         } finally {
-            if (unlocked) runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            if (unlocked) WalletLock.lock(rpc, walletName, passphrase)
         }
     }
 
@@ -106,7 +106,7 @@ class WalletBootstrap(
             }
             return BootstrapResult.Failed(reason, e.message ?: "")
         } finally {
-            if (unlocked) runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            if (unlocked) WalletLock.lock(rpc, walletName, passphrase)
         }
     }
 
@@ -123,7 +123,7 @@ class WalletBootstrap(
         const val WALLET_EXISTS = -4
         const val WRONG_PASSPHRASE = -14
         const val CREATE_UNLOCK_SECONDS = 60
-        const val RECOVERY_UNLOCK_SECONDS = 3600
+        const val RECOVERY_UNLOCK_SECONDS = 1200
         const val CREATE_LOOKAHEAD = 199
         const val RECOVERY_LOOKAHEAD = 999
     }

@@ -60,7 +60,7 @@ class Cpfp(private val rpc: WalletRpc, private val walletName: String = WalletBo
             signed = processed["psbt"].toString()
             review(signed, plan, destination)
         } finally {
-            if (unlocked) runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            if (unlocked) WalletLock.lock(rpc, walletName)
         }
         val finalized = guard { rpc.call("finalizepsbt", listOf(signed, true), null) as Map<*, *> }
         if (finalized["complete"] != true) throw CpfpException(CpfpFailure.Unknown, "psbt incomplete")

@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d 秒</string>
     <string name="settings_minutes">%1$d 分钟</string>
     <string name="settings_screenshots">允许截屏</string>
-    <string name="settings_screenshots_hint">临时开启,用于教程。应用关闭或锁定后结束。恢复词可能被截取,请务必小心。</string>
+    <string name="settings_screenshots_hint">临时开启，用于教程。关闭或锁定应用时结束。包含恢复词、口令、锁屏和控制台的页面仍受保护。</string>
     <string name="screenshot_banner">截屏已开启</string>
     <string name="settings_language">语言</string>
     <string name="settings_language_system">系统语言</string>

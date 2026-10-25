@@ -77,7 +77,7 @@ class FeeBumper(private val rpc: WalletRpc, private val walletName: String = Wal
             signed = processed["psbt"].toString()
             review(txid, signed, rate)
         } finally {
-            if (unlocked) runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            if (unlocked) WalletLock.lock(rpc, walletName)
         }
         val finalized = guard { rpc.call("finalizepsbt", listOf(signed, true), null) as Map<*, *> }
         if (finalized["complete"] != true) throw BumpException(BumpFailure.Unknown, "psbt incomplete")

@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d dtk</string>
     <string name="settings_minutes">%1$d mnt</string>
     <string name="settings_screenshots">Izinkan tangkapan layar</string>
-    <string name="settings_screenshots_hint">Sementara, untuk tutorial. Berakhir saat aplikasi ditutup atau dikunci. Kata pemulihan jadi bisa ditangkap, jadi berhati-hatilah.</string>
+    <string name="settings_screenshots_hint">Sementara, untuk tutorial. Berakhir saat aplikasi ditutup atau dikunci. Layar dengan kata pemulihan, frasa sandi, kunci, dan konsol tetap terlindungi.</string>
     <string name="screenshot_banner">Tangkapan layar aktif</string>
     <string name="settings_language">Bahasa</string>
     <string name="settings_language_system">Bahasa sistem</string>

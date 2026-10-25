@@ -79,7 +79,7 @@ class WalletSetupTest {
         assertTrue(node.calls.contains("rescanblockchain"))
         assertFalse(node.calls.contains("rescanutxoset"))
         assertFalse(s.hasRescanPassphrase)
-        assertEquals("walletlock", node.calls.last())
+        assertEquals(listOf("walletlock", "getwalletinfo"), node.calls.takeLast(2))
     }
 
     @Test

@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d秒</string>
     <string name="settings_minutes">%1$d分</string>
     <string name="settings_screenshots">スクリーンショットを許可</string>
-    <string name="settings_screenshots_hint">チュートリアル用の一時的な設定です。アプリを閉じるかロックすると終了します。リカバリーワードが撮影可能になるので注意してください。</string>
+    <string name="settings_screenshots_hint">一時的な設定で、チュートリアル用です。アプリを閉じるかロックすると終了します。リカバリーワード、パスフレーズ、ロック、コンソールの画面は引き続き保護されます。</string>
     <string name="screenshot_banner">スクリーンショットはオンです</string>
     <string name="settings_language">言語</string>
     <string name="settings_language_system">システムの言語</string>

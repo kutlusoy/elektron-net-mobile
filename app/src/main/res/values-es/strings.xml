@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d s</string>
     <string name="settings_minutes">%1$d min</string>
     <string name="settings_screenshots">Permitir capturas de pantalla</string>
-    <string name="settings_screenshots_hint">Temporal, para tutoriales. Termina al cerrar o bloquear la app. Las palabras de recuperación podrán capturarse, así que ten cuidado.</string>
+    <string name="settings_screenshots_hint">Temporal, para tutoriales. Termina al cerrar o bloquear la app. Las pantallas con palabras de recuperación, frases de contraseña, el bloqueo y la consola siguen protegidas.</string>
     <string name="screenshot_banner">Las capturas están activadas</string>
     <string name="settings_language">Idioma</string>
     <string name="settings_language_system">Idioma del sistema</string>

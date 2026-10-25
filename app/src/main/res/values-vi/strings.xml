@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d giây</string>
     <string name="settings_minutes">%1$d phút</string>
     <string name="settings_screenshots">Cho phép chụp màn hình</string>
-    <string name="settings_screenshots_hint">Tạm thời, dùng cho hướng dẫn. Kết thúc khi ứng dụng đóng hoặc bị khóa. Cụm từ khôi phục có thể bị chụp lại, hãy cẩn thận.</string>
+    <string name="settings_screenshots_hint">Tạm thời, dành cho hướng dẫn. Kết thúc khi đóng hoặc khóa ứng dụng. Các màn hình có từ khôi phục, cụm mật khẩu, khóa và bảng điều khiển vẫn được bảo vệ.</string>
     <string name="screenshot_banner">Chụp màn hình đang bật</string>
     <string name="settings_language">Ngôn ngữ</string>
     <string name="settings_language_system">Ngôn ngữ hệ thống</string>

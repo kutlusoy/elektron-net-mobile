@@ -52,7 +52,7 @@ class MessageTools(
             }
             return if (segwit) shiftHeader(signature, SEGWIT_SHIFT) else signature
         } finally {
-            if (unlocked) runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            if (unlocked) WalletLock.lock(rpc, walletName)
         }
     }
 

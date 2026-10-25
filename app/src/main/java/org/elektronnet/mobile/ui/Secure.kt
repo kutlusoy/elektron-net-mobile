@@ -6,9 +6,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.activity.compose.LocalActivity
 
 @Composable
-fun SecureWindow(enabled: Boolean = true) {
+// always keeps the protection on even when screenshots are allowed in Settings, for recovery words, passphrases, the lock and the console
+fun SecureWindow(enabled: Boolean = true, always: Boolean = false) {
     val window = LocalActivity.current?.window
-    val active = enabled && !ScreenshotMode.allowed
+    val active = enabled && (always || !ScreenshotMode.allowed)
     DisposableEffect(active) {
         if (active) {
             window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)

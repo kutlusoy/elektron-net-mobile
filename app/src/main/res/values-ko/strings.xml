@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d초</string>
     <string name="settings_minutes">%1$d분</string>
     <string name="settings_screenshots">스크린샷 허용</string>
-    <string name="settings_screenshots_hint">튜토리얼용 임시 설정입니다. 앱을 닫거나 잠그면 해제됩니다. 복구 단어가 캡처될 수 있으니 주의하세요.</string>
+    <string name="settings_screenshots_hint">임시 설정이며 튜토리얼용입니다. 앱을 닫거나 잠그면 종료됩니다. 복구 단어, 암호 문구, 잠금, 콘솔 화면은 계속 보호됩니다.</string>
     <string name="screenshot_banner">스크린샷이 켜져 있습니다</string>
     <string name="settings_language">언어</string>
     <string name="settings_language_system">시스템 언어</string>

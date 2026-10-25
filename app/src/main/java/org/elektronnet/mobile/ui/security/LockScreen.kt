@@ -20,7 +20,7 @@ import org.elektronnet.mobile.ui.SecureWindow
 
 @Composable
 fun LockScreen(onUnlock: () -> Unit) {
-    SecureWindow()
+    SecureWindow(always = true)
     LaunchedEffect(Unit) { onUnlock() }
     BrandBackground {
         Column(

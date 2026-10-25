@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d sn</string>
     <string name="settings_minutes">%1$d dk</string>
     <string name="settings_screenshots">Ekran görüntülerine izin ver</string>
-    <string name="settings_screenshots_hint">Geçici, eğitimler için. Uygulama kapatılınca veya kilitlenince sona erer. Kurtarma kelimeleri görüntülenebilir hale gelir, dikkatli olun.</string>
+    <string name="settings_screenshots_hint">Geçici, eğitimler için. Uygulama kapatılınca veya kilitlenince sona erer. Kurtarma kelimeleri, parola ifadeleri, kilit ve konsol ekranları korumalı kalır.</string>
     <string name="screenshot_banner">Ekran görüntüleri açık</string>
     <string name="settings_language">Dil</string>
     <string name="settings_language_system">Sistem dili</string>

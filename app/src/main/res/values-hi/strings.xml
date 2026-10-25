@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d सेकंड</string>
     <string name="settings_minutes">%1$d मिनट</string>
     <string name="settings_screenshots">स्क्रीनशॉट की अनुमति दें</string>
-    <string name="settings_screenshots_hint">अस्थायी, ट्यूटोरियल के लिए। ऐप बंद या लॉक होने पर खत्म हो जाता है। रिकवरी शब्द कैप्चर हो सकते हैं, इसलिए सावधान रहें।</string>
+    <string name="settings_screenshots_hint">अस्थायी, ट्यूटोरियल के लिए। ऐप बंद या लॉक होने पर खत्म हो जाता है। रिकवरी शब्दों, पासफ़्रेज़, लॉक और कंसोल वाली स्क्रीन सुरक्षित रहती हैं।</string>
     <string name="screenshot_banner">स्क्रीनशॉट चालू हैं</string>
     <string name="settings_language">भाषा</string>
     <string name="settings_language_system">सिस्टम भाषा</string>

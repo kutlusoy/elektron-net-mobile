@@ -29,7 +29,7 @@ class WalletRemover(private val rpc: WalletRpc, private val removeWalletFiles: (
                     else -> RemoveFailure.Unknown
                 }
             }
-            runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            WalletLock.lock(rpc, walletName)
         }
         try {
             rpc.call("unloadwallet", linkedMapOf("wallet_name" to walletName, "load_on_startup" to false), null)

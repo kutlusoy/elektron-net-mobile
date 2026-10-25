@@ -115,7 +115,7 @@ Anyone:    Combine the signed copies -> status "Ready to send" -> Send to the ne
 
 | # | Requirement | Level |
 |---|---|---|
-| S18 | Escrow and PSBT screens block screenshots and ignore touches from overlays. Passphrases are used for one unlock of at most 10 seconds and the wallet is locked afterwards in a `finally` path | MUST |
+| S18 | Escrow and PSBT screens block screenshots and ignore touches from overlays. Passphrases are used for one unlock of at most 10 seconds and the wallet is locked afterwards in a `finally` path (from m0.1.7 the lock is checked with `getwalletinfo`, repeated once, and the unlock window is shortened to one second when it cannot be confirmed) | MUST |
 | S19 | Every signature is preceded by the check view of the exact file. Outputs are marked as own change or external. Unusual fees warn | MUST |
 | S20 | Escrow setup shows a check code and the first address and tells all participants to compare them before any deposit | MUST |
 | S21 | Private keys of a sweep are never stored, logged or displayed again. The destination is always an own address | MUST |

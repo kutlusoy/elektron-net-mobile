@@ -42,7 +42,18 @@ data class NodeConfig(
         if (fastprune) args.add("-fastprune")
         args.addAll(networkArgs())
         network.activePeers().forEach { args.add("-addnode=$it") }
-        args.addAll(extraArgs)
+        args.addAll(extraArgs.filterNot { protectedOption(it) })
         return args
+    }
+
+    companion object {
+        private val PROTECTED = setOf("server", "datadir", "conf", "bind", "whitebind", "whitelist", "rest")
+
+        // options that decide who can reach the node must not be set or reset from the extra arguments, also not in the form -noname
+        fun protectedOption(arg: String): Boolean {
+            val name = arg.trimStart('-').substringBefore('=').lowercase()
+            val base = if (name.startsWith("no")) name.removePrefix("no") else name
+            return listOf(name, base).any { it.startsWith("rpc") || it.startsWith("zmq") || it in PROTECTED }
+        }
     }
 }

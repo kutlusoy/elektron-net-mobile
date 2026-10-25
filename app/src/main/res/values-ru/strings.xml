@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d с</string>
     <string name="settings_minutes">%1$d мин</string>
     <string name="settings_screenshots">Разрешить скриншоты</string>
-    <string name="settings_screenshots_hint">Временно, для обучающих материалов. Действует до закрытия или блокировки приложения. Слова восстановления можно будет снять на экран, будьте осторожны.</string>
+    <string name="settings_screenshots_hint">Временно, для обучающих материалов. Заканчивается при закрытии или блокировке приложения. Экраны со словами восстановления, парольными фразами, блокировкой и консолью остаются защищёнными.</string>
     <string name="screenshot_banner">Скриншоты включены</string>
     <string name="settings_language">Язык</string>
     <string name="settings_language_system">Язык системы</string>

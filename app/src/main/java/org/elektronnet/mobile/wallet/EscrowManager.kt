@@ -354,7 +354,7 @@ class EscrowManager(
     }.getOrDefault(emptySet())
 
     private fun lockQuietly(wallet: String) {
-        runCatching { rpc.call("walletlock", emptyList<Any?>(), wallet) }
+        WalletLock.lock(rpc, wallet)
     }
 
     private fun <T> guard(block: () -> T): T = try {

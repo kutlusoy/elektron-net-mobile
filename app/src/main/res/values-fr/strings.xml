@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d s</string>
     <string name="settings_minutes">%1$d min</string>
     <string name="settings_screenshots">Autoriser les captures d\'écran</string>
-    <string name="settings_screenshots_hint">Temporaire, pour les tutoriels. Prend fin quand l\'app est fermée ou verrouillée. Les mots de récupération deviennent capturables, sois prudent.</string>
+    <string name="settings_screenshots_hint">Temporaire, pour les tutoriels. S\'arrête à la fermeture ou au verrouillage de l\'app. Les écrans avec les mots de récupération, les phrases secrètes, le verrouillage et la console restent protégés.</string>
     <string name="screenshot_banner">Les captures d\'écran sont activées</string>
     <string name="settings_language">Langue</string>
     <string name="settings_language_system">Langue du système</string>
