@@ -137,7 +137,8 @@ Google has announced that apps installed on certified Android devices must come 
 
 - The app does not update itself and does not call home. Updates come through the channel the user installed from.
 - The About screen shows the app version, Core tag and commit, manifest hash and signing fingerprint.
-- **SHOULD:** an opt-in "check for new release" action that opens the GitHub releases page in the browser, no background check.
+- **Update check:** the app never installs anything. It asks `api.github.com` for the releases of this repository, once a day while the app is open (switch in Settings, Updates, off by default; after a pause of more than a day the check is made up for as soon as the app is open), after a failure again after an hour, and by hand with "Check for updates". It sends no identifiers, and the reply is limited to 1 MB. A found release is shown as a banner on the wallet screen (button Later hides it until a newer one appears) and in Settings, with a button that opens the release page in the browser.
+- **Channels:** the signing key decides which updates can be installed, so the check only offers what the installed app can be updated with. A test build (build type other than `release`, public test key) is offered only newer test builds, recognized by a GitHub pre-release whose title contains "test build" (set by the prerelease workflow). The release line (release key) is offered release candidates (tag suffix `-rcN`, GitHub pre-release) and final releases. Only the newest matching release is shown. A release candidate is older than the release with the same numbers. For a release candidate the text says the user can wait for the final release.
 - Datadir versioning and migration on update: plan §5.4.
 
 ## 8.1 Versioning

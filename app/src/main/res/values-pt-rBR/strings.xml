@@ -478,7 +478,7 @@
     <string name="rescan_action">Procurar moedas mais antigas</string>
     <string name="rescan_hint">Examina o conjunto atual de moedas da rede em busca de moedas que pertencem a esta carteira. Não baixa a blockchain novamente.</string>
     <string name="rescan_body">Digite a passphrase desta carteira. A busca pode levar alguns minutos. Mantenha o app aberto.</string>
-    <string name="rescan_needs_sync">O nó precisa estar totalmente sincronizado primeiro.</string>
+    <string name="rescan_needs_sync">O nó precisa estar sincronizado primeiro.</string>
     <string name="rescan_start">Iniciar busca</string>
     <string name="rescan_done_full">Concluído. O saldo agora inclui todas as moedas desta carteira que ainda existem na rede.</string>
     <string name="rescan_done_partial">Concluído para os blocos que o nó ainda armazena. Moedas mais antigas não puderam ser pesquisadas porque este nó não consegue examinar o conjunto de moedas.</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">Este peer já está na lista.</string>
     <string name="net_peer_invalid">Este não é um endereço válido de Tor ou I2P.</string>
     <string name="balance_reused">Inclui %1$s %2$s em endereços reutilizados.</string>
-    <string name="send_reused_hint">%1$s %2$s em endereços reutilizados não são contados aqui. Escolha-os em Moedas para gastá-los.</string>
+    <string name="send_reused_hint">%1$s %2$s em endereços reutilizados não são contados aqui. Ative Pagamento avançado para escolhê-los.</string>
     <string name="settings_spend_reused">Gastar automaticamente moedas em endereços reutilizados</string>
     <string name="settings_spend_reused_hint">Ligado (padrão): moedas em endereços reutilizados contam como disponíveis e são adicionadas quando as outras não cobrem um pagamento, também ao enviar tudo. Desligado: não contam e nunca são misturadas com as outras, e um pagamento que cabe em um endereço reutilizado ainda é pago primeiro por ele. Desligue se não quiser vincular esses endereços.</string>
     <string name="net_i2p_ipv6">Usar IPv6 para I2P</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">Pedido de pagamento assinado</string>
     <string name="escrow_log_sent">Pagamento enviado (ID da transação)</string>
     <string name="action_show_qr">Mostrar QR</string>
+    <string name="send_psbt_only">Apenas criar uma PSBT, não enviar</string>
+    <string name="send_psbt_only_hint">Para passar o pagamento a outro dispositivo ou pessoa. As moedas ficam onde estão até alguém assinar e enviar a PSBT.</string>
+    <string name="send_psbt_sign">Assinar com minha chave</string>
+    <string name="send_psbt_create">Criar PSBT</string>
+    <string name="send_psbt_ready_title">PSBT pronta</string>
+    <string name="send_psbt_ready_signed">Sua assinatura está incluída. Repasse este texto. Você pode verificar, assinar, combinar e enviar uma PSBT em Ferramentas, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Ainda não está assinada. Repasse este texto a quem a assina. Quem tiver todas as assinaturas a envia em Ferramentas, PSBT.</string>
+    <string name="send_advanced">Pagamento avançado</string>
+    <string name="send_advanced_hint">Escolher as moedas, subtrair a taxa do valor, definir sua própria taxa ou apenas criar uma PSBT.</string>
+    <string name="update_channel_test">Você usa uma versão de teste (chave de teste pública). Só são oferecidas versões de teste mais novas.</string>
+    <string name="update_channel_release">Você usa a linha de lançamentos. Candidatas a lançamento e lançamentos finais são oferecidos, só o mais recente aparece.</string>
+    <string name="update_auto">Verificar automaticamente</string>
+    <string name="update_auto_hint">Enquanto o app está aberto, ele pergunta ao github.com uma vez por dia se há uma versão mais nova. Se estiver desativado, as atualizações só são verificadas manualmente.</string>
+    <string name="update_note_test">Uma versão de teste mais nova. Ela é assinada com a chave de teste pública e serve só para testes.</string>
+    <string name="update_note_candidate">Uma candidata a lançamento. Você também pode esperar o lançamento final, nada obriga você a atualizar.</string>
+    <string name="update_dismiss">Depois</string>
 </resources>

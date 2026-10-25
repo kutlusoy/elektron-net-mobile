@@ -38,7 +38,7 @@
     <string name="send_needs_sync">Sending needs a synchronized node. Open the Node tab to see the progress.</string>
     <string name="history_empty">No payments yet. Tap Receive to get your first address.</string>
     <string name="history_limit">Payments older than about 137 days are not stored on the network.</string>
-    <string name="node_title_up_to_date">Your node is fully synced.</string>
+    <string name="node_title_up_to_date">Your node is synced.</string>
     <string name="node_title_catching_up">Syncing: %1$d%%</string>
     <string name="node_title_paused">Node paused</string>
     <string name="node_title_starting">Node starting</string>
@@ -478,7 +478,7 @@
     <string name="rescan_action">Search for older coins</string>
     <string name="rescan_hint">Scans the current coin set of the network for coins that belong to this wallet. It does not download the blockchain again.</string>
     <string name="rescan_body">Enter the passphrase of this wallet. The search can take a few minutes. Keep the app open.</string>
-    <string name="rescan_needs_sync">The node must be fully synchronized first.</string>
+    <string name="rescan_needs_sync">The node must be synchronized first.</string>
     <string name="rescan_start">Start search</string>
     <string name="rescan_done_full">Done. The balance now includes every coin of this wallet that still exists on the network.</string>
     <string name="rescan_done_partial">Done for the blocks the node still stores. Older coins could not be searched because this node cannot scan the coin set.</string>
@@ -852,7 +852,7 @@
     <string name="net_peer_exists">This peer is already in the list.</string>
     <string name="net_peer_invalid">This is not a valid address for Tor or I2P.</string>
     <string name="balance_reused">Includes %1$s %2$s on reused addresses.</string>
-    <string name="send_reused_hint">%1$s %2$s on reused addresses are not counted here. Pick them under Coins to spend them.</string>
+    <string name="send_reused_hint">%1$s %2$s on reused addresses are not counted here. Turn on Advanced payment to pick them.</string>
     <string name="settings_spend_reused">Spend coins on reused addresses automatically</string>
     <string name="settings_spend_reused_hint">On (default): coins on reused addresses count as available and are added when the other coins do not cover a payment, also when you send everything. Off: they are not counted and never mixed with other coins, and a payment that fits into one reused address is still paid from it first. Switch it off if you do not want to link such addresses.</string>
     <string name="net_i2p_ipv6">Use IPv6 for I2P</string>
@@ -908,4 +908,20 @@
     <string name="escrow_log_signed">Payment request signed</string>
     <string name="escrow_log_sent">Payment sent (transaction ID)</string>
     <string name="action_show_qr">Show QR</string>
+    <string name="send_psbt_only">Only create a PSBT, do not send</string>
+    <string name="send_psbt_only_hint">For handing the payment to another device or person. The coins stay where they are until someone signs and sends the PSBT.</string>
+    <string name="send_psbt_sign">Sign it with my key</string>
+    <string name="send_psbt_create">Create PSBT</string>
+    <string name="send_psbt_ready_title">PSBT ready</string>
+    <string name="send_psbt_ready_signed">Your signature is included. Pass this text on. You can check, sign, combine and send a PSBT under Tools, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">It is not signed yet. Pass this text to whoever signs it. Whoever holds all signatures sends it under Tools, PSBT.</string>
+    <string name="send_advanced">Advanced payment</string>
+    <string name="send_advanced_hint">Choose the coins, subtract the fee from the amount, set your own fee rate or only create a PSBT.</string>
+    <string name="update_channel_test">You use a test build (public test key). Only newer test builds are offered.</string>
+    <string name="update_channel_release">You use the release line. Release candidates and final releases are offered, only the newest one is shown.</string>
+    <string name="update_auto">Check automatically</string>
+    <string name="update_auto_hint">While the app is open it asks github.com once a day for a newer version. If it is off, updates are only checked by hand.</string>
+    <string name="update_note_test">A newer test build. It is signed with the public test key and is for testing only.</string>
+    <string name="update_note_candidate">A release candidate. You can also wait for the final release, nothing forces you to update.</string>
+    <string name="update_dismiss">Later</string>
 </resources>

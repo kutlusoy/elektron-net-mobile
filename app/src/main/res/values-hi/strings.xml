@@ -478,7 +478,7 @@
     <string name="rescan_action">पुराने कॉइन खोजें</string>
     <string name="rescan_hint">नेटवर्क के मौजूदा कॉइन सेट में इस वॉलेट के कॉइन खोजता है। यह ब्लॉकचेन दोबारा डाउनलोड नहीं करता।</string>
     <string name="rescan_body">इस वॉलेट का पासफ़्रेज़ दर्ज करें। खोज में कुछ मिनट लग सकते हैं। ऐप खुला रखें।</string>
-    <string name="rescan_needs_sync">पहले नोड का पूरी तरह सिंक होना ज़रूरी है।</string>
+    <string name="rescan_needs_sync">पहले नोड का सिंक होना ज़रूरी है।</string>
     <string name="rescan_start">खोज शुरू करें</string>
     <string name="rescan_done_full">हो गया। बैलेंस में अब इस वॉलेट का हर वह कॉइन शामिल है जो नेटवर्क पर अब भी मौजूद है।</string>
     <string name="rescan_done_partial">उन ब्लॉक के लिए हो गया जो नोड अब भी रखता है। पुराने कॉइन नहीं खोजे जा सके क्योंकि यह नोड कॉइन सेट स्कैन नहीं कर सकता।</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">यह पीयर पहले से सूची में है।</string>
     <string name="net_peer_invalid">यह मान्य Tor या I2P पता नहीं है।</string>
     <string name="balance_reused">दोबारा उपयोग किए गए पतों पर %1$s %2$s शामिल हैं।</string>
-    <string name="send_reused_hint">दोबारा उपयोग किए गए पतों पर %1$s %2$s यहाँ नहीं गिने गए हैं। खर्च करने के लिए इन्हें सिक्कों में चुनें।</string>
+    <string name="send_reused_hint">दोबारा उपयोग किए गए पतों पर %1$s %2$s यहाँ नहीं गिने गए हैं। इन्हें चुनने के लिए उन्नत भुगतान चालू करें।</string>
     <string name="settings_spend_reused">दोबारा उपयोग किए गए पतों के सिक्के अपने आप खर्च करें</string>
     <string name="settings_spend_reused_hint">चालू (डिफ़ॉल्ट): दोबारा उपयोग किए गए पतों के सिक्के उपलब्ध गिने जाते हैं और जब बाकी सिक्के भुगतान के लिए कम पड़ें तो जोड़े जाते हैं, सब कुछ भेजते समय भी। बंद: वे नहीं गिने जाते और कभी दूसरे सिक्कों में मिलाए नहीं जाते, और जो भुगतान ऐसे एक पते में समा जाए वह अब भी पहले उसी से चुकाया जाता है। ऐसे पतों को जोड़ना न चाहें तो इसे बंद करें।</string>
     <string name="net_i2p_ipv6">I2P के लिए IPv6 उपयोग करें</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">भुगतान अनुरोध पर हस्ताक्षर हुए</string>
     <string name="escrow_log_sent">भुगतान भेजा गया (लेनदेन ID)</string>
     <string name="action_show_qr">QR दिखाएँ</string>
+    <string name="send_psbt_only">केवल PSBT बनाएँ, भेजें नहीं</string>
+    <string name="send_psbt_only_hint">भुगतान किसी अन्य डिवाइस या व्यक्ति को देने के लिए। जब तक कोई PSBT पर हस्ताक्षर करके भेजता नहीं, सिक्के वहीं रहते हैं जहाँ हैं।</string>
+    <string name="send_psbt_sign">मेरी कुंजी से हस्ताक्षर करें</string>
+    <string name="send_psbt_create">PSBT बनाएँ</string>
+    <string name="send_psbt_ready_title">PSBT तैयार</string>
+    <string name="send_psbt_ready_signed">आपका हस्ताक्षर शामिल है। यह टेक्स्ट आगे दें। PSBT को आप टूल्स, PSBT में जाँच, हस्ताक्षर, संयोजित और भेज सकते हैं।</string>
+    <string name="send_psbt_ready_unsigned">इस पर अभी हस्ताक्षर नहीं हुआ। यह टेक्स्ट उसे दें जो हस्ताक्षर करेगा। जिसके पास सभी हस्ताक्षर हों वह इसे टूल्स, PSBT में भेजता है।</string>
+    <string name="send_advanced">उन्नत भुगतान</string>
+    <string name="send_advanced_hint">सिक्के चुनें, राशि में से शुल्क घटाएँ, अपनी शुल्क दर तय करें या केवल PSBT बनाएँ।</string>
+    <string name="update_channel_test">आप टेस्ट बिल्ड (सार्वजनिक टेस्ट की) इस्तेमाल कर रहे हैं। केवल नए टेस्ट बिल्ड दिखाए जाते हैं।</string>
+    <string name="update_channel_release">आप रिलीज़ लाइन इस्तेमाल कर रहे हैं। रिलीज़ कैंडिडेट और अंतिम रिलीज़ दिखाए जाते हैं, केवल सबसे नया दिखता है।</string>
+    <string name="update_auto">अपने आप जाँचें</string>
+    <string name="update_auto_hint">ऐप खुला रहने पर यह दिन में एक बार github.com से नए संस्करण के बारे में पूछता है। बंद होने पर अपडेट केवल हाथ से जाँचे जाते हैं।</string>
+    <string name="update_note_test">एक नया टेस्ट बिल्ड। यह सार्वजनिक टेस्ट की से साइन है और केवल टेस्ट के लिए है।</string>
+    <string name="update_note_candidate">यह रिलीज़ कैंडिडेट है। आप अंतिम रिलीज़ का इंतज़ार भी कर सकते हैं, अपडेट के लिए कोई मजबूरी नहीं है।</string>
+    <string name="update_dismiss">बाद में</string>
 </resources>

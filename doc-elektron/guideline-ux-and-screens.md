@@ -306,3 +306,17 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 
 - On the escrow page the deposit address has the button "Deposit from my wallet". It opens the normal Send screen of the active wallet with the address filled in. "Pay out of the escrow" opens the Send screen of the escrow wallet: the available amount is the escrow balance and the result is a payment request that needs the approvals of the others. Each button has a one-line description below it ("The buyer pays into the escrow." and "The seller takes money out of the escrow into their own wallet. For this the seller enters a payout address, usually an address of their own wallet. The other people must approve."), and the payout screen says on top that it pays out of the escrow and not out of the user's own wallet.
 - **Message history:** the escrow page ends with a "Message history". The first entry is always the own key line (role and key), followed by the entries the app records, newest first: a payment request created in "Pay out of the escrow", a payment request signed in the PSBT tools (for the escrow wallet that signed) and the transaction ID of a payment that was sent from the PSBT tools (for every escrow wallet among the inputs). Every entry has Copy, Share and, when short enough, Show QR. Equal consecutive entries are stored once, at most 100 entries are kept, and the history lives in the escrow record: removing the escrow deletes it, the backup text does not contain it. The texts hold no secrets, a PSBT only carries public data and partial signatures.
+
+### PSBT instead of sending
+
+- Send keeps its simple form. The switch "Advanced payment" under the address field (off by default, switching it off resets the choices below) shows the extra options: "Choose coins" in the amount step, "subtract the fee from the amount" and the custom fee in the fee step and the PSBT switches in the review step. With it on, at the review step of Send (not in the escrow payout, which always creates a PSBT), the switch "Only create a PSBT, do not send" changes the last button to "Create PSBT". A second switch "Sign it with my key" (on by default) chooses between a PSBT with the signature of the wallet, which asks for the passphrase, and an unsigned PSBT, which needs no passphrase and is shown at once. The result page names the state (signed or not signed yet) and offers Copy, Share and a QR code when the text is short enough. Nothing is sent and no coins are locked. The PSBT is the same one the review showed, so it carries the amounts and the key origin information that other signers need.
+
+## Escrow deposit address and key accounts (m0.1.6)
+
+- The deposit address of an escrow rotates only after a `Request` or `Signed` entry was added to its message history that is newer than the address (`EscrowManager.address`). Sharing a message or a deposit does not rotate it.
+- The key account (BIP 48 account level of the escrow key) comes from a per-wallet counter that only grows (`EscrowStore.nextAccount`). It is never reused, so a deleted deal cannot leak its coins into a new one with the same partners.
+
+## Update notice (m0.1.6)
+
+- `UpdateState` (checks, saved result, hidden tag) feeds `UpdateBanner` on the wallet screen and the Updates card in Settings. The channel comes from the build type, the kind of a release from `UpdateCheck.kindOf` (test build title, `-rcN` suffix, GitHub pre-release flag).
+- The banner shows the version, a note for test builds and release candidates, "Open release page" and "Later".

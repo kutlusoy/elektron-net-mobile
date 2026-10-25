@@ -15,9 +15,14 @@ object AppLanguage {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().apply { if (tag == null) remove(KEY) else putString(KEY, tag) }.apply()
     }
 
+    // the device locale as it was before the app changed the default
+    private val systemLocale: Locale = Locale.getDefault()
+
     fun wrap(base: Context): Context {
         val tag = stored(base) ?: return base
-        val locale = Locale.forLanguageTag(tag)
+        val chosen = Locale.forLanguageTag(tag)
+        // the same language as the device keeps the device region, so numbers follow it (for example de-CH)
+        val locale = if (chosen.country.isEmpty() && chosen.language == systemLocale.language) systemLocale else chosen
         Locale.setDefault(locale)
         val config = Configuration(base.resources.configuration)
         config.setLocale(locale)

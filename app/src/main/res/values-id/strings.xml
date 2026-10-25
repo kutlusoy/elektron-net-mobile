@@ -478,7 +478,7 @@
     <string name="rescan_action">Cari koin yang lebih lama</string>
     <string name="rescan_hint">Memindai kumpulan koin jaringan saat ini untuk koin milik dompet ini. Tidak mengunduh blockchain lagi.</string>
     <string name="rescan_body">Masukkan passphrase dompet ini. Pencarian bisa memakan waktu beberapa menit. Biarkan aplikasi tetap terbuka.</string>
-    <string name="rescan_needs_sync">Node harus tersinkron penuh terlebih dahulu.</string>
+    <string name="rescan_needs_sync">Node harus tersinkron terlebih dahulu.</string>
     <string name="rescan_start">Mulai pencarian</string>
     <string name="rescan_done_full">Selesai. Saldo sekarang mencakup setiap koin dompet ini yang masih ada di jaringan.</string>
     <string name="rescan_done_partial">Selesai untuk blok yang masih disimpan node. Koin yang lebih lama tidak dapat dicari karena node ini tidak dapat memindai kumpulan koin.</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">Peer ini sudah ada di daftar.</string>
     <string name="net_peer_invalid">Ini bukan alamat Tor atau I2P yang valid.</string>
     <string name="balance_reused">Termasuk %1$s %2$s di alamat yang dipakai ulang.</string>
-    <string name="send_reused_hint">%1$s %2$s di alamat yang dipakai ulang tidak dihitung di sini. Pilih di Koin untuk membelanjakannya.</string>
+    <string name="send_reused_hint">%1$s %2$s di alamat yang dipakai ulang tidak dihitung di sini. Aktifkan Pembayaran lanjutan untuk memilihnya.</string>
     <string name="settings_spend_reused">Belanjakan koin di alamat yang dipakai ulang secara otomatis</string>
     <string name="settings_spend_reused_hint">Hidup (bawaan): koin di alamat yang dipakai ulang dihitung tersedia dan ditambahkan saat koin lain tidak cukup untuk pembayaran, juga saat mengirim semuanya. Mati: tidak dihitung dan tidak pernah dicampur dengan koin lain, dan pembayaran yang muat di satu alamat yang dipakai ulang tetap dibayar dulu dari alamat itu. Matikan jika Anda tidak ingin menghubungkan alamat tersebut.</string>
     <string name="net_i2p_ipv6">Gunakan IPv6 untuk I2P</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">Permintaan pembayaran ditandatangani</string>
     <string name="escrow_log_sent">Pembayaran terkirim (ID transaksi)</string>
     <string name="action_show_qr">Tampilkan QR</string>
+    <string name="send_psbt_only">Hanya buat PSBT, jangan kirim</string>
+    <string name="send_psbt_only_hint">Untuk menyerahkan pembayaran ke perangkat atau orang lain. Koin tetap di tempatnya sampai seseorang menandatangani dan mengirim PSBT.</string>
+    <string name="send_psbt_sign">Tandatangani dengan kunci saya</string>
+    <string name="send_psbt_create">Buat PSBT</string>
+    <string name="send_psbt_ready_title">PSBT siap</string>
+    <string name="send_psbt_ready_signed">Tanda tangan Anda sudah termasuk. Teruskan teks ini. Anda dapat memeriksa, menandatangani, menggabungkan, dan mengirim PSBT di Alat, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Belum ditandatangani. Teruskan teks ini ke yang akan menandatangani. Yang memegang semua tanda tangan mengirimnya di Alat, PSBT.</string>
+    <string name="send_advanced">Pembayaran lanjutan</string>
+    <string name="send_advanced_hint">Pilih koin, kurangi biaya dari jumlah, tetapkan tarif biaya sendiri, atau hanya buat PSBT.</string>
+    <string name="update_channel_test">Kamu memakai build uji (kunci uji publik). Hanya build uji yang lebih baru yang ditawarkan.</string>
+    <string name="update_channel_release">Kamu memakai jalur rilis. Kandidat rilis dan rilis final ditawarkan, hanya yang terbaru yang ditampilkan.</string>
+    <string name="update_auto">Periksa otomatis</string>
+    <string name="update_auto_hint">Selama aplikasi terbuka, aplikasi bertanya ke github.com sekali sehari apakah ada versi yang lebih baru. Jika dimatikan, pembaruan hanya diperiksa secara manual.</string>
+    <string name="update_note_test">Build uji yang lebih baru. Ditandatangani dengan kunci uji publik dan hanya untuk pengujian.</string>
+    <string name="update_note_candidate">Kandidat rilis. Kamu juga bisa menunggu rilis final, tidak ada keharusan memperbarui.</string>
+    <string name="update_dismiss">Nanti</string>
 </resources>

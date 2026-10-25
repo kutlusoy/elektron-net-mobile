@@ -478,7 +478,7 @@
     <string name="rescan_action">古いコインを検索</string>
     <string name="rescan_hint">ネットワークの現在のコインセットから、このウォレットに属するコインをスキャンします。ブロックチェーンを再ダウンロードするわけではありません。</string>
     <string name="rescan_body">このウォレットのパスフレーズを入力してください。検索には数分かかることがあります。アプリを開いたままにしてください。</string>
-    <string name="rescan_needs_sync">先にノードを完全に同期する必要があります。</string>
+    <string name="rescan_needs_sync">先にノードを同期する必要があります。</string>
     <string name="rescan_start">検索を開始</string>
     <string name="rescan_done_full">完了しました。残高に、ネットワーク上にまだ存在するこのウォレットのすべてのコインが含まれるようになりました。</string>
     <string name="rescan_done_partial">ノードがまだ保存しているブロックについては完了しました。このノードはコインセットをスキャンできないため、それより古いコインは検索できませんでした。</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">このピアはすでに一覧にあります。</string>
     <string name="net_peer_invalid">有効な Tor または I2P のアドレスではありません。</string>
     <string name="balance_reused">再利用されたアドレスの %1$s %2$s を含みます。</string>
-    <string name="send_reused_hint">再利用されたアドレスの %1$s %2$s はここでは数えません。使うには「コイン」で選んでください。</string>
+    <string name="send_reused_hint">再利用されたアドレスの %1$s %2$s はここでは数えません。選ぶには「詳細な支払い」をオンにしてください。</string>
     <string name="settings_spend_reused">再利用アドレスのコインを自動で使う</string>
     <string name="settings_spend_reused_hint">オン (既定): 再利用アドレスのコインは利用可能として数えられ、ほかのコインで支払いに足りないとき、また全額送金のときに加えられます。オフ: 数えられず、ほかのコインと混ぜられません。1つの再利用アドレスに収まる支払いは引き続きそこから先に支払われます。そのようなアドレスを結びつけたくない場合はオフにしてください。</string>
     <string name="net_i2p_ipv6">I2P で IPv6 を使う</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">支払いリクエストに署名</string>
     <string name="escrow_log_sent">支払いを送信 (トランザクションID)</string>
     <string name="action_show_qr">QRを表示</string>
+    <string name="send_psbt_only">PSBTだけ作成し、送信しない</string>
+    <string name="send_psbt_only_hint">支払いを別の端末や人に渡すためのものです。誰かがPSBTに署名して送信するまで、コインはそのままです。</string>
+    <string name="send_psbt_sign">自分の鍵で署名する</string>
+    <string name="send_psbt_create">PSBTを作成</string>
+    <string name="send_psbt_ready_title">PSBTの準備ができました</string>
+    <string name="send_psbt_ready_signed">あなたの署名が含まれています。このテキストを渡してください。PSBTは「ツール」のPSBTで確認、署名、結合、送信できます。</string>
+    <string name="send_psbt_ready_unsigned">まだ署名されていません。署名する人にこのテキストを渡してください。すべての署名がそろった人が「ツール」のPSBTから送信します。</string>
+    <string name="send_advanced">詳細な支払い</string>
+    <string name="send_advanced_hint">コインを選ぶ、手数料を金額から引く、手数料率を自分で決める、またはPSBTだけを作成します。</string>
+    <string name="update_channel_test">テストビルド（公開テスト鍵）を使用しています。より新しいテストビルドだけが提示されます。</string>
+    <string name="update_channel_release">リリース系列を使用しています。リリース候補と正式リリースが提示され、最新のものだけが表示されます。</string>
+    <string name="update_auto">自動で確認</string>
+    <string name="update_auto_hint">アプリを開いている間、1日1回 github.com に新しいバージョンがあるか問い合わせます。オフの場合、更新は手動でのみ確認されます。</string>
+    <string name="update_note_test">より新しいテストビルドです。公開テスト鍵で署名されており、テスト専用です。</string>
+    <string name="update_note_candidate">リリース候補です。正式リリースを待つこともでき、更新は強制されません。</string>
+    <string name="update_dismiss">後で</string>
 </resources>

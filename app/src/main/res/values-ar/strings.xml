@@ -478,7 +478,7 @@
     <string name="rescan_action">البحث عن عملات أقدم</string>
     <string name="rescan_hint">يفحص مجموعة العملات الحالية في الشبكة بحثًا عن عملات تخص هذه المحفظة. لا يعيد تنزيل سلسلة الكتل.</string>
     <string name="rescan_body">أدخل عبارة مرور هذه المحفظة. قد يستغرق البحث بضع دقائق. أبقِ التطبيق مفتوحًا.</string>
-    <string name="rescan_needs_sync">يجب أن تكون العقدة متزامنة بالكامل أولًا.</string>
+    <string name="rescan_needs_sync">يجب أن تكون العقدة متزامنة أولًا.</string>
     <string name="rescan_start">بدء البحث</string>
     <string name="rescan_done_full">تم. يشمل الرصيد الآن كل عملة في هذه المحفظة لا تزال موجودة على الشبكة.</string>
     <string name="rescan_done_partial">تم للكتل التي لا تزال العقدة تخزنها. تعذّر البحث عن العملات الأقدم لأن هذه العقدة لا تستطيع فحص مجموعة العملات.</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">هذا القرين موجود في القائمة بالفعل.</string>
     <string name="net_peer_invalid">هذا ليس عنوان Tor أو I2P صالحًا.</string>
     <string name="balance_reused">يشمل %1$s %2$s على عناوين أُعيد استخدامها.</string>
-    <string name="send_reused_hint">لا يُحتسب هنا %1$s %2$s على عناوين أُعيد استخدامها. اخترها من العملات لإنفاقها.</string>
+    <string name="send_reused_hint">لا يُحتسب هنا %1$s %2$s على عناوين أُعيد استخدامها. فعّل الدفع المتقدم لاختيارها.</string>
     <string name="settings_spend_reused">إنفاق العملات على العناوين المعاد استخدامها تلقائيًا</string>
     <string name="settings_spend_reused_hint">مفعّل (افتراضي): تُحتسب العملات على العناوين المعاد استخدامها متاحة وتُضاف عندما لا تكفي العملات الأخرى لدفعة، وكذلك عند إرسال كل شيء. متوقف: لا تُحتسب ولا تُخلط أبدًا مع غيرها، والدفعة التي تتسع لها عنوان واحد معاد استخدامه تُدفع منه أولًا. أوقفه إذا لم ترد ربط هذه العناوين.</string>
     <string name="net_i2p_ipv6">استخدام IPv6 لـ I2P</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">تم توقيع طلب الدفع</string>
     <string name="escrow_log_sent">تم إرسال الدفعة (معرّف المعاملة)</string>
     <string name="action_show_qr">عرض QR</string>
+    <string name="send_psbt_only">إنشاء PSBT فقط دون إرسال</string>
+    <string name="send_psbt_only_hint">لتمرير الدفعة إلى جهاز أو شخص آخر. تبقى العملات في مكانها إلى أن يوقّع أحدهم PSBT ويرسلها.</string>
+    <string name="send_psbt_sign">التوقيع بمفتاحي</string>
+    <string name="send_psbt_create">إنشاء PSBT</string>
+    <string name="send_psbt_ready_title">PSBT جاهزة</string>
+    <string name="send_psbt_ready_signed">توقيعك مضمَّن. مرّر هذا النص. يمكنك فحص PSBT وتوقيعها ودمجها وإرسالها ضمن الأدوات، PSBT.</string>
+    <string name="send_psbt_ready_unsigned">لم تُوقَّع بعد. مرّر هذا النص إلى من سيوقّعها. من يملك كل التوقيعات يرسلها ضمن الأدوات، PSBT.</string>
+    <string name="send_advanced">دفع متقدم</string>
+    <string name="send_advanced_hint">اختيار العملات، خصم الرسوم من المبلغ، تحديد معدل رسوم خاص بك أو إنشاء PSBT فقط.</string>
+    <string name="update_channel_test">تستخدم نسخة اختبار (مفتاح اختبار عام). تُعرض فقط نسخ الاختبار الأحدث.</string>
+    <string name="update_channel_release">تستخدم خط الإصدارات. تُعرض الإصدارات المرشحة والإصدارات النهائية، ويظهر الأحدث فقط.</string>
+    <string name="update_auto">التحقق تلقائيًا</string>
+    <string name="update_auto_hint">أثناء فتح التطبيق يسأل github.com مرة في اليوم عن إصدار أحدث. عند إيقافه تُفحص التحديثات يدويًا فقط.</string>
+    <string name="update_note_test">نسخة اختبار أحدث. موقّعة بمفتاح الاختبار العام ومخصصة للاختبار فقط.</string>
+    <string name="update_note_candidate">إصدار مرشح. يمكنك أيضًا انتظار الإصدار النهائي، ولا شيء يجبرك على التحديث.</string>
+    <string name="update_dismiss">لاحقًا</string>
 </resources>

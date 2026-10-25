@@ -265,7 +265,8 @@ private fun LogSection(show: Boolean, onShow: (Boolean) -> Unit, lines: List<Str
                     }
                     if (lines.isNotEmpty()) {
                         val context = androidx.compose.ui.platform.LocalContext.current
-                        Row {
+                        @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+                        androidx.compose.foundation.layout.FlowRow {
                             TextButton(onClick = { clipboard.setText(androidx.compose.ui.text.AnnotatedString(org.elektronnet.mobile.node.LogSanitizer.clean(lines))) }) {
                                 Text(stringResource(R.string.node_log_copy))
                             }

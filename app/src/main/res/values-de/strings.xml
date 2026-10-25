@@ -38,7 +38,7 @@
     <string name="send_needs_sync">Zum Senden muss die Node synchron sein. Öffne den Tab Node, um den Fortschritt zu sehen.</string>
     <string name="history_empty">Noch keine Zahlungen. Tippe auf Empfangen, um deine erste Adresse zu erhalten.</string>
     <string name="history_limit">Zahlungen, die älter als etwa 137 Tage sind, werden im Netzwerk nicht gespeichert.</string>
-    <string name="node_title_up_to_date">Deine Node ist vollständig synchron.</string>
+    <string name="node_title_up_to_date">Deine Node ist synchron.</string>
     <string name="node_title_catching_up">Synchronisiere: %1$d%%</string>
     <string name="node_title_paused">Node pausiert</string>
     <string name="node_title_starting">Node startet</string>
@@ -478,7 +478,7 @@
     <string name="rescan_action">Nach älteren Coins suchen</string>
     <string name="rescan_hint">Durchsucht den aktuellen Coin-Bestand des Netzwerks nach Coins, die zu dieser Wallet gehören. Die Blockchain wird dabei nicht erneut heruntergeladen.</string>
     <string name="rescan_body">Gib die Passphrase dieser Wallet ein. Die Suche kann einige Minuten dauern. Lass die App geöffnet.</string>
-    <string name="rescan_needs_sync">Die Node muss zuerst vollständig synchronisiert sein.</string>
+    <string name="rescan_needs_sync">Die Node muss zuerst synchronisiert sein.</string>
     <string name="rescan_start">Suche starten</string>
     <string name="rescan_done_full">Fertig. Das Guthaben enthält jetzt jeden Coin dieser Wallet, der im Netzwerk noch existiert.</string>
     <string name="rescan_done_partial">Fertig für die Blöcke, die die Node noch speichert. Ältere Coins konnten nicht durchsucht werden, weil diese Node den Coin-Bestand nicht scannen kann.</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">Dieser Peer steht schon in der Liste.</string>
     <string name="net_peer_invalid">Das ist keine gültige Adresse für Tor oder I2P.</string>
     <string name="balance_reused">Enthält %1$s %2$s auf wiederverwendeten Adressen.</string>
-    <string name="send_reused_hint">%1$s %2$s auf wiederverwendeten Adressen sind hier nicht mitgezählt. Wähle sie unter Coins aus, um sie auszugeben.</string>
+    <string name="send_reused_hint">%1$s %2$s auf wiederverwendeten Adressen sind hier nicht mitgezählt. Schalte „Erweiterte Zahlung“ ein, um sie auszuwählen.</string>
     <string name="settings_spend_reused">Coins auf wiederverwendeten Adressen automatisch ausgeben</string>
     <string name="settings_spend_reused_hint">An (Standard): Coins auf wiederverwendeten Adressen zählen als verfügbar und werden dazugenommen, wenn die übrigen Coins eine Zahlung nicht decken, auch bei „Alles senden“. Aus: Sie zählen nicht und werden nie mit anderen Coins gemischt, und eine Zahlung, die in eine wiederverwendete Adresse passt, wird weiterhin zuerst daraus bezahlt. Schalte es aus, wenn du solche Adressen nicht verknüpfen willst.</string>
     <string name="net_i2p_ipv6">IPv6 für I2P verwenden</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">Zahlungsanfrage signiert</string>
     <string name="escrow_log_sent">Zahlung gesendet (Transaktions-ID)</string>
     <string name="action_show_qr">QR zeigen</string>
+    <string name="send_psbt_only">Nur eine PSBT erstellen, nicht senden</string>
+    <string name="send_psbt_only_hint">Zum Weitergeben der Zahlung an ein anderes Gerät oder eine andere Person. Die Coins bleiben, wo sie sind, bis jemand die PSBT signiert und sendet.</string>
+    <string name="send_psbt_sign">Mit meinem Schlüssel signieren</string>
+    <string name="send_psbt_create">PSBT erstellen</string>
+    <string name="send_psbt_ready_title">PSBT bereit</string>
+    <string name="send_psbt_ready_signed">Deine Signatur ist enthalten. Gib diesen Text weiter. Eine PSBT kannst du unter Werkzeuge, PSBT prüfen, signieren, kombinieren und senden.</string>
+    <string name="send_psbt_ready_unsigned">Sie ist noch nicht signiert. Gib diesen Text an den weiter, der sie signiert. Wer alle Signaturen hat, sendet sie unter Werkzeuge, PSBT.</string>
+    <string name="send_advanced">Erweiterte Zahlung</string>
+    <string name="send_advanced_hint">Coins auswählen, die Gebühr vom Betrag abziehen, eigene Gebühr festlegen oder nur eine PSBT erstellen.</string>
+    <string name="update_channel_test">Du nutzt einen Test-Build (öffentlicher Testschlüssel). Es werden nur neuere Test-Builds angeboten.</string>
+    <string name="update_channel_release">Du nutzt die Release-Linie. Release Candidates und endgültige Releases werden angeboten, gezeigt wird nur das neueste.</string>
+    <string name="update_auto">Automatisch prüfen</string>
+    <string name="update_auto_hint">Solange die App offen ist, fragt sie einmal am Tag bei github.com nach einer neueren Version. Ist es aus, wird nur von Hand geprüft.</string>
+    <string name="update_note_test">Ein neuerer Test-Build. Er ist mit dem öffentlichen Testschlüssel signiert und nur zum Testen gedacht.</string>
+    <string name="update_note_candidate">Ein Release Candidate. Du kannst auch auf das endgültige Release warten, nichts zwingt dich zum Update.</string>
+    <string name="update_dismiss">Später</string>
 </resources>

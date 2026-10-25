@@ -478,7 +478,7 @@
     <string name="rescan_action">Buscar monedas antiguas</string>
     <string name="rescan_hint">Analiza el conjunto actual de monedas de la red en busca de monedas que pertenezcan a este monedero. No vuelve a descargar la cadena de bloques.</string>
     <string name="rescan_body">Introduce la frase de contraseña de este monedero. La búsqueda puede tardar unos minutos. Mantén la app abierta.</string>
-    <string name="rescan_needs_sync">El nodo debe estar completamente sincronizado primero.</string>
+    <string name="rescan_needs_sync">El nodo debe estar sincronizado primero.</string>
     <string name="rescan_start">Iniciar búsqueda</string>
     <string name="rescan_done_full">Listo. El saldo ahora incluye todas las monedas de este monedero que aún existen en la red.</string>
     <string name="rescan_done_partial">Listo para los bloques que el nodo aún almacena. No se pudieron buscar las monedas más antiguas porque este nodo no puede analizar el conjunto de monedas.</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">Este peer ya está en la lista.</string>
     <string name="net_peer_invalid">No es una dirección válida de Tor o I2P.</string>
     <string name="balance_reused">Incluye %1$s %2$s en direcciones reutilizadas.</string>
-    <string name="send_reused_hint">%1$s %2$s en direcciones reutilizadas no se cuentan aquí. Elígelos en Monedas para gastarlos.</string>
+    <string name="send_reused_hint">%1$s %2$s en direcciones reutilizadas no se cuentan aquí. Activa Pago avanzado para elegirlos.</string>
     <string name="settings_spend_reused">Gastar automáticamente monedas en direcciones reutilizadas</string>
     <string name="settings_spend_reused_hint">Activado (predeterminado): las monedas en direcciones reutilizadas cuentan como disponibles y se añaden cuando las demás no cubren un pago, también al enviar todo. Desactivado: no cuentan y nunca se mezclan con otras, y un pago que cabe en una dirección reutilizada se sigue pagando primero desde ella. Desactívalo si no quieres vincular esas direcciones.</string>
     <string name="net_i2p_ipv6">Usar IPv6 para I2P</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">Solicitud de pago firmada</string>
     <string name="escrow_log_sent">Pago enviado (ID de transacción)</string>
     <string name="action_show_qr">Mostrar QR</string>
+    <string name="send_psbt_only">Solo crear una PSBT, no enviar</string>
+    <string name="send_psbt_only_hint">Para pasar el pago a otro dispositivo o persona. Las monedas se quedan donde están hasta que alguien firme y envíe la PSBT.</string>
+    <string name="send_psbt_sign">Firmarla con mi clave</string>
+    <string name="send_psbt_create">Crear PSBT</string>
+    <string name="send_psbt_ready_title">PSBT lista</string>
+    <string name="send_psbt_ready_signed">Tu firma está incluida. Pasa este texto. Puedes comprobar, firmar, combinar y enviar una PSBT en Herramientas, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Aún no está firmada. Pasa este texto a quien la firme. Quien tenga todas las firmas la envía en Herramientas, PSBT.</string>
+    <string name="send_advanced">Pago avanzado</string>
+    <string name="send_advanced_hint">Elegir las monedas, restar la comisión del importe, fijar tu propia tarifa o solo crear una PSBT.</string>
+    <string name="update_channel_test">Usas una compilación de prueba (clave de prueba pública). Solo se ofrecen compilaciones de prueba más nuevas.</string>
+    <string name="update_channel_release">Usas la línea de versiones. Se ofrecen candidatas a versión y versiones finales, solo se muestra la más reciente.</string>
+    <string name="update_auto">Buscar automáticamente</string>
+    <string name="update_auto_hint">Mientras la app está abierta, consulta github.com una vez al día por una versión más nueva. Si está desactivado, las actualizaciones solo se buscan a mano.</string>
+    <string name="update_note_test">Una compilación de prueba más nueva. Está firmada con la clave de prueba pública y es solo para pruebas.</string>
+    <string name="update_note_candidate">Una candidata a versión. También puedes esperar a la versión final, nada te obliga a actualizar.</string>
+    <string name="update_dismiss">Más tarde</string>
 </resources>

@@ -478,7 +478,7 @@
     <string name="rescan_action">Chercher des pièces plus anciennes</string>
     <string name="rescan_hint">Analyse l\'ensemble actuel des pièces du réseau pour trouver celles qui appartiennent à ce portefeuille. La blockchain n\'est pas retéléchargée.</string>
     <string name="rescan_body">Saisissez la phrase secrète de ce portefeuille. La recherche peut prendre quelques minutes. Gardez l\'app ouverte.</string>
-    <string name="rescan_needs_sync">Le nœud doit d\'abord être entièrement synchronisé.</string>
+    <string name="rescan_needs_sync">Le nœud doit d\'abord être synchronisé.</string>
     <string name="rescan_start">Lancer la recherche</string>
     <string name="rescan_done_full">Terminé. Le solde inclut maintenant toutes les pièces de ce portefeuille qui existent encore sur le réseau.</string>
     <string name="rescan_done_partial">Terminé pour les blocs que le nœud stocke encore. Les pièces plus anciennes n\'ont pas pu être recherchées car ce nœud ne peut pas analyser l\'ensemble des pièces.</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">Ce pair est déjà dans la liste.</string>
     <string name="net_peer_invalid">Ce n\'est pas une adresse Tor ou I2P valide.</string>
     <string name="balance_reused">Comprend %1$s %2$s sur des adresses réutilisées.</string>
-    <string name="send_reused_hint">%1$s %2$s sur des adresses réutilisées ne sont pas comptés ici. Choisis-les dans Pièces pour les dépenser.</string>
+    <string name="send_reused_hint">%1$s %2$s sur des adresses réutilisées ne sont pas comptés ici. Active Paiement avancé pour les choisir.</string>
     <string name="settings_spend_reused">Dépenser automatiquement les pièces des adresses réutilisées</string>
     <string name="settings_spend_reused_hint">Activé (par défaut) : les pièces sur des adresses réutilisées comptent comme disponibles et sont ajoutées quand les autres ne couvrent pas un paiement, y compris pour tout envoyer. Désactivé : elles ne comptent pas et ne sont jamais mélangées aux autres, et un paiement qui tient dans une adresse réutilisée est toujours payé d\'abord avec elle. Désactive-le si tu ne veux pas lier ces adresses.</string>
     <string name="net_i2p_ipv6">Utiliser l\'IPv6 pour I2P</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">Demande de paiement signée</string>
     <string name="escrow_log_sent">Paiement envoyé (ID de transaction)</string>
     <string name="action_show_qr">Afficher le QR</string>
+    <string name="send_psbt_only">Créer seulement une PSBT, ne pas envoyer</string>
+    <string name="send_psbt_only_hint">Pour transmettre le paiement à un autre appareil ou à une autre personne. Les pièces restent où elles sont tant que personne ne signe et n\'envoie la PSBT.</string>
+    <string name="send_psbt_sign">La signer avec ma clé</string>
+    <string name="send_psbt_create">Créer la PSBT</string>
+    <string name="send_psbt_ready_title">PSBT prête</string>
+    <string name="send_psbt_ready_signed">Ta signature est incluse. Transmets ce texte. Tu peux vérifier, signer, combiner et envoyer une PSBT sous Outils, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Elle n\'est pas encore signée. Transmets ce texte à la personne qui la signe. Celui qui a toutes les signatures l\'envoie sous Outils, PSBT.</string>
+    <string name="send_advanced">Paiement avancé</string>
+    <string name="send_advanced_hint">Choisir les pièces, déduire les frais du montant, fixer ton propre taux de frais ou créer seulement une PSBT.</string>
+    <string name="update_channel_test">Tu utilises une version de test (clé de test publique). Seules des versions de test plus récentes sont proposées.</string>
+    <string name="update_channel_release">Tu utilises la ligne des versions. Les versions candidates et les versions finales sont proposées, seule la plus récente est affichée.</string>
+    <string name="update_auto">Vérifier automatiquement</string>
+    <string name="update_auto_hint">Tant que l\'app est ouverte, elle demande une fois par jour à github.com s\'il existe une version plus récente. Désactivé, les mises à jour ne sont vérifiées qu\'à la main.</string>
+    <string name="update_note_test">Une version de test plus récente. Elle est signée avec la clé de test publique et sert uniquement aux tests.</string>
+    <string name="update_note_candidate">Une version candidate. Tu peux aussi attendre la version finale, rien ne t\'oblige à mettre à jour.</string>
+    <string name="update_dismiss">Plus tard</string>
 </resources>

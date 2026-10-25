@@ -111,7 +111,8 @@ private fun NetworkTileCard(tile: NetworkTile, peers: List<String>) {
                 Column(modifier = Modifier.heightIn(max = 240.dp).verticalScroll(androidx.compose.foundation.rememberScrollState())) {
                     Text(clean, style = MaterialTheme.typography.bodySmall, fontFamily = ElektronMono)
                 }
-                Row {
+                @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+                androidx.compose.foundation.layout.FlowRow {
                     TextButton(onClick = { clipboard.setText(AnnotatedString(clean)) }) { Text(stringResource(R.string.action_copy)) }
                     TextButton(onClick = { shareText(context, clean) }) { Text(stringResource(R.string.action_share)) }
                     TextButton(onClick = { NodeHost.clearHelperLog(tile.net == ConnNet.Tor) }) { Text(stringResource(R.string.node_log_clear)) }

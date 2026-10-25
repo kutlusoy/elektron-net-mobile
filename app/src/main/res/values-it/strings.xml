@@ -478,7 +478,7 @@
     <string name="rescan_action">Cerca coin più vecchi</string>
     <string name="rescan_hint">Analizza l\'insieme attuale dei coin della rete alla ricerca di quelli che appartengono a questo wallet. Non scarica di nuovo la blockchain.</string>
     <string name="rescan_body">Inserisci la passphrase di questo wallet. La ricerca può richiedere alcuni minuti. Tieni l\'app aperta.</string>
-    <string name="rescan_needs_sync">Prima il nodo deve essere completamente sincronizzato.</string>
+    <string name="rescan_needs_sync">Prima il nodo deve essere sincronizzato.</string>
     <string name="rescan_start">Avvia ricerca</string>
     <string name="rescan_done_full">Fatto. Il saldo ora include ogni coin di questo wallet che esiste ancora sulla rete.</string>
     <string name="rescan_done_partial">Fatto per i blocchi che il nodo conserva ancora. I coin più vecchi non hanno potuto essere cercati perché questo nodo non può analizzare l\'insieme dei coin.</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">Questo peer è già nell\'elenco.</string>
     <string name="net_peer_invalid">Non è un indirizzo valido per Tor o I2P.</string>
     <string name="balance_reused">Include %1$s %2$s su indirizzi riutilizzati.</string>
-    <string name="send_reused_hint">%1$s %2$s su indirizzi riutilizzati non sono conteggiati qui. Sceglili in Monete per spenderli.</string>
+    <string name="send_reused_hint">%1$s %2$s su indirizzi riutilizzati non sono conteggiati qui. Attiva Pagamento avanzato per sceglierli.</string>
     <string name="settings_spend_reused">Spendi automaticamente le monete su indirizzi riutilizzati</string>
     <string name="settings_spend_reused_hint">Attivato (predefinito): le monete su indirizzi riutilizzati contano come disponibili e vengono aggiunte quando le altre non coprono un pagamento, anche quando invii tutto. Disattivato: non contano e non si mescolano mai con le altre, e un pagamento che sta in un indirizzo riutilizzato viene comunque pagato prima da esso. Disattivalo se non vuoi collegare questi indirizzi.</string>
     <string name="net_i2p_ipv6">Usa IPv6 per I2P</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">Richiesta di pagamento firmata</string>
     <string name="escrow_log_sent">Pagamento inviato (ID transazione)</string>
     <string name="action_show_qr">Mostra QR</string>
+    <string name="send_psbt_only">Crea solo una PSBT, non inviare</string>
+    <string name="send_psbt_only_hint">Per passare il pagamento a un altro dispositivo o a un\'altra persona. Le monete restano dove sono finché qualcuno firma e invia la PSBT.</string>
+    <string name="send_psbt_sign">Firmala con la mia chiave</string>
+    <string name="send_psbt_create">Crea PSBT</string>
+    <string name="send_psbt_ready_title">PSBT pronta</string>
+    <string name="send_psbt_ready_signed">La tua firma è inclusa. Passa questo testo. Puoi controllare, firmare, combinare e inviare una PSBT in Strumenti, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Non è ancora firmata. Passa questo testo a chi la firma. Chi ha tutte le firme la invia in Strumenti, PSBT.</string>
+    <string name="send_advanced">Pagamento avanzato</string>
+    <string name="send_advanced_hint">Scegliere le monete, sottrarre la commissione dall\'importo, impostare una tariffa personale o creare solo una PSBT.</string>
+    <string name="update_channel_test">Usi una build di test (chiave di test pubblica). Vengono offerte solo build di test più recenti.</string>
+    <string name="update_channel_release">Usi la linea delle release. Vengono offerte release candidate e release finali, viene mostrata solo la più recente.</string>
+    <string name="update_auto">Controlla automaticamente</string>
+    <string name="update_auto_hint">Finché l\'app è aperta, chiede una volta al giorno a github.com se c\'è una versione più recente. Se è disattivato, gli aggiornamenti si controllano solo a mano.</string>
+    <string name="update_note_test">Una build di test più recente. È firmata con la chiave di test pubblica ed è solo per test.</string>
+    <string name="update_note_candidate">Una release candidate. Puoi anche aspettare la release finale, nulla ti obbliga ad aggiornare.</string>
+    <string name="update_dismiss">Più tardi</string>
 </resources>

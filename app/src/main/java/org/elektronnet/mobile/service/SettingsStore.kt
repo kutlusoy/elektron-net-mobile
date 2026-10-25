@@ -117,6 +117,12 @@ class SettingsStore(context: Context) {
         override fun save(records: List<EscrowRecord>) {
             prefs.edit().putString(ESCROWS, Json.stringify(records.map { it.toMap() })).apply()
         }
+
+        override fun nextAccount(owner: String): Int = prefs.getInt("$ESCROW_ACCOUNT.$owner", 0)
+
+        override fun setNextAccount(owner: String, value: Int) {
+            prefs.edit().putInt("$ESCROW_ACCOUNT.$owner", value).apply()
+        }
     }
 
     var rescanPending: Boolean
@@ -137,6 +143,27 @@ class SettingsStore(context: Context) {
     var fiat: org.elektronnet.mobile.fiat.FiatSettings
         get() = org.elektronnet.mobile.fiat.FiatSettings.decode(prefs.getString(FIAT, null))
         set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
+
+    var updateAuto: Boolean
+        get() = prefs.getBoolean(UPDATE_AUTO, false)
+        set(value) = prefs.edit().putBoolean(UPDATE_AUTO, value).apply()
+
+    var updateLastOkMs: Long
+        get() = prefs.getLong(UPDATE_LAST_OK, 0L)
+        set(value) = prefs.edit().putLong(UPDATE_LAST_OK, value).apply()
+
+    var updateLastAttemptMs: Long
+        get() = prefs.getLong(UPDATE_LAST_ATTEMPT, 0L)
+        set(value) = prefs.edit().putLong(UPDATE_LAST_ATTEMPT, value).apply()
+
+    // "<kind>|<tag>" of the newest release found, empty when there is none
+    var updateOffer: String
+        get() = prefs.getString(UPDATE_OFFER, null) ?: ""
+        set(value) = prefs.edit().putString(UPDATE_OFFER, value).apply()
+
+    var updateDismissed: String
+        get() = prefs.getString(UPDATE_DISMISSED, null) ?: ""
+        set(value) = prefs.edit().putString(UPDATE_DISMISSED, value).apply()
 
     var numberGrouping: Boolean
         get() = prefs.getBoolean(NUMBER_GROUPING, true)
@@ -280,6 +307,12 @@ class SettingsStore(context: Context) {
         const val LOCK_GRACE = "lock_grace_ms"
         const val AMOUNT_UNIT = "amount_unit"
         const val FIAT = "fiat"
+        const val ESCROW_ACCOUNT = "escrow_next_account"
+        const val UPDATE_AUTO = "update_auto"
+        const val UPDATE_LAST_OK = "update_last_ok"
+        const val UPDATE_LAST_ATTEMPT = "update_last_attempt"
+        const val UPDATE_OFFER = "update_offer"
+        const val UPDATE_DISMISSED = "update_dismissed"
         const val NUMBER_GROUPING = "number_grouping"
         const val NUMBER_GROUP_CHAR = "number_group_char"
         const val NUMBER_DECIMAL_CHAR = "number_decimal_char"

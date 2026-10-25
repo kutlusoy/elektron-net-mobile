@@ -227,6 +227,7 @@ object NodeHost {
         org.elektronnet.mobile.ui.theme.NumberState.groupChoice = org.elektronnet.mobile.wallet.SeparatorChoice.of(store.numberGroupChar)
         org.elektronnet.mobile.ui.theme.NumberState.decimalChoice = org.elektronnet.mobile.wallet.SeparatorChoice.of(store.numberDecimalChar)
         org.elektronnet.mobile.wallet.Amount.styleProvider = { org.elektronnet.mobile.ui.theme.NumberState.style() }
+        org.elektronnet.mobile.ui.theme.UpdateState.load()
         org.elektronnet.mobile.ui.theme.UiState.settings = store.loadUi(org.elektronnet.mobile.ui.theme.Palettes.all.map { it.key }.toSet())
         return store
     }

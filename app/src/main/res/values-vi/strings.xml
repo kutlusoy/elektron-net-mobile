@@ -478,7 +478,7 @@
     <string name="rescan_action">Tìm coin cũ hơn</string>
     <string name="rescan_hint">Quét tập coin hiện tại của mạng để tìm coin thuộc về ví này. Không tải lại blockchain.</string>
     <string name="rescan_body">Nhập passphrase của ví này. Việc tìm kiếm có thể mất vài phút. Hãy giữ ứng dụng mở.</string>
-    <string name="rescan_needs_sync">Node phải được đồng bộ hoàn toàn trước.</string>
+    <string name="rescan_needs_sync">Node phải được đồng bộ trước.</string>
     <string name="rescan_start">Bắt đầu tìm</string>
     <string name="rescan_done_full">Xong. Số dư giờ đã bao gồm mọi coin của ví này còn tồn tại trên mạng.</string>
     <string name="rescan_done_partial">Xong với các khối node vẫn còn lưu. Không thể tìm coin cũ hơn vì node này không thể quét tập coin.</string>
@@ -841,7 +841,7 @@
     <string name="net_peer_exists">Peer này đã có trong danh sách.</string>
     <string name="net_peer_invalid">Đây không phải địa chỉ Tor hoặc I2P hợp lệ.</string>
     <string name="balance_reused">Bao gồm %1$s %2$s trên các địa chỉ đã dùng lại.</string>
-    <string name="send_reused_hint">%1$s %2$s trên các địa chỉ đã dùng lại không được tính ở đây. Hãy chọn chúng trong Coin để chi tiêu.</string>
+    <string name="send_reused_hint">%1$s %2$s trên các địa chỉ đã dùng lại không được tính ở đây. Bật Thanh toán nâng cao để chọn chúng.</string>
     <string name="settings_spend_reused">Tự động chi tiêu coin trên địa chỉ đã dùng lại</string>
     <string name="settings_spend_reused_hint">Bật (mặc định): coin trên địa chỉ đã dùng lại được tính là khả dụng và được thêm vào khi các coin khác không đủ cho một khoản thanh toán, kể cả khi gửi tất cả. Tắt: chúng không được tính và không bao giờ bị trộn với coin khác, và khoản thanh toán vừa trong một địa chỉ đã dùng lại vẫn được trả từ địa chỉ đó trước. Hãy tắt nếu bạn không muốn liên kết các địa chỉ đó.</string>
     <string name="net_i2p_ipv6">Dùng IPv6 cho I2P</string>
@@ -897,4 +897,20 @@
     <string name="escrow_log_signed">Đã ký yêu cầu thanh toán</string>
     <string name="escrow_log_sent">Đã gửi thanh toán (ID giao dịch)</string>
     <string name="action_show_qr">Hiện QR</string>
+    <string name="send_psbt_only">Chỉ tạo PSBT, không gửi</string>
+    <string name="send_psbt_only_hint">Để chuyển khoản thanh toán cho thiết bị hoặc người khác. Coin vẫn ở nguyên chỗ cho đến khi ai đó ký và gửi PSBT.</string>
+    <string name="send_psbt_sign">Ký bằng khóa của tôi</string>
+    <string name="send_psbt_create">Tạo PSBT</string>
+    <string name="send_psbt_ready_title">PSBT đã sẵn sàng</string>
+    <string name="send_psbt_ready_signed">Chữ ký của bạn đã được đưa vào. Hãy chuyển văn bản này đi. Bạn có thể kiểm tra, ký, kết hợp và gửi PSBT trong Công cụ, PSBT.</string>
+    <string name="send_psbt_ready_unsigned">Chưa được ký. Hãy chuyển văn bản này cho người sẽ ký. Ai có đủ chữ ký sẽ gửi nó trong Công cụ, PSBT.</string>
+    <string name="send_advanced">Thanh toán nâng cao</string>
+    <string name="send_advanced_hint">Chọn coin, trừ phí khỏi số tiền, đặt mức phí riêng hoặc chỉ tạo PSBT.</string>
+    <string name="update_channel_test">Bạn dùng bản thử nghiệm (khóa thử nghiệm công khai). Chỉ các bản thử nghiệm mới hơn được đề xuất.</string>
+    <string name="update_channel_release">Bạn dùng nhánh phát hành. Bản ứng viên và bản chính thức được đề xuất, chỉ hiển thị bản mới nhất.</string>
+    <string name="update_auto">Tự động kiểm tra</string>
+    <string name="update_auto_hint">Khi ứng dụng đang mở, ứng dụng hỏi github.com mỗi ngày một lần xem có bản mới hơn không. Khi tắt, bản cập nhật chỉ được kiểm tra thủ công.</string>
+    <string name="update_note_test">Một bản thử nghiệm mới hơn. Bản này được ký bằng khóa thử nghiệm công khai và chỉ dùng để thử nghiệm.</string>
+    <string name="update_note_candidate">Một bản ứng viên phát hành. Bạn cũng có thể chờ bản chính thức, không có gì buộc bạn phải cập nhật.</string>
+    <string name="update_dismiss">Để sau</string>
 </resources>

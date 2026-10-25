@@ -36,8 +36,11 @@ data class NumberStyle(val grouping: Boolean, val group: Char, val decimal: Char
             decimalChoice: SeparatorChoice = SeparatorChoice.Default,
         ): NumberStyle {
             val symbols = DecimalFormatSymbols.getInstance(locale)
-            val decimal = decimalChoice.char ?: symbols.decimalSeparator
-            var group = groupChoice.char ?: symbols.groupingSeparator
+            // amounts are written with Latin digits, so scripts with their own digits must not bring their own separators
+            val latin = symbols.zeroDigit == '0'
+            val decimal = decimalChoice.char ?: if (latin) symbols.decimalSeparator else '.'
+            var group = groupChoice.char ?: if (latin) symbols.groupingSeparator else ','
+
             if (group == decimal) group = if (decimal == '.') ',' else '.'
             return NumberStyle(grouping, group, decimal)
         }

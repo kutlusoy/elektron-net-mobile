@@ -104,6 +104,24 @@ class EscrowIntegrationTest {
     }
 
     @Test
+    fun theDepositAddressStaysUntilTheUserSignedSomething() = withEnv(29017) { env ->
+        val (a, _, _) = setUp(env)
+        val record = a.manager.list().single()
+        val first = record.currentAddress!!
+        env.fund(first, 1.0)
+        assertEquals(first, a.manager.address(record.id))
+        a.manager.addLog(record.id, EscrowLogKind.Sent, "abcd".repeat(16))
+        assertEquals(first, a.manager.address(record.id))
+        Thread.sleep(5)
+        a.manager.addLog(record.id, EscrowLogKind.Signed, "cHNidP8signed")
+        val second = a.manager.address(record.id)
+        assertNotEquals(first, second)
+        assertEquals(second, a.manager.address(record.id))
+        env.fund(second, 1.0)
+        assertEquals(second, a.manager.address(record.id))
+    }
+
+    @Test
     fun twoOfThreePaymentFlow() = withEnv(29020) { env ->
         val (a, b, _) = setUp(env)
         val escrow = a.manager.list().single()
@@ -370,6 +388,19 @@ class EscrowPerWalletIntegrationTest {
         val again = m.createKey("Deal 2", "Buyer", PASS)
         assertEquals(1, m.list().size)
         assertEquals(again.id, m.list().single().id)
+    }
+
+    @Test
+    fun aNewDealNeverReusesTheKeyAccountOfADeletedOne() = withEnv(29125) { env ->
+        boot(env, "w1", 10)
+        val store = MemoryEscrowStore()
+        val m = manager(env, store, "w1")
+        val first = m.createKey("Deal", "Buyer", PASS)
+        m.removeEscrow(first.id)
+        val second = m.createKey("Deal", "Buyer", PASS)
+        assertEquals(0, first.account)
+        assertEquals(1, second.account)
+        assertNotEquals(first.myKey, second.myKey)
     }
 
     @Test
