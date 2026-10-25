@@ -178,7 +178,7 @@ jobs:
             echo
             echo "Verify a download with \`sha256sum -c SHA256SUMS.txt\`, and compare the signing certificate with \`apksigner verify --print-certs <apk>\`."
             echo
-            echo "This is pre-release software. Do not store significant funds before an independent security review. Always keep your recovery phrase offline."
+            echo "This is beta software. It has been tested in practice and the wallet runs stably, so it can be used for everyday amounts. Keep larger holdings in a cold wallet until an independent security review is done. Always keep your recovery phrase offline."
           } > dist/NOTES.md
       - uses: actions/upload-artifact@v4
         with:

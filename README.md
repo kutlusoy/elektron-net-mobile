@@ -13,7 +13,7 @@
 
 `elektron-net-mobile` is a non-custodial Android wallet for Elektron Net (ELEK) that runs its own complete node. There is no server, no Electrum backend and no third-party indexer in the path: the phone validates the chain itself and signs with keys that never leave the device.
 
-**Status:** early alpha. The app runs the bundled node on a phone (headers, snapshot and tip verified on mainnet), creates and restores several wallets, receives, sends with coin control, fee bump and CPFP, keeps a per-wallet history and an address book, and has escrow, PSBT, sweep and message tools, an Expert console and draft translations in 15 languages. Open: the device test matrix (the screens are built in CI but not yet run on devices), native-speaker review of the translations, release keys and an external security review. The complete plan lives in [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md). This README describes the target behavior and the intended build flow. Items are implemented step by step following the roadmap in that document.
+**Status:** beta. The app has been tested in practice and the wallet runs stably. It is meant for everyday amounts, larger holdings belong in a cold wallet. The app runs the bundled node on a phone (headers, snapshot and tip verified on mainnet), creates and restores several wallets, receives, sends with coin control, fee bump and CPFP, keeps a per-wallet history and an address book, and has escrow, PSBT, sweep and message tools, an Expert console and draft translations in 15 languages. Open: the device test matrix (the screens are built in CI but not yet run on devices), native-speaker review of the translations, release keys and an external security review. The complete plan lives in [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md). This README describes the target behavior and the intended build flow. Items are implemented step by step following the roadmap in that document.
 
 ## 2. Features (target)
 
@@ -152,7 +152,7 @@ doc-elektron/              guidelines and reports
 - Sensitive screens block screenshots and recent-app previews.
 - Android backup of app data is disabled.
 - Only Bech32 `be1...` receive addresses are used by default. Legacy Base58 addresses are byte-identical to Bitcoin mainnet, so the app warns before using them.
-- This is pre-release software. Do not store significant funds before an independent security review. Always keep the recovery phrase offline.
+- This is beta software. It has been tested in practice and the wallet runs stably, so it can be used for everyday amounts. Keep larger holdings in a cold wallet until an independent security review is done. Always keep the recovery phrase offline.
 
 The full requirement list is in plan section 9.
 
