@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d giây</string>
     <string name="settings_minutes">%1$d phút</string>
     <string name="settings_screenshots">Cho phép chụp màn hình</string>
-    <string name="settings_screenshots_hint">Tạm thời, dành cho hướng dẫn. Kết thúc khi đóng hoặc khóa ứng dụng. Các màn hình có từ khôi phục, cụm mật khẩu, khóa và bảng điều khiển vẫn được bảo vệ.</string>
+    <string name="settings_screenshots_hint">Cần vân tay, khuôn mặt hoặc khóa thiết bị của bạn. Tạm thời, dành cho ghi hình và hướng dẫn. Tự tắt sau một thời gian ngắn, khi đóng hoặc khóa ứng dụng.</string>
     <string name="screenshot_banner">Chụp màn hình đang bật</string>
     <string name="settings_language">Ngôn ngữ</string>
     <string name="settings_language_system">Ngôn ngữ hệ thống</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">Một bản thử nghiệm mới hơn. Bản này được ký bằng khóa thử nghiệm công khai và chỉ dùng để thử nghiệm.</string>
     <string name="update_note_candidate">Một bản ứng viên phát hành. Bạn cũng có thể chờ bản chính thức, không có gì buộc bạn phải cập nhật.</string>
     <string name="update_dismiss">Để sau</string>
+    <string name="screenshot_confirm_title">Cho phép chụp màn hình?</string>
+    <string name="screenshot_confirm_body">Từ khôi phục, cụm mật khẩu và bảng điều khiển khi đó có thể bị chụp hoặc quay màn hình. Chỉ dùng cho bản ghi với dữ liệu thử, không bao giờ với ví thật. Tự tắt sau %1$d phút, khi đóng hoặc khóa ứng dụng.</string>
+    <string name="screenshot_confirm_action">Xác minh và cho phép</string>
+    <string name="screenshot_auth_title">Cho phép chụp màn hình</string>
+    <string name="screenshot_auth_unavailable">Hãy thiết lập vân tay, khuôn mặt hoặc khóa thiết bị trong cài đặt hệ thống trước.</string>
 </resources>

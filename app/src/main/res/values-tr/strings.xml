@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d sn</string>
     <string name="settings_minutes">%1$d dk</string>
     <string name="settings_screenshots">Ekran görüntülerine izin ver</string>
-    <string name="settings_screenshots_hint">Geçici, eğitimler için. Uygulama kapatılınca veya kilitlenince sona erer. Kurtarma kelimeleri, parola ifadeleri, kilit ve konsol ekranları korumalı kalır.</string>
+    <string name="settings_screenshots_hint">Parmak izin, yüzün veya cihaz kilidin gerekir. Geçici, kayıtlar ve eğitimler için. Kısa süre sonra, uygulama kapanınca veya kilitlenince kendiliğinden kapanır.</string>
     <string name="screenshot_banner">Ekran görüntüleri açık</string>
     <string name="settings_language">Dil</string>
     <string name="settings_language_system">Sistem dili</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">Daha yeni bir test sürümü. Herkese açık test anahtarıyla imzalıdır ve yalnızca test içindir.</string>
     <string name="update_note_candidate">Bir sürüm adayı. Nihai sürümü de bekleyebilirsin, güncellemeye zorlanmazsın.</string>
     <string name="update_dismiss">Sonra</string>
+    <string name="screenshot_confirm_title">Ekran görüntülerine izin verilsin mi?</string>
+    <string name="screenshot_confirm_body">Kurtarma kelimeleri, parola ifadeleri ve konsol ekran görüntüsü ve ekran kaydıyla alınabilir. Bunu yalnızca test verisiyle yapılan kayıtlar için kullan, gerçek bir cüzdanla asla. %1$d dakika sonra, uygulama kapanınca veya kilitlenince kendiliğinden kapanır.</string>
+    <string name="screenshot_confirm_action">Doğrula ve izin ver</string>
+    <string name="screenshot_auth_title">Ekran görüntülerine izin ver</string>
+    <string name="screenshot_auth_unavailable">Önce sistem ayarlarında bir parmak izi, yüz veya cihaz kilidi kur.</string>
 </resources>

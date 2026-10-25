@@ -684,7 +684,7 @@
     <string name="settings_seconds">%1$d s</string>
     <string name="settings_minutes">%1$d min</string>
     <string name="settings_screenshots">Allow screenshots</string>
-    <string name="settings_screenshots_hint">Temporary, for tutorials. Ends when the app is closed or locked. Screens with recovery words, passphrases, the lock and the console stay protected.</string>
+    <string name="settings_screenshots_hint">Needs your fingerprint, face or device lock. Temporary, for recordings and tutorials. Switches itself off after a short time, when the app is closed or locked.</string>
     <string name="screenshot_banner">Screenshots are on</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_system">System language</string>
@@ -924,4 +924,9 @@
     <string name="update_note_test">A newer test build. It is signed with the public test key and is for testing only.</string>
     <string name="update_note_candidate">A release candidate. You can also wait for the final release, nothing forces you to update.</string>
     <string name="update_dismiss">Later</string>
+    <string name="screenshot_confirm_title">Allow screenshots?</string>
+    <string name="screenshot_confirm_body">Recovery words, passphrases and the console can then be captured by screenshots and screen recordings. Use this only for recordings with test data, never with a real wallet. It switches itself off after %1$d minutes, when the app is closed or locked.</string>
+    <string name="screenshot_confirm_action">Verify and allow</string>
+    <string name="screenshot_auth_title">Allow screenshots</string>
+    <string name="screenshot_auth_unavailable">Set up a fingerprint, face or device lock in the system settings first.</string>
 </resources>

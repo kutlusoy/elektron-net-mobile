@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d सेकंड</string>
     <string name="settings_minutes">%1$d मिनट</string>
     <string name="settings_screenshots">स्क्रीनशॉट की अनुमति दें</string>
-    <string name="settings_screenshots_hint">अस्थायी, ट्यूटोरियल के लिए। ऐप बंद या लॉक होने पर खत्म हो जाता है। रिकवरी शब्दों, पासफ़्रेज़, लॉक और कंसोल वाली स्क्रीन सुरक्षित रहती हैं।</string>
+    <string name="settings_screenshots_hint">आपके फ़िंगरप्रिंट, चेहरे या डिवाइस लॉक की ज़रूरत होती है। अस्थायी, रिकॉर्डिंग और ट्यूटोरियल के लिए। थोड़ी देर बाद, ऐप बंद या लॉक होने पर अपने आप बंद हो जाता है।</string>
     <string name="screenshot_banner">स्क्रीनशॉट चालू हैं</string>
     <string name="settings_language">भाषा</string>
     <string name="settings_language_system">सिस्टम भाषा</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">एक नया टेस्ट बिल्ड। यह सार्वजनिक टेस्ट की से साइन है और केवल टेस्ट के लिए है।</string>
     <string name="update_note_candidate">यह रिलीज़ कैंडिडेट है। आप अंतिम रिलीज़ का इंतज़ार भी कर सकते हैं, अपडेट के लिए कोई मजबूरी नहीं है।</string>
     <string name="update_dismiss">बाद में</string>
+    <string name="screenshot_confirm_title">स्क्रीनशॉट की अनुमति दें?</string>
+    <string name="screenshot_confirm_body">रिकवरी शब्द, पासफ़्रेज़ और कंसोल तब स्क्रीनशॉट और स्क्रीन रिकॉर्डिंग में कैप्चर हो सकते हैं। इसे केवल टेस्ट डेटा वाली रिकॉर्डिंग के लिए इस्तेमाल करें, असली वॉलेट के साथ कभी नहीं। यह %1$d मिनट बाद, ऐप बंद या लॉक होने पर अपने आप बंद हो जाता है।</string>
+    <string name="screenshot_confirm_action">जाँचें और अनुमति दें</string>
+    <string name="screenshot_auth_title">स्क्रीनशॉट की अनुमति</string>
+    <string name="screenshot_auth_unavailable">पहले सिस्टम सेटिंग में फ़िंगरप्रिंट, चेहरा या डिवाइस लॉक सेट करें।</string>
 </resources>

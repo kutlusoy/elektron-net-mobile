@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d dtk</string>
     <string name="settings_minutes">%1$d mnt</string>
     <string name="settings_screenshots">Izinkan tangkapan layar</string>
-    <string name="settings_screenshots_hint">Sementara, untuk tutorial. Berakhir saat aplikasi ditutup atau dikunci. Layar dengan kata pemulihan, frasa sandi, kunci, dan konsol tetap terlindungi.</string>
+    <string name="settings_screenshots_hint">Memerlukan sidik jari, wajah, atau kunci perangkat. Sementara, untuk rekaman dan tutorial. Mati sendiri setelah waktu singkat, saat aplikasi ditutup atau dikunci.</string>
     <string name="screenshot_banner">Tangkapan layar aktif</string>
     <string name="settings_language">Bahasa</string>
     <string name="settings_language_system">Bahasa sistem</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">Build uji yang lebih baru. Ditandatangani dengan kunci uji publik dan hanya untuk pengujian.</string>
     <string name="update_note_candidate">Kandidat rilis. Kamu juga bisa menunggu rilis final, tidak ada keharusan memperbarui.</string>
     <string name="update_dismiss">Nanti</string>
+    <string name="screenshot_confirm_title">Izinkan tangkapan layar?</string>
+    <string name="screenshot_confirm_body">Kata pemulihan, frasa sandi, dan konsol lalu dapat ditangkap lewat tangkapan layar dan rekaman layar. Gunakan hanya untuk rekaman dengan data uji, jangan pernah dengan dompet asli. Mati sendiri setelah %1$d menit, saat aplikasi ditutup atau dikunci.</string>
+    <string name="screenshot_confirm_action">Verifikasi dan izinkan</string>
+    <string name="screenshot_auth_title">Izinkan tangkapan layar</string>
+    <string name="screenshot_auth_unavailable">Atur dulu sidik jari, wajah, atau kunci perangkat di pengaturan sistem.</string>
 </resources>

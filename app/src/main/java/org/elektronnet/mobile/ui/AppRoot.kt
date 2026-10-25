@@ -104,6 +104,13 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     val shell = walletReady || nodeOnly
 
     val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val screenshotsOn = org.elektronnet.mobile.ui.ScreenshotMode.allowed
+    LaunchedEffect(screenshotsOn) {
+        if (screenshotsOn) {
+            delay(org.elektronnet.mobile.ui.ScreenshotMode.MINUTES * 60_000L)
+            org.elektronnet.mobile.ui.ScreenshotMode.allowed = false
+        }
+    }
     LaunchedEffect(Unit) {
         while (true) {
             if (NodeHost.appVisible) org.elektronnet.mobile.ui.theme.UpdateState.checkIfDue()

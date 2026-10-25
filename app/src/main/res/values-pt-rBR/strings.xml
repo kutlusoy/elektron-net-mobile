@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d s</string>
     <string name="settings_minutes">%1$d min</string>
     <string name="settings_screenshots">Permitir capturas de tela</string>
-    <string name="settings_screenshots_hint">Temporário, para tutoriais. Termina ao fechar ou bloquear o app. As telas com palavras de recuperação, senhas, o bloqueio e o console continuam protegidas.</string>
+    <string name="settings_screenshots_hint">Exige sua impressão digital, seu rosto ou o bloqueio do dispositivo. Temporário, para gravações e tutoriais. Desliga sozinho após pouco tempo, ao fechar ou bloquear o app.</string>
     <string name="screenshot_banner">Capturas de tela ativadas</string>
     <string name="settings_language">Idioma</string>
     <string name="settings_language_system">Idioma do sistema</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">Uma versão de teste mais nova. Ela é assinada com a chave de teste pública e serve só para testes.</string>
     <string name="update_note_candidate">Uma candidata a lançamento. Você também pode esperar o lançamento final, nada obriga você a atualizar.</string>
     <string name="update_dismiss">Depois</string>
+    <string name="screenshot_confirm_title">Permitir capturas de tela?</string>
+    <string name="screenshot_confirm_body">As palavras de recuperação, as senhas e o console poderão ser capturados por capturas e gravações de tela. Use apenas para gravações com dados de teste, nunca com uma carteira real. Desliga sozinho após %1$d minutos, ao fechar ou bloquear o app.</string>
+    <string name="screenshot_confirm_action">Verificar e permitir</string>
+    <string name="screenshot_auth_title">Permitir capturas de tela</string>
+    <string name="screenshot_auth_unavailable">Primeiro configure uma impressão digital, o rosto ou um bloqueio do dispositivo nas configurações do sistema.</string>
 </resources>

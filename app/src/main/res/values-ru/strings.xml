@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d с</string>
     <string name="settings_minutes">%1$d мин</string>
     <string name="settings_screenshots">Разрешить скриншоты</string>
-    <string name="settings_screenshots_hint">Временно, для обучающих материалов. Заканчивается при закрытии или блокировке приложения. Экраны со словами восстановления, парольными фразами, блокировкой и консолью остаются защищёнными.</string>
+    <string name="settings_screenshots_hint">Требуется отпечаток, лицо или блокировка устройства. Временно, для записей и обучающих материалов. Выключается само через короткое время, при закрытии или блокировке приложения.</string>
     <string name="screenshot_banner">Скриншоты включены</string>
     <string name="settings_language">Язык</string>
     <string name="settings_language_system">Язык системы</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">Более новая тестовая сборка. Она подписана публичным тестовым ключом и предназначена только для тестов.</string>
     <string name="update_note_candidate">Релиз-кандидат. Можно подождать финальный релиз, обновляться не обязательно.</string>
     <string name="update_dismiss">Позже</string>
+    <string name="screenshot_confirm_title">Разрешить снимки экрана?</string>
+    <string name="screenshot_confirm_body">Слова восстановления, парольные фразы и консоль можно будет снять скриншотом или записью экрана. Используйте это только для записей с тестовыми данными, никогда с настоящим кошельком. Выключится само через %1$d мин., при закрытии или блокировке приложения.</string>
+    <string name="screenshot_confirm_action">Проверить и разрешить</string>
+    <string name="screenshot_auth_title">Разрешить снимки экрана</string>
+    <string name="screenshot_auth_unavailable">Сначала настройте отпечаток, лицо или блокировку устройства в системных настройках.</string>
 </resources>

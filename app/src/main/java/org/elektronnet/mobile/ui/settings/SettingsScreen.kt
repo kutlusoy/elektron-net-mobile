@@ -165,7 +165,7 @@ fun SettingsScreen(
                 notifyIncoming = it
                 NodeHost.store?.notifyIncoming = it
             }
-            ToggleRow(R.string.settings_screenshots, R.string.settings_screenshots_hint, ScreenshotMode.allowed) { ScreenshotMode.allowed = it }
+            ScreenshotSwitch()
         }
         SettingsCard(R.string.settings_language) { LanguagePicker() }
         SettingsCard(R.string.settings_fiat) { FiatSection() }

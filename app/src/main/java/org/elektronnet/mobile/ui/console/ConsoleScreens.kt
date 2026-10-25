@@ -81,7 +81,7 @@ private data class Entry(val command: String, val text: String, val tier: Tier?,
 
 @Composable
 fun ConsoleRoot(onClose: () -> Unit) {
-    SecureWindow(always = true)
+    SecureWindow()
     if (ConsoleState.expertActive) ConsoleScreen(onClose) else ConsoleGate(onClose)
 }
 

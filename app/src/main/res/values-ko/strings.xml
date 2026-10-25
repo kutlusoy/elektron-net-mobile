@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d초</string>
     <string name="settings_minutes">%1$d분</string>
     <string name="settings_screenshots">스크린샷 허용</string>
-    <string name="settings_screenshots_hint">임시 설정이며 튜토리얼용입니다. 앱을 닫거나 잠그면 종료됩니다. 복구 단어, 암호 문구, 잠금, 콘솔 화면은 계속 보호됩니다.</string>
+    <string name="settings_screenshots_hint">지문, 얼굴 또는 기기 잠금이 필요합니다. 녹화와 튜토리얼용 임시 설정입니다. 잠시 후, 앱을 닫거나 잠그면 자동으로 꺼집니다.</string>
     <string name="screenshot_banner">스크린샷이 켜져 있습니다</string>
     <string name="settings_language">언어</string>
     <string name="settings_language_system">시스템 언어</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">더 새로운 테스트 빌드입니다. 공개 테스트 키로 서명되었으며 테스트 전용입니다.</string>
     <string name="update_note_candidate">릴리스 후보입니다. 정식 릴리스를 기다려도 되며 업데이트가 강제되지 않습니다.</string>
     <string name="update_dismiss">나중에</string>
+    <string name="screenshot_confirm_title">스크린샷을 허용할까요?</string>
+    <string name="screenshot_confirm_body">복구 단어, 암호 문구, 콘솔을 스크린샷과 화면 녹화로 캡처할 수 있게 됩니다. 테스트 데이터로 녹화할 때만 사용하고 실제 지갑에는 절대 사용하지 마세요. %1$d분 후, 앱을 닫거나 잠그면 자동으로 꺼집니다.</string>
+    <string name="screenshot_confirm_action">확인하고 허용</string>
+    <string name="screenshot_auth_title">스크린샷 허용</string>
+    <string name="screenshot_auth_unavailable">먼저 시스템 설정에서 지문, 얼굴 또는 기기 잠금을 설정하세요.</string>
 </resources>

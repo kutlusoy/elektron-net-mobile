@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d s</string>
     <string name="settings_minutes">%1$d min</string>
     <string name="settings_screenshots">Permitir capturas de pantalla</string>
-    <string name="settings_screenshots_hint">Temporal, para tutoriales. Termina al cerrar o bloquear la app. Las pantallas con palabras de recuperación, frases de contraseña, el bloqueo y la consola siguen protegidas.</string>
+    <string name="settings_screenshots_hint">Requiere tu huella, tu rostro o el bloqueo del dispositivo. Temporal, para grabaciones y tutoriales. Se desactiva solo tras un tiempo corto, al cerrar o bloquear la app.</string>
     <string name="screenshot_banner">Las capturas están activadas</string>
     <string name="settings_language">Idioma</string>
     <string name="settings_language_system">Idioma del sistema</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">Una compilación de prueba más nueva. Está firmada con la clave de prueba pública y es solo para pruebas.</string>
     <string name="update_note_candidate">Una candidata a versión. También puedes esperar a la versión final, nada te obliga a actualizar.</string>
     <string name="update_dismiss">Más tarde</string>
+    <string name="screenshot_confirm_title">¿Permitir capturas de pantalla?</string>
+    <string name="screenshot_confirm_body">Las palabras de recuperación, las frases de contraseña y la consola podrán capturarse con capturas y grabaciones de pantalla. Úsalo solo para grabaciones con datos de prueba, nunca con una wallet real. Se desactiva solo tras %1$d minutos, al cerrar o bloquear la app.</string>
+    <string name="screenshot_confirm_action">Verificar y permitir</string>
+    <string name="screenshot_auth_title">Permitir capturas de pantalla</string>
+    <string name="screenshot_auth_unavailable">Primero configura una huella, el rostro o un bloqueo del dispositivo en los ajustes del sistema.</string>
 </resources>

@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d ث</string>
     <string name="settings_minutes">%1$d د</string>
     <string name="settings_screenshots">السماح بلقطات الشاشة</string>
-    <string name="settings_screenshots_hint">مؤقت، للشروحات. ينتهي عند إغلاق التطبيق أو قفله. تبقى شاشات كلمات الاستعادة وعبارات المرور والقفل ووحدة التحكم محمية.</string>
+    <string name="settings_screenshots_hint">يتطلب بصمتك أو وجهك أو قفل الجهاز. مؤقت، للتسجيل والشروحات. يتوقف من تلقاء نفسه بعد وقت قصير أو عند إغلاق التطبيق أو قفله.</string>
     <string name="screenshot_banner">لقطات الشاشة مفعّلة</string>
     <string name="settings_language">اللغة</string>
     <string name="settings_language_system">لغة النظام</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">نسخة اختبار أحدث. موقّعة بمفتاح الاختبار العام ومخصصة للاختبار فقط.</string>
     <string name="update_note_candidate">إصدار مرشح. يمكنك أيضًا انتظار الإصدار النهائي، ولا شيء يجبرك على التحديث.</string>
     <string name="update_dismiss">لاحقًا</string>
+    <string name="screenshot_confirm_title">السماح بلقطات الشاشة؟</string>
+    <string name="screenshot_confirm_body">ستصبح كلمات الاستعادة وعبارات المرور ووحدة التحكم قابلة للالتقاط بلقطات الشاشة وتسجيلها. استخدم هذا فقط للتسجيل ببيانات تجريبية، ولا تستخدمه مع محفظة حقيقية. يتوقف من تلقاء نفسه بعد %1$d دقيقة أو عند إغلاق التطبيق أو قفله.</string>
+    <string name="screenshot_confirm_action">تحقق واسمح</string>
+    <string name="screenshot_auth_title">السماح بلقطات الشاشة</string>
+    <string name="screenshot_auth_unavailable">اضبط أولًا بصمة أو الوجه أو قفل الجهاز في إعدادات النظام.</string>
 </resources>

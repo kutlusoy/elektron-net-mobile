@@ -680,7 +680,7 @@
     <string name="settings_seconds">%1$d 秒</string>
     <string name="settings_minutes">%1$d 分钟</string>
     <string name="settings_screenshots">允许截屏</string>
-    <string name="settings_screenshots_hint">临时开启，用于教程。关闭或锁定应用时结束。包含恢复词、口令、锁屏和控制台的页面仍受保护。</string>
+    <string name="settings_screenshots_hint">需要指纹、人脸或设备锁验证。临时开启，用于录制和教程。一段时间后、关闭或锁定应用时会自动关闭。</string>
     <string name="screenshot_banner">截屏已开启</string>
     <string name="settings_language">语言</string>
     <string name="settings_language_system">系统语言</string>
@@ -913,4 +913,9 @@
     <string name="update_note_test">一个更新的测试版。它使用公开测试密钥签名，仅用于测试。</string>
     <string name="update_note_candidate">这是候选版本。你也可以等待正式版本，没有任何强制更新。</string>
     <string name="update_dismiss">稍后</string>
+    <string name="screenshot_confirm_title">允许截屏？</string>
+    <string name="screenshot_confirm_body">恢复词、口令和控制台随后可以被截屏和录屏。仅用于使用测试数据的录制，切勿用于真实钱包。%1$d 分钟后、关闭或锁定应用时会自动关闭。</string>
+    <string name="screenshot_confirm_action">验证并允许</string>
+    <string name="screenshot_auth_title">允许截屏</string>
+    <string name="screenshot_auth_unavailable">请先在系统设置中设置指纹、人脸或设备锁。</string>
 </resources>
