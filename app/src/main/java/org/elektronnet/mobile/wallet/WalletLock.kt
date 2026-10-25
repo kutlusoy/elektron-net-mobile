@@ -14,8 +14,10 @@ object WalletLock {
 
     private fun locked(rpc: WalletRpc, wallet: String): Boolean {
         val info = runCatching { rpc.call("getwalletinfo", emptyList<Any?>(), wallet) }.getOrElse { return false }
-        val until = (info as? Map<*, *>)?.get("unlocked_until") as? Number ?: return true
-        return until.toLong() == 0L
+        // an unknown answer is not a confirmed lock, only a wallet without a passphrase has no unlocked_until and nothing to lock
+        val map = info as? Map<*, *> ?: return false
+        if (!map.containsKey("unlocked_until")) return true
+        return (map["unlocked_until"] as? Number)?.toLong() == 0L
     }
 
     private const val ATTEMPTS = 2

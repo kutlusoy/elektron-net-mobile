@@ -51,7 +51,7 @@ data class NodeConfig(
 
         // options that decide who can reach the node must not be set or reset from the extra arguments, also not in the form -noname
         fun protectedOption(arg: String): Boolean {
-            val name = arg.trimStart('-').substringBefore('=').lowercase()
+            val name = arg.trim().trimStart('-').substringBefore('=').lowercase()
             val base = if (name.startsWith("no")) name.removePrefix("no") else name
             return listOf(name, base).any { it.startsWith("rpc") || it.startsWith("zmq") || it in PROTECTED }
         }

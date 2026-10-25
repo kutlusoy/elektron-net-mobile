@@ -46,3 +46,12 @@ Two AI-assisted reviews of release m0.1.5 are kept in `doc-elektron/` as [`secur
 - **"Early alpha" and "unaudited alpha" (Grok L4, GPT conclusion):** the status is now beta, with the advice to keep larger holdings in a cold wallet until the independent human review is done.
 - **Payment links and explorer (Grok L1, L2, GPT L1):** the URI parser has tests for duplicates, length limits, encoding and a fuzz run of 20,000 inputs, and no payment is sent without the confirmation screens. Explorer links stay optional with a privacy note. No change needed.
 - **GPT review limits:** it covers three files, without checkout or build, and calls its own verdict partial. Its remark that Grok's claims were not confirmed refers to its own limited scope, not to a contradiction.
+
+### Follow-up review of m0.1.7 by GPT
+
+After the changes above, GPT did a second, short static review of the m0.1.7 source snapshot (October 25, 2026). It confirmed that the listed mitigations are present in the code and named four points. It is not a build or device test and not a certification. What was done with them:
+
+- **Lock state must be confirmed (M1):** correct. A missing or malformed `unlocked_until` answer is now an unconfirmed lock and triggers the retry and the one-second fallback. Only a wallet without a passphrase, which has no `unlocked_until` at all, counts as having nothing to lock. Tests cover a missing answer, wrong types, an RPC error and a wallet without passphrase.
+- **Callers ignored the result (M2):** partly taken. All operations that know the passphrase (send, fee bump, CPFP, PSBT and message signing, wallet removal, wallet creation and recovery) now hand it to the lock, so the one-second fallback works there. A user-visible warning was not added: a lock that cannot be confirmed means the node does not answer, and the unlock windows are at most 60 seconds (recovery 20 minutes) and 10 seconds for signing.
+- **Tests for the argument filter (L1):** added, covering upper case, double dash, leading space, bare flags and the `-no` form. Whitespace around the name is now ignored by the filter. All node starts use the same `NodeConfig.arguments()` builder.
+- **Passphrase rating is a heuristic (L2):** agreed. The Weak, Fair and Strong labels are rules (length, character classes, block list), not measured entropy. They were never meant to be more, which is why the text only says "Weak. Longer is better.".
