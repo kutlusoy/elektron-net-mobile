@@ -245,7 +245,33 @@ object NodeHost {
         latest = snapshot
         cleanLogsIfDue()
         maintainWallets(snapshot)
+        maintainRegistryPeers()
         return snapshot
+    }
+
+    @Volatile
+    private var registryRunning = false
+
+    // the public peer lists of the registry serve as stepping stones when the node has no peer on Tor or I2P yet
+    private fun maintainRegistryPeers() {
+        val supervisor = runningSupervisor() ?: return
+        val store = settings ?: return
+        if (ChainConfig.isTestnet || registryRunning) return
+        val network = store.loadNetwork()
+        if (!network.tor.enabled && !network.i2p.enabled) return
+        registryRunning = true
+        Thread {
+            try {
+                org.elektronnet.mobile.node.RegistryBootstrap(
+                    store = store.registryStore(),
+                    fetch = { url, port -> org.elektronnet.mobile.node.RegistryPeers.fetch(url, port) },
+                    peers = { supervisor.peers() },
+                    connect = { runCatching { supervisor.rpc.call("addnode", listOf(it, "onetry")) }.isSuccess },
+                ).step(network, networkPorts.torSocks)
+            } finally {
+                registryRunning = false
+            }
+        }.start()
     }
 
     @Volatile

@@ -144,6 +144,25 @@ class SettingsStore(context: Context) {
         get() = org.elektronnet.mobile.fiat.FiatSettings.decode(prefs.getString(FIAT, null))
         set(value) = prefs.edit().putString(FIAT, value.encode()).apply()
 
+    fun registryStore(): org.elektronnet.mobile.node.RegistryStore = object : org.elektronnet.mobile.node.RegistryStore {
+        override fun list(network: String): List<String> =
+            runCatching { (Json.parse(prefs.getString("registry_list_$network", null) ?: "[]") as List<*>).mapNotNull { it as? String } }.getOrDefault(emptyList())
+
+        override fun saveList(network: String, list: List<String>, nowMs: Long) {
+            prefs.edit().putString("registry_list_$network", Json.stringify(list)).putLong("registry_ok_$network", nowMs).apply()
+        }
+
+        override fun lastOk(network: String) = prefs.getLong("registry_ok_$network", 0L)
+
+        override fun lastAttempt(network: String) = prefs.getLong("registry_attempt_$network", 0L)
+
+        override fun setAttempt(network: String, nowMs: Long) = prefs.edit().putLong("registry_attempt_$network", nowMs).apply()
+
+        override fun lastContact(network: String) = prefs.getLong("registry_contact_$network", 0L)
+
+        override fun setContact(network: String, nowMs: Long) = prefs.edit().putLong("registry_contact_$network", nowMs).apply()
+    }
+
     var updateAuto: Boolean
         get() = prefs.getBoolean(UPDATE_AUTO, false)
         set(value) = prefs.edit().putBoolean(UPDATE_AUTO, value).apply()
