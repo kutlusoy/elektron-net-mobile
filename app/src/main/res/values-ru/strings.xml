@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">Сначала настройте отпечаток, лицо или блокировку устройства в системных настройках.</string>
     <string name="action_restart">Перезапустить</string>
     <string name="action_restart_all">Перезапустить ноду, Tor и I2P</string>
+    <string name="psbt_qr_animated">Анимированный QR-код</string>
+    <string name="psbt_qr_animated_hint">Для SeedSigner и других устройств, которые читают несколько QR-кодов подряд (формат UR).</string>
+    <string name="psbt_qr_running">Код меняется сам. Держите другое устройство перед ним, пока оно не прочитает всё. Замедлите или уменьшите части, если не читается.</string>
+    <string name="psbt_qr_slower">Медленнее</string>
+    <string name="psbt_qr_faster">Быстрее</string>
+    <string name="psbt_qr_smaller">Меньшие части</string>
+    <string name="psbt_qr_bigger">Большие части</string>
+    <string name="scan_ur_hint">Держите код в кадре. Меняющийся код показывает несколько частей, сканируйте, пока полоса не заполнится. Ничего не сохраняется и не отправляется.</string>
+    <string name="scan_ur_progress">Прочитано: %1$d%%</string>
 </resources>

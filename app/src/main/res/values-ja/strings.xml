@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">先にシステム設定で指紋、顔、またはデバイスのロックを設定してください。</string>
     <string name="action_restart">再起動</string>
     <string name="action_restart_all">ノード、Tor、I2P を再起動</string>
+    <string name="psbt_qr_animated">アニメーションQRコード</string>
+    <string name="psbt_qr_animated_hint">SeedSignerなど、複数のQRコードを順に読み取る機器向けです（URフォーマット）。</string>
+    <string name="psbt_qr_running">コードは自動で切り替わります。相手の機器が全部読み取るまで向けたままにしてください。読めない場合は速度を下げるか、分割を小さくしてください。</string>
+    <string name="psbt_qr_slower">遅く</string>
+    <string name="psbt_qr_faster">速く</string>
+    <string name="psbt_qr_smaller">小さい分割</string>
+    <string name="psbt_qr_bigger">大きい分割</string>
+    <string name="scan_ur_hint">コードを画面内に収めてください。切り替わるコードは複数のパートを表示します。バーが満たされるまでスキャンを続けてください。何も保存・送信されません。</string>
+    <string name="scan_ur_progress">読み取り済み：%1$d%%</string>
 </resources>

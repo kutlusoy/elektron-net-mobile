@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">Atur dulu sidik jari, wajah, atau kunci perangkat di pengaturan sistem.</string>
     <string name="action_restart">Mulai ulang</string>
     <string name="action_restart_all">Mulai ulang node, Tor, dan I2P</string>
+    <string name="psbt_qr_animated">Kode QR animasi</string>
+    <string name="psbt_qr_animated_hint">Untuk SeedSigner dan perangkat lain yang membaca beberapa kode QR berurutan (format UR).</string>
+    <string name="psbt_qr_running">Kode berubah sendiri. Pegang perangkat lain di depannya sampai selesai membaca semuanya. Perlambat atau perkecil potongan jika tidak terbaca.</string>
+    <string name="psbt_qr_slower">Lebih lambat</string>
+    <string name="psbt_qr_faster">Lebih cepat</string>
+    <string name="psbt_qr_smaller">Potongan lebih kecil</string>
+    <string name="psbt_qr_bigger">Potongan lebih besar</string>
+    <string name="scan_ur_hint">Pegang kode di dalam gambar. Kode yang berubah menampilkan beberapa potongan, terus pindai sampai bilah penuh. Tidak ada yang disimpan atau dikirim.</string>
+    <string name="scan_ur_progress">Terbaca: %1$d%%</string>
 </resources>

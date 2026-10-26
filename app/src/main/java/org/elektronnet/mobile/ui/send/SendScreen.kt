@@ -503,7 +503,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         Text(stringResource(if (psbtSign) R.string.send_psbt_ready_signed else R.string.send_psbt_ready_unsigned))
                     }
                     Text(psbt, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall, maxLines = 8)
-                    if (psbt.length <= org.elektronnet.mobile.ui.tools.PSBT_QR_LIMIT) org.elektronnet.mobile.ui.receive.QrView(psbt)
+                    org.elektronnet.mobile.ui.tools.PsbtQr(psbt)
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OutlinedButton(onClick = { copyPlain(context, psbt) }) { Text(stringResource(R.string.action_copy)) }
                         Button(onClick = { sharePlain(context, psbt) }) { Text(stringResource(R.string.action_share)) }

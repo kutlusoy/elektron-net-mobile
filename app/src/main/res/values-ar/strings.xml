@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">اضبط أولًا بصمة أو الوجه أو قفل الجهاز في إعدادات النظام.</string>
     <string name="action_restart">إعادة التشغيل</string>
     <string name="action_restart_all">إعادة تشغيل العقدة وTor وI2P</string>
+    <string name="psbt_qr_animated">رمز QR متحرك</string>
+    <string name="psbt_qr_animated_hint">لـ SeedSigner والأجهزة الأخرى التي تقرأ عدة رموز QR متتابعة (صيغة UR).</string>
+    <string name="psbt_qr_running">يتغير الرمز تلقائيًا. أبقِ الجهاز الآخر أمامه حتى يقرأ كل شيء. أبطئ السرعة أو صغّر الأجزاء إذا لم يقرأ.</string>
+    <string name="psbt_qr_slower">أبطأ</string>
+    <string name="psbt_qr_faster">أسرع</string>
+    <string name="psbt_qr_smaller">أجزاء أصغر</string>
+    <string name="psbt_qr_bigger">أجزاء أكبر</string>
+    <string name="scan_ur_hint">ضع الرمز داخل الصورة. الرمز المتغير يعرض عدة أجزاء، تابع المسح حتى يمتلئ الشريط. لا يُحفظ أو يُرسل شيء.</string>
+    <string name="scan_ur_progress">تمت القراءة: %1$d%%</string>
 </resources>

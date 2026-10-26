@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">Önce sistem ayarlarında bir parmak izi, yüz veya cihaz kilidi kur.</string>
     <string name="action_restart">Yeniden başlat</string>
     <string name="action_restart_all">Düğümü, Tor ve I2P\'yi yeniden başlat</string>
+    <string name="psbt_qr_animated">Hareketli QR kodu</string>
+    <string name="psbt_qr_animated_hint">SeedSigner ve art arda birkaç QR kodu okuyan diğer cihazlar için (UR biçimi).</string>
+    <string name="psbt_qr_running">Kod kendiliğinden değişir. Diğer cihaz her şeyi okuyana kadar önünde tut. Okumuyorsa yavaşlat veya parçaları küçült.</string>
+    <string name="psbt_qr_slower">Daha yavaş</string>
+    <string name="psbt_qr_faster">Daha hızlı</string>
+    <string name="psbt_qr_smaller">Daha küçük parçalar</string>
+    <string name="psbt_qr_bigger">Daha büyük parçalar</string>
+    <string name="scan_ur_hint">Kodu görüntünün içinde tut. Değişen bir kod birkaç parça gösterir, çubuk dolana kadar taramaya devam et. Hiçbir şey kaydedilmez veya gönderilmez.</string>
+    <string name="scan_ur_progress">Okunan: %1$d%%</string>
 </resources>

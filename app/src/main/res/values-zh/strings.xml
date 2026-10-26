@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">请先在系统设置中设置指纹、人脸或设备锁。</string>
     <string name="action_restart">重启</string>
     <string name="action_restart_all">重启节点、Tor 和 I2P</string>
+    <string name="psbt_qr_animated">动态二维码</string>
+    <string name="psbt_qr_animated_hint">适用于 SeedSigner 和其他依次读取多个二维码的设备（UR 格式）。</string>
+    <string name="psbt_qr_running">二维码会自动变化。请将另一台设备对准它，直到读完全部内容。如果读不出来，请放慢速度或缩小分片。</string>
+    <string name="psbt_qr_slower">更慢</string>
+    <string name="psbt_qr_faster">更快</string>
+    <string name="psbt_qr_smaller">更小的分片</string>
+    <string name="psbt_qr_bigger">更大的分片</string>
+    <string name="scan_ur_hint">将二维码放在画面内。变化的二维码会显示多个分片，请持续扫描直到进度条满。不会保存或发送任何内容。</string>
+    <string name="scan_ur_progress">已读取：%1$d%%</string>
 </resources>

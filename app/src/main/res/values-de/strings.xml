@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">Richte zuerst in den Systemeinstellungen einen Fingerabdruck, Gesichtsentsperrung oder eine Gerätesperre ein.</string>
     <string name="action_restart">Neu starten</string>
     <string name="action_restart_all">Node, Tor und I2P neu starten</string>
+    <string name="psbt_qr_animated">Animierter QR-Code</string>
+    <string name="psbt_qr_animated_hint">Für SeedSigner und andere Geräte, die mehrere QR-Codes nacheinander lesen (Format UR).</string>
+    <string name="psbt_qr_running">Der Code wechselt von selbst. Halte das andere Gerät davor, bis es alles gelesen hat. Mach es langsamer oder die Teile kleiner, wenn es nicht liest.</string>
+    <string name="psbt_qr_slower">Langsamer</string>
+    <string name="psbt_qr_faster">Schneller</string>
+    <string name="psbt_qr_smaller">Kleinere Teile</string>
+    <string name="psbt_qr_bigger">Größere Teile</string>
+    <string name="scan_ur_hint">Halte den Code ins Bild. Ein wechselnder Code zeigt mehrere Teile, scanne weiter, bis der Balken voll ist. Es wird nichts gespeichert oder gesendet.</string>
+    <string name="scan_ur_progress">Gelesen: %1$d%%</string>
 </resources>

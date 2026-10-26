@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">먼저 시스템 설정에서 지문, 얼굴 또는 기기 잠금을 설정하세요.</string>
     <string name="action_restart">다시 시작</string>
     <string name="action_restart_all">노드, Tor, I2P 다시 시작</string>
+    <string name="psbt_qr_animated">움직이는 QR 코드</string>
+    <string name="psbt_qr_animated_hint">SeedSigner 등 여러 QR 코드를 연달아 읽는 기기용입니다(UR 형식).</string>
+    <string name="psbt_qr_running">코드가 저절로 바뀝니다. 다른 기기가 모두 읽을 때까지 앞에 대고 계세요. 읽지 못하면 속도를 낮추거나 조각을 더 작게 하세요.</string>
+    <string name="psbt_qr_slower">더 느리게</string>
+    <string name="psbt_qr_faster">더 빠르게</string>
+    <string name="psbt_qr_smaller">더 작은 조각</string>
+    <string name="psbt_qr_bigger">더 큰 조각</string>
+    <string name="scan_ur_hint">코드를 화면 안에 맞추세요. 바뀌는 코드는 여러 조각을 보여 주므로 막대가 가득 찰 때까지 계속 스캔하세요. 아무것도 저장되거나 전송되지 않습니다.</string>
+    <string name="scan_ur_progress">읽음: %1$d%%</string>
 </resources>

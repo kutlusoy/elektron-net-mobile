@@ -34,7 +34,7 @@ import org.elektronnet.mobile.R
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.SecureWindow
 import org.elektronnet.mobile.ui.receive.QrView
-import org.elektronnet.mobile.ui.scan.QrScannerScreen
+import org.elektronnet.mobile.ui.scan.UrScannerScreen
 import org.elektronnet.mobile.ui.model.HistoryModel
 import org.elektronnet.mobile.wallet.Amount
 import org.elektronnet.mobile.wallet.PsbtStatus
@@ -77,11 +77,13 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
     }
 
     if (scanTarget != 0) {
-        QrScannerScreen(
-            onResult = {
-                if (scanTarget == 1) { text = it; view = null; txid = null } else other = it
-                scanTarget = 0
-            },
+        val take = { scanned: String ->
+            if (scanTarget == 1) { text = scanned; view = null; txid = null } else other = scanned
+            scanTarget = 0
+        }
+        UrScannerScreen(
+            onPlain = take,
+            onUr = { ur -> take(runCatching { java.util.Base64.getEncoder().encodeToString(ur.bytes()) }.getOrDefault("")) },
             onClose = { scanTarget = 0 },
         )
         return
@@ -153,7 +155,7 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
                 OutlinedButton(onClick = { copyText(context, "psbt", v.psbt) }) { Text(stringResource(R.string.action_copy)) }
                 OutlinedButton(onClick = { shareText(context, v.psbt) }) { Text(stringResource(R.string.action_share)) }
             }
-            if (v.psbt.length <= PSBT_QR_LIMIT) QrView(v.psbt) else Hint(stringResource(R.string.scan_psbt_hint))
+            PsbtQr(v.psbt)
         }
     }
 

@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">Hãy thiết lập vân tay, khuôn mặt hoặc khóa thiết bị trong cài đặt hệ thống trước.</string>
     <string name="action_restart">Khởi động lại</string>
     <string name="action_restart_all">Khởi động lại node, Tor và I2P</string>
+    <string name="psbt_qr_animated">Mã QR động</string>
+    <string name="psbt_qr_animated_hint">Dành cho SeedSigner và các thiết bị khác đọc nhiều mã QR liên tiếp (định dạng UR).</string>
+    <string name="psbt_qr_running">Mã tự thay đổi. Giữ thiết bị kia trước mã cho đến khi đọc xong tất cả. Làm chậm lại hoặc giảm kích thước mảnh nếu không đọc được.</string>
+    <string name="psbt_qr_slower">Chậm hơn</string>
+    <string name="psbt_qr_faster">Nhanh hơn</string>
+    <string name="psbt_qr_smaller">Mảnh nhỏ hơn</string>
+    <string name="psbt_qr_bigger">Mảnh lớn hơn</string>
+    <string name="scan_ur_hint">Giữ mã trong khung hình. Mã thay đổi hiển thị nhiều mảnh, hãy tiếp tục quét cho đến khi thanh đầy. Không có gì được lưu hoặc gửi đi.</string>
+    <string name="scan_ur_progress">Đã đọc: %1$d%%</string>
 </resources>

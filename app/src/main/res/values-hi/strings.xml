@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">पहले सिस्टम सेटिंग में फ़िंगरप्रिंट, चेहरा या डिवाइस लॉक सेट करें।</string>
     <string name="action_restart">पुनः आरंभ करें</string>
     <string name="action_restart_all">नोड, Tor और I2P पुनः आरंभ करें</string>
+    <string name="psbt_qr_animated">एनिमेटेड QR कोड</string>
+    <string name="psbt_qr_animated_hint">SeedSigner और अन्य उपकरणों के लिए जो एक के बाद एक कई QR कोड पढ़ते हैं (UR फ़ॉर्मेट)।</string>
+    <string name="psbt_qr_running">कोड अपने आप बदलता है। दूसरे उपकरण को तब तक सामने रखें जब तक वह सब पढ़ न ले। न पढ़े तो धीमा करें या हिस्से छोटे करें।</string>
+    <string name="psbt_qr_slower">धीमा</string>
+    <string name="psbt_qr_faster">तेज़</string>
+    <string name="psbt_qr_smaller">छोटे हिस्से</string>
+    <string name="psbt_qr_bigger">बड़े हिस्से</string>
+    <string name="scan_ur_hint">कोड को तस्वीर के अंदर रखें। बदलता कोड कई हिस्से दिखाता है, बार भरने तक स्कैन करते रहें। कुछ भी सहेजा या भेजा नहीं जाता।</string>
+    <string name="scan_ur_progress">पढ़ा गया: %1$d%%</string>
 </resources>

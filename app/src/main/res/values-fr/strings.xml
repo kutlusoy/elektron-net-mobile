@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">Configure d\'abord une empreinte, le visage ou un verrouillage de l\'appareil dans les réglages système.</string>
     <string name="action_restart">Redémarrer</string>
     <string name="action_restart_all">Redémarrer le nœud, Tor et I2P</string>
+    <string name="psbt_qr_animated">Code QR animé</string>
+    <string name="psbt_qr_animated_hint">Pour SeedSigner et d\'autres appareils qui lisent plusieurs codes QR à la suite (format UR).</string>
+    <string name="psbt_qr_running">Le code change tout seul. Tiens l\'autre appareil devant jusqu\'à ce qu\'il ait tout lu. Ralentis ou réduis les morceaux s\'il ne lit pas.</string>
+    <string name="psbt_qr_slower">Plus lent</string>
+    <string name="psbt_qr_faster">Plus rapide</string>
+    <string name="psbt_qr_smaller">Morceaux plus petits</string>
+    <string name="psbt_qr_bigger">Morceaux plus grands</string>
+    <string name="scan_ur_hint">Place le code dans l\'image. Un code qui change montre plusieurs morceaux, continue à scanner jusqu\'à ce que la barre soit pleine. Rien n\'est enregistré ni envoyé.</string>
+    <string name="scan_ur_progress">Lu : %1$d%%</string>
 </resources>

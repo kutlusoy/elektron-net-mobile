@@ -920,4 +920,13 @@
     <string name="screenshot_auth_unavailable">Primero configura una huella, el rostro o un bloqueo del dispositivo en los ajustes del sistema.</string>
     <string name="action_restart">Reiniciar</string>
     <string name="action_restart_all">Reiniciar nodo, Tor e I2P</string>
+    <string name="psbt_qr_animated">Código QR animado</string>
+    <string name="psbt_qr_animated_hint">Para SeedSigner y otros dispositivos que leen varios códigos QR seguidos (formato UR).</string>
+    <string name="psbt_qr_running">El código cambia solo. Mantén el otro dispositivo delante hasta que lo lea todo. Hazlo más lento o con piezas más pequeñas si no lee.</string>
+    <string name="psbt_qr_slower">Más lento</string>
+    <string name="psbt_qr_faster">Más rápido</string>
+    <string name="psbt_qr_smaller">Piezas más pequeñas</string>
+    <string name="psbt_qr_bigger">Piezas más grandes</string>
+    <string name="scan_ur_hint">Mantén el código dentro de la imagen. Un código que cambia muestra varias piezas, sigue escaneando hasta que la barra esté llena. No se guarda ni se envía nada.</string>
+    <string name="scan_ur_progress">Leído: %1$d%%</string>
 </resources>

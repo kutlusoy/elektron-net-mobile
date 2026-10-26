@@ -931,4 +931,13 @@
     <string name="screenshot_auth_unavailable">Set up a fingerprint, face or device lock in the system settings first.</string>
     <string name="action_restart">Restart</string>
     <string name="action_restart_all">Restart node, Tor and I2P</string>
+    <string name="psbt_qr_animated">Animated QR code</string>
+    <string name="psbt_qr_animated_hint">For SeedSigner and other devices that read several QR codes one after the other (format UR).</string>
+    <string name="psbt_qr_running">The code changes by itself. Hold the other device in front of it until it has read everything. Slow down or make the pieces smaller if it does not read.</string>
+    <string name="psbt_qr_slower">Slower</string>
+    <string name="psbt_qr_faster">Faster</string>
+    <string name="psbt_qr_smaller">Smaller pieces</string>
+    <string name="psbt_qr_bigger">Larger pieces</string>
+    <string name="scan_ur_hint">Hold the code inside the picture. A code that changes shows several pieces, keep scanning until the bar is full. Nothing is saved or sent.</string>
+    <string name="scan_ur_progress">Read: %1$d%%</string>
 </resources>
