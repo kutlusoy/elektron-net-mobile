@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">Prüfen und erlauben</string>
     <string name="screenshot_auth_title">Screenshots erlauben</string>
     <string name="screenshot_auth_unavailable">Richte zuerst in den Systemeinstellungen einen Fingerabdruck, Gesichtsentsperrung oder eine Gerätesperre ein.</string>
+    <string name="action_restart">Neu starten</string>
 </resources>

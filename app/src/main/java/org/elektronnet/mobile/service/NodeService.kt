@@ -39,6 +39,7 @@ class NodeService : Service() {
                 worker.execute { shutDown() }
                 return START_NOT_STICKY
             }
+            ACTION_RESTART -> worker.execute { NodeHost.restartNode() }
             ACTION_PAUSE -> settings.setUserPaused(true)
             ACTION_RESUME -> settings.setUserPaused(false)
             else -> {
@@ -114,6 +115,7 @@ class NodeService : Service() {
 
     companion object {
         const val ACTION_STOP = "org.elektronnet.mobile.action.STOP"
+        const val ACTION_RESTART = "org.elektronnet.mobile.action.RESTART"
         const val ACTION_PAUSE = "org.elektronnet.mobile.action.PAUSE"
         const val ACTION_RESUME = "org.elektronnet.mobile.action.RESUME"
         private const val RETRY_AFTER_ERROR_MS = 30_000L

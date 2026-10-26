@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">Verifikasi dan izinkan</string>
     <string name="screenshot_auth_title">Izinkan tangkapan layar</string>
     <string name="screenshot_auth_unavailable">Atur dulu sidik jari, wajah, atau kunci perangkat di pengaturan sistem.</string>
+    <string name="action_restart">Mulai ulang</string>
 </resources>

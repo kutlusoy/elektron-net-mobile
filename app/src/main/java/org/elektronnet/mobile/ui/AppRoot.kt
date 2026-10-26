@@ -75,12 +75,12 @@ private const val RECENT_COUNT = 8
 private enum class Tab(val label: Int, val icon: ImageVector) {
     Wallet(R.string.tab_wallet, Icons.Filled.Home),
     History(R.string.tab_history, Icons.AutoMirrored.Filled.List),
-    Node(R.string.tab_node, Icons.Filled.Refresh),
+    Node(R.string.tab_node, org.elektronnet.mobile.ui.theme.NodeIcon),
     Settings(R.string.tab_settings, Icons.Filled.Settings),
 }
 
 @Composable
-fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit, onBiometric: (Boolean) -> Unit) {
+fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit, onBiometric: (Boolean) -> Unit, onRestart: () -> Unit = {}) {
     var tab by rememberSaveable { mutableStateOf(Tab.Wallet.ordinal) }
     var showSoon by remember { mutableStateOf(false) }
     var overlayName by rememberSaveable { mutableStateOf(Overlay.None.name) }
@@ -349,6 +349,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     },
                     onStop = onStop,
                     onStart = onStart,
+                    onRestart = onRestart,
                 ) }
                 Tab.Settings -> SettingsScreen(
                     settings = settings,

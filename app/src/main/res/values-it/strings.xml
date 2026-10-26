@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">Verifica e consenti</string>
     <string name="screenshot_auth_title">Consenti screenshot</string>
     <string name="screenshot_auth_unavailable">Imposta prima un\'impronta, il volto o un blocco del dispositivo nelle impostazioni di sistema.</string>
+    <string name="action_restart">Riavvia</string>
 </resources>

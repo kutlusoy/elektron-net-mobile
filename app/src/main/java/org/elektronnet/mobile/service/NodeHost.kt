@@ -640,6 +640,11 @@ object NodeHost {
         return runCatching { org.elektronnet.mobile.node.DatadirReset.perform(dir) }.isSuccess
     }
 
+    // only the node restarts, Tor and I2P keep running, the next tick starts it again
+    fun restartNode() {
+        controller?.restartNode()
+    }
+
     fun stopNow() {
         controller?.shutdown()
     }

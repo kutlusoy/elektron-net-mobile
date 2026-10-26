@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">Xác minh và cho phép</string>
     <string name="screenshot_auth_title">Cho phép chụp màn hình</string>
     <string name="screenshot_auth_unavailable">Hãy thiết lập vân tay, khuôn mặt hoặc khóa thiết bị trong cài đặt hệ thống trước.</string>
+    <string name="action_restart">Khởi động lại</string>
 </resources>

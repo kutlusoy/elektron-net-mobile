@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">验证并允许</string>
     <string name="screenshot_auth_title">允许截屏</string>
     <string name="screenshot_auth_unavailable">请先在系统设置中设置指纹、人脸或设备锁。</string>
+    <string name="action_restart">重启</string>
 </resources>

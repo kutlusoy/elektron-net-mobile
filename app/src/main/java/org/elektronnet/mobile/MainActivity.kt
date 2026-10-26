@@ -75,6 +75,7 @@ class MainActivity : FragmentActivity() {
                         onStop = { NodeService.send(this, NodeService.ACTION_STOP) },
                         onPause = { NodeService.send(this, NodeService.ACTION_PAUSE) },
                         onResume = { NodeService.send(this, NodeService.ACTION_RESUME) },
+                        onRestart = { NodeService.send(this, NodeService.ACTION_RESTART) },
                     )
                 }
             }

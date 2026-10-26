@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">확인하고 허용</string>
     <string name="screenshot_auth_title">스크린샷 허용</string>
     <string name="screenshot_auth_unavailable">먼저 시스템 설정에서 지문, 얼굴 또는 기기 잠금을 설정하세요.</string>
+    <string name="action_restart">다시 시작</string>
 </resources>

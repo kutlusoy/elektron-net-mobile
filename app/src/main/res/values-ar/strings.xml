@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">تحقق واسمح</string>
     <string name="screenshot_auth_title">السماح بلقطات الشاشة</string>
     <string name="screenshot_auth_unavailable">اضبط أولًا بصمة أو الوجه أو قفل الجهاز في إعدادات النظام.</string>
+    <string name="action_restart">إعادة التشغيل</string>
 </resources>

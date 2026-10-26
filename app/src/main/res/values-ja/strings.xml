@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">確認して許可</string>
     <string name="screenshot_auth_title">スクリーンショットを許可</string>
     <string name="screenshot_auth_unavailable">先にシステム設定で指紋、顔、またはデバイスのロックを設定してください。</string>
+    <string name="action_restart">再起動</string>
 </resources>

@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">Vérifier et autoriser</string>
     <string name="screenshot_auth_title">Autoriser les captures d\'écran</string>
     <string name="screenshot_auth_unavailable">Configure d\'abord une empreinte, le visage ou un verrouillage de l\'appareil dans les réglages système.</string>
+    <string name="action_restart">Redémarrer</string>
 </resources>

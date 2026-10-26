@@ -320,3 +320,8 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 
 - `UpdateState` (checks, saved result, hidden tag) feeds `UpdateBanner` on the wallet screen and the Updates card in Settings. The channel comes from the build type, the kind of a release from `UpdateCheck.kindOf` (test build title, `-rcN` suffix, GitHub pre-release flag).
 - The banner shows the version, a note for test builds and release candidates, "Open release page" and "Later".
+
+## Node tab icon and restart (m0.1.7)
+
+- The Node tab uses the cube network icon (`NodeIcon`), not an arrow icon, so it is not mistaken for a reload action.
+- Pause and Stop sit in one row. "Restart" is a full-width button below them and needs no confirmation, because it only restarts the node process (`NodeController.restartNode`) and the policy engine starts it again on the next tick.

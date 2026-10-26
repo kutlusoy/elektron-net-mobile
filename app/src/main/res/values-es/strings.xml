@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">Verificar y permitir</string>
     <string name="screenshot_auth_title">Permitir capturas de pantalla</string>
     <string name="screenshot_auth_unavailable">Primero configura una huella, el rostro o un bloqueo del dispositivo en los ajustes del sistema.</string>
+    <string name="action_restart">Reiniciar</string>
 </resources>

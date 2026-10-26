@@ -59,3 +59,8 @@ After the changes above, GPT did a second, short static review of the m0.1.7 sou
 ## Logs
 
 - The cleaned log shows I2P addresses (`.b32.i2p`) as `<i2p>` instead of `<onion>`.
+
+## Node tab
+
+- The Node tab has a new icon (a network of cubes) instead of the circular arrow, which looked like a reload button.
+- The Node screen has a "Restart" button under Pause and Stop, shown while the node runs or starts. It restarts only the node. Tor and I2P keep running, so the I2P router does not have to build its tunnels again.

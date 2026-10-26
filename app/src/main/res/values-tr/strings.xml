@@ -918,4 +918,5 @@
     <string name="screenshot_confirm_action">Doğrula ve izin ver</string>
     <string name="screenshot_auth_title">Ekran görüntülerine izin ver</string>
     <string name="screenshot_auth_unavailable">Önce sistem ayarlarında bir parmak izi, yüz veya cihaz kilidi kur.</string>
+    <string name="action_restart">Yeniden başlat</string>
 </resources>
