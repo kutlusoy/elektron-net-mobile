@@ -128,6 +128,24 @@ class SendEngineIntegrationTest {
     }
 
     @Test
+    fun aMessageCanBeDroppedAgainBeforeSending() = withEnv(28895) { env ->
+        val withText = env.engine.prepare(SendRequest(env.minerAddress, 100_000_000L, false, rate(env), message = "changed my mind"))
+        val without = env.engine.prepare(SendRequest(env.minerAddress, 100_000_000L, false, rate(env)))
+        assertEquals(null, without.review.message)
+        assertTrue(without.review.feeLep < withText.review.feeLep)
+        fun dataOutputs(psbt: String) = ((env.rpc.call("decodepsbt", listOf(psbt), null) as Map<*, *>)["tx"] as Map<*, *>).let { tx ->
+            (tx["vout"] as List<*>).count { ((it as Map<*, *>)["scriptPubKey"] as Map<*, *>)["type"] == "nulldata" }
+        }
+        assertEquals(1, dataOutputs(withText.psbt))
+        assertEquals(0, dataOutputs(without.psbt))
+        val txid = env.engine.send(without, pass)
+        val block = (env.rpc.call("generatetoaddress", listOf(1, env.minerAddress), "miner") as List<*>).single()
+        val tx = env.rpc.call("getrawtransaction", listOf(txid, true, block), null) as Map<*, *>
+        assertEquals(0, (tx["vout"] as List<*>).count { ((it as Map<*, *>)["scriptPubKey"] as Map<*, *>)["type"] == "nulldata" })
+        assertTrue(locked(env))
+    }
+
+    @Test
     fun aTamperedMessageIsCaughtByTheValidation() = withEnv(28894) { env ->
         val prepared = env.engine.prepare(SendRequest(env.minerAddress, 100_000_000L, false, rate(env), message = "original"))
         val swapped = PreparedSend(prepared.psbt, prepared.request.copy(message = "other"), prepared.review, prepared.policyFloor, prepared.grossLep)
