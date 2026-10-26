@@ -950,4 +950,7 @@
     <string name="send_watch_scan">Escanear o arquivo assinado</string>
     <string name="wallets_remove_watch">Esta carteira não tem chaves aqui. Removê-la só apaga a lista de observação, seus fundos não são afetados.</string>
     <string name="wallet_watch_badge">Só observação</string>
+    <string name="export_key_qr">Mostrar a chave pública como código QR</string>
+    <string name="export_key_qr_hint">Para uma carteira de observação em outro celular: escaneie lá em Adicionar carteira, Carteira de observação. Contém só a chave pública, quem a tiver vê todos os endereços e o saldo.</string>
+    <string name="export_key_qr_hide">Ocultar código QR</string>
 </resources>

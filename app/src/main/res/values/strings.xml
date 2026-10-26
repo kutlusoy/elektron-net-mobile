@@ -961,4 +961,7 @@
     <string name="send_watch_scan">Scan the signed file</string>
     <string name="wallets_remove_watch">This wallet has no keys here. Removing it only removes the watch list, your funds are not affected.</string>
     <string name="wallet_watch_badge">Watch-only</string>
+    <string name="export_key_qr">Show public key as QR code</string>
+    <string name="export_key_qr_hint">For a watch-only wallet on another phone: scan it there under Add wallet, Watch-only wallet. Contains the public key only, anyone with it can see all addresses and the balance.</string>
+    <string name="export_key_qr_hide">Hide QR code</string>
 </resources>

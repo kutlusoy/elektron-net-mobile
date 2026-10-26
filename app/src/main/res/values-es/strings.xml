@@ -950,4 +950,7 @@
     <string name="send_watch_scan">Escanear el archivo firmado</string>
     <string name="wallets_remove_watch">Esta wallet no tiene claves aquí. Al quitarla solo se elimina la lista de observación, tus fondos no se ven afectados.</string>
     <string name="wallet_watch_badge">Solo observación</string>
+    <string name="export_key_qr">Mostrar la clave pública como código QR</string>
+    <string name="export_key_qr_hint">Para una wallet de observación en otro teléfono: escanéalo allí en Añadir wallet, Wallet de observación. Contiene solo la clave pública, quien la tenga puede ver todas las direcciones y el saldo.</string>
+    <string name="export_key_qr_hide">Ocultar código QR</string>
 </resources>

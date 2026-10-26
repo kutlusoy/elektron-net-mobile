@@ -38,6 +38,7 @@ fun ExportSection() {
     var pending by remember { mutableStateOf<File?>(null) }
     var failure by remember { mutableStateOf<ExportFailure?>(null) }
     var saved by remember { mutableStateOf(false) }
+    var keyQr by remember { mutableStateOf<String?>(null) }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri: Uri? ->
         val file = pending
         pending = null
@@ -87,6 +88,23 @@ fun ExportSection() {
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.export_descriptors)) }
         Hint(stringResource(R.string.export_descriptors_hint))
+        OutlinedButton(
+            onClick = {
+                failure = null
+                scope.launch {
+                    val key = withContext(Dispatchers.IO) { runCatching { NodeHost.walletExport()?.watchKey() }.getOrNull() }
+                    keyQr = key
+                    if (key == null) failure = ExportFailure.Unknown
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(stringResource(R.string.export_key_qr)) }
+        Hint(stringResource(R.string.export_key_qr_hint))
+        keyQr?.let { key ->
+            org.elektronnet.mobile.ui.receive.QrView(key)
+            Hint(key)
+            OutlinedButton(onClick = { keyQr = null }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.export_key_qr_hide)) }
+        }
         OutlinedButton(
             onClick = {
                 failure = null

@@ -90,6 +90,18 @@ class WatchOnlyIntegrationTest {
     }
 
     @Test
+    fun theKeyShownAsQrCreatesTheSameWatchOnlyWallet() = withNode(29370) { rpc, dir ->
+        assertEquals(BootstrapResult.Created("signer"), bootstrap(rpc, dir, "signer").create(phrase, pass))
+        val key = WalletExport(rpc, "signer").watchKey()!!
+        assertTrue(key.startsWith("[") && key.contains("pub") && !key.contains("/*") && !key.contains("prv"))
+        val parsed = WatchOnlyInput(testnet = true).parse(key) as WatchParse.Ok
+        assertEquals(BootstrapResult.Created("watch"), bootstrap(rpc, dir, "watch").createWatchOnly(parsed.source))
+        assertEquals(rpc.call("getnewaddress", emptyList<Any?>(), "signer").toString(), rpc.call("getnewaddress", emptyList<Any?>(), "watch").toString())
+        val change = { w: String -> rpc.call("getrawchangeaddress", emptyList<Any?>(), w).toString() }
+        assertEquals(change("signer"), change("watch"))
+    }
+
+    @Test
     fun aSingleAddressCanBeWatchedAndIsScannedWithoutAPassphrase() = withNode(29350) { rpc, dir ->
         rpc.call("createwallet", linkedMapOf("wallet_name" to "miner"), null)
         val miner = rpc.call("getnewaddress", emptyList<Any?>(), "miner").toString()

@@ -950,4 +950,7 @@
     <string name="send_watch_scan">İmzalı dosyayı tara</string>
     <string name="wallets_remove_watch">Bu cüzdanın burada anahtarı yok. Kaldırmak yalnızca izleme listesini siler, paran etkilenmez.</string>
     <string name="wallet_watch_badge">Yalnızca izleme</string>
+    <string name="export_key_qr">Herkese açık anahtarı QR kodu olarak göster</string>
+    <string name="export_key_qr_hint">Başka bir telefondaki izleme cüzdanı için: orada Cüzdan ekle, İzleme cüzdanı altında tara. Yalnızca herkese açık anahtarı içerir, ona sahip olan tüm adresleri ve bakiyeyi görebilir.</string>
+    <string name="export_key_qr_hide">QR kodunu gizle</string>
 </resources>

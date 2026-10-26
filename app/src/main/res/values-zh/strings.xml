@@ -950,4 +950,7 @@
     <string name="send_watch_scan">扫描已签名的文件</string>
     <string name="wallets_remove_watch">此钱包在这里没有密钥。移除它只会删除观察列表，不影响您的资金。</string>
     <string name="wallet_watch_badge">仅观察</string>
+    <string name="export_key_qr">以二维码显示公钥</string>
+    <string name="export_key_qr_hint">用于另一部手机上的仅观察钱包：在那里的“添加钱包”“仅观察钱包”中扫描。只包含公钥，拥有它的人可以看到所有地址和余额。</string>
+    <string name="export_key_qr_hide">隐藏二维码</string>
 </resources>

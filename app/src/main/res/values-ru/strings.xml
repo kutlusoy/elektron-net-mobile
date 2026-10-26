@@ -950,4 +950,7 @@
     <string name="send_watch_scan">Сканировать подписанный файл</string>
     <string name="wallets_remove_watch">У этого кошелька здесь нет ключей. Удаление убирает только список наблюдения, ваши средства не затрагиваются.</string>
     <string name="wallet_watch_badge">Только наблюдение</string>
+    <string name="export_key_qr">Показать публичный ключ QR-кодом</string>
+    <string name="export_key_qr_hint">Для кошелька для наблюдения на другом телефоне: отсканируйте его там в разделе «Добавить кошелёк», «Кошелёк для наблюдения». Содержит только публичный ключ, у кого он есть, тот видит все адреса и баланс.</string>
+    <string name="export_key_qr_hide">Скрыть QR-код</string>
 </resources>

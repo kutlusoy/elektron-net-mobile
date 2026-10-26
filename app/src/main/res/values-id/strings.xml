@@ -950,4 +950,7 @@
     <string name="send_watch_scan">Pindai berkas bertanda tangan</string>
     <string name="wallets_remove_watch">Dompet ini tidak punya kunci di sini. Menghapusnya hanya menghapus daftar pantau, dananya tidak terpengaruh.</string>
     <string name="wallet_watch_badge">Hanya pantau</string>
+    <string name="export_key_qr">Tampilkan kunci publik sebagai kode QR</string>
+    <string name="export_key_qr_hint">Untuk dompet pantau di ponsel lain: pindai di sana lewat Tambah dompet, Dompet pantau. Hanya berisi kunci publik, siapa pun yang memilikinya bisa melihat semua alamat dan saldo.</string>
+    <string name="export_key_qr_hide">Sembunyikan kode QR</string>
 </resources>

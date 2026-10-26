@@ -950,4 +950,7 @@
     <string name="send_watch_scan">Unterschriebene Datei scannen</string>
     <string name="wallets_remove_watch">Diese Wallet hat hier keine Schlüssel. Beim Entfernen verschwindet nur die Beobachtungsliste, dein Guthaben bleibt unberührt.</string>
     <string name="wallet_watch_badge">Nur beobachten</string>
+    <string name="export_key_qr">Öffentlichen Schlüssel als QR-Code zeigen</string>
+    <string name="export_key_qr_hint">Für eine Nur-Beobachten-Wallet auf einem anderen Telefon: dort unter Wallet hinzufügen, Nur-Beobachten-Wallet scannen. Enthält nur den öffentlichen Schlüssel, wer ihn hat, sieht alle Adressen und das Guthaben.</string>
+    <string name="export_key_qr_hide">QR-Code ausblenden</string>
 </resources>

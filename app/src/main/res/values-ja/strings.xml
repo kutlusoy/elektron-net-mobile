@@ -950,4 +950,7 @@
     <string name="send_watch_scan">署名済みファイルをスキャン</string>
     <string name="wallets_remove_watch">このウォレットにはここに鍵がありません。削除しても監視リストが消えるだけで、資金には影響しません。</string>
     <string name="wallet_watch_badge">監視専用</string>
+    <string name="export_key_qr">公開鍵をQRコードで表示</string>
+    <string name="export_key_qr_hint">別の端末の監視専用ウォレット用です。そちらの「ウォレットを追加」「監視専用ウォレット」でスキャンしてください。公開鍵のみを含み、持っている人は全てのアドレスと残高を見られます。</string>
+    <string name="export_key_qr_hide">QRコードを隠す</string>
 </resources>

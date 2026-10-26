@@ -950,4 +950,7 @@
     <string name="send_watch_scan">हस्ताक्षरित फ़ाइल स्कैन करें</string>
     <string name="wallets_remove_watch">इस वॉलेट में यहाँ कुंजी नहीं है। हटाने से केवल निगरानी सूची हटती है, आपके फ़ंड प्रभावित नहीं होते।</string>
     <string name="wallet_watch_badge">केवल निगरानी</string>
+    <string name="export_key_qr">सार्वजनिक कुंजी को QR कोड के रूप में दिखाएँ</string>
+    <string name="export_key_qr_hint">दूसरे फ़ोन पर केवल-निगरानी वॉलेट के लिए: वहाँ वॉलेट जोड़ें, केवल-निगरानी वॉलेट में स्कैन करें। इसमें केवल सार्वजनिक कुंजी है, जिसके पास यह है वह सभी पते और बैलेंस देख सकता है।</string>
+    <string name="export_key_qr_hide">QR कोड छिपाएँ</string>
 </resources>

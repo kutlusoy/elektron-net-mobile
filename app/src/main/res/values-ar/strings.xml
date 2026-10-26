@@ -950,4 +950,7 @@
     <string name="send_watch_scan">امسح الملف الموقّع</string>
     <string name="wallets_remove_watch">ليس لهذه المحفظة مفاتيح هنا. إزالتها تحذف قائمة المراقبة فقط ولا تتأثر أموالك.</string>
     <string name="wallet_watch_badge">للمراقبة فقط</string>
+    <string name="export_key_qr">عرض المفتاح العام كرمز QR</string>
+    <string name="export_key_qr_hint">لمحفظة مراقبة على هاتف آخر: امسحه هناك ضمن إضافة محفظة، محفظة للمراقبة. يحتوي على المفتاح العام فقط، ومن يملكه يرى كل العناوين والرصيد.</string>
+    <string name="export_key_qr_hide">إخفاء رمز QR</string>
 </resources>

@@ -950,4 +950,7 @@
     <string name="send_watch_scan">Quét tệp đã ký</string>
     <string name="wallets_remove_watch">Ví này không có khóa ở đây. Xóa nó chỉ xóa danh sách theo dõi, tiền của bạn không bị ảnh hưởng.</string>
     <string name="wallet_watch_badge">Chỉ theo dõi</string>
+    <string name="export_key_qr">Hiển thị khóa công khai dưới dạng mã QR</string>
+    <string name="export_key_qr_hint">Dành cho ví theo dõi trên điện thoại khác: quét ở đó trong Thêm ví, Ví theo dõi. Chỉ chứa khóa công khai, ai có nó đều thấy tất cả địa chỉ và số dư.</string>
+    <string name="export_key_qr_hide">Ẩn mã QR</string>
 </resources>
