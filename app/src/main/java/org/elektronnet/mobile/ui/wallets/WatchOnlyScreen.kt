@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.elektronnet.mobile.R
-import org.elektronnet.mobile.service.ChainConfig
+import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.scan.UrScannerScreen
 import org.elektronnet.mobile.ui.tools.ErrorText
