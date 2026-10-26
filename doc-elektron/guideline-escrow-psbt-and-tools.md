@@ -141,6 +141,23 @@ All tests run against a real `elektrond` on regtest (`ELEKTROND_BIN`), with up t
 | E4 | A multisig participant without this app (Electrum, Bitcoin Core) | Test in Phase 4. The descriptors follow BIP-48 and standard `sortedmulti`, so it should work. |
 | E5 | Sign messages with escrow addresses | Not planned for v1. |
 
+## 8a. Animated QR codes and signing devices (m0.1.7)
+
+- **Format:** a payment file is shown as UR (Blockchain Commons BCR-2020-005), type `crypto-psbt`, the format SeedSigner, Sparrow and Keystone read. A short file is one string, a long one a never ending stream of fountain-coded pieces, so a reader can start at any moment and miss pieces. The code is in `ur/` (`Bytewords`, `Cbor`, `Xoshiro`, `Fountain`, `Ur`).
+- **Checked against the reference:** `UrTest` compares the strings of the encoder with the output of the reference implementation `@ngraveio/bc-ur` 1.1.12 (MIT) for four message sizes with up to 40 pieces each (pure and mixed pieces), and decodes the reference strings in any order. Keys are checked against `@keystonehq/bc-ur-registry` 0.6.4 (`WatchOnlyTest`).
+- **Display:** a switch "Animated QR code" next to every payment file. The pieces change several times a second, speed and piece size can be changed and the animation paused. A file that is too long for one code starts in this mode. The pieces use upper-case letters so that QR codes stay small.
+- **Scanner:** `UrScannerScreen` reads plain QR codes (base64 payment file, key text) and UR strings in any order, shows the share read and hands over the result when everything arrived. Damaged or foreign pieces are ignored.
+- **Not covered:** BBQr and the Specter format for payment files, file import, and a test with a real SeedSigner. Compatibility with a device is only expected from the format, it has not been tried.
+
+## 8b. Watch-only wallets (m0.1.7)
+
+- **What it is:** a descriptor wallet created with `disable_private_keys`, so the phone holds no keys. It shows balance and history and prepares payments. Payments are handed over as an unsigned payment file (animated QR, copy or share), a signing device signs it, and the signed file is scanned back and sent under Tools, PSBT.
+- **Input** (`WatchOnlyInput`, `UrKeys`): one address, an extended public key (xpub, ypub, zpub, tpub, upub, vpub), a key with origin `[fingerprint/84h/...]xpub...`, a full output descriptor (with or without checksum, also `<0;1>` or a JSON export), or the UR types `crypto-account`, `crypto-output` and `crypto-hdkey`. A bare key gets a receive and a change descriptor, the script type comes from the origin path (84 native SegWit, 49 nested, 44 legacy) or from the prefix. Multisig keys without descriptor, purpose 48 and 86 are refused with a message. Anything with a private key is refused.
+- **Creation** (`WalletBootstrap.createWatchOnly`): the node checks every descriptor (`getdescriptorinfo`), a descriptor with private keys makes the creation fail and the wallet is removed again. After creation the wallet is scanned like a restored one, without a passphrase.
+- **One address:** only that address is watched, no new addresses are derived, Receive shows it.
+- **What a watch-only wallet cannot do:** sign (escrow, message signing, fee bump, CPFP and the "sign" option of PSBT are hidden or not offered), it asks for no passphrase when it is removed, rescanned or paid from.
+- **Integration test:** `WatchOnlyIntegrationTest` makes a signing wallet and a watch-only wallet from its public descriptors, checks that both give the same address, funds it, prepares a payment, passes it through the UR encoder and decoder, signs it with the other wallet and broadcasts it, on a real node.
+
 ## 9. Checklist
 
 - [x] Escrow create, activate, address, backup, restore, remove
@@ -150,6 +167,9 @@ All tests run against a real `elektrond` on regtest (`ELEKTROND_BIN`), with up t
 - [x] Integration tests against a real node
 - [ ] Interoperability test with Electrum and Bitcoin Core
 - [x] Single-code QR scan and display
-- [ ] Animated QR transfer and file import of PSBTs
+- [x] Animated QR transfer (UR) of PSBTs, shown and scanned
+- [ ] File import of PSBTs
+- [ ] Interoperability test with a real SeedSigner (the encoding is checked against the reference implementation, not against the device)
+- [x] Watch-only wallets from a key, a descriptor, a UR key or one address, signed by another device
 - [ ] Time-locked refund option (E1)
 - [ ] Independent review of the escrow setup and the sweep

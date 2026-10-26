@@ -17,6 +17,20 @@ This file lists the features this release added. Corrections are not listed.
 
 - The project status is raised from alpha to beta in the README, the whitepaper and the release notes of the release workflows. The wallet has been tested in practice and runs stably, so it can be used for everyday amounts. Larger holdings belong in a cold wallet, and an independent security review is still open.
 
+## Animated QR codes
+
+- A payment file (PSBT) can be shown as an animated QR code in the UR format (`crypto-psbt`) that SeedSigner, Sparrow and Keystone read. A switch "Animated QR code" sits next to every payment file under Tools, PSBT and after "Only create a PSBT" in Send. Speed and piece size can be changed, and the animation can be paused. A file too long for one code starts in this mode.
+- A new scanner reads plain and animated QR codes. Under Tools, PSBT, both scan buttons use it: a payment file or a signed payment file arrives piece by piece, with a progress bar, and is checked at once.
+- The coding is written for this app and checked against the reference implementation: the strings of the encoder equal those of `@ngraveio/bc-ur` for several message sizes, and the decoder reads the reference strings in any order and with missing pieces. It has not been tried with a real SeedSigner yet.
+
+## Watch-only wallets
+
+- When adding a wallet there is a new choice "Watch-only wallet" for a signing device such as a SeedSigner, or to watch one address. It also appears on the first start.
+- What can be added: an extended public key (xpub, zpub, tpub and others), a key with origin like `[73c5da0a/84h/0h/0h]xpub...`, a full output descriptor, one address, and QR codes of a signing device (plain text or UR `crypto-account`, `crypto-output`, `crypto-hdkey`). A private key is refused with a clear message, as is a key of another network.
+- The wallet holds no keys on the phone. Balance, history and receiving work as usual. A payment is created as an unsigned payment file (animated QR, copy or share). After the signing device has signed it, the signed file is scanned back and sent. Escrow, message signing, fee bump and CPFP are not offered for such a wallet, and it is removed, scanned and used without a passphrase.
+- A wallet made from one address watches only that address and shows it when receiving.
+- Tested against a real node: a watch-only wallet made from the public descriptors of a signing wallet gets the same addresses, receives coins, prepares a payment that the other wallet signs after a trip through the animated QR coding, and the payment is sent.
+
 ## Security review follow-up
 
 Two AI-assisted reviews of release m0.1.5 are kept in `doc-elektron/` as [`security-review-2026-10-25-grok.md`](./security-review-2026-10-25-grok.md) and [`security-review-2026-10-25-gpt.md`](./security-review-2026-10-25-gpt.md). They are static reviews by AI models, not a replacement for the open independent human review. Finding names below are the ones used in the reviews (Grok H1 to L4, GPT H1 to L1).
