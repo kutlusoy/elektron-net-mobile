@@ -55,3 +55,7 @@ After the changes above, GPT did a second, short static review of the m0.1.7 sou
 - **Callers ignored the result (M2):** partly taken. All operations that know the passphrase (send, fee bump, CPFP, PSBT and message signing, wallet removal, wallet creation and recovery) now hand it to the lock, so the one-second fallback works there. A user-visible warning was not added: a lock that cannot be confirmed means the node does not answer, and the unlock windows are at most 60 seconds (recovery 20 minutes) and 10 seconds for signing.
 - **Tests for the argument filter (L1):** added, covering upper case, double dash, leading space, bare flags and the `-no` form. Whitespace around the name is now ignored by the filter. All node starts use the same `NodeConfig.arguments()` builder.
 - **Passphrase rating is a heuristic (L2):** agreed. The Weak, Fair and Strong labels are rules (length, character classes, block list), not measured entropy. They were never meant to be more, which is why the text only says "Weak. Longer is better.".
+
+## Logs
+
+- The cleaned log shows I2P addresses (`.b32.i2p`) as `<i2p>` instead of `<onion>`.
