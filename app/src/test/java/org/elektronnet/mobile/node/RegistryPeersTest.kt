@@ -1,6 +1,5 @@
 package org.elektronnet.mobile.node
 
-import kotlin.random.Random
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -71,7 +70,7 @@ class RegistryPeersTest {
         val store = Store()
         val fetched = mutableListOf<Pair<String, Int?>>()
         val connected = mutableListOf<String>()
-        val boot = RegistryBootstrap(store, { url, port -> fetched.add(url to port); if (url == RegistryPeers.TOR_URL) tor else i2p }, { emptyList() }, { connected.add(it); true }, Random(1)) { 1_000_000_000L }
+        val boot = RegistryBootstrap(store, { url, port -> fetched.add(url to port); if (url == RegistryPeers.TOR_URL) tor else i2p }, { emptyList() }, { connected.add(it); true }) { 1_000_000_000L }
         boot.step(both(), 9050)
         assertEquals(listOf(RegistryPeers.TOR_URL to 9050, RegistryPeers.I2P_URL to 9050), fetched)
         assertEquals(2 + 3, connected.size)
@@ -83,7 +82,7 @@ class RegistryPeersTest {
     fun withoutTorTheI2pListIsFetchedDirectlyAndTorIsLeftAlone() {
         val store = Store()
         val fetched = mutableListOf<Pair<String, Int?>>()
-        RegistryBootstrap(store, { url, port -> fetched.add(url to port); i2p }, { emptyList() }, { true }, Random(1)) { 5_000_000_000L }.step(both(torOn = false), 9050)
+        RegistryBootstrap(store, { url, port -> fetched.add(url to port); i2p }, { emptyList() }, { true }) { 5_000_000_000L }.step(both(torOn = false), 9050)
         assertEquals(listOf(RegistryPeers.I2P_URL to null), fetched)
         assertEquals(emptyList<String>(), store.list("onion"))
     }
@@ -95,9 +94,9 @@ class RegistryPeersTest {
         store.ok["onion"] = 1_000_000_000L
         var connects = 0
         val full = listOf(peer(1, "onion"), peer(2, "onion"))
-        RegistryBootstrap(store, { _, _ -> error("not due") }, { full }, { connects++; true }, Random(1)) { 1_000_000_100L }.step(both(i2pOn = false), 9050)
+        RegistryBootstrap(store, { _, _ -> error("not due") }, { full }, { connects++; true }) { 1_000_000_100L }.step(both(i2pOn = false), 9050)
         assertEquals(0, connects)
-        val boot = RegistryBootstrap(store, { _, _ -> error("not due") }, { emptyList() }, { connects++; true }, Random(1)) { 1_000_000_100L }
+        val boot = RegistryBootstrap(store, { _, _ -> error("not due") }, { emptyList() }, { connects++; true }) { 1_000_000_100L }
         boot.step(both(i2pOn = false), 9050)
         assertEquals(2, connects)
         boot.step(both(i2pOn = false), 9050)
@@ -111,7 +110,7 @@ class RegistryPeersTest {
         store.ok["onion"] = 1L
         var fetches = 0
         var now = 10_000_000_000L
-        val boot = RegistryBootstrap(store, { _, _ -> fetches++; throw java.io.IOException("offline") }, { listOf(peer(1, "onion"), peer(2, "onion")) }, { true }, Random(1)) { now }
+        val boot = RegistryBootstrap(store, { _, _ -> fetches++; throw java.io.IOException("offline") }, { listOf(peer(1, "onion"), peer(2, "onion")) }, { true }) { now }
         boot.step(both(i2pOn = false), 9050)
         boot.step(both(i2pOn = false), 9050)
         assertEquals(1, fetches)
@@ -119,8 +118,19 @@ class RegistryPeersTest {
         now += RegistryPeers.RETRY_MS
         boot.step(both(i2pOn = false), 9050)
         assertEquals(2, fetches)
-        val garbage = RegistryBootstrap(store, { _, _ -> "<html>404</html>" }, { listOf(peer(1, "onion"), peer(2, "onion")) }, { true }, Random(1)) { now + 10 * RegistryPeers.RETRY_MS }
+        val garbage = RegistryBootstrap(store, { _, _ -> "<html>404</html>" }, { listOf(peer(1, "onion"), peer(2, "onion")) }, { true }) { now + 10 * RegistryPeers.RETRY_MS }
         garbage.step(both(i2pOn = false), 9050)
         assertEquals(2, store.list("onion").size)
+    }
+
+    @Test
+    fun theStartOfTheSelectionMovesWithTheTime() {
+        val list = listOf("a", "b", "c", "d", "e")
+        val slot = RegistryPeers.CONTACT_EVERY_MS
+        assertEquals(listOf("a", "b", "c"), RegistryPeers.pick(list, 3, 0))
+        assertEquals(listOf("b", "c", "d"), RegistryPeers.pick(list, 3, slot))
+        assertEquals(listOf("e", "a", "b"), RegistryPeers.pick(list, 3, 4 * slot + 5))
+        assertEquals(listOf("a", "b", "c", "d", "e"), RegistryPeers.pick(list, 9, 5 * slot))
+        assertEquals(emptyList<String>(), RegistryPeers.pick(emptyList(), 3, 7))
     }
 }

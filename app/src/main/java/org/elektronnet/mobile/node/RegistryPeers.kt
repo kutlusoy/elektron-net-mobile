@@ -6,7 +6,6 @@ import java.net.HttpURLConnection
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.net.URL
-import kotlin.random.Random
 
 // Stepping stones for the first contact on Tor and I2P: the public lists torpeers.txt and i2ppeers.txt of the registry repository
 object RegistryPeers {
@@ -31,7 +30,12 @@ object RegistryPeers {
         .take(MAX_ENTRIES)
         .toList()
 
-    fun pick(entries: List<String>, count: Int, random: Random = Random.Default): List<String> = entries.shuffled(random).take(count)
+    // consecutive entries starting at a position that moves with the time, so the wallets spread over the list without a random source
+    fun pick(entries: List<String>, count: Int, nowMs: Long): List<String> {
+        if (entries.isEmpty()) return emptyList()
+        val start = ((nowMs / CONTACT_EVERY_MS) % entries.size).toInt()
+        return List(minOf(count, entries.size)) { entries[(start + it) % entries.size] }
+    }
 
     // the list is fetched again after a day, after a failed fetch the next try comes after a quarter of an hour
     fun refreshDue(cached: Boolean, lastOkMs: Long, lastAttemptMs: Long, nowMs: Long): Boolean =
@@ -86,7 +90,6 @@ class RegistryBootstrap(
     private val fetch: (url: String, proxyPort: Int?) -> String,
     private val peers: () -> List<PeerInfo>,
     private val connect: (String) -> Boolean,
-    private val random: Random = Random.Default,
     private val clock: () -> Long = System::currentTimeMillis,
 ) {
     // one round: refresh the lists that are due, then give a node without peers on Tor or I2P a few stepping stones
@@ -106,6 +109,6 @@ class RegistryBootstrap(
         val current = runCatching { peers() }.getOrNull() ?: return
         if (!RegistryPeers.needed(current, name)) return
         store.setContact(name, now)
-        RegistryPeers.pick(entries, RegistryPeers.TRY_PER_ROUND, random).forEach { connect(it) }
+        RegistryPeers.pick(entries, RegistryPeers.TRY_PER_ROUND, now).forEach { connect(it) }
     }
 }
