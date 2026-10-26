@@ -9,10 +9,11 @@ import java.text.Normalizer
  */
 object EmbeddedMessage {
     const val MAX_BYTES = 1000
+    const val MAX_SHOWN_BYTES = 4000
     private const val MAX_STACKED_MARKS = 3
     private const val MAX_BLANK_LINES = 1
 
-    fun clean(input: String): String {
+    fun clean(input: String, maxBytes: Int = MAX_BYTES): String {
         val text = Normalizer.normalize(input, Normalizer.Form.NFC)
         val out = StringBuilder()
         var marks = 0
@@ -50,7 +51,7 @@ object EmbeddedMessage {
                 }
             }
         }
-        return truncate(out.toString().trim(), MAX_BYTES)
+        return truncate(out.toString().trim(), maxBytes)
     }
 
     private fun appendNewline(out: StringBuilder, newlines: Int): Int {
@@ -84,6 +85,34 @@ object EmbeddedMessage {
     }
 
     fun hex(text: String): String = bytes(text).joinToString("") { "%02x".format(it) }
+
+    /**
+     * The text of a data output of someone else, or null if the output is not plain text: a single push of valid UTF-8
+     * without control characters. Binary data such as the attestation of a coinbase never shows up as text.
+     */
+    fun fromScript(scriptHex: String): String? {
+        if (scriptHex.length % 2 != 0 || !scriptHex.all { it in '0'..'9' || it in 'a'..'f' || it in 'A'..'F' }) return null
+        val b = ByteArray(scriptHex.length / 2) { scriptHex.substring(2 * it, 2 * it + 2).toInt(16).toByte() }
+        if (b.size < 2 || b[0] != 0x6a.toByte()) return null
+        val op = b[1].toInt() and 0xff
+        val (length, start) = when {
+            op in 1..75 -> op to 2
+            op == 0x4c && b.size >= 3 -> (b[2].toInt() and 0xff) to 3
+            op == 0x4d && b.size >= 4 -> ((b[2].toInt() and 0xff) or ((b[3].toInt() and 0xff) shl 8)) to 4
+            else -> return null
+        }
+        if (start + length != b.size) return null
+        val text = try {
+            Charsets.UTF_8.newDecoder()
+                .onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+                .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT)
+                .decode(java.nio.ByteBuffer.wrap(b, start, length)).toString()
+        } catch (e: java.nio.charset.CharacterCodingException) {
+            return null
+        }
+        if (text.any { Character.getType(it) == Character.CONTROL.toInt() && it != '\n' && it != '\r' && it != '\t' }) return null
+        return clean(text, MAX_SHOWN_BYTES).takeIf { it.isNotEmpty() }
+    }
 
     /** The locking script of the data output: OP_RETURN followed by one minimal data push. */
     fun scriptHex(text: String): String {

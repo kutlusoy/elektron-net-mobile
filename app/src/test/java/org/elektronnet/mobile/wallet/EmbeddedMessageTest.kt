@@ -73,4 +73,32 @@ class EmbeddedMessageTest {
         assertEquals(26L, EmbeddedMessage.extraFeeLep("hi", java.math.BigDecimal("2")))
         assertEquals(14L, EmbeddedMessage.extraFeeLep("hi", java.math.BigDecimal("1.01")))
     }
+
+    @Test
+    fun foreignTextIsReadFromAScript() {
+        assertEquals("hi", EmbeddedMessage.fromScript(EmbeddedMessage.scriptHex("hi")))
+        val long = "ä".repeat(300)
+        assertEquals(long, EmbeddedMessage.fromScript(EmbeddedMessage.scriptHex(long)))
+        assertEquals("a\nb", EmbeddedMessage.fromScript("6a03610a62"))
+    }
+
+    @Test
+    fun binaryAndHostileDataIsNotShownAsText() {
+        assertEquals(null, EmbeddedMessage.fromScript("6a24" + "00".repeat(36)))
+        assertEquals(null, EmbeddedMessage.fromScript("6a02ffff"))
+        assertEquals(null, EmbeddedMessage.fromScript("6a0161" + "00"))
+        assertEquals(null, EmbeddedMessage.fromScript("6a0261"))
+        assertEquals(null, EmbeddedMessage.fromScript("6a"))
+        assertEquals(null, EmbeddedMessage.fromScript("6a0107"))
+        assertEquals(null, EmbeddedMessage.fromScript("76a914"))
+        assertEquals(null, EmbeddedMessage.fromScript("zz"))
+        assertEquals(null, EmbeddedMessage.fromScript("6a03e280ae"))
+        assertEquals("evil", EmbeddedMessage.fromScript("6a07" + EmbeddedMessage.hex("e\u202Evil")))
+    }
+
+    @Test
+    fun longForeignTextIsCutForDisplay() {
+        val shown = EmbeddedMessage.fromScript(EmbeddedMessage.scriptHex("x".repeat(9000)))!!
+        assertEquals(EmbeddedMessage.MAX_SHOWN_BYTES, EmbeddedMessage.byteLength(shown))
+    }
 }

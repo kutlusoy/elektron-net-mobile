@@ -22,6 +22,8 @@ This file lists the features this release added. Corrections are not listed.
 - The payment is checked again after the node has built and after it has signed it: exactly one data output with exactly the expected script and value 0 must be present, or none if no text was chosen. A changed or removed text is a mismatch and nothing is sent.
 - Because the chain only sees bytes, markup or code in the text is harmless on chain. The sanitizer protects whoever displays the text later, and the same function is meant for showing received texts.
 
+- Received texts (and the own ones) are shown in the details of a transaction under "Text in block". They are read from the data output only if it is one push of valid UTF-8 without control characters, and they go through the same sanitizer (display limit 4000 bytes, at most three texts). Other data, such as the attestation, is never shown. The text is loaded when the details open, not for the whole list.
+
 ### Checked on a two-node regtest
 
 Before the feature was built, `OpReturnConsensusIntegrationTest` ran two real nodes (`elektrond` 4.0.6), with the attestation active:

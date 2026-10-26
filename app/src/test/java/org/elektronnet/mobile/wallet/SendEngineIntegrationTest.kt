@@ -118,6 +118,10 @@ class SendEngineIntegrationTest {
         val tx = env.rpc.call("getrawtransaction", listOf(txid, true, block), null) as Map<*, *>
         val data = (tx["vout"] as List<*>).map { (it as Map<*, *>)["scriptPubKey"] as Map<*, *> }.filter { it["type"] == "nulldata" }
         assertEquals(listOf(EmbeddedMessage.scriptHex(text)), data.map { it["hex"] })
+        assertEquals(listOf(text), WalletReader(env.rpc, "miner").messages(txid))
+        assertEquals(listOf(text), WalletReader(env.rpc).messages(txid))
+        val coinbase = ((env.rpc.call("getblock", listOf(block), null) as Map<*, *>)["tx"] as List<*>).first().toString()
+        assertEquals(emptyList<String>(), WalletReader(env.rpc, "miner").messages(coinbase))
         assertTrue(locked(env))
     }
 
