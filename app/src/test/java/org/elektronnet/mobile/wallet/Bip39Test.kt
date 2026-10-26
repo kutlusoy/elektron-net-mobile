@@ -86,11 +86,25 @@ class Bip39Test {
     @Test
     fun passphraseStrength() {
         assertEquals(PassphraseStrength.TooShort, PassphraseCheck.strength("abc"))
+        assertEquals(PassphraseStrength.TooShort, PassphraseCheck.strength("xkqzmrt12"))
         assertEquals(PassphraseStrength.Weak, PassphraseCheck.strength("aaaaaaaaaa"))
-        assertEquals(PassphraseStrength.Weak, PassphraseCheck.strength("abcdefgh"))
-        assertEquals(PassphraseStrength.Fair, PassphraseCheck.strength("abcdefgh12"))
+        assertEquals(PassphraseStrength.Weak, PassphraseCheck.strength("abcdefghij"))
+        assertEquals(PassphraseStrength.Weak, PassphraseCheck.strength("1234567890"))
+        assertEquals(PassphraseStrength.Weak, PassphraseCheck.strength("longenough"))
+        assertEquals(PassphraseStrength.Fair, PassphraseCheck.strength("xkqzmrtv12"))
         assertEquals(PassphraseStrength.Strong, PassphraseCheck.strength("correct horse battery"))
         assertFalse(PassphraseCheck.acceptable("short"))
-        assertTrue(PassphraseCheck.acceptable("longenough"))
+        assertFalse(PassphraseCheck.acceptable("longenough"))
+        assertTrue(PassphraseCheck.acceptable("xkqzmrtv12"))
+        assertTrue(PassphraseCheck.acceptable("correct horse battery"))
+    }
+
+    @Test
+    fun commonPassphrasesAreRefusedEvenWhenLongOrDecorated() {
+        listOf("Password123!", "PASSWORD2024", "qwertyuiop", "Passwort1234", "bitcoin1234!", "passwordpassword", "Elektron123456").forEach {
+            assertFalse(PassphraseCheck.acceptable(it))
+        }
+        assertTrue(PassphraseCheck.acceptable("Tr0ub4dor&3x"))
+        assertTrue(PassphraseCheck.acceptable("blue-kettle-moves-slowly"))
     }
 }

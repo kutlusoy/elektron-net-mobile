@@ -45,7 +45,14 @@ import org.elektronnet.mobile.R
 import org.elektronnet.mobile.wallet.QrDecoder
 
 @Composable
-fun QrScannerScreen(onResult: (String) -> Unit, onClose: () -> Unit) {
+// continuous = true delivers every different code that is read, for animated codes that arrive in pieces
+fun QrScannerScreen(
+    onResult: (String) -> Unit,
+    onClose: () -> Unit,
+    continuous: Boolean = false,
+    hint: Int = R.string.scan_hint,
+    footer: @Composable () -> Unit = {},
+) {
     val context = LocalContext.current
     var granted by remember {
         mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
@@ -64,8 +71,9 @@ fun QrScannerScreen(onResult: (String) -> Unit, onClose: () -> Unit) {
             Text(stringResource(R.string.scan_title), style = MaterialTheme.typography.titleLarge)
         }
         if (granted) {
-            Text(stringResource(R.string.scan_hint), color = MaterialTheme.colorScheme.onSurfaceVariant)
-            CameraPreview(onResult, Modifier.fillMaxWidth().weight(1f))
+            Text(stringResource(hint), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            CameraPreview(onResult, continuous, Modifier.fillMaxWidth().weight(1f))
+            footer()
         } else if (asked) {
             Text(stringResource(R.string.scan_denied))
             Button(onClick = { launcher.launch(Manifest.permission.CAMERA) }) { Text(stringResource(R.string.action_retry)) }
@@ -74,12 +82,13 @@ fun QrScannerScreen(onResult: (String) -> Unit, onClose: () -> Unit) {
 }
 
 @Composable
-private fun CameraPreview(onResult: (String) -> Unit, modifier: Modifier) {
+private fun CameraPreview(onResult: (String) -> Unit, continuous: Boolean, modifier: Modifier) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val executor = remember { Executors.newSingleThreadExecutor() }
     val decoder = remember { QrDecoder() }
     val delivered = remember { AtomicBoolean(false) }
+    val last = remember { java.util.concurrent.atomic.AtomicReference<String?>(null) }
     val mainExecutor = remember { ContextCompat.getMainExecutor(context) }
     var provider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
 
@@ -114,8 +123,12 @@ private fun CameraPreview(onResult: (String) -> Unit, modifier: Modifier) {
                         val data = ByteArray(buffer.remaining())
                         buffer.get(data)
                         val text = decoder.decode(data, image.width, image.height, plane.rowStride)
-                        if (text != null && delivered.compareAndSet(false, true)) {
-                            mainExecutor.execute { onResult(text) }
+                        if (text != null) {
+                            if (continuous) {
+                                if (text != last.getAndSet(text)) mainExecutor.execute { onResult(text) }
+                            } else if (delivered.compareAndSet(false, true)) {
+                                mainExecutor.execute { onResult(text) }
+                            }
                         }
                     } finally {
                         image.close()

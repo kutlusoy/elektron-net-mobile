@@ -77,7 +77,7 @@ Elektron Net keeps the last 197,280 blocks (about 137 days at one block a minute
 - **Local access only:** node RPC is bound to loopback and authenticated by a cookie file in the app-private folder that the node recreates at every start. No password is stored anywhere.
 - **Screen and storage:** sensitive screens block screenshots and recent-app previews, Android backup of app data is disabled, and a temporary screenshot switch exists for tutorials.
 - **Addresses:** fresh receive and change addresses by default. Coins that arrive on an already spent address are kept out of automatic spending.
-- **Honest status:** this is early alpha software. An independent security review is still open. Do not store significant funds before that review, and always keep the recovery phrase offline.
+- **Honest status:** this is beta software. It has been tested in practice and the wallet runs stably, so it can be used for everyday amounts. Larger holdings belong in a cold wallet. An independent security review is still open. Always keep the recovery phrase offline.
 
 ## 8. Feature list
 
@@ -140,7 +140,7 @@ Elektron Net keeps the last 197,280 blocks (about 137 days at one block a minute
 
 ## 10. Limits and risks
 
-- **Early alpha.** The core flows work, but the device test matrix, native-speaker review, release keys and an independent security review are open.
+- **Beta.** The core flows work and have been tested in practice, but the device test matrix, native-speaker review, release keys and an independent security review are open.
 - **Android only.** There is no iOS app. 32-bit ARM is not supported.
 - **Relays need reachability.** A Tor or I2P relay needs a connection that can be reached from outside, in practice Wi-Fi with a forwarded port. Mobile carriers usually block inbound traffic.
 - **Battery and data.** A full node and its helpers cost battery and data. The policy engine limits both and the defaults are conservative.
@@ -151,7 +151,7 @@ Elektron Net keeps the last 197,280 blocks (about 137 days at one block a minute
 
 1. Device test matrix and fixes from real use.
 2. Native-speaker review of the translations.
-3. Independent security review, then a public beta with a funds warning.
+3. Independent security review, then the first release.
 4. Node-only server access for the local network, so a phone can serve as a pool or miner backend.
 5. A pluggable path for Lightning in a later version.
 

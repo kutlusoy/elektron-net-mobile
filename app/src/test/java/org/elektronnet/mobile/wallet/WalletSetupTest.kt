@@ -21,6 +21,7 @@ class WalletSetupTest {
                 "walletpassphrase" -> if (passphraseOk) null else throw RpcException(-14, "wrong")
                 "getdescriptorinfo" -> Json.parse("""{"checksum":"abcd1234"}""")
                 "importdescriptors" -> Json.parse("""[{"success":true},{"success":true},{"success":true},{"success":true},{"success":true}]""")
+                "getwalletinfo" -> Json.parse("""{"unlocked_until":0}""")
                 "getblockchaininfo" -> Json.parse("""{"pruneheight":5}""")
                 "help" -> if (utxoRescan) "rescanutxoset ..." else "help: unknown command: rescanutxoset"
                 else -> null
@@ -79,7 +80,7 @@ class WalletSetupTest {
         assertTrue(node.calls.contains("rescanblockchain"))
         assertFalse(node.calls.contains("rescanutxoset"))
         assertFalse(s.hasRescanPassphrase)
-        assertEquals("walletlock", node.calls.last())
+        assertEquals(listOf("walletlock", "getwalletinfo"), node.calls.takeLast(2))
     }
 
     @Test

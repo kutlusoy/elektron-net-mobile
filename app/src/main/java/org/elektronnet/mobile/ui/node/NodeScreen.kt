@@ -63,6 +63,8 @@ fun NodeScreen(
     onResume: () -> Unit,
     onStop: () -> Unit,
     onStart: () -> Unit,
+    onRestart: () -> Unit = {},
+    onRestartAll: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var showLog by rememberSaveable { mutableStateOf(false) }
@@ -139,6 +141,13 @@ fun NodeScreen(
             }
             if (model.canStop) {
                 OutlinedButton(onClick = { confirm = Confirm.Stop }, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.action_stop)) }
+            }
+        }
+        if (model.canStop) {
+            OutlinedButton(onClick = onRestart, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.action_restart)) }
+            val network = NodeHost.store?.loadNetwork()
+            if (network != null && (network.tor.enabled || network.i2p.enabled)) {
+                OutlinedButton(onClick = onRestartAll, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.action_restart_all)) }
             }
         }
         confirm?.let { pending ->

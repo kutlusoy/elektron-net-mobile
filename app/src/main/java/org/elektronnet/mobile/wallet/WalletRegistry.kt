@@ -2,7 +2,7 @@ package org.elektronnet.mobile.wallet
 
 import org.elektronnet.mobile.node.Json
 
-data class OwnWallet(val name: String, val label: String)
+data class OwnWallet(val name: String, val label: String, val watchOnly: Boolean = false)
 
 interface WalletRegistryStore {
     var json: String?
@@ -19,7 +19,7 @@ class WalletRegistry(private val store: WalletRegistryStore) {
     fun wallets(): List<OwnWallet> {
         val text = store.json ?: return emptyList()
         return runCatching {
-            (Json.parse(text) as List<*>).map { OwnWallet((it as Map<*, *>)["name"].toString(), it["label"].toString()) }
+            (Json.parse(text) as List<*>).map { OwnWallet((it as Map<*, *>)["name"].toString(), it["label"].toString(), it["watch"] == true) }
         }.getOrDefault(emptyList())
     }
 
@@ -53,8 +53,8 @@ class WalletRegistry(private val store: WalletRegistryStore) {
     }
 
     @Synchronized
-    fun add(name: String, label: String): OwnWallet {
-        val entry = OwnWallet(name, label.trim())
+    fun add(name: String, label: String, watchOnly: Boolean = false): OwnWallet {
+        val entry = OwnWallet(name, label.trim(), watchOnly)
         save(wallets().filter { it.name != name } + entry)
         return entry
     }
@@ -77,6 +77,6 @@ class WalletRegistry(private val store: WalletRegistryStore) {
     }
 
     private fun save(list: List<OwnWallet>) {
-        store.json = Json.stringify(list.map { linkedMapOf("name" to it.name, "label" to it.label) })
+        store.json = Json.stringify(list.map { linkedMapOf<String, Any?>("name" to it.name, "label" to it.label).also { m -> if (it.watchOnly) m["watch"] = true } })
     }
 }

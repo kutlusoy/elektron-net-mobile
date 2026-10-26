@@ -78,7 +78,7 @@ fun WalletSwitcher(
             @Composable fun item(label: Int, action: () -> Unit) = DropdownMenuItem(text = { Text(stringResource(label)) }, onClick = { open = false; action() })
             item(R.string.wallet_menu_details, onDetails)
             item(R.string.wallet_menu_coins, onCoins)
-            item(R.string.msg_title, onMessages)
+            if (!NodeHost.isWatchOnly()) item(R.string.msg_title, onMessages)
             item(R.string.sweep_title, onSweep)
             item(R.string.contacts_title, onContacts)
             item(R.string.wallet_menu_tools, onTools)
@@ -261,6 +261,7 @@ fun WalletsScreen(onBack: () -> Unit, onAdd: () -> Unit) {
                     Column(modifier = Modifier.weight(1f).clickable { NodeHost.switchWallet(wallet.name) }) {
                         Text(walletTitle(wallet), style = MaterialTheme.typography.titleMedium)
                         Hint(wallet.name)
+                        if (wallet.watchOnly) Hint(stringResource(R.string.wallet_watch_badge))
                     }
                     TextButton(onClick = { renaming = wallet }) { Text(stringResource(R.string.wallets_rename)) }
                     TextButton(onClick = { removing = wallet }) { Text(stringResource(R.string.wallets_remove), color = MaterialTheme.colorScheme.error) }
@@ -372,11 +373,12 @@ private fun RemoveWalletDialog(wallet: OwnWallet, onDismiss: () -> Unit) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(stringResource(R.string.wallets_remove_body))
                 if (unused) Text(stringResource(R.string.wallets_remove_unused), color = MaterialTheme.colorScheme.primary)
+                if (wallet.watchOnly) Text(stringResource(R.string.wallets_remove_watch), color = MaterialTheme.colorScheme.primary)
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { confirmed = !confirmed }) {
                     androidx.compose.material3.Checkbox(checked = confirmed, onCheckedChange = null)
                     Text(stringResource(R.string.wallets_remove_confirm), modifier = Modifier.padding(start = 8.dp))
                 }
-                SecretField(
+                if (!wallet.watchOnly) SecretField(
                     value = passphrase,
                     onValueChange = { passphrase = it },
                     label = { Text(stringResource(R.string.fr_pass_label)) },
@@ -399,7 +401,7 @@ private fun RemoveWalletDialog(wallet: OwnWallet, onDismiss: () -> Unit) {
         },
         confirmButton = {
             TextButton(
-                enabled = confirmed && (passphrase.isNotEmpty() || unused) && !busy,
+                enabled = confirmed && (passphrase.isNotEmpty() || unused || wallet.watchOnly) && !busy,
                 onClick = {
                     val pass = passphrase
                     passphrase = ""
@@ -424,6 +426,7 @@ private fun RescanDialog(onDismiss: () -> Unit) {
     var busy by remember { mutableStateOf(false) }
     var result by remember { mutableStateOf<org.elektronnet.mobile.wallet.RescanOutcome?>(null) }
     val synced = NodeHost.latest?.headline is org.elektronnet.mobile.runtime.Headline.Synchronized
+    val watchOnly = NodeHost.isWatchOnly()
     AlertDialog(
         onDismissRequest = { if (!busy) onDismiss() },
         title = { Text(stringResource(R.string.rescan_action)) },
@@ -436,7 +439,7 @@ private fun RescanDialog(onDismiss: () -> Unit) {
                     else -> {
                         Text(stringResource(if (synced) R.string.rescan_body else R.string.rescan_needs_sync))
                         if (busy) androidx.compose.material3.LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                        SecretField(
+                        if (!watchOnly) SecretField(
                             value = passphrase,
                             onValueChange = { passphrase = it },
                             label = { Text(stringResource(R.string.fr_pass_label)) },
@@ -459,7 +462,7 @@ private fun RescanDialog(onDismiss: () -> Unit) {
                 TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_ok)) }
             } else {
                 TextButton(
-                    enabled = synced && passphrase.isNotEmpty() && !busy,
+                    enabled = synced && (passphrase.isNotEmpty() || watchOnly) && !busy,
                     onClick = {
                         val pass = passphrase
                         passphrase = ""

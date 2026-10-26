@@ -78,7 +78,7 @@ import org.elektronnet.mobile.wallet.PassphraseStrength
 import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
-fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, addWallet: Boolean = false, onCancel: () -> Unit = {}, onSkip: (() -> Unit)? = null) {
+fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, addWallet: Boolean = false, onCancel: () -> Unit = {}, onSkip: (() -> Unit)? = null, onWatchOnly: (() -> Unit)? = null) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var state by remember { mutableStateOf(FirstRunState(addWallet = addWallet)) }
@@ -139,6 +139,10 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
                     onClick = { state = FirstRunFlow.next(state.copy(restore = true)) },
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.fr_restore)) }
+                if (onWatchOnly != null) {
+                    OutlinedButton(onClick = onWatchOnly, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.watch_button)) }
+                    Text(stringResource(R.string.watch_button_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
                 if (addWallet) {
                     TextButton(onClick = onCancel) { Text(stringResource(R.string.action_cancel)) }
                 } else {

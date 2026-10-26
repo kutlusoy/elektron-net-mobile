@@ -3,6 +3,7 @@ package org.elektronnet.mobile.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.elektronnet.mobile.R
@@ -121,13 +123,16 @@ fun ElektronLogo(size: Dp, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun BrandHeader(compact: Boolean, showTagline: Boolean = false) {
+// onHome makes the compact header a link to the wallet start page, like the logo of a website
+fun BrandHeader(compact: Boolean, showTagline: Boolean = false, onHome: (() -> Unit)? = null) {
     val name = stringResource(R.string.app_name).uppercase()
     if (compact) {
         androidx.compose.foundation.layout.Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 6.dp),
+            modifier = Modifier.fillMaxWidth()
+                .then(if (onHome != null) Modifier.clickable(onClickLabel = stringResource(R.string.tab_wallet), role = Role.Button, onClick = onHome) else Modifier)
+                .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 6.dp),
         ) {
             ElektronLogo(if (showTagline) 52.dp else 36.dp)
             Column {

@@ -72,7 +72,7 @@ import org.elektronnet.mobile.ui.theme.ElektronMono
 private enum class Step { Recipient, Amount, Fee, Review, Confirm, Working, Done }
 
 @Composable
-fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Unit, escrow: EscrowRecord? = null) {
+fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Unit, escrow: EscrowRecord? = null, onScanSigned: () -> Unit = {}) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var step by remember { mutableStateOf(Step.Recipient) }
@@ -92,9 +92,11 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var txid by remember { mutableStateOf<String?>(null) }
     var noteFromLink by remember { mutableStateOf<String?>(null) }
     var exportedPsbt by remember { mutableStateOf<String?>(null) }
-    var psbtOnly by remember { mutableStateOf(false) }
+    // a watch-only wallet cannot sign: the payment is handed over as an unsigned payment file for a signing device
+    val watchOnly = escrow == null && NodeHost.isWatchOnly()
+    var psbtOnly by remember { mutableStateOf(watchOnly) }
     var advanced by remember { mutableStateOf(false) }
-    var psbtSign by remember { mutableStateOf(true) }
+    var psbtSign by remember { mutableStateOf(!watchOnly) }
     var scanning by remember { mutableStateOf(false) }
     var picking by remember { mutableStateOf(false) }
     var reused by remember { mutableStateOf(0L) }
@@ -260,8 +262,8 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                                 selectedCoins = emptyList()
                                 subtractFee = false
                                 custom = false
-                                psbtOnly = false
-                                psbtSign = true
+                                psbtOnly = watchOnly
+                                psbtSign = !watchOnly
                             }
                         },
                     )
@@ -443,7 +445,8 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         FiatLine(review.feeLep)
                     }
                     ReviewLine(stringResource(R.string.send_review_total)) { Text(elek(review.totalLep), style = MaterialTheme.typography.titleLarge); FiatLine(review.totalLep) }
-                    if (escrow == null && advanced) {
+                    if (watchOnly) Text(stringResource(R.string.send_watch_note), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (escrow == null && advanced && !watchOnly) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Switch(checked = psbtOnly, onCheckedChange = { psbtOnly = it })
                             Column(modifier = Modifier.padding(start = 12.dp)) {
@@ -503,10 +506,14 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                         Text(stringResource(if (psbtSign) R.string.send_psbt_ready_signed else R.string.send_psbt_ready_unsigned))
                     }
                     Text(psbt, fontFamily = ElektronMono, style = MaterialTheme.typography.bodySmall, maxLines = 8)
-                    if (psbt.length <= org.elektronnet.mobile.ui.tools.PSBT_QR_LIMIT) org.elektronnet.mobile.ui.receive.QrView(psbt)
+                    org.elektronnet.mobile.ui.tools.PsbtQr(psbt)
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OutlinedButton(onClick = { copyPlain(context, psbt) }) { Text(stringResource(R.string.action_copy)) }
                         Button(onClick = { sharePlain(context, psbt) }) { Text(stringResource(R.string.action_share)) }
+                    }
+                    if (watchOnly) {
+                        Text(stringResource(R.string.send_watch_next), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Button(onClick = onScanSigned, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_watch_scan)) }
                     }
                     OutlinedButton(onClick = { onDone(null) }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.send_done_close)) }
                 } else {

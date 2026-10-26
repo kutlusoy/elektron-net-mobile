@@ -124,13 +124,13 @@ class PsbtTools(
             } catch (e: RpcException) {
                 throw SendException(SendFailure.Unknown, e.message ?: "")
             }
-            runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            WalletLock.lock(rpc, walletName, passphrase)
             unlocked = false
             val result = processed["psbt"].toString()
             if (result == normalized) throw SendException(SendFailure.NothingToSign)
             return result
         } finally {
-            if (unlocked) runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            if (unlocked) WalletLock.lock(rpc, walletName, passphrase)
         }
     }
 

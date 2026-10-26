@@ -67,4 +67,27 @@ class NodeConfigTest {
     fun cookieAuthSurvivesCredentialsInTheDefaultConfFile() {
         assertTrue(config(Chain.Main).arguments().contains("-rpcpassword="))
     }
+
+    @Test
+    fun extraArgumentsCannotWeakenTheRpcProtection() {
+        val config = NodeConfig(File("/bin/elektrond"), File("/data/node"), Chain.Regtest, 8332, 8333, extraArgs = listOf(
+            "-rpcbind=0.0.0.0", "-rpcallowip=0.0.0.0/0", "-norpcbind", "-rpcpassword=x", "-rpcauth=a:b", "-server=0", "-datadir=/tmp/x", "-conf=/tmp/y", "-whitelist=0.0.0.0/0", "-debug=tor",
+        ))
+        val args = config.arguments()
+        assertEquals(1, args.count { it.startsWith("-rpcbind") })
+        assertEquals(listOf("-rpcallowip=127.0.0.1"), args.filter { it.startsWith("-rpcallowip") })
+        assertEquals(listOf("-rpcpassword="), args.filter { it.startsWith("-rpcpassword") })
+        assertTrue(args.none { it.startsWith("-rpcauth") || it.startsWith("-norpc") || it == "-server=0" || it == "-datadir=/tmp/x" || it.startsWith("-conf") || it.startsWith("-whitelist") })
+        assertTrue(args.contains("-debug=tor"))
+    }
+
+    @Test
+    fun theProtectedOptionsAreFoundInEveryWritingStyle() {
+        listOf("-RPCBIND=0.0.0.0", "--rpcbind=0.0.0.0", " -rpcallowip=1.2.3.4", "-rpcbind", "-NoRpcBind", "-norpcallowip=0", "-ZMQPubRawTx=tcp://0.0.0.0:1", "-Server=0", "-whitebind=0.0.0.0:1", "rpcuser=x").forEach {
+            assertTrue(NodeConfig.protectedOption(it))
+        }
+        listOf("-debug=tor", "-debug=i2p", "-printtoconsole=1", "-dbcache=64", "-nolisten").forEach {
+            assertFalse(NodeConfig.protectedOption(it))
+        }
+    }
 }

@@ -68,19 +68,19 @@ import org.elektronnet.mobile.ui.wallet.WalletScreen
 
 private data class WalletData(val balances: Balances, val items: List<TxItem>)
 
-private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet, Console, Contacts, PeerScan }
+private enum class Overlay { None, Tools, Messages, Sweep, Send, Receive, Details, Coins, Wallets, AddWallet, WatchOnly, PsbtScan, Console, Contacts, PeerScan }
 
 private const val RECENT_COUNT = 8
 
 private enum class Tab(val label: Int, val icon: ImageVector) {
     Wallet(R.string.tab_wallet, Icons.Filled.Home),
     History(R.string.tab_history, Icons.AutoMirrored.Filled.List),
-    Node(R.string.tab_node, Icons.Filled.Refresh),
+    Node(R.string.tab_node, org.elektronnet.mobile.ui.theme.NodeIcon),
     Settings(R.string.tab_settings, Icons.Filled.Settings),
 }
 
 @Composable
-fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit, onBiometric: (Boolean) -> Unit) {
+fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit, onBiometric: (Boolean) -> Unit, onRestart: () -> Unit = {}, onRestartAll: () -> Unit = {}) {
     var tab by rememberSaveable { mutableStateOf(Tab.Wallet.ordinal) }
     var showSoon by remember { mutableStateOf(false) }
     var overlayName by rememberSaveable { mutableStateOf(Overlay.None.name) }
@@ -101,9 +101,17 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     val setup = NodeHost.setupStatus
     val walletReady = ((storeReady || NodeHost.walletFlag) && NodeHost.wallets.isNotEmpty()) || setup != SetupStatus.None
     var nodeOnly by remember { mutableStateOf(store?.nodeOnly == true) }
+    var watchFirst by remember { mutableStateOf(false) }
     val shell = walletReady || nodeOnly
 
     val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val screenshotsOn = org.elektronnet.mobile.ui.ScreenshotMode.allowed
+    LaunchedEffect(screenshotsOn) {
+        if (screenshotsOn) {
+            delay(org.elektronnet.mobile.ui.ScreenshotMode.MINUTES * 60_000L)
+            org.elektronnet.mobile.ui.ScreenshotMode.allowed = false
+        }
+    }
     LaunchedEffect(Unit) {
         while (true) {
             if (NodeHost.appVisible) org.elektronnet.mobile.ui.theme.UpdateState.checkIfDue()
@@ -220,6 +228,10 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
         },
     ) { padding ->
         Box(modifier = Modifier.padding(padding).consumeWindowInsets(padding).imePadding()) {
+            if (!shell && watchFirst) {
+                org.elektronnet.mobile.ui.wallets.WatchOnlyScreen(onBack = { watchFirst = false }, onDone = { watchFirst = false })
+                return@Box
+            }
             if (!shell) {
                 FirstRunScreen(
                     onAllowMetered = {
@@ -227,6 +239,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         settings = settings.copy(allowMetered = it)
                     },
                     onFinished = {},
+                    onWatchOnly = { watchFirst = true },
                     onSkip = {
                         store?.nodeOnly = true
                         nodeOnly = true
@@ -246,6 +259,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                 Overlay.Tools -> ToolsScreen(onClose = { show(Overlay.None) })
                 Overlay.Messages -> ToolsScreen(onClose = { show(Overlay.None) }, start = ToolsPage.Messages)
                 Overlay.Sweep -> ToolsScreen(onClose = { show(Overlay.None) }, start = ToolsPage.Sweep)
+                Overlay.PsbtScan -> ToolsScreen(onClose = { show(Overlay.None) }, start = ToolsPage.Psbt, scanSigned = true)
                 Overlay.Send -> SendScreen(
                     initialUri = incoming,
                     onClose = {
@@ -258,6 +272,10 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         refreshTick++
                         openTx = id
                     },
+                    onScanSigned = {
+                        NodeHost.incomingUri = null
+                        show(Overlay.PsbtScan)
+                    },
                 )
                 Overlay.Receive -> ReceiveScreen(onClose = { show(Overlay.None) })
                 Overlay.Details -> WalletDetailsScreen(onBack = { show(Overlay.None) })
@@ -268,6 +286,11 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     onFinished = { show(Overlay.None) },
                     addWallet = true,
                     onCancel = { show(if (walletReady) Overlay.Wallets else Overlay.None) },
+                    onWatchOnly = { show(Overlay.WatchOnly) },
+                )
+                Overlay.WatchOnly -> org.elektronnet.mobile.ui.wallets.WatchOnlyScreen(
+                    onBack = { show(Overlay.AddWallet) },
+                    onDone = { show(Overlay.None) },
                 )
                 Overlay.Console -> ConsoleRoot(onClose = { show(Overlay.None) })
                 Overlay.Contacts -> ContactsScreen(onBack = { show(Overlay.None) })
@@ -282,7 +305,11 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             }
             if (overlay != Overlay.None) return@Box
             Column {
-            BrandHeader(compact = true, showTagline = true)
+            BrandHeader(compact = true, showTagline = true, onHome = {
+                tab = Tab.Wallet.ordinal
+                openTx = null
+                NodeHost.incomingUri = null
+            })
             Box(modifier = Modifier.weight(1f)) {
             when (Tab.entries[tab]) {
                 Tab.Wallet -> if (!walletReady) NoWalletCard(onCreate = { show(Overlay.AddWallet) }) else Column {
@@ -296,6 +323,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                         onContacts = { show(Overlay.Contacts) },
                     )
                     NodeHost.restoreNotice?.let { RestoreNotice { NodeHost.restoreNotice = null } }
+                    if (NodeHost.isWatchOnly()) org.elektronnet.mobile.ui.tools.Hint(androidx.compose.ui.res.stringResource(R.string.watch_banner))
                     org.elektronnet.mobile.ui.settings.UpdateBanner()
                     SetupBanner(
                         status = setup,
@@ -342,6 +370,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     },
                     onStop = onStop,
                     onStart = onStart,
+                    onRestart = onRestart,
+                    onRestartAll = onRestartAll,
                 ) }
                 Tab.Settings -> SettingsScreen(
                     settings = settings,

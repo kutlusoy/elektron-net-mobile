@@ -75,6 +75,9 @@ object NodeHost {
     var wallets: List<OwnWallet> by mutableStateOf(emptyList())
         private set
 
+    // a watch-only wallet has no keys on this phone, a signing device signs for it
+    fun isWatchOnly(name: String = activeWallet): Boolean = wallets.firstOrNull { it.name == name }?.watchOnly == true
+
     private fun refreshWallets() {
         val reg = registry ?: return
         wallets = reg.wallets()
@@ -133,7 +136,7 @@ object NodeHost {
         val chain = Chain.fromBuildName(ChainConfig.chain)
         val failure = org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) { wallet ->
             org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$wallet"))
-        }.remove(name, passphrase)
+        }.remove(name, passphrase, watchOnly = isWatchOnly(name))
         if (failure != null) return failure
         registry?.remove(name)
         settings?.setReceiveAddressFor(name, null)
@@ -150,7 +153,8 @@ object NodeHost {
     fun rescanActiveWallet(passphrase: String): org.elektronnet.mobile.wallet.RescanOutcome {
         val context = appContext ?: return org.elektronnet.mobile.wallet.RescanOutcome.Failed(org.elektronnet.mobile.wallet.BootstrapFailure.NodeNotReady)
         val node = bootstrap(context, activeWallet) ?: return org.elektronnet.mobile.wallet.RescanOutcome.Failed(org.elektronnet.mobile.wallet.BootstrapFailure.NodeNotReady)
-        return node.rescan(passphrase)
+        // a watch-only wallet has no keys to unlock
+        return node.rescan(if (isWatchOnly()) "" else passphrase)
     }
 
     fun walletNames(): List<String> = (registry?.wallets().orEmpty().map { it.name } + WalletBootstrap.DEFAULT_WALLET).distinct()
@@ -184,6 +188,8 @@ object NodeHost {
         refreshWallets()
         if (store.walletReady() && store.rescanPending) {
             walletSetup.markRescanPending(store.rescanWallet)
+            // a watch-only wallet has no passphrase to ask for
+            if (isWatchOnly(store.rescanWallet)) walletSetup.resumeRescan("")
             setupStatus = walletSetup.status
         }
         networkPorts = ChainConfig.networkPorts.resolved()
@@ -289,7 +295,7 @@ object NodeHost {
     }
 
     fun beginSetup(request: SetupRequest, label: String = "") {
-        registry?.add(request.walletName, label)
+        registry?.add(request.walletName, label, request.watch != null)
         walletSetup.begin(request)
         setupStatus = walletSetup.status
     }
@@ -638,6 +644,16 @@ object NodeHost {
         val dir = datadir ?: return false
         controller?.shutdown()
         return runCatching { org.elektronnet.mobile.node.DatadirReset.perform(dir) }.isSuccess
+    }
+
+    // only the node restarts, Tor and I2P keep running, the next tick starts it again
+    fun restartNode() {
+        controller?.restartNode()
+    }
+
+    // node, Tor and I2P stop together and the next tick starts them again, for a stuck helper
+    fun restartWithNetwork() {
+        controller?.shutdown()
     }
 
     fun stopNow() {

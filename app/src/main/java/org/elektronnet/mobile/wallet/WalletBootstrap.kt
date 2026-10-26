@@ -28,14 +28,17 @@ class WalletBootstrap(
 
     fun recover(mnemonic: List<String>, passphrase: String): BootstrapResult = run(mnemonic, passphrase, recover = true)
 
+    // an empty passphrase stands for a watch-only wallet, which has no keys to unlock
     fun rescan(passphrase: String): RescanOutcome {
         var unlocked = false
         try {
-            try {
-                rpc.call("walletpassphrase", listOf(passphrase, RECOVERY_UNLOCK_SECONDS), walletName)
-                unlocked = true
-            } catch (e: RpcException) {
-                return RescanOutcome.Failed(if (e.code == WRONG_PASSPHRASE) BootstrapFailure.WrongPassphrase else if (e.inWarmup) BootstrapFailure.NodeNotReady else BootstrapFailure.Unknown)
+            if (passphrase.isNotEmpty()) {
+                try {
+                    rpc.call("walletpassphrase", listOf(passphrase, RECOVERY_UNLOCK_SECONDS), walletName)
+                    unlocked = true
+                } catch (e: RpcException) {
+                    return RescanOutcome.Failed(if (e.code == WRONG_PASSPHRASE) BootstrapFailure.WrongPassphrase else if (e.inWarmup) BootstrapFailure.NodeNotReady else BootstrapFailure.Unknown)
+                }
             }
             val pruneHeight = (rpc.call("getblockchaininfo", emptyList<Any?>(), null) as Map<*, *>)["pruneheight"] as? Long ?: 0L
             rpc.call("rescanblockchain", listOf(pruneHeight), walletName)
@@ -45,7 +48,60 @@ class WalletBootstrap(
         } catch (e: RpcException) {
             return RescanOutcome.Failed(if (e.inWarmup) BootstrapFailure.NodeNotReady else BootstrapFailure.Unknown)
         } finally {
-            if (unlocked) runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            if (unlocked) WalletLock.lock(rpc, walletName, passphrase)
+        }
+    }
+
+    // a wallet without private keys: it can show balance and history and prepare payments, but only another device can sign them
+    fun createWatchOnly(source: WatchSource): BootstrapResult {
+        var created = false
+        try {
+            rpc.call(
+                "createwallet",
+                linkedMapOf(
+                    "wallet_name" to walletName,
+                    "disable_private_keys" to true,
+                    "blank" to true,
+                    "descriptors" to true,
+                    "avoid_reuse" to true,
+                    "load_on_startup" to true,
+                ),
+                null,
+            )
+            created = true
+            val wanted = when (source) {
+                is WatchSource.Address -> listOf(WatchDescriptor("addr(${source.address})", internal = false))
+                is WatchSource.Descriptors -> source.items
+            }
+            val requests = wanted.map { item ->
+                val info = rpc.call("getdescriptorinfo", listOf(item.descriptor), null) as Map<*, *>
+                if (info["hasprivatekeys"] == true) throw ImportException("private keys")
+                val request = linkedMapOf<String, Any?>("desc" to info["descriptor"].toString(), "timestamp" to "now")
+                if (info["isrange"] == true) {
+                    request["range"] = listOf(0, RECOVERY_LOOKAHEAD)
+                    request["active"] = true
+                    request["internal"] = item.internal
+                }
+                request
+            }
+            val results = rpc.call("importdescriptors", listOf(requests), walletName) as List<*>
+            val failure = results.firstOrNull { (it as Map<*, *>)["success"] != true }
+            if (failure != null) {
+                val error = (failure as Map<*, *>)["error"] as? Map<*, *>
+                throw ImportException(error?.get("message")?.toString() ?: "import failed")
+            }
+            return BootstrapResult.Created(walletName)
+        } catch (e: ImportException) {
+            abort(created)
+            return BootstrapResult.Failed(BootstrapFailure.ImportFailed, e.message ?: "")
+        } catch (e: RpcException) {
+            abort(created && e.code != WALLET_EXISTS)
+            val reason = when {
+                e.inWarmup -> BootstrapFailure.NodeNotReady
+                e.code == WALLET_EXISTS -> BootstrapFailure.WalletExists
+                else -> BootstrapFailure.ImportFailed
+            }
+            return BootstrapResult.Failed(reason, e.message ?: "")
         }
     }
 
@@ -106,7 +162,7 @@ class WalletBootstrap(
             }
             return BootstrapResult.Failed(reason, e.message ?: "")
         } finally {
-            if (unlocked) runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+            if (unlocked) WalletLock.lock(rpc, walletName, passphrase)
         }
     }
 
@@ -123,7 +179,7 @@ class WalletBootstrap(
         const val WALLET_EXISTS = -4
         const val WRONG_PASSPHRASE = -14
         const val CREATE_UNLOCK_SECONDS = 60
-        const val RECOVERY_UNLOCK_SECONDS = 3600
+        const val RECOVERY_UNLOCK_SECONDS = 1200
         const val CREATE_LOOKAHEAD = 199
         const val RECOVERY_LOOKAHEAD = 999
     }

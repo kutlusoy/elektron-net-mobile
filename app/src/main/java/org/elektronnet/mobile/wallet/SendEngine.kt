@@ -191,7 +191,7 @@ class SendEngine(
             val processed = guard {
                 rpc.call("walletprocesspsbt", listOf(prepared.psbt, true, "ALL", true, false), walletName) as Map<*, *>
             }
-            lockQuietly()
+            lockQuietly(passphrase)
             unlocked = false
             val signed = processed["psbt"].toString()
             if (!validate(PreparedSend(signed, prepared.request, prepared.review, prepared.policyFloor, prepared.grossLep)).sameAs(prepared.review)) {
@@ -200,7 +200,7 @@ class SendEngine(
             val finalized = guard { rpc.call("finalizepsbt", listOf(signed, false), null) as Map<*, *> }
             return SignedSend(signed, finalized["complete"] == true)
         } finally {
-            if (unlocked) lockQuietly()
+            if (unlocked) lockQuietly(passphrase)
         }
     }
 
@@ -222,8 +222,8 @@ class SendEngine(
         info["ismine"] == true && info["ischange"] == true
     }
 
-    private fun lockQuietly() {
-        runCatching { rpc.call("walletlock", emptyList<Any?>(), walletName) }
+    private fun lockQuietly(passphrase: String) {
+        WalletLock.lock(rpc, walletName, passphrase)
     }
 
     private fun <T> guard(block: () -> T): T = try {

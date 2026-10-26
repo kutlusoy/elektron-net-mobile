@@ -11,6 +11,7 @@ class LogSanitizerTest {
         assertEquals("peer=7 addr=<ip> version 70016", LogSanitizer.clean("peer=7 addr=203.0.113.9:9333 version 70016"))
         assertEquals("connected to <ip>", LogSanitizer.clean("connected to [2001:db8::1]:9333"))
         assertEquals("via <onion>", LogSanitizer.clean("via abcdefghijklmnopqrstuvwxyz234567abcdefghijklmnopqrstuvwx.onion:9333"))
+        assertEquals("LeaseSet for <i2p> not found", LogSanitizer.clean("LeaseSet for aomzpobs3m5n3g64j3tvpqegn7o5qeaazgok74uruczxbqep3hxq.b32.i2p not found"))
     }
 
     @Test

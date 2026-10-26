@@ -17,6 +17,14 @@ class WalletExport(private val rpc: WalletRpc, private val walletName: String = 
             .onEach { check(!it.descriptor.contains("prv")) { "private key material in public export" } }
     }
 
+    // the key of the active receive descriptor with its origin, like [73c5da0a/84h/1370h/0h]xpub..., short enough for one QR code
+    // and read by the watch-only import, which adds the receive and change chains itself
+    fun watchKey(): String? {
+        val receive = publicDescriptors().firstOrNull { it.active && !it.internal && it.descriptor.startsWith("wpkh(") } ?: return null
+        val inner = receive.descriptor.removePrefix("wpkh(").substringBefore('#').removeSuffix(")")
+        return inner.takeIf { it.endsWith("/0/*") }?.removeSuffix("/0/*")?.takeIf { it.contains("pub") }
+    }
+
     fun descriptorText(): String = buildString {
         append("# Elektron Net public descriptors for wallet ").append(walletName).append('\n')
         append("# No private keys. Usable for watch-only import only.\n")

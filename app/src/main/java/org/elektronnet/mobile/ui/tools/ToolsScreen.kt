@@ -25,7 +25,7 @@ enum class ToolsPage { Hub, Escrows, EscrowDetail, Psbt, Sweep, Messages }
 private typealias Page = ToolsPage
 
 @Composable
-fun ToolsScreen(onClose: () -> Unit, start: ToolsPage = ToolsPage.Hub) {
+fun ToolsScreen(onClose: () -> Unit, start: ToolsPage = ToolsPage.Hub, scanSigned: Boolean = false) {
     var page by remember { mutableStateOf(start) }
     val backToHub = { if (start != ToolsPage.Hub && page == start) onClose() else page = Page.Hub }
     var escrowId by remember { mutableStateOf(0) }
@@ -51,10 +51,12 @@ fun ToolsScreen(onClose: () -> Unit, start: ToolsPage = ToolsPage.Hub) {
         pay != null -> SendScreen(initialUri = null, onClose = { paying = null }, onDone = { paying = null }, escrow = pay)
         page == Page.Hub -> ToolPage(stringResource(R.string.tools_title), onClose) {
             Hint(stringResource(R.string.tools_intro))
-            ToolEntry(R.string.escrow_title, R.string.tools_escrow_desc) { page = Page.Escrows }
+            val watchOnly = NodeHost.isWatchOnly()
+            if (!watchOnly) ToolEntry(R.string.escrow_title, R.string.tools_escrow_desc) { page = Page.Escrows }
             ToolEntry(R.string.psbt_title, R.string.tools_psbt_desc) { page = Page.Psbt }
             ToolEntry(R.string.sweep_title, R.string.tools_sweep_desc) { page = Page.Sweep }
-            ToolEntry(R.string.msg_title, R.string.tools_msg_desc) { page = Page.Messages }
+            if (!watchOnly) ToolEntry(R.string.msg_title, R.string.tools_msg_desc) { page = Page.Messages }
+            if (watchOnly) Hint(stringResource(R.string.watch_tools_hint))
         }
         page == Page.Escrows -> EscrowListScreen(onBack = { page = Page.Hub }, onOpen = { escrowId = it; page = Page.EscrowDetail })
         page == Page.EscrowDetail -> EscrowDetailScreen(
@@ -64,7 +66,7 @@ fun ToolsScreen(onClose: () -> Unit, start: ToolsPage = ToolsPage.Hub) {
             onPsbt = { page = Page.Psbt },
             onDeposit = { NodeHost.incomingUri = it },
         )
-        page == Page.Psbt -> PsbtScreen(labels, onBack = backToHub)
+        page == Page.Psbt -> PsbtScreen(labels, onBack = backToHub, scanFirst = scanSigned && start == ToolsPage.Psbt)
         page == Page.Sweep -> SweepScreen(onBack = backToHub)
         page == Page.Messages -> MessageScreen(onBack = backToHub)
     }
