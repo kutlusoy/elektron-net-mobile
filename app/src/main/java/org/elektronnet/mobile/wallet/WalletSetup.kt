@@ -5,6 +5,7 @@ class SetupRequest(
     val passphrase: String,
     val restore: Boolean,
     val walletName: String = WalletBootstrap.DEFAULT_WALLET,
+    val watch: WatchSource? = null,
 )
 
 sealed interface SetupStatus {
@@ -73,10 +74,17 @@ class WalletSetup(
     private fun createWallet() {
         val req = request ?: return
         val node = bootstrap(req.walletName) ?: return
-        when (val result = if (req.restore) node.recover(req.phrase, req.passphrase) else node.create(req.phrase, req.passphrase)) {
+        val watch = req.watch
+        val outcome = when {
+            watch != null -> node.createWatchOnly(watch)
+            req.restore -> node.recover(req.phrase, req.passphrase)
+            else -> node.create(req.phrase, req.passphrase)
+        }
+        when (val result = outcome) {
             is BootstrapResult.Created -> {
                 request = null
-                if (req.restore) {
+                if (watch != null || req.restore) {
+                    // a watch-only wallet may already own coins, so it is always scanned, without a passphrase
                     rescanPassphrase = req.passphrase
                     status = SetupStatus.NeedsRescan
                 } else {
@@ -86,7 +94,7 @@ class WalletSetup(
             is BootstrapResult.Failed -> {
                 val alternative = if (result.reason == BootstrapFailure.WalletExists) onNameTaken(req.walletName)?.takeIf { it != req.walletName } else null
                 if (alternative != null) {
-                    request = SetupRequest(req.phrase, req.passphrase, req.restore, alternative)
+                    request = SetupRequest(req.phrase, req.passphrase, req.restore, alternative, req.watch)
                     walletName = alternative
                     status = SetupStatus.Waiting
                 } else {
