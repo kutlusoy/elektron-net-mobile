@@ -188,6 +188,8 @@ object NodeHost {
         refreshWallets()
         if (store.walletReady() && store.rescanPending) {
             walletSetup.markRescanPending(store.rescanWallet)
+            // a watch-only wallet has no passphrase to ask for
+            if (isWatchOnly(store.rescanWallet)) walletSetup.resumeRescan("")
             setupStatus = walletSetup.status
         }
         networkPorts = ChainConfig.networkPorts.resolved()
