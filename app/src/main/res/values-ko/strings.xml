@@ -960,4 +960,5 @@
     <string name="msg_apply">텍스트 적용</string>
     <string name="msg_err_invalid">허용되지 않는 문자가 포함되어 있습니다.</string>
     <string name="msg_confirm_label">블록 속 텍스트</string>
+    <string name="msg_fee_estimate">텍스트 추가 수수료: 약 %1$s</string>
 </resources>

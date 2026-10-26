@@ -65,4 +65,12 @@ class EmbeddedMessageTest {
         assertEquals("6a4c4c" + "61".repeat(76), EmbeddedMessage.scriptHex("a".repeat(76)))
         assertEquals("6a4d" + "e803" + "61".repeat(1000), EmbeddedMessage.scriptHex("a".repeat(1000)))
     }
+
+    @Test
+    fun outputSizeAndExtraFee() {
+        assertEquals(13, EmbeddedMessage.outputVBytes("hi"))
+        assertEquals(8 + 3 + 1 + 3 + 1000, EmbeddedMessage.outputVBytes("a".repeat(1000)))
+        assertEquals(26L, EmbeddedMessage.extraFeeLep("hi", java.math.BigDecimal("2")))
+        assertEquals(14L, EmbeddedMessage.extraFeeLep("hi", java.math.BigDecimal("1.01")))
+    }
 }

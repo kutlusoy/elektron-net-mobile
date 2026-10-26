@@ -960,4 +960,5 @@
     <string name="msg_apply">टेक्स्ट लागू करें</string>
     <string name="msg_err_invalid">टेक्स्ट में अनुमति रहित अक्षर हैं।</string>
     <string name="msg_confirm_label">ब्लॉक में टेक्स्ट</string>
+    <string name="msg_fee_estimate">टेक्स्ट के लिए अतिरिक्त शुल्क: लगभग %1$s</string>
 </resources>

@@ -960,4 +960,5 @@
     <string name="msg_apply">Áp dụng văn bản</string>
     <string name="msg_err_invalid">Văn bản chứa ký tự không được phép.</string>
     <string name="msg_confirm_label">Văn bản trong khối</string>
+    <string name="msg_fee_estimate">Phí thêm cho văn bản: khoảng %1$s</string>
 </resources>

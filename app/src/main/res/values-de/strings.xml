@@ -960,4 +960,5 @@
     <string name="msg_apply">Text übernehmen</string>
     <string name="msg_err_invalid">Der Text enthält nicht erlaubte Zeichen.</string>
     <string name="msg_confirm_label">Text im Block</string>
+    <string name="msg_fee_estimate">Zusätzliche Gebühr für den Text: ca. %1$s</string>
 </resources>

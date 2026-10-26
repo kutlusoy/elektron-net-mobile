@@ -95,4 +95,13 @@ object EmbeddedMessage {
         }
         return "6a" + push + hex(text)
     }
+
+    /** Size in virtual bytes the data output adds to a payment: value, script length and script. */
+    fun outputVBytes(text: String): Int {
+        val script = scriptHex(text).length / 2
+        return 8 + (if (script < 253) 1 else 3) + script
+    }
+
+    fun extraFeeLep(text: String, lepPerVb: java.math.BigDecimal): Long =
+        lepPerVb.multiply(java.math.BigDecimal(outputVBytes(text))).setScale(0, java.math.RoundingMode.CEILING).toLong()
 }

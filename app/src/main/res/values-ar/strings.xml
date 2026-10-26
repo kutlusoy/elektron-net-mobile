@@ -960,4 +960,5 @@
     <string name="msg_apply">تطبيق النص</string>
     <string name="msg_err_invalid">يحتوي النص على أحرف غير مسموح بها.</string>
     <string name="msg_confirm_label">النص في الكتلة</string>
+    <string name="msg_fee_estimate">رسوم إضافية للنص: حوالي %1$s</string>
 </resources>

@@ -960,4 +960,5 @@
     <string name="msg_apply">应用文本</string>
     <string name="msg_err_invalid">文本包含不允许的字符。</string>
     <string name="msg_confirm_label">区块中的文本</string>
+    <string name="msg_fee_estimate">文本的额外手续费：约 %1$s</string>
 </resources>

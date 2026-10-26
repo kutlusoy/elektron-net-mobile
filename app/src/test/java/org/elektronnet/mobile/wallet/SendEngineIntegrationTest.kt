@@ -110,6 +110,9 @@ class SendEngineIntegrationTest {
         assertEquals(text, prepared.review.message)
         assertEquals(plain.review.amountLep, prepared.review.amountLep)
         assertTrue(prepared.review.feeLep > plain.review.feeLep)
+        val estimate = EmbeddedMessage.extraFeeLep(text, rate(env))
+        val real = prepared.review.feeLep - plain.review.feeLep
+        assertTrue(Math.abs(real - estimate) <= rate(env).toLong() + 2)
         val txid = env.engine.send(prepared, pass)
         val block = (env.rpc.call("generatetoaddress", listOf(1, env.minerAddress), "miner") as List<*>).single()
         val tx = env.rpc.call("getrawtransaction", listOf(txid, true, block), null) as Map<*, *>

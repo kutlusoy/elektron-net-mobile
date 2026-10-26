@@ -960,4 +960,5 @@
     <string name="msg_apply">Aplicar texto</string>
     <string name="msg_err_invalid">El texto contiene caracteres no permitidos.</string>
     <string name="msg_confirm_label">Texto en el bloque</string>
+    <string name="msg_fee_estimate">Comisión adicional por el texto: aprox. %1$s</string>
 </resources>

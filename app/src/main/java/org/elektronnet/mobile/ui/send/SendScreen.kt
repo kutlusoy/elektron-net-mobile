@@ -492,6 +492,10 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                                 supportingText = { Text(stringResource(R.string.msg_counter, EmbeddedMessage.byteLength(messageDraft.trim()), EmbeddedMessage.MAX_BYTES)) },
                                 modifier = Modifier.fillMaxWidth(),
                             )
+                            if (cleaned.isNotEmpty() && !tooLong) {
+                                val extra = EmbeddedMessage.extraFeeLep(cleaned, prepared?.request?.feeRate ?: BigDecimal.ONE)
+                                Text(stringResource(R.string.msg_fee_estimate, Amount.displayWithUnit(extra)), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
                             OutlinedButton(
                                 onClick = { messageDraft = cleaned; appliedMessage = cleaned; prepare() },
                                 enabled = cleaned.isNotEmpty() && !tooLong && cleaned != prepared?.request?.message,

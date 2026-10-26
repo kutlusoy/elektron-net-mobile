@@ -971,4 +971,5 @@
     <string name="msg_apply">Apply text</string>
     <string name="msg_err_invalid">The text contains characters that are not allowed.</string>
     <string name="msg_confirm_label">Text in block</string>
+    <string name="msg_fee_estimate">Extra fee for the text: about %1$s</string>
 </resources>

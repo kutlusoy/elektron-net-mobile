@@ -960,4 +960,5 @@
     <string name="msg_apply">Применить текст</string>
     <string name="msg_err_invalid">Текст содержит недопустимые символы.</string>
     <string name="msg_confirm_label">Текст в блоке</string>
+    <string name="msg_fee_estimate">Дополнительная комиссия за текст: около %1$s</string>
 </resources>

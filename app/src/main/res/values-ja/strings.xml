@@ -960,4 +960,5 @@
     <string name="msg_apply">テキストを適用</string>
     <string name="msg_err_invalid">テキストに使用できない文字が含まれています。</string>
     <string name="msg_confirm_label">ブロック内のテキスト</string>
+    <string name="msg_fee_estimate">テキストの追加手数料：約 %1$s</string>
 </resources>

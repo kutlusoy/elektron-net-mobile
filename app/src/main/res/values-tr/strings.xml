@@ -960,4 +960,5 @@
     <string name="msg_apply">Metni uygula</string>
     <string name="msg_err_invalid">Metin izin verilmeyen karakterler içeriyor.</string>
     <string name="msg_confirm_label">Bloktaki metin</string>
+    <string name="msg_fee_estimate">Metin için ek ücret: yaklaşık %1$s</string>
 </resources>
