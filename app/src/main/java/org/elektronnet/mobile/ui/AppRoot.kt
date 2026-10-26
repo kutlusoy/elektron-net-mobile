@@ -289,7 +289,11 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             }
             if (overlay != Overlay.None) return@Box
             Column {
-            BrandHeader(compact = true, showTagline = true)
+            BrandHeader(compact = true, showTagline = true, onHome = {
+                tab = Tab.Wallet.ordinal
+                openTx = null
+                NodeHost.incomingUri = null
+            })
             Box(modifier = Modifier.weight(1f)) {
             when (Tab.entries[tab]) {
                 Tab.Wallet -> if (!walletReady) NoWalletCard(onCreate = { show(Overlay.AddWallet) }) else Column {

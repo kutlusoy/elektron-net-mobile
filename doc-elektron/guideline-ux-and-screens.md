@@ -325,3 +325,7 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 
 - The Node tab uses the cube network icon (`NodeIcon`), not an arrow icon, so it is not mistaken for a reload action.
 - Pause and Stop sit in one row. "Restart" and, when Tor or I2P is on, "Restart node, Tor and I2P" are full-width buttons below them and need no confirmation, because it only restarts the node process (`NodeController.restartNode`) and the policy engine starts it again on the next tick.
+
+## Logo as home link (m0.1.7)
+
+- The compact header (logo, name, tagline) is a button that opens the Wallet tab and closes an open transaction view. It is announced as a button with the label of the Wallet tab. The large header on the first-run and lock screens is not a link.
