@@ -11,7 +11,7 @@ This file lists the features this release added. Corrections are not listed.
 
 ---
 
-**Status:** in preparation, branch `m0.1.8`. It continues from `m0.1.7`, the wallet version is 0.1.8.
+**Status:** released as `v4.0.5-m0.1.8`, this list is final. It continued from `m0.1.7`, the wallet version is 0.1.8.
 
 ## Text in a block
 
