@@ -964,4 +964,11 @@
     <string name="export_key_qr">Show public key as QR code</string>
     <string name="export_key_qr_hint">For a watch-only wallet on another phone: scan it there under Add wallet, Watch-only wallet. Contains the public key only, anyone with it can see all addresses and the balance.</string>
     <string name="export_key_qr_hide">Hide QR code</string>
+    <string name="msg_embed">Embed text in block</string>
+    <string name="msg_embed_hint">The text is stored publicly and permanently in the blockchain and can be read by anyone. It costs a small extra fee.</string>
+    <string name="msg_label">Your text</string>
+    <string name="msg_counter">%1$d / %2$d bytes</string>
+    <string name="msg_apply">Apply text</string>
+    <string name="msg_err_invalid">The text contains characters that are not allowed.</string>
+    <string name="msg_confirm_label">Text in block</string>
 </resources>

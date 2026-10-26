@@ -953,4 +953,11 @@
     <string name="export_key_qr">Mostrar la clave pública como código QR</string>
     <string name="export_key_qr_hint">Para una wallet de observación en otro teléfono: escanéalo allí en Añadir wallet, Wallet de observación. Contiene solo la clave pública, quien la tenga puede ver todas las direcciones y el saldo.</string>
     <string name="export_key_qr_hide">Ocultar código QR</string>
+    <string name="msg_embed">Incrustar texto en el bloque</string>
+    <string name="msg_embed_hint">El texto se guarda de forma pública y permanente en la blockchain y cualquiera puede leerlo. Cuesta una pequeña comisión adicional.</string>
+    <string name="msg_label">Tu texto</string>
+    <string name="msg_counter">%1$d / %2$d bytes</string>
+    <string name="msg_apply">Aplicar texto</string>
+    <string name="msg_err_invalid">El texto contiene caracteres no permitidos.</string>
+    <string name="msg_confirm_label">Texto en el bloque</string>
 </resources>

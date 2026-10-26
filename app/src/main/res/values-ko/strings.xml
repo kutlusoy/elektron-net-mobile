@@ -953,4 +953,11 @@
     <string name="export_key_qr">공개 키를 QR 코드로 표시</string>
     <string name="export_key_qr_hint">다른 휴대폰의 관찰 전용 지갑용입니다. 그곳의 지갑 추가, 관찰 전용 지갑에서 스캔하세요. 공개 키만 들어 있으며 가진 사람은 모든 주소와 잔액을 볼 수 있습니다.</string>
     <string name="export_key_qr_hide">QR 코드 숨기기</string>
+    <string name="msg_embed">텍스트를 블록에 삽입</string>
+    <string name="msg_embed_hint">텍스트는 블록체인에 공개적으로 영구 저장되며 누구나 읽을 수 있습니다. 소액의 추가 수수료가 듭니다.</string>
+    <string name="msg_label">내 텍스트</string>
+    <string name="msg_counter">%1$d / %2$d 바이트</string>
+    <string name="msg_apply">텍스트 적용</string>
+    <string name="msg_err_invalid">허용되지 않는 문자가 포함되어 있습니다.</string>
+    <string name="msg_confirm_label">블록 속 텍스트</string>
 </resources>

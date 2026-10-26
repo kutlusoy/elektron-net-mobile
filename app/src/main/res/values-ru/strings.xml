@@ -953,4 +953,11 @@
     <string name="export_key_qr">Показать публичный ключ QR-кодом</string>
     <string name="export_key_qr_hint">Для кошелька для наблюдения на другом телефоне: отсканируйте его там в разделе «Добавить кошелёк», «Кошелёк для наблюдения». Содержит только публичный ключ, у кого он есть, тот видит все адреса и баланс.</string>
     <string name="export_key_qr_hide">Скрыть QR-код</string>
+    <string name="msg_embed">Встроить текст в блок</string>
+    <string name="msg_embed_hint">Текст сохраняется в блокчейне публично и навсегда, и его может прочитать любой. Это стоит небольшую дополнительную комиссию.</string>
+    <string name="msg_label">Ваш текст</string>
+    <string name="msg_counter">%1$d / %2$d байт</string>
+    <string name="msg_apply">Применить текст</string>
+    <string name="msg_err_invalid">Текст содержит недопустимые символы.</string>
+    <string name="msg_confirm_label">Текст в блоке</string>
 </resources>

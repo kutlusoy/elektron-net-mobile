@@ -953,4 +953,11 @@
     <string name="export_key_qr">عرض المفتاح العام كرمز QR</string>
     <string name="export_key_qr_hint">لمحفظة مراقبة على هاتف آخر: امسحه هناك ضمن إضافة محفظة، محفظة للمراقبة. يحتوي على المفتاح العام فقط، ومن يملكه يرى كل العناوين والرصيد.</string>
     <string name="export_key_qr_hide">إخفاء رمز QR</string>
+    <string name="msg_embed">تضمين نص في الكتلة</string>
+    <string name="msg_embed_hint">يُحفظ النص علنًا وبشكل دائم في البلوكتشين ويمكن لأي شخص قراءته. وتُضاف رسوم صغيرة.</string>
+    <string name="msg_label">نصك</string>
+    <string name="msg_counter">%1$d / %2$d بايت</string>
+    <string name="msg_apply">تطبيق النص</string>
+    <string name="msg_err_invalid">يحتوي النص على أحرف غير مسموح بها.</string>
+    <string name="msg_confirm_label">النص في الكتلة</string>
 </resources>

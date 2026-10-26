@@ -103,6 +103,40 @@ class SendEngineIntegrationTest {
     }
 
     @Test
+    fun anEmbeddedMessageEndsUpInTheBlockAndNothingElseChanges() = withEnv(28892) { env ->
+        val text = EmbeddedMessage.clean("Invoice 42: thank you!\nSee you in Zürich 🎉")
+        val plain = env.engine.prepare(SendRequest(env.minerAddress, 150_000_000L, false, rate(env)))
+        val prepared = env.engine.prepare(SendRequest(env.minerAddress, 150_000_000L, false, rate(env), message = text))
+        assertEquals(text, prepared.review.message)
+        assertEquals(plain.review.amountLep, prepared.review.amountLep)
+        assertTrue(prepared.review.feeLep > plain.review.feeLep)
+        val txid = env.engine.send(prepared, pass)
+        val block = (env.rpc.call("generatetoaddress", listOf(1, env.minerAddress), "miner") as List<*>).single()
+        val tx = env.rpc.call("getrawtransaction", listOf(txid, true, block), null) as Map<*, *>
+        val data = (tx["vout"] as List<*>).map { (it as Map<*, *>)["scriptPubKey"] as Map<*, *> }.filter { it["type"] == "nulldata" }
+        assertEquals(listOf(EmbeddedMessage.scriptHex(text)), data.map { it["hex"] })
+        assertTrue(locked(env))
+    }
+
+    @Test
+    fun anEmbeddedMessageWorksWithMaxAndRefusesUncleanedText() = withEnv(28893) { env ->
+        val prepared = env.engine.prepare(SendRequest(env.minerAddress, null, true, rate(env), message = "all of it"))
+        assertEquals(0L, prepared.review.changeLep)
+        assertEquals("all of it", prepared.review.message)
+        assertEquals(SendFailure.InvalidMessage, failure { env.engine.prepare(SendRequest(env.minerAddress, 100_000_000L, false, rate(env), message = "a\u202Eb")) })
+        assertEquals(SendFailure.InvalidMessage, failure { env.engine.prepare(SendRequest(env.minerAddress, 100_000_000L, false, rate(env), message = "")) })
+    }
+
+    @Test
+    fun aTamperedMessageIsCaughtByTheValidation() = withEnv(28894) { env ->
+        val prepared = env.engine.prepare(SendRequest(env.minerAddress, 100_000_000L, false, rate(env), message = "original"))
+        val swapped = PreparedSend(prepared.psbt, prepared.request.copy(message = "other"), prepared.review, prepared.policyFloor, prepared.grossLep)
+        assertEquals(SendFailure.PsbtMismatch, failure { env.engine.validate(swapped) })
+        val dropped = PreparedSend(prepared.psbt, prepared.request.copy(message = null), prepared.review, prepared.policyFloor, prepared.grossLep)
+        assertEquals(SendFailure.PsbtMismatch, failure { env.engine.validate(dropped) })
+    }
+
+    @Test
     fun subtractFeeKeepsTheTotalAtTheEnteredAmount() = withEnv(28882) { env ->
         val prepared = env.engine.prepare(SendRequest(env.minerAddress, 150_000_000L, false, rate(env), subtractFee = true))
         val review = prepared.review

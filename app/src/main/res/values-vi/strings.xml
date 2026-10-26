@@ -953,4 +953,11 @@
     <string name="export_key_qr">Hiển thị khóa công khai dưới dạng mã QR</string>
     <string name="export_key_qr_hint">Dành cho ví theo dõi trên điện thoại khác: quét ở đó trong Thêm ví, Ví theo dõi. Chỉ chứa khóa công khai, ai có nó đều thấy tất cả địa chỉ và số dư.</string>
     <string name="export_key_qr_hide">Ẩn mã QR</string>
+    <string name="msg_embed">Nhúng văn bản vào khối</string>
+    <string name="msg_embed_hint">Văn bản được lưu công khai và vĩnh viễn trên blockchain và ai cũng có thể đọc. Có thêm một khoản phí nhỏ.</string>
+    <string name="msg_label">Văn bản của bạn</string>
+    <string name="msg_counter">%1$d / %2$d byte</string>
+    <string name="msg_apply">Áp dụng văn bản</string>
+    <string name="msg_err_invalid">Văn bản chứa ký tự không được phép.</string>
+    <string name="msg_confirm_label">Văn bản trong khối</string>
 </resources>

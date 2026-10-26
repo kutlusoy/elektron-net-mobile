@@ -953,4 +953,11 @@
     <string name="export_key_qr">以二维码显示公钥</string>
     <string name="export_key_qr_hint">用于另一部手机上的仅观察钱包：在那里的“添加钱包”“仅观察钱包”中扫描。只包含公钥，拥有它的人可以看到所有地址和余额。</string>
     <string name="export_key_qr_hide">隐藏二维码</string>
+    <string name="msg_embed">将文本嵌入区块</string>
+    <string name="msg_embed_hint">文本会被公开且永久地保存在区块链上，任何人都可以读取。需要少量额外手续费。</string>
+    <string name="msg_label">你的文本</string>
+    <string name="msg_counter">%1$d / %2$d 字节</string>
+    <string name="msg_apply">应用文本</string>
+    <string name="msg_err_invalid">文本包含不允许的字符。</string>
+    <string name="msg_confirm_label">区块中的文本</string>
 </resources>
