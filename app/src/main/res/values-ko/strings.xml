@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">더 큰 조각</string>
     <string name="scan_ur_hint">코드를 화면 안에 맞추세요. 바뀌는 코드는 여러 조각을 보여 주므로 막대가 가득 찰 때까지 계속 스캔하세요. 아무것도 저장되거나 전송되지 않습니다.</string>
     <string name="scan_ur_progress">읽음: %1$d%%</string>
+    <string name="watch_title">관찰 전용 지갑</string>
+    <string name="watch_intro">이 휴대폰에 키가 없는 지갑입니다. 잔액과 내역을 보여 주고 결제를 준비합니다. SeedSigner 같은 서명 장치가 서명합니다. 서명 장치의 공개 키나 디스크립터를 스캔하거나 키, 디스크립터 또는 주소 하나를 붙여 넣으세요.</string>
+    <string name="watch_field">키, 디스크립터 또는 주소</string>
+    <string name="watch_found">찾음: %1$s. 수신 주소와 잔돈 주소를 관찰합니다.</string>
+    <string name="watch_found_address">주소 하나를 찾았습니다. 이 주소만 관찰하며 새 주소는 만들지 않습니다.</string>
+    <string name="watch_add">관찰 전용 지갑 추가</string>
+    <string name="watch_note">지갑은 복원할 때처럼 네트워크의 현재 코인에서 키에 속한 것을 찾습니다. 여기에 개인 키를 입력하지 마세요.</string>
+    <string name="watch_err_unrecognized">주소, 공개 키, 디스크립터가 아닙니다.</string>
+    <string name="watch_err_private">개인 키가 들어 있습니다. 관찰 전용 지갑에 개인 키를 넣지 마세요. 대신 일반 지갑을 만들거나 복원하세요.</string>
+    <string name="watch_err_network">다른 네트워크의 것입니다.</string>
+    <string name="watch_err_unsupported">이런 종류의 키는 단독 키로 지원되지 않습니다(예: 멀티시그). 전체 디스크립터를 사용하세요.</string>
+    <string name="watch_err_ur">이 QR 코드는 서명 장치의 공개 키가 아닙니다.</string>
+    <string name="watch_button">관찰 전용 지갑</string>
+    <string name="watch_button_hint">SeedSigner 같은 서명 장치용이거나 주소 하나를 관찰하기 위한 것입니다. 이 휴대폰에는 키가 없습니다.</string>
+    <string name="watch_banner">관찰 전용 지갑: 잔액과 내역만 표시됩니다. 결제는 서명 장치가 서명합니다.</string>
+    <string name="watch_tools_hint">이 지갑에는 여기에 키가 없어 에스크로와 메시지 서명을 쓸 수 없습니다.</string>
+    <string name="send_watch_note">이 지갑에는 이 휴대폰에 키가 없습니다. 서명 장치가 서명할 결제 파일이 만들어집니다.</string>
+    <string name="send_watch_next">서명 장치로 서명한 뒤 여기서 서명된 파일을 스캔해 결제를 보내세요.</string>
+    <string name="send_watch_scan">서명된 파일 스캔</string>
+    <string name="wallets_remove_watch">이 지갑에는 여기에 키가 없습니다. 제거해도 관찰 목록만 사라지고 자금에는 영향이 없습니다.</string>
+    <string name="wallet_watch_badge">관찰 전용</string>
 </resources>

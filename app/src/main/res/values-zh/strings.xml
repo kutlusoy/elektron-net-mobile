@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">更大的分片</string>
     <string name="scan_ur_hint">将二维码放在画面内。变化的二维码会显示多个分片，请持续扫描直到进度条满。不会保存或发送任何内容。</string>
     <string name="scan_ur_progress">已读取：%1$d%%</string>
+    <string name="watch_title">仅观察钱包</string>
+    <string name="watch_intro">此手机上没有密钥的钱包。它显示余额和历史并准备付款，由签名设备（例如 SeedSigner）签名。扫描其公钥或描述符，或粘贴公钥、描述符或单个地址。</string>
+    <string name="watch_field">公钥、描述符或地址</string>
+    <string name="watch_found">已找到：%1$s。将观察收款地址和找零地址。</string>
+    <string name="watch_found_address">找到一个地址。只观察这个地址，不会生成新地址。</string>
+    <string name="watch_add">添加仅观察钱包</string>
+    <string name="watch_note">钱包会像恢复一样，在网络当前的币中查找属于该密钥的部分。切勿在此输入私钥。</string>
+    <string name="watch_err_unrecognized">这不是地址、公钥或描述符。</string>
+    <string name="watch_err_private">这包含私钥。切勿把私钥放入仅观察钱包。请为它创建或恢复一个普通钱包。</string>
+    <string name="watch_err_network">这属于另一个网络。</string>
+    <string name="watch_err_unsupported">这种密钥不支持作为单独的密钥（例如多重签名）。请使用完整的描述符。</string>
+    <string name="watch_err_ur">此二维码不是签名设备的公钥。</string>
+    <string name="watch_button">仅观察钱包</string>
+    <string name="watch_button_hint">适用于 SeedSigner 等签名设备，或用于观察单个地址。此手机上没有密钥。</string>
+    <string name="watch_banner">仅观察钱包：只有余额和历史。付款由您的签名设备签名。</string>
+    <string name="watch_tools_hint">此钱包在这里没有密钥，因此无法使用托管和消息签名。</string>
+    <string name="send_watch_note">此钱包在这部手机上没有密钥。会生成一个付款文件，由您的签名设备签名。</string>
+    <string name="send_watch_next">让签名设备签名，然后在这里扫描已签名的文件以发送付款。</string>
+    <string name="send_watch_scan">扫描已签名的文件</string>
+    <string name="wallets_remove_watch">此钱包在这里没有密钥。移除它只会删除观察列表，不影响您的资金。</string>
+    <string name="wallet_watch_badge">仅观察</string>
 </resources>

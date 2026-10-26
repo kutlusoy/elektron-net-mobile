@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">Potongan lebih besar</string>
     <string name="scan_ur_hint">Pegang kode di dalam gambar. Kode yang berubah menampilkan beberapa potongan, terus pindai sampai bilah penuh. Tidak ada yang disimpan atau dikirim.</string>
     <string name="scan_ur_progress">Terbaca: %1$d%%</string>
+    <string name="watch_title">Dompet pantau saja</string>
+    <string name="watch_intro">Dompet tanpa kunci di ponsel ini. Menampilkan saldo dan riwayat serta menyiapkan pembayaran. Perangkat penanda tangan, misalnya SeedSigner, menandatanganinya. Pindai kunci publik atau deskriptornya, atau tempel kunci, deskriptor, atau satu alamat.</string>
+    <string name="watch_field">Kunci, deskriptor, atau alamat</string>
+    <string name="watch_found">Ditemukan: %1$s. Alamat penerimaan dan kembalian akan dipantau.</string>
+    <string name="watch_found_address">Satu alamat ditemukan. Hanya alamat ini yang dipantau, tidak ada alamat baru yang dibuat.</string>
+    <string name="watch_add">Tambah dompet pantau</string>
+    <string name="watch_note">Dompet mencari di koin jaringan saat ini apa yang menjadi milik kunci, seperti pemulihan. Jangan pernah memasukkan kunci privat di sini.</string>
+    <string name="watch_err_unrecognized">Ini bukan alamat, kunci publik, maupun deskriptor.</string>
+    <string name="watch_err_private">Ini berisi kunci privat. Jangan pernah menaruh kunci privat di dompet pantau. Buat atau pulihkan dompet biasa untuk itu.</string>
+    <string name="watch_err_network">Ini milik jaringan lain.</string>
+    <string name="watch_err_unsupported">Jenis kunci ini tidak didukung sebagai kunci tunggal (misalnya multisig). Gunakan deskriptor lengkap.</string>
+    <string name="watch_err_ur">Kode QR ini bukan kunci publik perangkat penanda tangan.</string>
+    <string name="watch_button">Dompet pantau</string>
+    <string name="watch_button_hint">Untuk perangkat penanda tangan seperti SeedSigner, atau untuk memantau satu alamat. Tidak ada kunci di ponsel ini.</string>
+    <string name="watch_banner">Dompet pantau: hanya saldo dan riwayat. Pembayaran ditandatangani perangkat penanda tanganmu.</string>
+    <string name="watch_tools_hint">Dompet ini tidak punya kunci di sini, jadi escrow dan penandatanganan pesan tidak tersedia.</string>
+    <string name="send_watch_note">Dompet ini tidak punya kunci di ponsel ini. Dibuat berkas pembayaran yang ditandatangani perangkat penanda tanganmu.</string>
+    <string name="send_watch_next">Minta perangkat penanda tanganmu menandatanganinya, lalu pindai berkas bertanda tangan di sini untuk mengirim pembayaran.</string>
+    <string name="send_watch_scan">Pindai berkas bertanda tangan</string>
+    <string name="wallets_remove_watch">Dompet ini tidak punya kunci di sini. Menghapusnya hanya menghapus daftar pantau, dananya tidak terpengaruh.</string>
+    <string name="wallet_watch_badge">Hanya pantau</string>
 </resources>

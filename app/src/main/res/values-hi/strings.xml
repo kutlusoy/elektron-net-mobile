@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">बड़े हिस्से</string>
     <string name="scan_ur_hint">कोड को तस्वीर के अंदर रखें। बदलता कोड कई हिस्से दिखाता है, बार भरने तक स्कैन करते रहें। कुछ भी सहेजा या भेजा नहीं जाता।</string>
     <string name="scan_ur_progress">पढ़ा गया: %1$d%%</string>
+    <string name="watch_title">केवल-निगरानी वॉलेट</string>
+    <string name="watch_intro">इस फ़ोन पर बिना कुंजी वाला वॉलेट। यह बैलेंस और इतिहास दिखाता है और भुगतान तैयार करता है। SeedSigner जैसा साइनिंग डिवाइस उन पर हस्ताक्षर करता है। उसकी सार्वजनिक कुंजी या डिस्क्रिप्टर स्कैन करें, या कुंजी, डिस्क्रिप्टर या एक पता चिपकाएँ।</string>
+    <string name="watch_field">कुंजी, डिस्क्रिप्टर या पता</string>
+    <string name="watch_found">मिला: %1$s। प्राप्ति और चेंज पतों की निगरानी होगी।</string>
+    <string name="watch_found_address">एक पता मिला। केवल इसी पते की निगरानी होगी, नए पते नहीं बनेंगे।</string>
+    <string name="watch_add">निगरानी वॉलेट जोड़ें</string>
+    <string name="watch_note">वॉलेट रिस्टोर की तरह नेटवर्क के मौजूदा सिक्कों में वह खोजता है जो कुंजी का है। यहाँ कभी निजी कुंजी न डालें।</string>
+    <string name="watch_err_unrecognized">यह न पता है, न सार्वजनिक कुंजी और न डिस्क्रिप्टर।</string>
+    <string name="watch_err_private">इसमें निजी कुंजी है। निजी कुंजी को केवल-निगरानी वॉलेट में कभी न रखें। इसके लिए सामान्य वॉलेट बनाएँ या रिस्टोर करें।</string>
+    <string name="watch_err_network">यह किसी दूसरे नेटवर्क का है।</string>
+    <string name="watch_err_unsupported">इस तरह की कुंजी अकेली कुंजी के रूप में समर्थित नहीं है (जैसे मल्टीसिग)। पूरा डिस्क्रिप्टर इस्तेमाल करें।</string>
+    <string name="watch_err_ur">यह QR कोड किसी साइनिंग डिवाइस की सार्वजनिक कुंजी नहीं है।</string>
+    <string name="watch_button">केवल-निगरानी वॉलेट</string>
+    <string name="watch_button_hint">SeedSigner जैसे साइनिंग डिवाइस के लिए, या एक पते की निगरानी के लिए। इस फ़ोन पर कोई कुंजी नहीं।</string>
+    <string name="watch_banner">केवल-निगरानी वॉलेट: सिर्फ़ बैलेंस और इतिहास। भुगतान पर आपका साइनिंग डिवाइस हस्ताक्षर करता है।</string>
+    <string name="watch_tools_hint">इस वॉलेट में यहाँ कुंजी नहीं है, इसलिए एस्क्रो और संदेश हस्ताक्षर उपलब्ध नहीं हैं।</string>
+    <string name="send_watch_note">इस वॉलेट में इस फ़ोन पर कुंजी नहीं है। एक भुगतान फ़ाइल बनती है जिस पर आपका साइनिंग डिवाइस हस्ताक्षर करता है।</string>
+    <string name="send_watch_next">साइनिंग डिवाइस से हस्ताक्षर कराएँ, फिर भुगतान भेजने के लिए यहाँ हस्ताक्षरित फ़ाइल स्कैन करें।</string>
+    <string name="send_watch_scan">हस्ताक्षरित फ़ाइल स्कैन करें</string>
+    <string name="wallets_remove_watch">इस वॉलेट में यहाँ कुंजी नहीं है। हटाने से केवल निगरानी सूची हटती है, आपके फ़ंड प्रभावित नहीं होते।</string>
+    <string name="wallet_watch_badge">केवल निगरानी</string>
 </resources>

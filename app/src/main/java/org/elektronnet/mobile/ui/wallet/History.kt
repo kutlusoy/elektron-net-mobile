@@ -156,8 +156,10 @@ fun TxDetailsScreen(item: TxItem, onClose: () -> Unit, onBumped: (String) -> Uni
                 Text(stringResource(R.string.tx_open_explorer))
             }
         }
-        if (item.kind == TxKind.Sent && item.status == TxStatus.Pending) BumpSection(item.txid, onBumped)
-        if (item.kind == TxKind.Received && item.status == TxStatus.Pending) CpfpSection(item.txid, onBumped)
+        if (!NodeHost.isWatchOnly()) {
+            if (item.kind == TxKind.Sent && item.status == TxStatus.Pending) BumpSection(item.txid, onBumped)
+            if (item.kind == TxKind.Received && item.status == TxStatus.Pending) CpfpSection(item.txid, onBumped)
+        }
     }
 }
 

@@ -45,7 +45,7 @@ import org.elektronnet.mobile.wallet.SendFailure
 import org.elektronnet.mobile.ui.theme.ElektronMono
 
 @Composable
-fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: String = "") {
+fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: String = "", scanFirst: Boolean = false) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var text by remember { mutableStateOf(initial) }
@@ -57,7 +57,7 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
     var signWith by remember { mutableStateOf<String?>(null) }
     var txid by remember { mutableStateOf<String?>(null) }
     var confirmBroadcast by remember { mutableStateOf(false) }
-    var scanTarget by remember { mutableStateOf(0) }
+    var scanTarget by remember { mutableStateOf(if (scanFirst) 1 else 0) }
     SecureWindow()
 
     fun run(block: () -> PsbtView?) {
@@ -78,8 +78,9 @@ fun PsbtScreen(walletLabels: Map<String, String>, onBack: () -> Unit, initial: S
 
     if (scanTarget != 0) {
         val take = { scanned: String ->
-            if (scanTarget == 1) { text = scanned; view = null; txid = null } else other = scanned
+            val target = scanTarget
             scanTarget = 0
+            if (target == 1) { text = scanned; view = null; txid = null; if (scanned.isNotBlank()) inspect(scanned) } else other = scanned
         }
         UrScannerScreen(
             onPlain = take,

@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">Daha büyük parçalar</string>
     <string name="scan_ur_hint">Kodu görüntünün içinde tut. Değişen bir kod birkaç parça gösterir, çubuk dolana kadar taramaya devam et. Hiçbir şey kaydedilmez veya gönderilmez.</string>
     <string name="scan_ur_progress">Okunan: %1$d%%</string>
+    <string name="watch_title">Yalnızca izleme cüzdanı</string>
+    <string name="watch_intro">Bu telefonda anahtarı olmayan bir cüzdan. Bakiye ve geçmişi gösterir, ödemeleri hazırlar. SeedSigner gibi bir imzalama cihazı bunları imzalar. Herkese açık anahtarını veya tanımlayıcısını tara ya da bir anahtar, tanımlayıcı veya tek bir adres yapıştır.</string>
+    <string name="watch_field">Anahtar, tanımlayıcı veya adres</string>
+    <string name="watch_found">Bulundu: %1$s. Alma ve para üstü adresleri izlenecek.</string>
+    <string name="watch_found_address">Bir adres bulundu. Yalnızca bu adres izlenir, yeni adres üretilmez.</string>
+    <string name="watch_add">İzleme cüzdanı ekle</string>
+    <string name="watch_note">Cüzdan, ağın güncel paralarında anahtara ait olanları arar, tıpkı bir geri yükleme gibi. Buraya asla özel anahtar girme.</string>
+    <string name="watch_err_unrecognized">Bu bir adres, herkese açık anahtar veya tanımlayıcı değil.</string>
+    <string name="watch_err_private">Bu bir özel anahtar içeriyor. Özel anahtarı asla izleme cüzdanına koyma. Bunun için normal bir cüzdan oluştur veya geri yükle.</string>
+    <string name="watch_err_network">Bu başka bir ağa ait.</string>
+    <string name="watch_err_unsupported">Bu tür anahtar tek başına desteklenmiyor (örneğin çoklu imza). Tam tanımlayıcıyı kullan.</string>
+    <string name="watch_err_ur">Bu QR kodu bir imzalama cihazının herkese açık anahtarı değil.</string>
+    <string name="watch_button">İzleme cüzdanı</string>
+    <string name="watch_button_hint">SeedSigner gibi bir imzalama cihazı için veya tek bir adresi izlemek için. Bu telefonda anahtar yok.</string>
+    <string name="watch_banner">İzleme cüzdanı: yalnızca bakiye ve geçmiş. Ödemeleri imzalama cihazın imzalar.</string>
+    <string name="watch_tools_hint">Bu cüzdanın burada anahtarı yok, bu yüzden emanet ve mesaj imzalama kullanılamaz.</string>
+    <string name="send_watch_note">Bu cüzdanın bu telefonda anahtarı yok. İmzalama cihazının imzalayacağı bir ödeme dosyası oluşturulur.</string>
+    <string name="send_watch_next">İmzalama cihazına imzalat, sonra ödemeyi göndermek için imzalı dosyayı burada tara.</string>
+    <string name="send_watch_scan">İmzalı dosyayı tara</string>
+    <string name="wallets_remove_watch">Bu cüzdanın burada anahtarı yok. Kaldırmak yalnızca izleme listesini siler, paran etkilenmez.</string>
+    <string name="wallet_watch_badge">Yalnızca izleme</string>
 </resources>

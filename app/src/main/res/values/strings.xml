@@ -940,4 +940,25 @@
     <string name="psbt_qr_bigger">Larger pieces</string>
     <string name="scan_ur_hint">Hold the code inside the picture. A code that changes shows several pieces, keep scanning until the bar is full. Nothing is saved or sent.</string>
     <string name="scan_ur_progress">Read: %1$d%%</string>
+    <string name="watch_title">Watch-only wallet</string>
+    <string name="watch_intro">A wallet without keys on this phone. It shows balance and history and prepares payments. A signing device, for example a SeedSigner, signs them. Scan its public key or descriptor, or paste a key, a descriptor or a single address.</string>
+    <string name="watch_field">Key, descriptor or address</string>
+    <string name="watch_found">Found: %1$s. Receive and change addresses will be watched.</string>
+    <string name="watch_found_address">One address found. Only this address is watched, no new addresses are made.</string>
+    <string name="watch_add">Add watch-only wallet</string>
+    <string name="watch_note">The wallet searches the current coins of the network for what belongs to the key, like a restore. Never enter a private key here.</string>
+    <string name="watch_err_unrecognized">This is not an address, a public key or a descriptor.</string>
+    <string name="watch_err_private">This contains a private key. Never put a private key into a watch-only wallet. Create or restore a normal wallet for it instead.</string>
+    <string name="watch_err_network">This belongs to another network.</string>
+    <string name="watch_err_unsupported">This kind of key is not supported as a bare key (for example multisig). Use the full descriptor.</string>
+    <string name="watch_err_ur">This QR code is not a public key of a signing device.</string>
+    <string name="watch_button">Watch-only wallet</string>
+    <string name="watch_button_hint">For a signing device such as a SeedSigner, or to watch one address. No keys on this phone.</string>
+    <string name="watch_banner">Watch-only wallet: balance and history only. Payments are signed by your signing device.</string>
+    <string name="watch_tools_hint">This wallet has no keys here, so escrow and message signing are not available.</string>
+    <string name="send_watch_note">This wallet has no keys on this phone. A payment file is created that your signing device signs.</string>
+    <string name="send_watch_next">Let your signing device sign it, then scan the signed file here to send the payment.</string>
+    <string name="send_watch_scan">Scan the signed file</string>
+    <string name="wallets_remove_watch">This wallet has no keys here. Removing it only removes the watch list, your funds are not affected.</string>
+    <string name="wallet_watch_badge">Watch-only</string>
 </resources>

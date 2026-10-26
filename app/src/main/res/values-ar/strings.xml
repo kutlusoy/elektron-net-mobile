@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">أجزاء أكبر</string>
     <string name="scan_ur_hint">ضع الرمز داخل الصورة. الرمز المتغير يعرض عدة أجزاء، تابع المسح حتى يمتلئ الشريط. لا يُحفظ أو يُرسل شيء.</string>
     <string name="scan_ur_progress">تمت القراءة: %1$d%%</string>
+    <string name="watch_title">محفظة للمراقبة فقط</string>
+    <string name="watch_intro">محفظة بلا مفاتيح على هذا الهاتف. تعرض الرصيد والسجل وتجهّز المدفوعات، ويوقّعها جهاز توقيع مثل SeedSigner. امسح مفتاحه العام أو الواصف، أو الصق مفتاحًا أو واصفًا أو عنوانًا واحدًا.</string>
+    <string name="watch_field">مفتاح أو واصف أو عنوان</string>
+    <string name="watch_found">تم العثور على: %1$s. ستُراقَب عناوين الاستلام والباقي.</string>
+    <string name="watch_found_address">عُثر على عنوان واحد. يُراقَب هذا العنوان فقط ولا تُنشأ عناوين جديدة.</string>
+    <string name="watch_add">إضافة محفظة للمراقبة</string>
+    <string name="watch_note">تبحث المحفظة في عملات الشبكة الحالية عمّا يخص المفتاح، كما في الاستعادة. لا تُدخل مفتاحًا خاصًا هنا أبدًا.</string>
+    <string name="watch_err_unrecognized">هذا ليس عنوانًا ولا مفتاحًا عامًا ولا واصفًا.</string>
+    <string name="watch_err_private">يحتوي هذا على مفتاح خاص. لا تضع مفتاحًا خاصًا في محفظة للمراقبة. أنشئ أو استعد محفظة عادية بدلًا من ذلك.</string>
+    <string name="watch_err_network">هذا يخص شبكة أخرى.</string>
+    <string name="watch_err_unsupported">هذا النوع من المفاتيح غير مدعوم كمفتاح منفرد (مثل التوقيع المتعدد). استخدم الواصف الكامل.</string>
+    <string name="watch_err_ur">رمز QR هذا ليس المفتاح العام لجهاز توقيع.</string>
+    <string name="watch_button">محفظة للمراقبة</string>
+    <string name="watch_button_hint">لجهاز توقيع مثل SeedSigner أو لمراقبة عنوان واحد. لا مفاتيح على هذا الهاتف.</string>
+    <string name="watch_banner">محفظة للمراقبة: الرصيد والسجل فقط. يوقّع جهاز التوقيع لديك المدفوعات.</string>
+    <string name="watch_tools_hint">ليس لهذه المحفظة مفاتيح هنا، لذا لا يتوفر الضمان ولا توقيع الرسائل.</string>
+    <string name="send_watch_note">ليس لهذه المحفظة مفاتيح على هذا الهاتف. يُنشأ ملف دفع يوقّعه جهاز التوقيع لديك.</string>
+    <string name="send_watch_next">دع جهاز التوقيع يوقّعه ثم امسح الملف الموقّع هنا لإرسال الدفعة.</string>
+    <string name="send_watch_scan">امسح الملف الموقّع</string>
+    <string name="wallets_remove_watch">ليس لهذه المحفظة مفاتيح هنا. إزالتها تحذف قائمة المراقبة فقط ولا تتأثر أموالك.</string>
+    <string name="wallet_watch_badge">للمراقبة فقط</string>
 </resources>

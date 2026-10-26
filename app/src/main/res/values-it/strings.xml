@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">Pezzi più grandi</string>
     <string name="scan_ur_hint">Tieni il codice dentro l\'immagine. Un codice che cambia mostra più pezzi, continua a scansionare finché la barra non è piena. Non viene salvato né inviato nulla.</string>
     <string name="scan_ur_progress">Letto: %1$d%%</string>
+    <string name="watch_title">Wallet di sola osservazione</string>
+    <string name="watch_intro">Un wallet senza chiavi su questo telefono. Mostra saldo e cronologia e prepara i pagamenti. Un dispositivo di firma, per esempio un SeedSigner, li firma. Scansiona la sua chiave pubblica o il descrittore, oppure incolla una chiave, un descrittore o un singolo indirizzo.</string>
+    <string name="watch_field">Chiave, descrittore o indirizzo</string>
+    <string name="watch_found">Trovato: %1$s. Verranno osservati gli indirizzi di ricezione e di resto.</string>
+    <string name="watch_found_address">Un indirizzo trovato. Viene osservato solo questo indirizzo, non vengono creati nuovi indirizzi.</string>
+    <string name="watch_add">Aggiungi wallet di osservazione</string>
+    <string name="watch_note">Il wallet cerca tra le monete attuali della rete ciò che appartiene alla chiave, come un ripristino. Non inserire mai qui una chiave privata.</string>
+    <string name="watch_err_unrecognized">Questo non è un indirizzo, una chiave pubblica o un descrittore.</string>
+    <string name="watch_err_private">Questo contiene una chiave privata. Non mettere mai una chiave privata in un wallet di osservazione. Crea o ripristina invece un wallet normale.</string>
+    <string name="watch_err_network">Questo appartiene a un\'altra rete.</string>
+    <string name="watch_err_unsupported">Questo tipo di chiave non è supportato come chiave singola (per esempio multisig). Usa il descrittore completo.</string>
+    <string name="watch_err_ur">Questo codice QR non è la chiave pubblica di un dispositivo di firma.</string>
+    <string name="watch_button">Wallet di osservazione</string>
+    <string name="watch_button_hint">Per un dispositivo di firma come un SeedSigner, o per osservare un indirizzo. Nessuna chiave su questo telefono.</string>
+    <string name="watch_banner">Wallet di osservazione: solo saldo e cronologia. I pagamenti li firma il tuo dispositivo di firma.</string>
+    <string name="watch_tools_hint">Questo wallet non ha chiavi qui, quindi niente escrow né firma di messaggi.</string>
+    <string name="send_watch_note">Questo wallet non ha chiavi su questo telefono. Viene creato un file di pagamento che il tuo dispositivo di firma firma.</string>
+    <string name="send_watch_next">Fallo firmare dal tuo dispositivo di firma, poi scansiona qui il file firmato per inviare il pagamento.</string>
+    <string name="send_watch_scan">Scansiona il file firmato</string>
+    <string name="wallets_remove_watch">Questo wallet non ha chiavi qui. Rimuoverlo elimina solo l\'elenco di osservazione, i tuoi fondi non sono toccati.</string>
+    <string name="wallet_watch_badge">Sola osservazione</string>
 </resources>

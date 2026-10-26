@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">Peças maiores</string>
     <string name="scan_ur_hint">Mantenha o código dentro da imagem. Um código que muda mostra várias peças, continue escaneando até a barra encher. Nada é salvo nem enviado.</string>
     <string name="scan_ur_progress">Lido: %1$d%%</string>
+    <string name="watch_title">Carteira só de observação</string>
+    <string name="watch_intro">Uma carteira sem chaves neste celular. Ela mostra saldo e histórico e prepara pagamentos. Um dispositivo de assinatura, por exemplo um SeedSigner, os assina. Escaneie a chave pública ou o descritor dele, ou cole uma chave, um descritor ou um único endereço.</string>
+    <string name="watch_field">Chave, descritor ou endereço</string>
+    <string name="watch_found">Encontrado: %1$s. Os endereços de recebimento e de troco serão observados.</string>
+    <string name="watch_found_address">Um endereço encontrado. Só este endereço é observado, nenhum endereço novo é criado.</string>
+    <string name="watch_add">Adicionar carteira de observação</string>
+    <string name="watch_note">A carteira procura nas moedas atuais da rede o que pertence à chave, como uma restauração. Nunca digite uma chave privada aqui.</string>
+    <string name="watch_err_unrecognized">Isto não é um endereço, uma chave pública nem um descritor.</string>
+    <string name="watch_err_private">Isto contém uma chave privada. Nunca coloque uma chave privada em uma carteira de observação. Crie ou restaure uma carteira normal para ela.</string>
+    <string name="watch_err_network">Isto pertence a outra rede.</string>
+    <string name="watch_err_unsupported">Este tipo de chave não é aceito como chave solta (por exemplo multiassinatura). Use o descritor completo.</string>
+    <string name="watch_err_ur">Este código QR não é a chave pública de um dispositivo de assinatura.</string>
+    <string name="watch_button">Carteira de observação</string>
+    <string name="watch_button_hint">Para um dispositivo de assinatura como um SeedSigner, ou para observar um endereço. Sem chaves neste celular.</string>
+    <string name="watch_banner">Carteira de observação: só saldo e histórico. Os pagamentos são assinados pelo seu dispositivo de assinatura.</string>
+    <string name="watch_tools_hint">Esta carteira não tem chaves aqui, então não há escrow nem assinatura de mensagens.</string>
+    <string name="send_watch_note">Esta carteira não tem chaves neste celular. Cria-se um arquivo de pagamento que seu dispositivo de assinatura assina.</string>
+    <string name="send_watch_next">Peça ao seu dispositivo de assinatura que o assine e escaneie aqui o arquivo assinado para enviar o pagamento.</string>
+    <string name="send_watch_scan">Escanear o arquivo assinado</string>
+    <string name="wallets_remove_watch">Esta carteira não tem chaves aqui. Removê-la só apaga a lista de observação, seus fundos não são afetados.</string>
+    <string name="wallet_watch_badge">Só observação</string>
 </resources>

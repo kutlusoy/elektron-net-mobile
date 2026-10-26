@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">Mảnh lớn hơn</string>
     <string name="scan_ur_hint">Giữ mã trong khung hình. Mã thay đổi hiển thị nhiều mảnh, hãy tiếp tục quét cho đến khi thanh đầy. Không có gì được lưu hoặc gửi đi.</string>
     <string name="scan_ur_progress">Đã đọc: %1$d%%</string>
+    <string name="watch_title">Ví chỉ theo dõi</string>
+    <string name="watch_intro">Ví không có khóa trên điện thoại này. Ví hiển thị số dư và lịch sử, chuẩn bị giao dịch. Một thiết bị ký, ví dụ SeedSigner, sẽ ký chúng. Quét khóa công khai hoặc mô tả của thiết bị, hoặc dán một khóa, một mô tả hay một địa chỉ.</string>
+    <string name="watch_field">Khóa, mô tả hoặc địa chỉ</string>
+    <string name="watch_found">Đã tìm thấy: %1$s. Các địa chỉ nhận và địa chỉ thối sẽ được theo dõi.</string>
+    <string name="watch_found_address">Tìm thấy một địa chỉ. Chỉ địa chỉ này được theo dõi, không tạo địa chỉ mới.</string>
+    <string name="watch_add">Thêm ví theo dõi</string>
+    <string name="watch_note">Ví tìm trong các đồng hiện tại của mạng những gì thuộc về khóa, giống như khôi phục. Đừng bao giờ nhập khóa riêng tư vào đây.</string>
+    <string name="watch_err_unrecognized">Đây không phải địa chỉ, khóa công khai hay mô tả.</string>
+    <string name="watch_err_private">Nội dung này chứa khóa riêng tư. Đừng bao giờ đưa khóa riêng tư vào ví theo dõi. Hãy tạo hoặc khôi phục một ví thông thường cho nó.</string>
+    <string name="watch_err_network">Nội dung này thuộc mạng khác.</string>
+    <string name="watch_err_unsupported">Loại khóa này không được hỗ trợ dưới dạng khóa riêng lẻ (ví dụ đa chữ ký). Hãy dùng mô tả đầy đủ.</string>
+    <string name="watch_err_ur">Mã QR này không phải khóa công khai của thiết bị ký.</string>
+    <string name="watch_button">Ví theo dõi</string>
+    <string name="watch_button_hint">Dành cho thiết bị ký như SeedSigner, hoặc để theo dõi một địa chỉ. Không có khóa trên điện thoại này.</string>
+    <string name="watch_banner">Ví theo dõi: chỉ số dư và lịch sử. Giao dịch do thiết bị ký của bạn ký.</string>
+    <string name="watch_tools_hint">Ví này không có khóa ở đây nên không có ký quỹ và ký thông điệp.</string>
+    <string name="send_watch_note">Ví này không có khóa trên điện thoại này. Một tệp thanh toán được tạo để thiết bị ký của bạn ký.</string>
+    <string name="send_watch_next">Hãy để thiết bị ký ký nó, rồi quét tệp đã ký ở đây để gửi giao dịch.</string>
+    <string name="send_watch_scan">Quét tệp đã ký</string>
+    <string name="wallets_remove_watch">Ví này không có khóa ở đây. Xóa nó chỉ xóa danh sách theo dõi, tiền của bạn không bị ảnh hưởng.</string>
+    <string name="wallet_watch_badge">Chỉ theo dõi</string>
 </resources>

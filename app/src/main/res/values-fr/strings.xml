@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">Morceaux plus grands</string>
     <string name="scan_ur_hint">Place le code dans l\'image. Un code qui change montre plusieurs morceaux, continue à scanner jusqu\'à ce que la barre soit pleine. Rien n\'est enregistré ni envoyé.</string>
     <string name="scan_ur_progress">Lu : %1$d%%</string>
+    <string name="watch_title">Wallet d\'observation</string>
+    <string name="watch_intro">Un wallet sans clés sur ce téléphone. Il affiche le solde et l\'historique et prépare les paiements. Un appareil de signature, par exemple un SeedSigner, les signe. Scanne sa clé publique ou son descripteur, ou colle une clé, un descripteur ou une seule adresse.</string>
+    <string name="watch_field">Clé, descripteur ou adresse</string>
+    <string name="watch_found">Trouvé : %1$s. Les adresses de réception et de monnaie seront surveillées.</string>
+    <string name="watch_found_address">Une adresse trouvée. Seule cette adresse est surveillée, aucune nouvelle adresse n\'est créée.</string>
+    <string name="watch_add">Ajouter un wallet d\'observation</string>
+    <string name="watch_note">Le wallet cherche dans les pièces actuelles du réseau ce qui appartient à la clé, comme une restauration. Ne saisis jamais de clé privée ici.</string>
+    <string name="watch_err_unrecognized">Ce n\'est ni une adresse, ni une clé publique, ni un descripteur.</string>
+    <string name="watch_err_private">Ceci contient une clé privée. Ne mets jamais de clé privée dans un wallet d\'observation. Crée ou restaure plutôt un wallet normal.</string>
+    <string name="watch_err_network">Ceci appartient à un autre réseau.</string>
+    <string name="watch_err_unsupported">Ce type de clé n\'est pas pris en charge comme clé seule (par exemple multisig). Utilise le descripteur complet.</string>
+    <string name="watch_err_ur">Ce code QR n\'est pas la clé publique d\'un appareil de signature.</string>
+    <string name="watch_button">Wallet d\'observation</string>
+    <string name="watch_button_hint">Pour un appareil de signature comme un SeedSigner, ou pour surveiller une adresse. Aucune clé sur ce téléphone.</string>
+    <string name="watch_banner">Wallet d\'observation : solde et historique seulement. Les paiements sont signés par ton appareil de signature.</string>
+    <string name="watch_tools_hint">Ce wallet n\'a pas de clés ici, donc ni escrow ni signature de messages.</string>
+    <string name="send_watch_note">Ce wallet n\'a pas de clés sur ce téléphone. Un fichier de paiement est créé, que ton appareil de signature signe.</string>
+    <string name="send_watch_next">Fais-le signer par ton appareil de signature, puis scanne ici le fichier signé pour envoyer le paiement.</string>
+    <string name="send_watch_scan">Scanner le fichier signé</string>
+    <string name="wallets_remove_watch">Ce wallet n\'a pas de clés ici. Le retirer supprime seulement la liste d\'observation, tes fonds ne sont pas touchés.</string>
+    <string name="wallet_watch_badge">Observation seule</string>
 </resources>

@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">Größere Teile</string>
     <string name="scan_ur_hint">Halte den Code ins Bild. Ein wechselnder Code zeigt mehrere Teile, scanne weiter, bis der Balken voll ist. Es wird nichts gespeichert oder gesendet.</string>
     <string name="scan_ur_progress">Gelesen: %1$d%%</string>
+    <string name="watch_title">Nur-Beobachten-Wallet</string>
+    <string name="watch_intro">Eine Wallet ohne Schlüssel auf diesem Telefon. Sie zeigt Guthaben und Verlauf und bereitet Zahlungen vor. Ein Signiergerät, zum Beispiel ein SeedSigner, unterschreibt sie. Scanne seinen öffentlichen Schlüssel oder Descriptor, oder füge einen Schlüssel, einen Descriptor oder eine einzelne Adresse ein.</string>
+    <string name="watch_field">Schlüssel, Descriptor oder Adresse</string>
+    <string name="watch_found">Gefunden: %1$s. Empfangs- und Wechselgeldadressen werden beobachtet.</string>
+    <string name="watch_found_address">Eine Adresse gefunden. Nur diese Adresse wird beobachtet, es werden keine neuen Adressen erzeugt.</string>
+    <string name="watch_add">Nur-Beobachten-Wallet hinzufügen</string>
+    <string name="watch_note">Die Wallet durchsucht die aktuellen Coins des Netzwerks nach dem, was zum Schlüssel gehört, wie bei einer Wiederherstellung. Gib hier nie einen privaten Schlüssel ein.</string>
+    <string name="watch_err_unrecognized">Das ist weder eine Adresse noch ein öffentlicher Schlüssel oder ein Descriptor.</string>
+    <string name="watch_err_private">Das enthält einen privaten Schlüssel. Lege nie einen privaten Schlüssel in einer Nur-Beobachten-Wallet ab. Erstelle oder stelle dafür eine normale Wallet wieder her.</string>
+    <string name="watch_err_network">Das gehört zu einem anderen Netzwerk.</string>
+    <string name="watch_err_unsupported">Diese Art Schlüssel wird als einzelner Schlüssel nicht unterstützt (zum Beispiel Multisig). Verwende den vollständigen Descriptor.</string>
+    <string name="watch_err_ur">Dieser QR-Code ist kein öffentlicher Schlüssel eines Signiergeräts.</string>
+    <string name="watch_button">Nur-Beobachten-Wallet</string>
+    <string name="watch_button_hint">Für ein Signiergerät wie einen SeedSigner oder um eine Adresse zu beobachten. Keine Schlüssel auf diesem Telefon.</string>
+    <string name="watch_banner">Nur-Beobachten-Wallet: nur Guthaben und Verlauf. Zahlungen unterschreibt dein Signiergerät.</string>
+    <string name="watch_tools_hint">Diese Wallet hat hier keine Schlüssel, deshalb gibt es kein Escrow und kein Signieren von Nachrichten.</string>
+    <string name="send_watch_note">Diese Wallet hat keine Schlüssel auf diesem Telefon. Es wird eine Zahlungsdatei erstellt, die dein Signiergerät unterschreibt.</string>
+    <string name="send_watch_next">Lass sie von deinem Signiergerät unterschreiben und scanne dann die unterschriebene Datei hier, um die Zahlung zu senden.</string>
+    <string name="send_watch_scan">Unterschriebene Datei scannen</string>
+    <string name="wallets_remove_watch">Diese Wallet hat hier keine Schlüssel. Beim Entfernen verschwindet nur die Beobachtungsliste, dein Guthaben bleibt unberührt.</string>
+    <string name="wallet_watch_badge">Nur beobachten</string>
 </resources>

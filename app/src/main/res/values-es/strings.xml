@@ -929,4 +929,25 @@
     <string name="psbt_qr_bigger">Piezas más grandes</string>
     <string name="scan_ur_hint">Mantén el código dentro de la imagen. Un código que cambia muestra varias piezas, sigue escaneando hasta que la barra esté llena. No se guarda ni se envía nada.</string>
     <string name="scan_ur_progress">Leído: %1$d%%</string>
+    <string name="watch_title">Wallet solo de observación</string>
+    <string name="watch_intro">Una wallet sin claves en este teléfono. Muestra saldo e historial y prepara pagos. Un dispositivo de firma, por ejemplo un SeedSigner, los firma. Escanea su clave pública o descriptor, o pega una clave, un descriptor o una sola dirección.</string>
+    <string name="watch_field">Clave, descriptor o dirección</string>
+    <string name="watch_found">Encontrado: %1$s. Se vigilarán las direcciones de recepción y de cambio.</string>
+    <string name="watch_found_address">Una dirección encontrada. Solo se vigila esta dirección, no se crean direcciones nuevas.</string>
+    <string name="watch_add">Añadir wallet de observación</string>
+    <string name="watch_note">La wallet busca en las monedas actuales de la red lo que pertenece a la clave, como una restauración. Nunca introduzcas aquí una clave privada.</string>
+    <string name="watch_err_unrecognized">Esto no es una dirección, una clave pública ni un descriptor.</string>
+    <string name="watch_err_private">Esto contiene una clave privada. Nunca pongas una clave privada en una wallet de observación. Crea o restaura una wallet normal para ella.</string>
+    <string name="watch_err_network">Esto pertenece a otra red.</string>
+    <string name="watch_err_unsupported">Este tipo de clave no se admite como clave suelta (por ejemplo multifirma). Usa el descriptor completo.</string>
+    <string name="watch_err_ur">Este código QR no es la clave pública de un dispositivo de firma.</string>
+    <string name="watch_button">Wallet de observación</string>
+    <string name="watch_button_hint">Para un dispositivo de firma como un SeedSigner, o para vigilar una dirección. Sin claves en este teléfono.</string>
+    <string name="watch_banner">Wallet de observación: solo saldo e historial. Los pagos los firma tu dispositivo de firma.</string>
+    <string name="watch_tools_hint">Esta wallet no tiene claves aquí, por eso no hay escrow ni firma de mensajes.</string>
+    <string name="send_watch_note">Esta wallet no tiene claves en este teléfono. Se crea un archivo de pago que firma tu dispositivo de firma.</string>
+    <string name="send_watch_next">Haz que tu dispositivo de firma lo firme y escanea aquí el archivo firmado para enviar el pago.</string>
+    <string name="send_watch_scan">Escanear el archivo firmado</string>
+    <string name="wallets_remove_watch">Esta wallet no tiene claves aquí. Al quitarla solo se elimina la lista de observación, tus fondos no se ven afectados.</string>
+    <string name="wallet_watch_badge">Solo observación</string>
 </resources>
