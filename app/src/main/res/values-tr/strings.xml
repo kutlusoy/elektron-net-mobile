@@ -953,4 +953,12 @@
     <string name="export_key_qr">Herkese açık anahtarı QR kodu olarak göster</string>
     <string name="export_key_qr_hint">Başka bir telefondaki izleme cüzdanı için: orada Cüzdan ekle, İzleme cüzdanı altında tara. Yalnızca herkese açık anahtarı içerir, ona sahip olan tüm adresleri ve bakiyeyi görebilir.</string>
     <string name="export_key_qr_hide">QR kodunu gizle</string>
+    <string name="msg_embed">Metni bloğa göm</string>
+    <string name="msg_embed_hint">Metin blok zincirinde herkese açık ve kalıcı olarak saklanır, herkes okuyabilir. Küçük bir ek ücret gerektirir.</string>
+    <string name="msg_label">Metniniz</string>
+    <string name="msg_counter">%1$d / %2$d bayt</string>
+    <string name="msg_apply">Metni uygula</string>
+    <string name="msg_err_invalid">Metin izin verilmeyen karakterler içeriyor.</string>
+    <string name="msg_confirm_label">Bloktaki metin</string>
+    <string name="msg_fee_estimate">Metin için ek ücret: yaklaşık %1$s</string>
 </resources>

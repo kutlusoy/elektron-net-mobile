@@ -45,6 +45,14 @@ class WalletReader(private val rpc: WalletRpc, private val walletName: String = 
         return group(entries.map { it as Map<*, *> }).reversed().sortedByDescending { it.timeSeconds }.take(limit)
     }
 
+    fun messages(txid: String): List<String> {
+        val info = rpc.call("gettransaction", listOf(txid, true, true), walletName) as? Map<*, *> ?: return emptyList()
+        val outputs = (info["decoded"] as? Map<*, *>)?.get("vout") as? List<*> ?: return emptyList()
+        return outputs.mapNotNull { out ->
+            (((out as? Map<*, *>)?.get("scriptPubKey")) as? Map<*, *>)?.takeIf { it["type"] == "nulldata" }?.get("hex")?.toString()?.let(EmbeddedMessage::fromScript)
+        }.take(MAX_MESSAGES)
+    }
+
     fun allTransactions(pageSize: Int = PAGE_SIZE): List<TxItem> {
         val pages = ArrayList<List<Map<*, *>>>()
         var skip = 0
@@ -64,6 +72,7 @@ class WalletReader(private val rpc: WalletRpc, private val walletName: String = 
         const val PAGE_SIZE = 500
         private const val MAX_PAGES = 100
         const val DEFAULT_LIMIT = 100
+        private const val MAX_MESSAGES = 3
         private const val ENTRY_WINDOW = 1000
 
         fun lep(value: Any?): Long = when (value) {

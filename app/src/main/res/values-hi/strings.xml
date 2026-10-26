@@ -953,4 +953,12 @@
     <string name="export_key_qr">सार्वजनिक कुंजी को QR कोड के रूप में दिखाएँ</string>
     <string name="export_key_qr_hint">दूसरे फ़ोन पर केवल-निगरानी वॉलेट के लिए: वहाँ वॉलेट जोड़ें, केवल-निगरानी वॉलेट में स्कैन करें। इसमें केवल सार्वजनिक कुंजी है, जिसके पास यह है वह सभी पते और बैलेंस देख सकता है।</string>
     <string name="export_key_qr_hide">QR कोड छिपाएँ</string>
+    <string name="msg_embed">टेक्स्ट को ब्लॉक में एम्बेड करें</string>
+    <string name="msg_embed_hint">टेक्स्ट ब्लॉकचेन में सार्वजनिक रूप से और स्थायी रूप से सहेजा जाता है और कोई भी इसे पढ़ सकता है। इसके लिए थोड़ा अतिरिक्त शुल्क लगता है।</string>
+    <string name="msg_label">आपका टेक्स्ट</string>
+    <string name="msg_counter">%1$d / %2$d बाइट</string>
+    <string name="msg_apply">टेक्स्ट लागू करें</string>
+    <string name="msg_err_invalid">टेक्स्ट में अनुमति रहित अक्षर हैं।</string>
+    <string name="msg_confirm_label">ब्लॉक में टेक्स्ट</string>
+    <string name="msg_fee_estimate">टेक्स्ट के लिए अतिरिक्त शुल्क: लगभग %1$s</string>
 </resources>

@@ -148,6 +148,13 @@ fun TxDetailsScreen(item: TxItem, onClose: () -> Unit, onBumped: (String) -> Uni
             DetailLine(stringResource(R.string.tx_date), formatted)
         }
         item.address?.let { DetailLine(stringResource(R.string.tx_address), it, mono = true) }
+        var messages by remember(item.txid) { androidx.compose.runtime.mutableStateOf<List<String>>(emptyList()) }
+        androidx.compose.runtime.LaunchedEffect(item.txid) {
+            if (item.kind != TxKind.Mined) {
+                messages = withContext(Dispatchers.IO) { runCatching { NodeHost.walletReader()?.messages(item.txid) }.getOrNull().orEmpty() }
+            }
+        }
+        messages.forEach { DetailLine(stringResource(R.string.msg_confirm_label), it) }
         item.feeLep?.let { DetailLine(stringResource(R.string.tx_fee), "${Amount.display(it)} ${Amount.unitSymbol()}") }
         DetailLine(stringResource(R.string.tx_id), item.txid, mono = true)
         OutlinedButton(onClick = { copy(context, item.txid) }) { Text(stringResource(R.string.action_copy)) }

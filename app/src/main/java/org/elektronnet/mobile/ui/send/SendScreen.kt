@@ -60,6 +60,7 @@ import org.elektronnet.mobile.wallet.AddressFormat
 import org.elektronnet.mobile.wallet.Amount
 import org.elektronnet.mobile.wallet.AmountUnit
 import org.elektronnet.mobile.fiat.FiatRates
+import org.elektronnet.mobile.wallet.EmbeddedMessage
 import org.elektronnet.mobile.wallet.EscrowRecord
 import org.elektronnet.mobile.wallet.FeeLevel
 import org.elektronnet.mobile.wallet.FeeOption
@@ -103,6 +104,9 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var selectedCoins by remember { mutableStateOf<List<org.elektronnet.mobile.wallet.Coin>>(emptyList()) }
     var pickCoins by remember { mutableStateOf(false) }
     var subtractFee by remember { mutableStateOf(false) }
+    var embed by remember { mutableStateOf(false) }
+    var messageDraft by remember { mutableStateOf("") }
+    var appliedMessage by remember { mutableStateOf<String?>(null) }
     val walletName = escrow?.walletName ?: NodeHost.activeWallet
 
     val resolved = SendInput.recipient(recipientText, NodeHost.paymentUri, org.elektronnet.mobile.wallet.AddressCheck(ChainConfig.isTestnet), ChainConfig.uriScheme)
@@ -143,7 +147,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     fun request(): SendRequest {
         val rate = if (custom) (customFee as? FeeInput.Ok)?.rate ?: BigDecimal.ONE else options.first { it.level == level }.lepPerVb
         val lep = (amountState as? AmountState.Ok)?.lep
-        return SendRequest(resolved.address.orEmpty(), if (max) null else lep, max, rate, allowLegacy = legacyOk, coins = selectedCoins, subtractFee = subtractFee && !max)
+        return SendRequest(resolved.address.orEmpty(), if (max) null else lep, max, rate, allowLegacy = legacyOk, coins = selectedCoins, subtractFee = subtractFee && !max, message = appliedMessage)
     }
 
     fun prepare() {
@@ -461,7 +465,46 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                             }
                         }
                     }
+                    if (escrow == null) {
+                        val cleaned = EmbeddedMessage.clean(messageDraft)
+                        val tooLong = EmbeddedMessage.byteLength(messageDraft.trim()) > EmbeddedMessage.MAX_BYTES
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Switch(
+                                checked = embed,
+                                onCheckedChange = {
+                                    embed = it
+                                    if (!it) {
+                                        messageDraft = ""
+                                        if (appliedMessage != null) { appliedMessage = null; prepare() }
+                                    }
+                                },
+                            )
+                            Text(stringResource(R.string.msg_embed), modifier = Modifier.padding(start = 12.dp))
+                        }
+                        if (embed) {
+                            Text(stringResource(R.string.msg_embed_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            OutlinedTextField(
+                                value = messageDraft,
+                                onValueChange = { messageDraft = it.take(EmbeddedMessage.MAX_BYTES * 2) },
+                                label = { Text(stringResource(R.string.msg_label)) },
+                                minLines = 3,
+                                isError = tooLong,
+                                supportingText = { Text(stringResource(R.string.msg_counter, EmbeddedMessage.byteLength(messageDraft.trim()), EmbeddedMessage.MAX_BYTES)) },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                            if (cleaned.isNotEmpty() && !tooLong) {
+                                val extra = EmbeddedMessage.extraFeeLep(cleaned, prepared?.request?.feeRate ?: BigDecimal.ONE)
+                                Text(stringResource(R.string.msg_fee_estimate, Amount.displayWithUnit(extra)), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                            OutlinedButton(
+                                onClick = { messageDraft = cleaned; appliedMessage = cleaned; prepare() },
+                                enabled = cleaned.isNotEmpty() && !tooLong && cleaned != prepared?.request?.message,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) { Text(stringResource(R.string.msg_apply)) }
+                        }
+                    }
                     Button(
+                        enabled = !embed || (prepared?.request?.message != null && prepared?.request?.message == EmbeddedMessage.clean(messageDraft)),
                         onClick = {
                             val ready = prepared
                             if (psbtOnly && !psbtSign && ready != null) {
@@ -479,6 +522,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                 Text(stringResource(R.string.send_confirm_title), style = MaterialTheme.typography.headlineSmall)
                 Text(stringResource(R.string.send_confirm_body))
                 prepared?.review?.let { Text(elek(it.totalLep), style = MaterialTheme.typography.titleLarge); FiatLine(it.totalLep) }
+                prepared?.review?.message?.let { ReviewLine(stringResource(R.string.msg_confirm_label)) { Text(it) } }
                 SecretField(
                     value = passphrase,
                     onValueChange = { passphrase = it },
@@ -575,6 +619,7 @@ private fun failureText(failure: SendFailure): Int = when (failure) {
     SendFailure.AmountTooSmall -> R.string.send_err_small
     SendFailure.InsufficientFunds -> R.string.send_err_funds
     SendFailure.FeeTooLow -> R.string.send_err_fee_low
+    SendFailure.InvalidMessage -> R.string.msg_err_invalid
     SendFailure.PolicyChanged -> R.string.send_err_policy
     SendFailure.PsbtMismatch -> R.string.send_err_mismatch
     SendFailure.WrongPassphrase -> R.string.send_err_passphrase

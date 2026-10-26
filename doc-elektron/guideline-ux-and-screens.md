@@ -329,3 +329,7 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 ## Logo as home link (m0.1.7)
 
 - The compact header (logo, name, tagline) is a button that opens the Wallet tab and closes an open transaction view. It is announced as a button with the label of the Wallet tab. The large header on the first-run and lock screens is not a link.
+
+## Text in a block (m0.1.8)
+
+The review screen of Send has a switch "Embed text in block" above the send button. It opens a text field (counter in bytes, limit 1000) and an "Apply text" button that prepares the payment again with one `OP_RETURN` output. The text is public. It is cleaned by `EmbeddedMessage.clean`, and `SendEngine.validate` accepts exactly the expected data output. Escrow payments have no such switch.

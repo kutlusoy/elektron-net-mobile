@@ -6,7 +6,7 @@ import org.elektronnet.mobile.node.RpcException
 
 enum class SendFailure {
     InvalidAddress, ForeignNetwork, LegacyNotConfirmed, InvalidAmount, AmountTooSmall, InsufficientFunds,
-    FeeTooLow, PolicyChanged, PsbtMismatch, WrongPassphrase, NodeNotReady, Rejected, InvalidPsbt, NothingToSign, Unknown,
+    FeeTooLow, InvalidMessage, PolicyChanged, PsbtMismatch, WrongPassphrase, NodeNotReady, Rejected, InvalidPsbt, NothingToSign, Unknown,
 }
 
 class SendException(val failure: SendFailure, detail: String = "") : Exception(detail)
@@ -19,6 +19,7 @@ data class SendRequest(
     val allowLegacy: Boolean = false,
     val coins: List<Coin> = emptyList(),
     val subtractFee: Boolean = false,
+    val message: String? = null,
 ) {
     val subtracts: Boolean get() = max || subtractFee
 }
@@ -31,8 +32,9 @@ data class Review(
     val totalLep: Long,
     val feeRate: BigDecimal,
     val inputs: Int,
+    val message: String? = null,
 ) {
-    fun sameAs(other: Review): Boolean = address == other.address && amountLep == other.amountLep && feeLep == other.feeLep &&
+    fun sameAs(other: Review): Boolean = address == other.address && message == other.message && amountLep == other.amountLep && feeLep == other.feeLep &&
         changeLep == other.changeLep && totalLep == other.totalLep && inputs == other.inputs
 }
 
@@ -107,6 +109,8 @@ class SendEngine(
             request.amountLep ?: 0L
         }
         if (gross <= 0) throw SendException(SendFailure.InvalidAmount)
+        val message = request.message
+        if (message != null && (message.isEmpty() || EmbeddedMessage.clean(message) != message)) throw SendException(SendFailure.InvalidMessage)
         val options = linkedMapOf<String, Any?>("fee_rate" to request.feeRate, "replaceable" to true)
         if (request.coins.isNotEmpty()) options["add_inputs"] = false
         if (request.subtracts) options["subtractFeeFromOutputs"] = listOf(0)
@@ -115,7 +119,8 @@ class SendEngine(
                 "walletcreatefundedpsbt",
                 linkedMapOf(
                     "inputs" to request.coins.map { linkedMapOf("txid" to it.txid, "vout" to it.vout) },
-                    "outputs" to listOf(linkedMapOf(address to BigDecimal(gross).movePointLeft(8))),
+                    "outputs" to listOf<Map<String, Any?>>(linkedMapOf(address to BigDecimal(gross).movePointLeft(8))) +
+                        listOfNotNull(message?.let { linkedMapOf("data" to EmbeddedMessage.hex(it)) }),
                     "locktime" to 0,
                     "options" to options,
                 ),
@@ -142,8 +147,16 @@ class SendEngine(
             val utxo = row["witness_utxo"] as? Map<*, *> ?: throw SendException(SendFailure.PsbtMismatch)
             WalletReader.lep(utxo["amount"])
         }
-        val rows = outputs.map { out ->
-            val script = out["scriptPubKey"] as? Map<*, *> ?: throw SendException(SendFailure.PsbtMismatch)
+        val scripts = outputs.map { it["scriptPubKey"] as? Map<*, *> ?: throw SendException(SendFailure.PsbtMismatch) }
+        val dataOutputs = outputs.filterIndexed { i, _ -> scripts[i]["type"] == "nulldata" }
+        val expectedData = prepared.request.message?.let { listOf(EmbeddedMessage.scriptHex(it)) }.orEmpty()
+        if (dataOutputs.map { (it["scriptPubKey"] as Map<*, *>)["hex"].toString() } != expectedData ||
+            dataOutputs.any { WalletReader.lep(it["value"]) != 0L }
+        ) {
+            throw SendException(SendFailure.PsbtMismatch)
+        }
+        val rows = outputs.filter { it !in dataOutputs }.map { out ->
+            val script = out["scriptPubKey"] as Map<*, *>
             val address = script["address"]?.toString() ?: throw SendException(SendFailure.PsbtMismatch)
             address to WalletReader.lep(out["value"])
         }
@@ -172,6 +185,7 @@ class SendEngine(
             totalLep = if (prepared.request.subtracts) prepared.grossLep else amount + fee,
             feeRate = rate,
             inputs = inputRows.size,
+            message = prepared.request.message,
         )
     }
 
