@@ -64,6 +64,7 @@ fun NodeScreen(
     onStop: () -> Unit,
     onStart: () -> Unit,
     onRestart: () -> Unit = {},
+    onRestartAll: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var showLog by rememberSaveable { mutableStateOf(false) }
@@ -144,6 +145,10 @@ fun NodeScreen(
         }
         if (model.canStop) {
             OutlinedButton(onClick = onRestart, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.action_restart)) }
+            val network = NodeHost.store?.loadNetwork()
+            if (network != null && (network.tor.enabled || network.i2p.enabled)) {
+                OutlinedButton(onClick = onRestartAll, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.action_restart_all)) }
+            }
         }
         confirm?.let { pending ->
             androidx.compose.material3.AlertDialog(

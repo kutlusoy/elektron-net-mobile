@@ -919,4 +919,5 @@
     <string name="screenshot_auth_title">स्क्रीनशॉट की अनुमति</string>
     <string name="screenshot_auth_unavailable">पहले सिस्टम सेटिंग में फ़िंगरप्रिंट, चेहरा या डिवाइस लॉक सेट करें।</string>
     <string name="action_restart">पुनः आरंभ करें</string>
+    <string name="action_restart_all">नोड, Tor और I2P पुनः आरंभ करें</string>
 </resources>

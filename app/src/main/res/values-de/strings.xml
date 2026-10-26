@@ -919,4 +919,5 @@
     <string name="screenshot_auth_title">Screenshots erlauben</string>
     <string name="screenshot_auth_unavailable">Richte zuerst in den Systemeinstellungen einen Fingerabdruck, Gesichtsentsperrung oder eine Gerätesperre ein.</string>
     <string name="action_restart">Neu starten</string>
+    <string name="action_restart_all">Node, Tor und I2P neu starten</string>
 </resources>

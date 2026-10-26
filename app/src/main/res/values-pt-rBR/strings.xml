@@ -919,4 +919,5 @@
     <string name="screenshot_auth_title">Permitir capturas de tela</string>
     <string name="screenshot_auth_unavailable">Primeiro configure uma impressão digital, o rosto ou um bloqueio do dispositivo nas configurações do sistema.</string>
     <string name="action_restart">Reiniciar</string>
+    <string name="action_restart_all">Reiniciar nó, Tor e I2P</string>
 </resources>

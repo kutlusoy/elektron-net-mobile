@@ -919,4 +919,5 @@
     <string name="screenshot_auth_title">Consenti screenshot</string>
     <string name="screenshot_auth_unavailable">Imposta prima un\'impronta, il volto o un blocco del dispositivo nelle impostazioni di sistema.</string>
     <string name="action_restart">Riavvia</string>
+    <string name="action_restart_all">Riavvia nodo, Tor e I2P</string>
 </resources>

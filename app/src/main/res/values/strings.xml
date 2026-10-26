@@ -930,4 +930,5 @@
     <string name="screenshot_auth_title">Allow screenshots</string>
     <string name="screenshot_auth_unavailable">Set up a fingerprint, face or device lock in the system settings first.</string>
     <string name="action_restart">Restart</string>
+    <string name="action_restart_all">Restart node, Tor and I2P</string>
 </resources>

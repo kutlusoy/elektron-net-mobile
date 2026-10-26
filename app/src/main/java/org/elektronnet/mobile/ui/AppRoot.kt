@@ -80,7 +80,7 @@ private enum class Tab(val label: Int, val icon: ImageVector) {
 }
 
 @Composable
-fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit, onBiometric: (Boolean) -> Unit, onRestart: () -> Unit = {}) {
+fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResume: () -> Unit, onBiometric: (Boolean) -> Unit, onRestart: () -> Unit = {}, onRestartAll: () -> Unit = {}) {
     var tab by rememberSaveable { mutableStateOf(Tab.Wallet.ordinal) }
     var showSoon by remember { mutableStateOf(false) }
     var overlayName by rememberSaveable { mutableStateOf(Overlay.None.name) }
@@ -350,6 +350,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     onStop = onStop,
                     onStart = onStart,
                     onRestart = onRestart,
+                    onRestartAll = onRestartAll,
                 ) }
                 Tab.Settings -> SettingsScreen(
                     settings = settings,

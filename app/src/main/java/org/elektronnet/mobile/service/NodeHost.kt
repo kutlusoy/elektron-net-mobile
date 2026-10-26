@@ -645,6 +645,11 @@ object NodeHost {
         controller?.restartNode()
     }
 
+    // node, Tor and I2P stop together and the next tick starts them again, for a stuck helper
+    fun restartWithNetwork() {
+        controller?.shutdown()
+    }
+
     fun stopNow() {
         controller?.shutdown()
     }

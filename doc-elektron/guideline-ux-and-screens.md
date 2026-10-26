@@ -324,4 +324,4 @@ Success: at least 4 of 5 complete each task unassisted, create-and-back-up under
 ## Node tab icon and restart (m0.1.7)
 
 - The Node tab uses the cube network icon (`NodeIcon`), not an arrow icon, so it is not mistaken for a reload action.
-- Pause and Stop sit in one row. "Restart" is a full-width button below them and needs no confirmation, because it only restarts the node process (`NodeController.restartNode`) and the policy engine starts it again on the next tick.
+- Pause and Stop sit in one row. "Restart" and, when Tor or I2P is on, "Restart node, Tor and I2P" are full-width buttons below them and need no confirmation, because it only restarts the node process (`NodeController.restartNode`) and the policy engine starts it again on the next tick.
