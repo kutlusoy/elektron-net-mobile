@@ -24,7 +24,8 @@ object StorageScan {
         val blocksDir = File(chain, "blocks")
         val index = size(File(blocksDir, "index"))
         val blocks = (size(blocksDir) - index).coerceAtLeast(0L)
-        val utxo = size(File(chain, "chainstate"))
+        // after a snapshot bootstrap the UTXO set lives in chainstate_snapshot, the plain chainstate stays empty
+        val utxo = chain.listFiles().orEmpty().filter { it.isDirectory && (it.name == "chainstate" || it.name == "chainstate_snapshot") }.sumOf { size(it) }
         val snapshots = listOf(File(chain, "snapshots"), File(datadir, "snapshots")).distinct().sumOf { size(it) }
         val wallets = File(chain, "wallets").listFiles().orEmpty().sortedBy { it.name }.map { StorageItem(StorageKind.Wallet, size(it), it.name) }
         val logs = chain.listFiles().orEmpty().filter { it.isFile && it.name.startsWith("debug.log") }.sumOf { it.length() }

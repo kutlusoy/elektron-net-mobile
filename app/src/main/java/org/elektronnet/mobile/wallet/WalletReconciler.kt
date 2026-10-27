@@ -18,10 +18,10 @@ class WalletReconciler(
         val dropped = registry.wallets().map { it.name }.filter { it !in onDisk && it !in keep }
         dropped.forEach { registry.remove(it) }
         val known = registry.wallets().map { it.name }.toSet()
-        val adopted = if (adopt) onDisk.filter { OWN_NAME.matches(it) && it !in known } else emptyList()
+        val adopted = if (adopt) onDisk.filter { OWN_NAME.matches(it) && it !in known && it !in keep } else emptyList()
         adopted.forEach { registry.add(it, "") }
         val loadedNow = runCatching { (rpc.call("listwallets", emptyList<Any?>(), null) as List<*>).map { it.toString() }.toSet() }.getOrDefault(emptySet())
-        val loaded = registry.wallets().map { it.name }.filter { it in onDisk && it !in loadedNow }.filter {
+        val loaded = registry.wallets().map { it.name }.filter { it in onDisk && it !in loadedNow && it !in keep }.filter {
             runCatching { rpc.call("loadwallet", linkedMapOf("filename" to it, "load_on_startup" to true), null) }.isSuccess
         }
         return Result(dropped, adopted, loaded)

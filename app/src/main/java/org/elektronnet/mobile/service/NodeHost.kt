@@ -101,7 +101,7 @@ object NodeHost {
         val reg = registry ?: return null
         val rpc = supervisor.rpc.asWalletRpc()
         val busy = if (setupStatus != SetupStatus.None) setOf(walletSetup.walletName) else emptySet()
-        val reconciler = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy }
+        val reconciler = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy + removing }
         val result = reconciler.reconcile(adopt = true) ?: return null
         walletNamesOnDisk = reconciler.namesOnDisk().orEmpty().toSet()
         if (reg.wallets().isNotEmpty()) markWalletReady(true)
@@ -125,6 +125,9 @@ object NodeHost {
         refreshWallets()
     }
 
+    // wallets that are being removed right now: the list reconciliation must not load them again between unloading and deleting
+    private val removing: MutableSet<String> = java.util.concurrent.ConcurrentHashMap.newKeySet()
+
     fun walletIsUnused(name: String): Boolean {
         val supervisor = runningSupervisor() ?: return false
         return org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) {}.isUnused(name)
@@ -134,9 +137,14 @@ object NodeHost {
         val supervisor = runningSupervisor() ?: return org.elektronnet.mobile.wallet.RemoveFailure.NodeNotReady
         val root = datadir ?: return org.elektronnet.mobile.wallet.RemoveFailure.Unknown
         val chain = Chain.fromBuildName(ChainConfig.chain)
-        val failure = org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) { wallet ->
-            org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$wallet"))
-        }.remove(name, passphrase, watchOnly = isWatchOnly(name))
+        removing.add(name)
+        val failure = try {
+            org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) { wallet ->
+                org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, wallet)
+            }.remove(name, passphrase, watchOnly = isWatchOnly(name))
+        } finally {
+            removing.remove(name)
+        }
         if (failure != null) return failure
         registry?.remove(name)
         settings?.setReceiveAddressFor(name, null)
@@ -298,7 +306,7 @@ object NodeHost {
                 val rpc = supervisor.rpc.asWalletRpc()
                 if (reconcileNeeded && reg != null) {
                     val busy = if (setupStatus != SetupStatus.None) setOf(walletSetup.walletName) else emptySet()
-                    val result = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy }.reconcile(adopt = false)
+                    val result = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy + removing }.reconcile(adopt = false)
                     if (result != null) {
                         walletNamesOnDisk = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg).namesOnDisk().orEmpty().toSet()
                         reconciledFor = supervisor.startedAt
@@ -386,7 +394,7 @@ object NodeHost {
             rpc = supervisor.rpc.asWalletRpc(),
             bip39 = Bip39(words),
             testnet = ChainConfig.isTestnet,
-            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name")) },
+            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, name) },
             walletName = walletName,
         )
     }
@@ -446,7 +454,7 @@ object NodeHost {
             store = store.escrowStore(),
             testnet = ChainConfig.isTestnet,
             mainWallet = wallet,
-            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name")) },
+            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, name) },
         )
     }
 
@@ -484,7 +492,7 @@ object NodeHost {
         val root = datadir ?: return null
         val chain = Chain.fromBuildName(ChainConfig.chain)
         return org.elektronnet.mobile.wallet.WalletRestore(supervisor.rpc.asWalletRpc()) { name ->
-            org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name"))
+            org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, name)
         }
     }
 
@@ -511,8 +519,15 @@ object NodeHost {
         return failure
     }
 
-    fun discardRestoredWallet(name: String) {
-        walletRestore()?.discard(name)
+    // true when the wallet is gone from the node and from the disk
+    fun discardRestoredWallet(name: String): Boolean {
+        val restore = walletRestore() ?: return false
+        removing.add(name)
+        try {
+            return restore.discard(name)
+        } finally {
+            removing.remove(name)
+        }
     }
 
     fun addressBook(): org.elektronnet.mobile.wallet.AddressBook? = appContext?.let { org.elektronnet.mobile.wallet.AddressBook(File(it.filesDir, "contacts.json"), addressCheck) }

@@ -5,6 +5,24 @@ import org.elektronnet.mobile.node.RpcException
 enum class RemoveFailure { WrongPassphrase, NodeNotReady, Unknown }
 
 class WalletRemover(private val rpc: WalletRpc, private val removeWalletFiles: (String) -> Unit) {
+    /**
+     * Unloads a wallet until the node reports it as not loaded, deletes its files and checks with the node that the wallet is
+     * gone from the wallet folder. A wallet the node still lists is not reported as removed.
+     */
+    fun unloadAndDelete(walletName: String): Boolean {
+        repeat(UNLOAD_TRIES) { attempt ->
+            val loaded = runCatching { (rpc.call("listwallets", emptyList<Any?>(), null) as List<*>).map { it.toString() }.contains(walletName) }.getOrDefault(true)
+            if (!loaded) return@repeat
+            runCatching { rpc.call("unloadwallet", linkedMapOf("wallet_name" to walletName, "load_on_startup" to false), null) }
+            if (attempt < UNLOAD_TRIES - 1) Thread.sleep(UNLOAD_WAIT_MS)
+        }
+        repeat(DELETE_TRIES) {
+            if (runCatching { removeWalletFiles(walletName) }.isSuccess && existsOnNode(walletName) != true) return true
+            Thread.sleep(UNLOAD_WAIT_MS)
+        }
+        return false
+    }
+
     fun isUnused(walletName: String): Boolean = existsOnNode(walletName) == false || runCatching {
         val info = rpc.call("getwalletinfo", emptyList<Any?>(), walletName) as Map<*, *>
         val mine = (rpc.call("getbalances", emptyList<Any?>(), walletName) as Map<*, *>)["mine"] as Map<*, *>
@@ -17,7 +35,7 @@ class WalletRemover(private val rpc: WalletRpc, private val removeWalletFiles: (
 
     // a watch-only wallet holds no keys, so it can be removed without a passphrase even when it shows a balance
     fun remove(walletName: String, passphrase: String?, watchOnly: Boolean = false): RemoveFailure? {
-        if (existsOnNode(walletName) == false) return if (runCatching { removeWalletFiles(walletName) }.isSuccess) null else RemoveFailure.Unknown
+        if (existsOnNode(walletName) == false) return if (unloadAndDelete(walletName)) null else RemoveFailure.Unknown
         if (passphrase == null) {
             if (!watchOnly && !isUnused(walletName)) return RemoveFailure.WrongPassphrase
         } else {
@@ -32,16 +50,14 @@ class WalletRemover(private val rpc: WalletRpc, private val removeWalletFiles: (
             }
             WalletLock.lock(rpc, walletName, passphrase)
         }
-        try {
-            rpc.call("unloadwallet", linkedMapOf("wallet_name" to walletName, "load_on_startup" to false), null)
-        } catch (e: RpcException) {
-            return if (e.inWarmup) RemoveFailure.NodeNotReady else RemoveFailure.Unknown
-        }
-        return if (runCatching { removeWalletFiles(walletName) }.isSuccess) null else RemoveFailure.Unknown
+        return if (unloadAndDelete(walletName)) null else RemoveFailure.Unknown
     }
 
     private companion object {
         const val CHECK_SECONDS = 5
+        const val UNLOAD_TRIES = 10
+        const val DELETE_TRIES = 3
+        const val UNLOAD_WAIT_MS = 300L
         const val WRONG_PASSPHRASE = -14
     }
 }

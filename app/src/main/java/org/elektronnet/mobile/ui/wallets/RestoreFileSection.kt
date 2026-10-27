@@ -91,7 +91,10 @@ fun RestoreFileSection() {
             onDone = { needsPassphrase = null; done = true },
             onCancel = {
                 needsPassphrase = null
-                scope.launch(Dispatchers.IO) { NodeHost.discardRestoredWallet(name) }
+                scope.launch(Dispatchers.IO) {
+                    // a wallet the node still has after this is not hidden, the screen says so
+                    if (!NodeHost.discardRestoredWallet(name)) failure = RestoreFailure.NotRemoved
+                }
             },
         )
     }
@@ -147,6 +150,7 @@ private fun SetPassphraseDialog(name: String, onDone: () -> Unit, onCancel: () -
 }
 
 private fun restoreError(failure: RestoreFailure): Int = when (failure) {
+    RestoreFailure.NotRemoved -> R.string.wallets_remove_failed
     RestoreFailure.InvalidFile, RestoreFailure.NameTaken -> R.string.restore_file_err_file
     RestoreFailure.WeakPassphrase -> R.string.fr_pass_weak
     RestoreFailure.NodeNotReady -> R.string.fr_err_node

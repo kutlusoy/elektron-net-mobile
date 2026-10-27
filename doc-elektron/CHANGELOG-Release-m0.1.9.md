@@ -26,3 +26,15 @@ This file lists the features this release added. Corrections are not listed.
 
 - A new installation starts with Tor and I2P switched on, so the node finds peers on these networks from the start and the registry above can help. Each switch can be turned off in the settings at any time.
 - An installation that existed before this release keeps its choice: switches that were never set stay off, so an update changes nothing for existing users.
+
+## Removing a wallet really removes it
+
+- A removed wallet is unloaded until the node reports it as not loaded, its folder is deleted, and the node is asked once more whether it still lists the wallet in its wallet folder. Only when it is gone, the removal counts as done. Before, the removal was reported as done as soon as the delete call returned, even if the node still had the wallet, so "Reload wallets" could bring it back.
+- If the wallet folder is not where the app expects it for this network, the wallet folders of the other networks in the same data directory are searched, and a name that could point outside the wallet folder is refused.
+- While a wallet is being removed, the wallet list reconciliation (also the "Reload wallets" button) leaves it alone, so it cannot be loaded again between unloading and deleting.
+- Cancelling the passphrase dialog after a wallet file import discards the imported wallet the same way and says so when it could not be removed.
+
+## Storage view: UTXO set after a snapshot bootstrap
+
+- The UTXO set is counted from `chainstate` and `chainstate_snapshot`. After a snapshot bootstrap the set lives in `chainstate_snapshot` and the plain `chainstate` stays empty, so the view showed 0 B.
+
