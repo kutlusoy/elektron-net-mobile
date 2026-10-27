@@ -23,6 +23,16 @@ import org.elektronnet.mobile.policy.ScheduleWindow
 class SettingsStore(context: Context) {
     private val prefs = context.getSharedPreferences("policy", Context.MODE_PRIVATE)
 
+    init {
+        if (!prefs.contains(NET_DEFAULTS_DONE)) {
+            val fresh = prefs.all.isEmpty()
+            val edit = prefs.edit()
+            org.elektronnet.mobile.node.NetworkDefaults.initialSwitch(fresh, prefs.contains(TOR_ENABLED))?.let { edit.putBoolean(TOR_ENABLED, it) }
+            org.elektronnet.mobile.node.NetworkDefaults.initialSwitch(fresh, prefs.contains(I2P_ENABLED))?.let { edit.putBoolean(I2P_ENABLED, it) }
+            edit.putBoolean(NET_DEFAULTS_DONE, true).apply()
+        }
+    }
+
     fun load(): PolicySettings {
         val defaults = PolicySettings()
         val start = prefs.getInt(SCHEDULE_START, -1)
@@ -345,6 +355,7 @@ class SettingsStore(context: Context) {
         const val NOTIFY_INCOMING = "notify_incoming"
         const val SEEN_INCOMING = "seen_incoming"
         const val TOR_ENABLED = "tor_enabled"
+        const val NET_DEFAULTS_DONE = "net_defaults_done"
         const val TOR_ROUTING = "tor_routing"
         const val TOR_ROLE = "tor_role"
         const val TOR_OR_PORT = "tor_or_port"

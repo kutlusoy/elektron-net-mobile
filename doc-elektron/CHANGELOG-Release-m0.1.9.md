@@ -20,3 +20,9 @@ This file lists the features this release added. Corrections are not listed.
 - The lists are fetched over HTTPS and kept on the phone, so they survive being offline. They are refreshed once a day, and after a failure the next try comes after a quarter of an hour. When Tor is switched on, the lists are fetched through the own Tor, so the registry does not see the address of the phone. Without Tor, the I2P list is fetched directly.
 - Every line is checked as an address of the wanted network, anything else (comments, other formats, wrong ports) is skipped, at most 200 entries and 64 KB are read, and redirects are not followed. The registry only supplies addresses to try, so a wrong entry cannot do more than fail to connect.
 - Not active on the test network.
+- The registry check runs in the background: the node service starts it on its own thread, it never waits for the screen and does not block the node.
+
+## Tor and I2P on by default
+
+- A new installation starts with Tor and I2P switched on, so the node finds peers on these networks from the start and the registry above can help. Each switch can be turned off in the settings at any time.
+- An installation that existed before this release keeps its choice: switches that were never set stay off, so an update changes nothing for existing users.

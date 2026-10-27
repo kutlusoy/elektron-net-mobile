@@ -133,4 +133,12 @@ class RegistryPeersTest {
         assertEquals(listOf("a", "b", "c", "d", "e"), RegistryPeers.pick(list, 9, 5 * slot))
         assertEquals(emptyList<String>(), RegistryPeers.pick(emptyList(), 3, 7))
     }
+
+    @Test
+    fun newInstallationsStartWithTorAndI2pOnAndOldOnesKeepTheirChoice() {
+        assertEquals(true, NetworkDefaults.initialSwitch(freshInstall = true, alreadySet = false))
+        assertEquals(false, NetworkDefaults.initialSwitch(freshInstall = false, alreadySet = false))
+        assertEquals(null, NetworkDefaults.initialSwitch(freshInstall = true, alreadySet = true))
+        assertEquals(null, NetworkDefaults.initialSwitch(freshInstall = false, alreadySet = true))
+    }
 }

@@ -60,6 +60,11 @@ data class I2pSettings(
     }
 }
 
+// A new installation starts with Tor and I2P switched on, an installation that existed before keeps what it had
+object NetworkDefaults {
+    fun initialSwitch(freshInstall: Boolean, alreadySet: Boolean): Boolean? = if (alreadySet) null else freshInstall
+}
+
 data class NetworkSettings(
     val tor: TorSettings = TorSettings(),
     val i2p: I2pSettings = I2pSettings(),
