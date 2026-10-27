@@ -70,20 +70,31 @@ Settings, Secrets and variables, Actions, "New repository secret":
 
 | Secret | Value |
 |---|---|
-| `ELEKTRON_KEYSTORE_BASE64` | Linux/macOS: `base64 -w0 elektron-release.jks`. PowerShell: see the note below |
+| `ELEKTRON_KEYSTORE_BASE64` | the Base64 text of the keystore file, see below |
 | `ELEKTRON_KEYSTORE_PASSWORD` | keystore password |
 | `ELEKTRON_KEY_ALIAS` | `elektron-release` |
 | `ELEKTRON_KEY_PASSWORD` | key password (optional, defaults to the keystore password) |
 | `ELEKTRON_RELEASE_CERT_SHA256` | optional: the expected certificate SHA-256, then every release run fails if the APK carries another certificate |
 
-On Windows use PowerShell (not `cmd`) and run the command in the folder that holds the keystore. The value is one very long line without line breaks, so copy it to the clipboard instead of reading it from the screen:
+The keystore value is one very long line, so the easiest way is to write it to a text file and copy it from there.
+
+Windows (PowerShell, not `cmd`), run in the folder that holds the keystore:
 
 ```powershell
 cd C:\path\to\folder
-[Convert]::ToBase64String([IO.File]::ReadAllBytes((Resolve-Path .\elektron-release.jks).Path)) | Set-Clipboard
+[Convert]::ToBase64String([IO.File]::ReadAllBytes((Resolve-Path .\elektron-release.jks).Path)) | Out-File -Encoding ascii -NoNewline keystore-base64.txt
+notepad keystore-base64.txt
 ```
 
-Then paste it into the secret field. `Resolve-Path` is needed because .NET resolves a bare file name against its own working directory, which can differ from the folder shown by PowerShell, and then reports a missing file. To write the value to a file instead of the clipboard, replace `Set-Clipboard` with `Out-File -Encoding ascii -NoNewline keystore.b64`, and delete that file after pasting the secret.
+Linux and macOS:
+
+```bash
+base64 -w0 elektron-release.jks > keystore-base64.txt
+```
+
+Open `keystore-base64.txt`, select everything (Ctrl+A), copy it (Ctrl+C) and paste it into the secret field `ELEKTRON_KEYSTORE_BASE64`. The file must be one single line with no spaces and no line breaks, and it does not need to be saved again. When the secret is stored, delete `keystore-base64.txt`, because it contains your signing key in readable form.
+
+`Resolve-Path` is needed because .NET resolves a bare file name against its own working directory, which can differ from the folder shown by PowerShell, and then reports a missing file. To copy to the clipboard without a file, replace `Out-File ...` with `Set-Clipboard`.
 
 ## 4. Run a release
 
