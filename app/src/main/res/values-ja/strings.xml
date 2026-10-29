@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">このスマートフォンからウォレットを削除します。中のコインが失われるわけではありませんが、リカバリーフレーズでのみ取り戻せます。フレーズがなければ永久に失われます。</string>
     <string name="wallets_remove_confirm">このウォレットのリカバリーフレーズを持っています</string>
     <string name="wallets_remove_failed">ウォレットを削除できませんでした。</string>
+    <string name="wallets_remove_busy">ノードはまだこのウォレットを処理中です。しばらく待ってからもう一度お試しください。</string>
     <string name="wallets_title">あなたのウォレット</string>
     <string name="wallets_add">ウォレットを追加</string>
     <string name="wallets_rename">名前を変更</string>

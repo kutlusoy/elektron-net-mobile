@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">Dadurch wird die Wallet von diesem Telefon gelöscht. Die Coins darin gehen nicht verloren, du bekommst sie aber nur mit ihrer Recovery-Phrase zurück. Ohne die Phrase sind sie für immer weg.</string>
     <string name="wallets_remove_confirm">Ich habe die Recovery-Phrase dieser Wallet</string>
     <string name="wallets_remove_failed">Die Wallet konnte nicht entfernt werden.</string>
+    <string name="wallets_remove_busy">Die Node ist noch mit dieser Wallet beschäftigt. Warte einen Moment und versuche es erneut.</string>
     <string name="wallets_title">Deine Wallets</string>
     <string name="wallets_add">Wallet hinzufügen</string>
     <string name="wallets_rename">Umbenennen</string>

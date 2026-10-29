@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">Thao tác này xóa ví khỏi điện thoại. Coin trong đó không bị mất, nhưng bạn chỉ lấy lại được bằng cụm từ khôi phục của nó. Không có cụm từ này thì coin mất vĩnh viễn.</string>
     <string name="wallets_remove_confirm">Tôi có cụm từ khôi phục của ví này</string>
     <string name="wallets_remove_failed">Không thể xóa ví.</string>
+    <string name="wallets_remove_busy">Node vẫn đang bận với ví này. Hãy đợi một lát rồi thử lại.</string>
     <string name="wallets_title">Các ví của bạn</string>
     <string name="wallets_add">Thêm ví</string>
     <string name="wallets_rename">Đổi tên</string>

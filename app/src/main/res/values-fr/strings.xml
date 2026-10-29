@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">Cela supprime le portefeuille de ce téléphone. Les pièces qu\'il contient ne sont pas perdues, mais vous ne pouvez les récupérer qu\'avec sa phrase de récupération. Sans la phrase, elles sont perdues définitivement.</string>
     <string name="wallets_remove_confirm">J\'ai la phrase de récupération de ce portefeuille</string>
     <string name="wallets_remove_failed">Le portefeuille n\'a pas pu être retiré.</string>
+    <string name="wallets_remove_busy">Le nœud est encore occupé avec ce portefeuille. Patientez un instant et réessayez.</string>
     <string name="wallets_title">Vos portefeuilles</string>
     <string name="wallets_add">Ajouter un portefeuille</string>
     <string name="wallets_rename">Renommer</string>

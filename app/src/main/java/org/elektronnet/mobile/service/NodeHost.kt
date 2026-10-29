@@ -37,6 +37,7 @@ import org.elektronnet.mobile.wallet.asWalletRpc
 
 object NodeHost {
     private const val SCAN_TIMEOUT_MS = 900_000
+    private const val REMOVE_TIMEOUT_MS = 130_000
 
     @Volatile
     var appVisible: Boolean = false
@@ -133,17 +134,27 @@ object NodeHost {
         return org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) {}.isUnused(name)
     }
 
+    // what the node or the file removal reported for the last failed removal
+    @Volatile
+    var removeDetail: String? = null
+
     fun removeWallet(name: String, passphrase: String?): org.elektronnet.mobile.wallet.RemoveFailure? {
         val supervisor = runningSupervisor() ?: return org.elektronnet.mobile.wallet.RemoveFailure.NodeNotReady
         val root = datadir ?: return org.elektronnet.mobile.wallet.RemoveFailure.Unknown
         val chain = Chain.fromBuildName(ChainConfig.chain)
         removing.add(name)
+        org.elektronnet.mobile.wallet.WalletLoadGuard.block(name)
+        pendingCoinRefresh.remove(name)
+        removeDetail = null
+        val remover = org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc(REMOVE_TIMEOUT_MS, autoLoad = false)) { wallet ->
+            org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, wallet)
+        }
         val failure = try {
-            org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) { wallet ->
-                org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, wallet)
-            }.remove(name, passphrase, watchOnly = isWatchOnly(name))
+            remover.remove(name, passphrase, watchOnly = isWatchOnly(name))
         } finally {
+            removeDetail = remover.lastError
             removing.remove(name)
+            org.elektronnet.mobile.wallet.WalletLoadGuard.release(name)
         }
         if (failure != null) return failure
         registry?.remove(name)
@@ -316,9 +327,12 @@ object NodeHost {
                     }
                 }
                 if (synced) {
-                    val refresh = org.elektronnet.mobile.wallet.CoinRefresh(supervisor.rpc.asWalletRpc(SCAN_TIMEOUT_MS))
+                    val refreshRpc = supervisor.rpc.asWalletRpc(SCAN_TIMEOUT_MS, autoLoad = false)
+                    val skip = org.elektronnet.mobile.wallet.CoinRefresh.nodeScansItself(refreshRpc)
+                    val refresh = org.elektronnet.mobile.wallet.CoinRefresh(refreshRpc)
                     pendingCoinRefresh.toList().forEach { name ->
-                        refresh.refresh(name)
+                        if (name in removing) return@forEach
+                        if (!skip) refresh.refresh(name)
                         pendingCoinRefresh.remove(name)
                     }
                 }

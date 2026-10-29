@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">يحذف هذا المحفظة من هذا الهاتف. العملات فيها لا تضيع، لكن لا يمكنك استرجاعها إلا بعبارة الاسترداد الخاصة بها. بدون العبارة تضيع إلى الأبد.</string>
     <string name="wallets_remove_confirm">لدي عبارة الاسترداد لهذه المحفظة</string>
     <string name="wallets_remove_failed">تعذّرت إزالة المحفظة.</string>
+    <string name="wallets_remove_busy">لا تزال العقدة مشغولة بهذه المحفظة. انتظر قليلا ثم حاول مرة أخرى.</string>
     <string name="wallets_title">محافظك</string>
     <string name="wallets_add">إضافة محفظة</string>
     <string name="wallets_rename">إعادة التسمية</string>

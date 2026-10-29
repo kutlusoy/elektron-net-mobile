@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">这会从此手机删除该钱包。其中的币不会丢失，但只能用它的恢复短语找回。没有恢复短语，币将永久丢失。</string>
     <string name="wallets_remove_confirm">我有此钱包的恢复短语</string>
     <string name="wallets_remove_failed">无法移除该钱包。</string>
+    <string name="wallets_remove_busy">节点仍在处理此钱包。请稍候再试。</string>
     <string name="wallets_title">您的钱包</string>
     <string name="wallets_add">添加钱包</string>
     <string name="wallets_rename">重命名</string>

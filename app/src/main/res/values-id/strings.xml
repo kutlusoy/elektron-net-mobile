@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">Ini menghapus dompet dari ponsel ini. Koin di dalamnya tidak hilang, tetapi Anda hanya bisa mendapatkannya kembali dengan frasa pemulihannya. Tanpa frasa itu, koin hilang selamanya.</string>
     <string name="wallets_remove_confirm">Saya memiliki frasa pemulihan dompet ini</string>
     <string name="wallets_remove_failed">Dompet tidak dapat dihapus.</string>
+    <string name="wallets_remove_busy">Node masih sibuk dengan dompet ini. Tunggu sebentar lalu coba lagi.</string>
     <string name="wallets_title">Dompet Anda</string>
     <string name="wallets_add">Tambah dompet</string>
     <string name="wallets_rename">Ganti nama</string>

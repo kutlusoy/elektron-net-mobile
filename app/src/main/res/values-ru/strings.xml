@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">Кошелёк будет удалён с этого телефона. Монеты в нём не пропадут, но вернуть их можно только по фразе восстановления. Без неё они потеряны навсегда.</string>
     <string name="wallets_remove_confirm">У меня есть фраза восстановления этого кошелька</string>
     <string name="wallets_remove_failed">Не удалось удалить кошелёк.</string>
+    <string name="wallets_remove_busy">Нода ещё занята этим кошельком. Подождите немного и повторите.</string>
     <string name="wallets_title">Ваши кошельки</string>
     <string name="wallets_add">Добавить кошелёк</string>
     <string name="wallets_rename">Переименовать</string>

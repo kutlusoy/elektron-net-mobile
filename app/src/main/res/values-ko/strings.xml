@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">이 휴대폰에서 지갑을 삭제합니다. 안에 있는 코인은 사라지지 않지만 복구 문구로만 되찾을 수 있습니다. 문구가 없으면 영영 잃게 됩니다.</string>
     <string name="wallets_remove_confirm">이 지갑의 복구 문구를 가지고 있습니다</string>
     <string name="wallets_remove_failed">지갑을 삭제할 수 없었습니다.</string>
+    <string name="wallets_remove_busy">노드가 아직 이 지갑을 처리 중입니다. 잠시 후 다시 시도하세요.</string>
     <string name="wallets_title">내 지갑</string>
     <string name="wallets_add">지갑 추가</string>
     <string name="wallets_rename">이름 변경</string>

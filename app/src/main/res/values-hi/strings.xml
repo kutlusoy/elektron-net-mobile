@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">यह वॉलेट को इस फ़ोन से हटा देता है। उसमें मौजूद कॉइन खोते नहीं, लेकिन आप उन्हें केवल उसके रिकवरी फ़्रेज़ से वापस पा सकते हैं। फ़्रेज़ के बिना वे हमेशा के लिए चले जाते हैं।</string>
     <string name="wallets_remove_confirm">मेरे पास इस वॉलेट का रिकवरी फ़्रेज़ है</string>
     <string name="wallets_remove_failed">वॉलेट हटाया नहीं जा सका।</string>
+    <string name="wallets_remove_busy">नोड अभी इस वॉलेट में व्यस्त है। थोड़ा इंतज़ार करें और फिर से कोशिश करें।</string>
     <string name="wallets_title">आपके वॉलेट</string>
     <string name="wallets_add">वॉलेट जोड़ें</string>
     <string name="wallets_rename">नाम बदलें</string>

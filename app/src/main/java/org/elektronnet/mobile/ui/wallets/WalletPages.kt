@@ -392,10 +392,12 @@ private fun RemoveWalletDialog(wallet: OwnWallet, onDismiss: () -> Unit) {
                             when (it) {
                                 org.elektronnet.mobile.wallet.RemoveFailure.WrongPassphrase -> R.string.send_err_passphrase
                                 org.elektronnet.mobile.wallet.RemoveFailure.NodeNotReady -> R.string.fr_err_node
+                                org.elektronnet.mobile.wallet.RemoveFailure.Busy -> R.string.wallets_remove_busy
                                 org.elektronnet.mobile.wallet.RemoveFailure.Unknown -> R.string.wallets_remove_failed
                             },
                         ),
                     )
+                    NodeHost.removeDetail?.let { detail -> Text(detail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 }
             }
         },

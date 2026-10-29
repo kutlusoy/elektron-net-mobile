@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">Esto borra el monedero de este teléfono. Las monedas que contiene no se pierden, pero solo puedes recuperarlas con su frase de recuperación. Sin la frase se pierden para siempre.</string>
     <string name="wallets_remove_confirm">Tengo la frase de recuperación de este monedero</string>
     <string name="wallets_remove_failed">No se pudo quitar el monedero.</string>
+    <string name="wallets_remove_busy">El nodo sigue ocupado con esta cartera. Espera un momento e inténtalo de nuevo.</string>
     <string name="wallets_title">Tus monederos</string>
     <string name="wallets_add">Añadir un monedero</string>
     <string name="wallets_rename">Renombrar</string>

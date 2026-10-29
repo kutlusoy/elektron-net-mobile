@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">Questo elimina il wallet da questo telefono. I coin al suo interno non vanno persi, ma puoi recuperarli solo con la sua recovery phrase. Senza la frase sono persi per sempre.</string>
     <string name="wallets_remove_confirm">Ho la recovery phrase di questo wallet</string>
     <string name="wallets_remove_failed">Impossibile rimuovere il wallet.</string>
+    <string name="wallets_remove_busy">Il nodo è ancora occupato con questo portafoglio. Attendi un momento e riprova.</string>
     <string name="wallets_title">I tuoi wallet</string>
     <string name="wallets_add">Aggiungi un wallet</string>
     <string name="wallets_rename">Rinomina</string>

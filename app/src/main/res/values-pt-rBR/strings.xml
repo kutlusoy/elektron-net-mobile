@@ -526,6 +526,7 @@
     <string name="wallets_remove_body">Isso apaga a carteira deste celular. As moedas nela não são perdidas, mas só podem ser recuperadas com a frase de recuperação. Sem a frase, elas se perdem para sempre.</string>
     <string name="wallets_remove_confirm">Tenho a frase de recuperação desta carteira</string>
     <string name="wallets_remove_failed">Não foi possível remover a carteira.</string>
+    <string name="wallets_remove_busy">O nó ainda está ocupado com esta carteira. Aguarde um momento e tente de novo.</string>
     <string name="wallets_title">Suas carteiras</string>
     <string name="wallets_add">Adicionar uma carteira</string>
     <string name="wallets_rename">Renomear</string>
