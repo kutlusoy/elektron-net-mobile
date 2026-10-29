@@ -56,6 +56,10 @@ class WalletRemover(private val rpc: WalletRpc, private val removeWalletFiles: (
         ((rpc.call("listwalletdir", emptyList<Any?>(), null) as Map<*, *>)["wallets"] as List<*>).any { (it as Map<*, *>)["name"] == walletName }
     }.getOrNull()
 
+    // the dialog warns and asks for a confirmation, no passphrase is needed to delete the files of a wallet
+    fun removeConfirmed(walletName: String): RemoveFailure? =
+        if (unloadAndDelete(walletName)) null else failure()
+
     // a watch-only wallet holds no keys, so it can be removed without a passphrase even when it shows a balance
     fun remove(walletName: String, passphrase: String?, watchOnly: Boolean = false): RemoveFailure? {
         if (existsOnNode(walletName) == false) return if (unloadAndDelete(walletName)) null else failure()

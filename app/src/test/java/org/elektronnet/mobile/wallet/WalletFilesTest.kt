@@ -47,4 +47,37 @@ class WalletFilesTest {
         }
         assertTrue(File(root, "evil").exists())
     }
+
+    @Test
+    fun findsAWalletThatLiesDirectlyInTheDataFolder() {
+        val root = datadir()
+        File(root, "elektron").mkdirs()
+        File(root, "elektron/wallet.dat").writeText("secret")
+        File(root, "blocks").mkdirs()
+        deleteWalletEverywhere(root, "", "elektron")
+        assertFalse(File(root, "elektron").exists())
+        assertTrue(File(root, "blocks").exists())
+    }
+
+    @Test
+    fun doesNotTouchAFolderThatIsNoWallet() {
+        val root = datadir()
+        File(root, "blocks").mkdirs()
+        File(root, "blocks/blk00000.dat").writeText("x")
+        deleteWalletEverywhere(root, "", "blocks")
+        assertTrue(File(root, "blocks/blk00000.dat").exists())
+    }
+
+    @Test
+    fun usesTheWalletFolderTheNodeReports() {
+        val root = datadir()
+        File(root, "custom/elektron").mkdirs()
+        File(root, "custom/elektron/wallet.dat").writeText("secret")
+        deleteWalletEverywhere(root, "", "elektron", File(root, "custom"))
+        assertFalse(File(root, "custom/elektron").exists())
+        val outside = datadir()
+        File(outside, "elektron").mkdirs()
+        deleteWalletEverywhere(root, "", "elektron", outside)
+        assertTrue(File(outside, "elektron").exists())
+    }
 }

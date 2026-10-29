@@ -80,4 +80,12 @@ class WalletRemoverTest {
         assertEquals(RemoveFailure.Unknown, remover.remove("elektron", "pass"))
         assertTrue(remover.lastError!!.contains("-4"))
     }
+
+    @Test
+    fun removesAFundedWalletAfterTheConfirmationWithoutAPassphrase() {
+        val node = FakeNode(loaded = true, unloads = true)
+        val remover = WalletRemover(node.rpc) { node.deleted = true }
+        assertNull(remover.removeConfirmed("elektron"))
+        assertTrue(node.deleted)
+    }
 }

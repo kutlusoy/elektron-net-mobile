@@ -134,11 +134,15 @@ object NodeHost {
         return org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) {}.isUnused(name)
     }
 
+    // the node logs the folder it keeps its wallets in, which is where the files have to be removed from
+    private fun nodeWalletDir(output: org.elektronnet.mobile.node.OutputBuffer): File? =
+        output.snapshot().lastOrNull { it.contains("Using wallet directory ") }?.substringAfter("Using wallet directory ")?.trim()?.takeIf { it.isNotEmpty() }?.let { File(it) }
+
     // what the node or the file removal reported for the last failed removal
     @Volatile
     var removeDetail: String? = null
 
-    fun removeWallet(name: String, passphrase: String?): org.elektronnet.mobile.wallet.RemoveFailure? {
+    fun removeWallet(name: String): org.elektronnet.mobile.wallet.RemoveFailure? {
         val supervisor = runningSupervisor() ?: return org.elektronnet.mobile.wallet.RemoveFailure.NodeNotReady
         val root = datadir ?: return org.elektronnet.mobile.wallet.RemoveFailure.Unknown
         val chain = Chain.fromBuildName(ChainConfig.chain)
@@ -147,12 +151,12 @@ object NodeHost {
         pendingCoinRefresh.remove(name)
         removeDetail = null
         val remover = org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc(REMOVE_TIMEOUT_MS, autoLoad = false)) { wallet ->
-            org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, wallet)
+            org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, wallet, nodeWalletDir(supervisor.output))
         }
         val failure = try {
-            remover.remove(name, passphrase, watchOnly = isWatchOnly(name))
+            remover.removeConfirmed(name)
         } finally {
-            removeDetail = remover.lastError
+            removeDetail = remover.lastError?.let { it + nodeWalletDir(supervisor.output)?.let { dir -> " (wallet folder of the node: ${dir.path})" }.orEmpty() }
             removing.remove(name)
             org.elektronnet.mobile.wallet.WalletLoadGuard.release(name)
         }
