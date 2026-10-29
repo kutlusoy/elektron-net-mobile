@@ -35,6 +35,7 @@
     <string name="note_problem_running">Другая копия ноды уже запущена.</string>
     <string name="note_problem_start">Не удалось запустить ноду. Технические подробности ниже помогут найти причину.</string>
     <string name="note_problem_unknown">Нода неожиданно остановилась.</string>
+    <string name="note_problem_chainstate">Данные цепочки ноды не удаётся восстановить автоматически. Используйте сброс данных цепочки на вкладке Нода.</string>
     <string name="send_needs_sync">Для отправки нужна синхронизированная нода. Откройте вкладку «Нода», чтобы увидеть прогресс.</string>
     <string name="history_empty">Платежей пока нет. Нажмите «Получить», чтобы узнать свой первый адрес.</string>
     <string name="history_limit">Платежи старше примерно 137 дней не хранятся в сети.</string>

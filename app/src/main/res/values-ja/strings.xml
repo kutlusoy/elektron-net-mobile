@@ -35,6 +35,7 @@
     <string name="note_problem_running">ノードの別のコピーがすでに実行中です。</string>
     <string name="note_problem_start">ノードを起動できませんでした。下の技術的な詳細が原因の特定に役立ちます。</string>
     <string name="note_problem_unknown">ノードが予期せず停止しました。</string>
+    <string name="note_problem_chainstate">ノードのチェーンデータは自動では復旧できません。ノードタブのチェーンデータをリセットを使ってください。</string>
     <string name="send_needs_sync">送金には同期済みのノードが必要です。進捗はノードタブで確認できます。</string>
     <string name="history_empty">まだ支払いはありません。「受け取る」をタップして最初のアドレスを取得しましょう。</string>
     <string name="history_limit">約137日より古い支払いはネットワーク上に保存されていません。</string>

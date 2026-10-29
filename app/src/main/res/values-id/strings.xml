@@ -35,6 +35,7 @@
     <string name="note_problem_running">Salinan node lain sudah berjalan.</string>
     <string name="note_problem_start">Node Anda tidak dapat dimulai. Detail teknis di bawah membantu menemukan penyebabnya.</string>
     <string name="note_problem_unknown">Node Anda berhenti secara tak terduga.</string>
+    <string name="note_problem_chainstate">Data rantai node Anda tidak dapat dipulihkan sendiri. Gunakan Reset data rantai di tab Node.</string>
     <string name="send_needs_sync">Pengiriman membutuhkan node yang tersinkron. Buka tab Node untuk melihat progresnya.</string>
     <string name="history_empty">Belum ada pembayaran. Ketuk Terima untuk mendapatkan alamat pertama Anda.</string>
     <string name="history_limit">Pembayaran yang lebih lama dari sekitar 137 hari tidak disimpan di jaringan.</string>

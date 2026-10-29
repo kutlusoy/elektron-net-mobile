@@ -35,6 +35,7 @@
     <string name="note_problem_running">节点的另一个副本已在运行。</string>
     <string name="note_problem_start">无法启动您的节点。下方的技术细节有助于查找原因。</string>
     <string name="note_problem_unknown">您的节点意外停止。</string>
+    <string name="note_problem_chainstate">节点的链数据无法自行恢复。请使用节点标签页中的重置链数据。</string>
     <string name="send_needs_sync">发送需要已同步的节点。请打开“节点”标签页查看进度。</string>
     <string name="history_empty">还没有付款。点按“收款”获取您的第一个地址。</string>
     <string name="history_limit">约 137 天前的付款不会保存在网络上。</string>

@@ -35,6 +35,7 @@
     <string name="note_problem_running">Düğümün başka bir kopyası zaten çalışıyor.</string>
     <string name="note_problem_start">Düğümünüz başlatılamadı. Aşağıdaki teknik ayrıntılar nedeni bulmaya yardımcı olur.</string>
     <string name="note_problem_unknown">Düğümünüz beklenmedik şekilde durdu.</string>
+    <string name="note_problem_chainstate">Düğümünüzün zincir verileri kendiliğinden kurtarılamıyor. Düğüm sekmesinde Zincir verilerini sıfırla seçeneğini kullanın.</string>
     <string name="send_needs_sync">Göndermek için senkronize bir düğüm gerekir. İlerlemeyi görmek için Düğüm sekmesini açın.</string>
     <string name="history_empty">Henüz ödeme yok. İlk adresinizi almak için Al\'a dokunun.</string>
     <string name="history_limit">Yaklaşık 137 günden eski ödemeler ağda saklanmaz.</string>

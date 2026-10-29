@@ -141,6 +141,7 @@ private fun SyncNoteView(note: SyncNote) {
                     NodeFailure.DiskFull -> R.string.note_problem_disk
                     NodeFailure.CorruptedDatabase -> R.string.note_problem_database
                     NodeFailure.AlreadyRunning -> R.string.note_problem_running
+                    NodeFailure.ChainState -> R.string.note_problem_chainstate
                     NodeFailure.StartFailed -> R.string.note_problem_start
                     NodeFailure.Unknown -> R.string.note_problem_unknown
                 },

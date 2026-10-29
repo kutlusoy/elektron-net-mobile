@@ -3,7 +3,8 @@
 - **Version:** m0.1.9
 - **Date:** October 26, 2026
 - **Audience:** Testers, maintainers and users who want to know what a release added
-- **Reference implementation:** [`elektron-net-mobile`](https://github.com/kutlusoy/elektron-net-mobile) `app/`, release names look like `v<node version>-m0.1.9` (see `guideline-distribution-and-signing.md` section 8.1)
+- **Node:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) v4.0.6, see `CHANGELOG-Release-v4.0.6.md` there
+- **Reference implementation:** [`elektron-net-mobile`](https://github.com/kutlusoy/elektron-net-mobile) `app/`, release names look like `v<node version>-m0.1.9`, for node 4.0.6 `v4.0.6-m0.1.9` (see `guideline-distribution-and-signing.md` section 8.1)
 - **See also:** [`CHANGELOG-Release-m0.1.8.md`](./CHANGELOG-Release-m0.1.8.md), [`elektron-net-registry`](https://github.com/kutlusoy/elektron-net-registry)
 - **Website:** https://elektron-net.org | **X:** @elektronnet, @kutlusoy | **Telegram:** @elektronnet
 
@@ -38,3 +39,7 @@ This file lists the features this release added. Corrections are not listed.
 
 - The UTXO set is counted from `chainstate` and `chainstate_snapshot`. After a snapshot bootstrap the set lives in `chainstate_snapshot` and the plain `chainstate` stays empty, so the view showed 0 B.
 
+## Node problems after a snapshot bootstrap are explained
+
+- When the node reports that no chainstate has a usable local tip (the case that v4.0.6 tries to heal with an automatic `-reindex` restart, or that it refuses to repeat), the node tab and the wallet screen say so and point to "Reset chain data" instead of showing a generic stop message.
+- "Reset chain data" also removes `chainstate_snapshot`, the node's own `snapshots` folder and the marker of the automatic restart, in the data folder and in the folder of the chosen network, as the manual recovery of v4.0.6 requires. Wallets and keys stay untouched.

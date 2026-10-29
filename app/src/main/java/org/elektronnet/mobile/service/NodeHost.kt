@@ -684,7 +684,7 @@ object NodeHost {
     fun resetChainData(): Boolean {
         val dir = datadir ?: return false
         controller?.shutdown()
-        return runCatching { org.elektronnet.mobile.node.DatadirReset.perform(dir) }.isSuccess
+        return runCatching { org.elektronnet.mobile.node.DatadirReset.perform(dir, Chain.fromBuildName(ChainConfig.chain).subdir) }.isSuccess
     }
 
     // only the node restarts, Tor and I2P keep running, the next tick starts it again

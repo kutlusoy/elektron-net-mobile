@@ -35,6 +35,7 @@
     <string name="note_problem_running">Ya se está ejecutando otra copia del nodo.</string>
     <string name="note_problem_start">No se pudo iniciar tu nodo. Los detalles técnicos de abajo ayudan a encontrar la causa.</string>
     <string name="note_problem_unknown">Tu nodo se detuvo de forma inesperada.</string>
+    <string name="note_problem_chainstate">Los datos de la cadena de tu nodo no se pueden recuperar solos. Usa Restablecer datos de la cadena en la pestaña Nodo.</string>
     <string name="send_needs_sync">Para enviar se necesita un nodo sincronizado. Abre la pestaña Nodo para ver el progreso.</string>
     <string name="history_empty">Aún no hay pagos. Toca Recibir para obtener tu primera dirección.</string>
     <string name="history_limit">Los pagos con más de unos 137 días de antigüedad no se almacenan en la red.</string>

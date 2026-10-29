@@ -35,6 +35,7 @@
     <string name="note_problem_running">노드의 다른 사본이 이미 실행 중입니다.</string>
     <string name="note_problem_start">노드를 시작할 수 없었습니다. 아래의 기술 정보가 원인을 찾는 데 도움이 됩니다.</string>
     <string name="note_problem_unknown">노드가 예기치 않게 중지되었습니다.</string>
+    <string name="note_problem_chainstate">노드의 체인 데이터를 자동으로 복구할 수 없습니다. 노드 탭의 체인 데이터 초기화를 사용하세요.</string>
     <string name="send_needs_sync">보내려면 동기화된 노드가 필요합니다. 진행 상황은 노드 탭에서 확인하세요.</string>
     <string name="history_empty">아직 결제가 없습니다. 받기를 눌러 첫 주소를 받아 보세요.</string>
     <string name="history_limit">약 137일보다 오래된 결제는 네트워크에 저장되지 않습니다.</string>

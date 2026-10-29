@@ -35,6 +35,7 @@
     <string name="note_problem_running">Une autre copie du nœud est déjà en cours d\'exécution.</string>
     <string name="note_problem_start">Votre nœud n\'a pas pu démarrer. Les détails techniques ci-dessous aident à trouver la cause.</string>
     <string name="note_problem_unknown">Votre nœud s\'est arrêté de façon inattendue.</string>
+    <string name="note_problem_chainstate">Les données de chaîne de votre nœud ne peuvent pas être récupérées seules. Utilisez Réinitialiser les données de chaîne dans l\'onglet Nœud.</string>
     <string name="send_needs_sync">L\'envoi nécessite un nœud synchronisé. Ouvrez l\'onglet Nœud pour voir la progression.</string>
     <string name="history_empty">Aucun paiement pour l\'instant. Touchez Recevoir pour obtenir votre première adresse.</string>
     <string name="history_limit">Les paiements de plus d\'environ 137 jours ne sont pas conservés sur le réseau.</string>

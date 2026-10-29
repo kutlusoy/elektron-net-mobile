@@ -35,6 +35,7 @@
     <string name="note_problem_running">نسخة أخرى من العقدة قيد التشغيل بالفعل.</string>
     <string name="note_problem_start">تعذّر بدء عقدتك. التفاصيل التقنية أدناه تساعد في معرفة السبب.</string>
     <string name="note_problem_unknown">توقفت عقدتك بشكل غير متوقع.</string>
+    <string name="note_problem_chainstate">لا يمكن استرداد بيانات السلسلة في عقدتك تلقائيا. استخدم إعادة ضبط بيانات السلسلة في تبويب العقدة.</string>
     <string name="send_needs_sync">الإرسال يحتاج إلى عقدة متزامنة. افتح تبويب العقدة لمتابعة التقدم.</string>
     <string name="history_empty">لا توجد دفعات بعد. اضغط استلام للحصول على أول عنوان لك.</string>
     <string name="history_limit">الدفعات الأقدم من نحو 137 يومًا غير مخزنة على الشبكة.</string>

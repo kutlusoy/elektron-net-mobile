@@ -35,6 +35,7 @@
     <string name="note_problem_running">Eine andere Instanz der Node läuft bereits.</string>
     <string name="note_problem_start">Deine Node konnte nicht gestartet werden. Die technischen Details unten helfen bei der Ursachensuche.</string>
     <string name="note_problem_unknown">Deine Node wurde unerwartet beendet.</string>
+    <string name="note_problem_chainstate">Die Chain-Daten deiner Node lassen sich nicht selbst wiederherstellen. Nutze Chain-Daten zurücksetzen im Tab Node.</string>
     <string name="send_needs_sync">Zum Senden muss die Node synchron sein. Öffne den Tab Node, um den Fortschritt zu sehen.</string>
     <string name="history_empty">Noch keine Zahlungen. Tippe auf Empfangen, um deine erste Adresse zu erhalten.</string>
     <string name="history_limit">Zahlungen, die älter als etwa 137 Tage sind, werden im Netzwerk nicht gespeichert.</string>
