@@ -23,9 +23,9 @@ This file lists the features this release added. Corrections are not listed.
 - A new installation allows mobile data from the start, with a monthly mobile data limit of 5 GB. Roaming stays off. The limit and the switch can be changed in the settings at any time.
 - An installation that existed before this release keeps its choice, an update changes nothing for existing users.
 
-## More connections in the Balanced profile
+## More connections in the Balanced and Always on profiles
 
-- The Balanced profile accepts up to 125 connections (before: 16). The profiles While the app is open and Always on are unchanged.
+- The profiles Balanced and Always on accept up to 125 connections (before: 16 and 24). The profile While the app is open is unchanged.
 
 ## Connected peers as a collapsible list
 
