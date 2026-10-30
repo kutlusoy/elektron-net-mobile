@@ -214,7 +214,7 @@
     <string name="profile_always_hint">接続数とメモリを最も使用します。充電器につないだままのスマートフォンに最適です。</string>
     <string name="settings_sharing">ネットワークへの貢献</string>
     <string name="settings_inbound">受信接続を受け付ける</string>
-    <string name="settings_inbound_hint">Wi-Fiのみ。ルーターが許可していれば、他のノードがあなたのノードに接続できます。</string>
+    <string name="settings_inbound_hint">Wi-Fiがなくても、他のノードがあなたのノードに接続できます。</string>
     <string name="settings_serve">スナップショットを共有</string>
     <string name="settings_serve_hint">新しいノードの起動を早めます。Wi-Fiかつ充電中のみ。</string>
     <string name="settings_storage">ストレージ</string>

@@ -214,7 +214,7 @@
     <string name="profile_always_hint">Più connessioni e memoria. Ideale per un telefono che resta in carica.</string>
     <string name="settings_sharing">Aiutare la rete</string>
     <string name="settings_inbound">Accetta connessioni in entrata</string>
-    <string name="settings_inbound_hint">Solo con il Wi-Fi. Altri nodi possono connettersi al tuo se il router lo permette.</string>
+    <string name="settings_inbound_hint">Altri nodi possono connettersi al tuo, anche senza Wi-Fi.</string>
     <string name="settings_serve">Condividi snapshot</string>
     <string name="settings_serve_hint">Aiuta i nuovi nodi ad avviarsi più in fretta. Solo con il Wi-Fi e in carica.</string>
     <string name="settings_storage">Archiviazione</string>

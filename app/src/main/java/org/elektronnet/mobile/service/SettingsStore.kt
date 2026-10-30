@@ -29,6 +29,11 @@ class SettingsStore(context: Context) {
             val edit = prefs.edit()
             org.elektronnet.mobile.node.NetworkDefaults.initialSwitch(fresh, prefs.contains(TOR_ENABLED))?.let { edit.putBoolean(TOR_ENABLED, it) }
             org.elektronnet.mobile.node.NetworkDefaults.initialSwitch(fresh, prefs.contains(I2P_ENABLED))?.let { edit.putBoolean(I2P_ENABLED, it) }
+            // a new installation carries the network on mobile data too, within a monthly limit, roaming stays off
+            if (fresh) {
+                edit.putBoolean(ALLOW_METERED, true)
+                edit.putLong(CAP, FRESH_CAP_BYTES)
+            }
             edit.putBoolean(NET_DEFAULTS_DONE, true).apply()
         }
     }
@@ -316,6 +321,7 @@ class SettingsStore(context: Context) {
         const val ALLOW_ROAMING = "allow_roaming"
         const val CAP = "monthly_cellular_cap"
         const val ALLOW_INBOUND = "allow_inbound"
+        const val FRESH_CAP_BYTES = 5L * 1024 * 1024 * 1024
         const val SERVE_SNAPSHOTS = "serve_snapshots"
         const val STORAGE_FLOOR = "storage_floor"
         const val SCHEDULE_START = "schedule_start"

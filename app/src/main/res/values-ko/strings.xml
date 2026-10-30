@@ -214,7 +214,7 @@
     <string name="profile_always_hint">연결과 메모리를 가장 많이 사용합니다. 충전기에 계속 꽂아 두는 휴대폰에 적합합니다.</string>
     <string name="settings_sharing">네트워크 돕기</string>
     <string name="settings_inbound">수신 연결 허용</string>
-    <string name="settings_inbound_hint">Wi-Fi에서만. 공유기가 허용하면 다른 노드가 내 노드에 연결할 수 있습니다.</string>
+    <string name="settings_inbound_hint">Wi-Fi가 없어도 다른 노드가 내 노드에 연결할 수 있습니다.</string>
     <string name="settings_serve">스냅샷 공유</string>
     <string name="settings_serve_hint">새 노드가 더 빨리 시작하도록 돕습니다. Wi-Fi에서 충전 중일 때만 동작합니다.</string>
     <string name="settings_storage">저장 공간</string>

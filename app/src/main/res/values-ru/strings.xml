@@ -214,7 +214,7 @@
     <string name="profile_always_hint">Больше всего соединений и памяти. Лучше всего для телефона, который стоит на зарядке.</string>
     <string name="settings_sharing">Помощь сети</string>
     <string name="settings_inbound">Принимать входящие подключения</string>
-    <string name="settings_inbound_hint">Только по Wi-Fi. Другие ноды смогут подключаться к вашей, если это позволяет роутер.</string>
+    <string name="settings_inbound_hint">Другие ноды смогут подключаться к вашей, в том числе без Wi-Fi.</string>
     <string name="settings_serve">Раздавать снимки</string>
     <string name="settings_serve_hint">Помогает новым нодам запускаться быстрее. Только по Wi-Fi и при зарядке.</string>
     <string name="settings_storage">Память</string>

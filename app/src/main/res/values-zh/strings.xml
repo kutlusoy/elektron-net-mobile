@@ -214,7 +214,7 @@
     <string name="profile_always_hint">连接和内存占用最多。最适合一直接着充电器的手机。</string>
     <string name="settings_sharing">帮助网络</string>
     <string name="settings_inbound">接受入站连接</string>
-    <string name="settings_inbound_hint">仅限 Wi-Fi。路由器允许时，其他节点可以连接到您的节点。</string>
+    <string name="settings_inbound_hint">即使没有 Wi-Fi，其他节点也可以连接到您的节点。</string>
     <string name="settings_serve">分享快照</string>
     <string name="settings_serve_hint">帮助新节点更快启动。仅在 Wi-Fi 且充电时。</string>
     <string name="settings_storage">存储</string>

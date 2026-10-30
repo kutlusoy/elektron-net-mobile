@@ -28,7 +28,7 @@ class PolicyEngine(private val tuning: PolicyTuning = PolicyTuning()) {
         if (batteryReduced) reasons.add(PolicyReason.ReducedBattery)
         if (thermalReduced) reasons.add(PolicyReason.ReducedThermal)
         if ((batteryReduced || thermalReduced) && profile != NodeProfile.Foreground) profile = NodeProfile.Foreground
-        var listen = settings.allowInbound && device.network == NetworkType.Unmetered
+        var listen = settings.allowInbound
 
         val previous = last
         if (previous != null && previous.run && run && (previous.profile != profile || previous.listen != listen)) {

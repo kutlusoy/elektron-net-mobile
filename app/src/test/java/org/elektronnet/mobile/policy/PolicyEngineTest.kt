@@ -44,7 +44,7 @@ class PolicyEngineTest {
     }
 
     @Test
-    fun meteredNeedsConsentAndNeverListens() {
+    fun meteredNeedsConsentAndListensWhenInboundIsOn() {
         val engine = PolicyEngine()
         val blocked = engine.evaluate(PolicySettings(), device(network = NetworkType.Metered), 0)
         assertTrue(blocked.run)
@@ -52,7 +52,8 @@ class PolicyEngineTest {
         assertTrue(blocked.reasons.contains(PolicyReason.MeteredNotAllowed))
         val allowed = engine.evaluate(PolicySettings(allowMetered = true), device(network = NetworkType.Metered), hour)
         assertTrue(allowed.networkActive)
-        assertFalse(allowed.listen)
+        assertTrue(allowed.listen)
+        assertFalse(engine.evaluate(PolicySettings(allowMetered = true, allowInbound = false), device(network = NetworkType.Metered), 2 * hour).listen)
     }
 
     @Test
@@ -196,12 +197,11 @@ class PolicyEngineTest {
     }
 
     @Test
-    fun listenFollowsNetworkTypeButIsRateLimitedToo() {
-        val engine = PolicyEngine(PolicyTuning(minDwellMs = 10 * 60 * 1000))
+    fun listenDoesNotDependOnTheNetworkType() {
         val settings = PolicySettings(allowMetered = true)
-        assertTrue(engine.evaluate(settings, device(), 0).listen)
-        assertTrue(engine.evaluate(settings, device(network = NetworkType.Metered), 60_000).listen)
-        assertFalse(engine.evaluate(settings, device(network = NetworkType.Metered), 11 * 60_000).listen)
+        listOf(NetworkType.Unmetered, NetworkType.Metered, NetworkType.Roaming).forEach {
+            assertTrue(it.name, PolicyEngine().evaluate(settings.copy(allowRoaming = true), device(network = it), 0).listen)
+        }
     }
 
     @Test

@@ -214,7 +214,7 @@
     <string name="profile_always_hint">Mais conexões e memória. Ideal para um celular que fica no carregador.</string>
     <string name="settings_sharing">Ajudando a rede</string>
     <string name="settings_inbound">Aceitar conexões de entrada</string>
-    <string name="settings_inbound_hint">Somente no Wi-Fi. Outros nós podem se conectar ao seu quando o roteador permitir.</string>
+    <string name="settings_inbound_hint">Outros nós podem se conectar ao seu, também sem Wi-Fi.</string>
     <string name="settings_serve">Compartilhar snapshots</string>
     <string name="settings_serve_hint">Ajuda novos nós a iniciar mais rápido. Somente no Wi-Fi e carregando.</string>
     <string name="settings_storage">Armazenamento</string>

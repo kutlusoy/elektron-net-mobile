@@ -214,7 +214,7 @@
     <string name="profile_always_hint">Nhiều kết nối và bộ nhớ nhất. Phù hợp nhất cho điện thoại luôn cắm sạc.</string>
     <string name="settings_sharing">Giúp đỡ mạng</string>
     <string name="settings_inbound">Chấp nhận kết nối đến</string>
-    <string name="settings_inbound_hint">Chỉ qua Wi-Fi. Các node khác có thể kết nối với node của bạn nếu router cho phép.</string>
+    <string name="settings_inbound_hint">Các node khác có thể kết nối với node của bạn, kể cả khi không có Wi-Fi.</string>
     <string name="settings_serve">Chia sẻ snapshot</string>
     <string name="settings_serve_hint">Giúp node mới khởi động nhanh hơn. Chỉ qua Wi-Fi và khi đang sạc.</string>
     <string name="settings_storage">Bộ nhớ</string>

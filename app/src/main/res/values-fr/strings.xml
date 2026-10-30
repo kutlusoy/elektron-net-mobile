@@ -214,7 +214,7 @@
     <string name="profile_always_hint">Le plus de connexions et de mémoire. Idéal pour un téléphone qui reste branché.</string>
     <string name="settings_sharing">Aider le réseau</string>
     <string name="settings_inbound">Accepter les connexions entrantes</string>
-    <string name="settings_inbound_hint">Uniquement en Wi-Fi. D\'autres nœuds peuvent se connecter au vôtre si votre routeur le permet.</string>
+    <string name="settings_inbound_hint">D\'autres nœuds peuvent se connecter au vôtre, même sans Wi-Fi.</string>
     <string name="settings_serve">Partager des instantanés</string>
     <string name="settings_serve_hint">Aide les nouveaux nœuds à démarrer plus vite. Uniquement en Wi-Fi et en charge.</string>
     <string name="settings_storage">Stockage</string>

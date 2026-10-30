@@ -214,7 +214,7 @@
     <string name="profile_always_hint">أكبر عدد من الاتصالات والذاكرة. الأفضل لهاتف يبقى على الشاحن.</string>
     <string name="settings_sharing">مساعدة الشبكة</string>
     <string name="settings_inbound">قبول الاتصالات الواردة</string>
-    <string name="settings_inbound_hint">عبر Wi-Fi فقط. يمكن للعقد الأخرى الاتصال بعقدتك عندما يسمح جهاز التوجيه بذلك.</string>
+    <string name="settings_inbound_hint">يمكن للعقد الأخرى الاتصال بعقدتك، حتى بدون Wi-Fi.</string>
     <string name="settings_serve">مشاركة اللقطات</string>
     <string name="settings_serve_hint">تساعد العقد الجديدة على البدء أسرع. عبر Wi-Fi وأثناء الشحن فقط.</string>
     <string name="settings_storage">التخزين</string>
