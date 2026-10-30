@@ -86,7 +86,7 @@ Profiles map to `elektrond` startup arguments. The numbers below are starting hy
 | Profile | When active | Intent | Arguments (starting point) |
 |---|---|---|---|
 | **Foreground** | App visible, no background service | Lowest footprint, catch up when opened | `-dbcache=64 -maxconnections=8 -maxmempool=30 -blocksonly=1` |
-| **Balanced** (default) | Foreground service while charging or battery above threshold, on unmetered network | Keeps tip current without noticeable drain | `-dbcache=128 -maxconnections=16 -maxmempool=50` |
+| **Balanced** (default) | Foreground service while charging or battery above threshold, on unmetered network | Keeps tip current without noticeable drain | `-dbcache=128 -maxconnections=125 -maxmempool=50` |
 | **Always-on** | Foreground service permanently, user opt-in | Best relay/serving behavior | `-dbcache=256 -maxconnections=24 -maxmempool=100` |
 | **Initial sync boost** | Only during first IBD or snapshot tail sync, device RAM permitting | Shorten the heaviest phase | Temporary `-dbcache` raised to a fraction of free RAM, then restart into the active profile |
 

@@ -351,11 +351,23 @@ private fun TelemetryRow(label: String, value: String) = InfoRow(label, value)
 
 @Composable
 private fun PeerSection(peers: List<NodeHost.PeerRow>, showGeoCredit: Boolean) {
+    var open by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(stringResource(R.string.peers_title, peers.size), style = MaterialTheme.typography.titleLarge)
-        if (peers.isEmpty()) Text(stringResource(R.string.peers_none), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        peers.forEach { PeerCard(it) }
-        if (showGeoCredit) Text(stringResource(R.string.peers_geo_credit), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        GlassCard {
+            Row(
+                modifier = Modifier.fillMaxWidth().clickable { open = !open },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(stringResource(R.string.peers_title, peers.size), style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+                Text(if (open) "\u25B4" else "\u25BE", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+            }
+        }
+        if (open) {
+            if (peers.isEmpty()) Text(stringResource(R.string.peers_none), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            peers.forEach { PeerCard(it) }
+            if (showGeoCredit) Text(stringResource(R.string.peers_geo_credit), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 }
 

@@ -17,3 +17,17 @@ This file lists the features this release added. Corrections are not listed.
 
 - "Accept incoming connections" in the settings is no longer limited to Wi-Fi. When the switch is on, the node accepts incoming connections on every network (Wi-Fi, mobile data, roaming), with no further conditions. The switch is the only condition.
 - Whether the node runs at all on a metered or roaming network is still decided by the other network settings (metered networks, roaming, data saver, monthly cap). Only the listening itself no longer depends on the network type.
+
+## Mobile data on by default for new installations
+
+- A new installation allows mobile data from the start, with a monthly mobile data limit of 5 GB. Roaming stays off. The limit and the switch can be changed in the settings at any time.
+- An installation that existed before this release keeps its choice, an update changes nothing for existing users.
+
+## More connections in the Balanced profile
+
+- The Balanced profile accepts up to 125 connections (before: 16). The profiles While the app is open and Always on are unchanged.
+
+## Connected peers as a collapsible list
+
+- On the Node tab the connected peers are collected in one collapsible section "Connected peers". It is closed at first, so the page stays short. Tapping a peer still shows its details.
+

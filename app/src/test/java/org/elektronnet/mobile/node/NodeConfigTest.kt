@@ -37,7 +37,7 @@ class NodeConfigTest {
     @Test
     fun profilesMapToPlanValues() {
         assertTrue(config(Chain.Main, NodeProfile.Foreground).arguments().containsAll(listOf("-dbcache=64", "-maxconnections=8", "-maxmempool=30", "-blocksonly=1")))
-        assertTrue(config(Chain.Main, NodeProfile.Balanced).arguments().containsAll(listOf("-dbcache=128", "-maxconnections=16", "-maxmempool=50")))
+        assertTrue(config(Chain.Main, NodeProfile.Balanced).arguments().containsAll(listOf("-dbcache=128", "-maxconnections=125", "-maxmempool=50")))
         assertTrue(config(Chain.Main, NodeProfile.AlwaysOn).arguments().containsAll(listOf("-dbcache=256", "-maxconnections=24", "-maxmempool=100")))
         assertFalse(config(Chain.Main, NodeProfile.Balanced).arguments().contains("-blocksonly=1"))
     }
