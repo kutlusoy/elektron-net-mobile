@@ -461,6 +461,7 @@ private fun hint(model: NodeTabModel): String? = when (model.state) {
             org.elektronnet.mobile.node.NodeFailure.DiskFull -> R.string.note_problem_disk
             org.elektronnet.mobile.node.NodeFailure.CorruptedDatabase -> R.string.note_problem_database
             org.elektronnet.mobile.node.NodeFailure.AlreadyRunning -> R.string.note_problem_running
+            org.elektronnet.mobile.node.NodeFailure.ChainState -> R.string.note_problem_chainstate
             org.elektronnet.mobile.node.NodeFailure.StartFailed -> R.string.note_problem_start
             else -> R.string.note_problem_unknown
         },

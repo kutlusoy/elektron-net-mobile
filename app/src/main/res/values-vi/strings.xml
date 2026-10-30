@@ -35,6 +35,7 @@
     <string name="note_problem_running">Một bản sao khác của node đang chạy.</string>
     <string name="note_problem_start">Không thể khởi động node của bạn. Thông tin kỹ thuật bên dưới giúp tìm ra nguyên nhân.</string>
     <string name="note_problem_unknown">Node của bạn đã dừng đột ngột.</string>
+    <string name="note_problem_chainstate">Dữ liệu chuỗi của node không thể tự phục hồi. Hãy dùng Đặt lại dữ liệu chuỗi ở tab Node.</string>
     <string name="send_needs_sync">Gửi tiền cần node đã đồng bộ. Mở tab Node để xem tiến trình.</string>
     <string name="history_empty">Chưa có giao dịch nào. Nhấn Nhận để lấy địa chỉ đầu tiên của bạn.</string>
     <string name="history_limit">Các giao dịch cũ hơn khoảng 137 ngày không được lưu trên mạng.</string>
@@ -525,6 +526,7 @@
     <string name="wallets_remove_body">Thao tác này xóa ví khỏi điện thoại. Coin trong đó không bị mất, nhưng bạn chỉ lấy lại được bằng cụm từ khôi phục của nó. Không có cụm từ này thì coin mất vĩnh viễn.</string>
     <string name="wallets_remove_confirm">Tôi có cụm từ khôi phục của ví này</string>
     <string name="wallets_remove_failed">Không thể xóa ví.</string>
+    <string name="wallets_remove_busy">Node vẫn đang bận với ví này. Hãy đợi một lát rồi thử lại.</string>
     <string name="wallets_title">Các ví của bạn</string>
     <string name="wallets_add">Thêm ví</string>
     <string name="wallets_rename">Đổi tên</string>

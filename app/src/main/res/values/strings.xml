@@ -35,6 +35,7 @@
     <string name="note_problem_running">Another copy of the node is already running.</string>
     <string name="note_problem_start">Your node could not be started. The technical details below help to find the cause.</string>
     <string name="note_problem_unknown">Your node stopped unexpectedly.</string>
+    <string name="note_problem_chainstate">The chain data of your node cannot be recovered on its own. Use Reset chain data on the Node tab.</string>
     <string name="send_needs_sync">Sending needs a synchronized node. Open the Node tab to see the progress.</string>
     <string name="history_empty">No payments yet. Tap Receive to get your first address.</string>
     <string name="history_limit">Payments older than about 137 days are not stored on the network.</string>
@@ -525,6 +526,7 @@
     <string name="wallets_remove_body">This deletes the wallet from this phone. Coins in it are not lost, but you can only get them back with its recovery phrase. Without the phrase they are gone for good.</string>
     <string name="wallets_remove_confirm">I have the recovery phrase of this wallet</string>
     <string name="wallets_remove_failed">The wallet could not be removed.</string>
+    <string name="wallets_remove_busy">The node is still busy with this wallet. Wait a moment and try again.</string>
     <string name="wallets_title">Your wallets</string>
     <string name="wallets_add">Add a wallet</string>
     <string name="wallets_rename">Rename</string>

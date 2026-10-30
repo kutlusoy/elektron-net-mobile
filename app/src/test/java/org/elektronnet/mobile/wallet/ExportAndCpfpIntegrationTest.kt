@@ -125,7 +125,7 @@ class ExportAndCpfpIntegrationTest {
     @Test
     fun unusedWalletsCanBeRemovedWithoutThePassphraseButUsedOnesCannot() = withEnv(29152) { env ->
         val removed = mutableListOf<String>()
-        val remover = WalletRemover(env.rpc) { removed.add(it) }
+        val remover = WalletRemover(env.rpc) { removed.add(it); deleteWalletDir(File(env.dir, "regtest/wallets/$it")) }
         assertTrue(remover.isUnused("elektron"))
         lowFeePayment(env)
         assertFalse(remover.isUnused("elektron"))

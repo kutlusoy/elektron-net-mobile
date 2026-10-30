@@ -360,55 +360,43 @@ fun CoinPickerDialog(wallet: String, selected: List<Coin>, onDone: (List<Coin>) 
 @Composable
 private fun RemoveWalletDialog(wallet: OwnWallet, onDismiss: () -> Unit) {
     val scope = rememberCoroutineScope()
-    var passphrase by remember { mutableStateOf("") }
     var confirmed by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var failure by remember { mutableStateOf<org.elektronnet.mobile.wallet.RemoveFailure?>(null) }
-    var unused by remember { mutableStateOf(false) }
-    LaunchedEffect(wallet.name) { unused = withContext(Dispatchers.IO) { NodeHost.walletIsUnused(wallet.name) } }
     AlertDialog(
         onDismissRequest = { if (!busy) onDismiss() },
         title = { Text(stringResource(R.string.wallets_remove_title, walletTitle(wallet))) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(stringResource(R.string.wallets_remove_body))
-                if (unused) Text(stringResource(R.string.wallets_remove_unused), color = MaterialTheme.colorScheme.primary)
                 if (wallet.watchOnly) Text(stringResource(R.string.wallets_remove_watch), color = MaterialTheme.colorScheme.primary)
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { confirmed = !confirmed }) {
                     androidx.compose.material3.Checkbox(checked = confirmed, onCheckedChange = null)
                     Text(stringResource(R.string.wallets_remove_confirm), modifier = Modifier.padding(start = 8.dp))
                 }
-                if (!wallet.watchOnly) SecretField(
-                    value = passphrase,
-                    onValueChange = { passphrase = it },
-                    label = { Text(stringResource(R.string.fr_pass_label)) },
-                    singleLine = true,
-                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Password),
-                    modifier = Modifier.fillMaxWidth(),
-                )
                 failure?.let {
                     ErrorText(
                         stringResource(
                             when (it) {
                                 org.elektronnet.mobile.wallet.RemoveFailure.WrongPassphrase -> R.string.send_err_passphrase
                                 org.elektronnet.mobile.wallet.RemoveFailure.NodeNotReady -> R.string.fr_err_node
+                                org.elektronnet.mobile.wallet.RemoveFailure.Busy -> R.string.wallets_remove_busy
                                 org.elektronnet.mobile.wallet.RemoveFailure.Unknown -> R.string.wallets_remove_failed
                             },
                         ),
                     )
+                    NodeHost.removeDetail?.let { detail -> Text(detail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 }
             }
         },
         confirmButton = {
             TextButton(
-                enabled = confirmed && (passphrase.isNotEmpty() || unused || wallet.watchOnly) && !busy,
+                enabled = confirmed && !busy,
                 onClick = {
-                    val pass = passphrase
-                    passphrase = ""
                     failure = null
                     busy = true
                     scope.launch {
-                        val result = withContext(Dispatchers.IO) { runCatching { NodeHost.removeWallet(wallet.name, pass.ifEmpty { null }) }.getOrDefault(org.elektronnet.mobile.wallet.RemoveFailure.Unknown) }
+                        val result = withContext(Dispatchers.IO) { runCatching { NodeHost.removeWallet(wallet.name) }.getOrDefault(org.elektronnet.mobile.wallet.RemoveFailure.Unknown) }
                         busy = false
                         if (result == null) onDismiss() else failure = result
                     }

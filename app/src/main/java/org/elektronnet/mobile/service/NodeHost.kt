@@ -37,6 +37,7 @@ import org.elektronnet.mobile.wallet.asWalletRpc
 
 object NodeHost {
     private const val SCAN_TIMEOUT_MS = 900_000
+    private const val REMOVE_TIMEOUT_MS = 130_000
 
     @Volatile
     var appVisible: Boolean = false
@@ -101,7 +102,7 @@ object NodeHost {
         val reg = registry ?: return null
         val rpc = supervisor.rpc.asWalletRpc()
         val busy = if (setupStatus != SetupStatus.None) setOf(walletSetup.walletName) else emptySet()
-        val reconciler = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy }
+        val reconciler = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy + removing }
         val result = reconciler.reconcile(adopt = true) ?: return null
         walletNamesOnDisk = reconciler.namesOnDisk().orEmpty().toSet()
         if (reg.wallets().isNotEmpty()) markWalletReady(true)
@@ -125,18 +126,40 @@ object NodeHost {
         refreshWallets()
     }
 
+    // wallets that are being removed right now: the list reconciliation must not load them again between unloading and deleting
+    private val removing: MutableSet<String> = java.util.concurrent.ConcurrentHashMap.newKeySet()
+
     fun walletIsUnused(name: String): Boolean {
         val supervisor = runningSupervisor() ?: return false
         return org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) {}.isUnused(name)
     }
 
-    fun removeWallet(name: String, passphrase: String?): org.elektronnet.mobile.wallet.RemoveFailure? {
+    // the node logs the folder it keeps its wallets in, which is where the files have to be removed from
+    private fun nodeWalletDir(output: org.elektronnet.mobile.node.OutputBuffer): File? =
+        output.snapshot().lastOrNull { it.contains("Using wallet directory ") }?.substringAfter("Using wallet directory ")?.trim()?.takeIf { it.isNotEmpty() }?.let { File(it) }
+
+    // what the node or the file removal reported for the last failed removal
+    @Volatile
+    var removeDetail: String? = null
+
+    fun removeWallet(name: String): org.elektronnet.mobile.wallet.RemoveFailure? {
         val supervisor = runningSupervisor() ?: return org.elektronnet.mobile.wallet.RemoveFailure.NodeNotReady
         val root = datadir ?: return org.elektronnet.mobile.wallet.RemoveFailure.Unknown
         val chain = Chain.fromBuildName(ChainConfig.chain)
-        val failure = org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc()) { wallet ->
-            org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$wallet"))
-        }.remove(name, passphrase, watchOnly = isWatchOnly(name))
+        removing.add(name)
+        org.elektronnet.mobile.wallet.WalletLoadGuard.block(name)
+        pendingCoinRefresh.remove(name)
+        removeDetail = null
+        val remover = org.elektronnet.mobile.wallet.WalletRemover(supervisor.rpc.asWalletRpc(REMOVE_TIMEOUT_MS, autoLoad = false)) { wallet ->
+            org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, wallet, nodeWalletDir(supervisor.output))
+        }
+        val failure = try {
+            remover.removeConfirmed(name)
+        } finally {
+            removeDetail = remover.lastError?.let { it + nodeWalletDir(supervisor.output)?.let { dir -> " (wallet folder of the node: ${dir.path})" }.orEmpty() }
+            removing.remove(name)
+            org.elektronnet.mobile.wallet.WalletLoadGuard.release(name)
+        }
         if (failure != null) return failure
         registry?.remove(name)
         settings?.setReceiveAddressFor(name, null)
@@ -245,7 +268,33 @@ object NodeHost {
         latest = snapshot
         cleanLogsIfDue()
         maintainWallets(snapshot)
+        maintainRegistryPeers()
         return snapshot
+    }
+
+    @Volatile
+    private var registryRunning = false
+
+    // the public peer lists of the registry serve as stepping stones when the node has no peer on Tor or I2P yet
+    private fun maintainRegistryPeers() {
+        val supervisor = runningSupervisor() ?: return
+        val store = settings ?: return
+        if (ChainConfig.isTestnet || registryRunning) return
+        val network = store.loadNetwork()
+        if (!network.tor.enabled && !network.i2p.enabled) return
+        registryRunning = true
+        Thread {
+            try {
+                org.elektronnet.mobile.node.RegistryBootstrap(
+                    store = store.registryStore(),
+                    fetch = { url, port -> org.elektronnet.mobile.node.RegistryPeers.fetch(url, port) },
+                    peers = { supervisor.peers() },
+                    connect = { runCatching { supervisor.rpc.call("addnode", listOf(it, "onetry")) }.isSuccess },
+                ).step(network, networkPorts.torSocks)
+            } finally {
+                registryRunning = false
+            }
+        }.start()
     }
 
     @Volatile
@@ -272,7 +321,7 @@ object NodeHost {
                 val rpc = supervisor.rpc.asWalletRpc()
                 if (reconcileNeeded && reg != null) {
                     val busy = if (setupStatus != SetupStatus.None) setOf(walletSetup.walletName) else emptySet()
-                    val result = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy }.reconcile(adopt = false)
+                    val result = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy + removing }.reconcile(adopt = false)
                     if (result != null) {
                         walletNamesOnDisk = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg).namesOnDisk().orEmpty().toSet()
                         reconciledFor = supervisor.startedAt
@@ -282,9 +331,12 @@ object NodeHost {
                     }
                 }
                 if (synced) {
-                    val refresh = org.elektronnet.mobile.wallet.CoinRefresh(supervisor.rpc.asWalletRpc(SCAN_TIMEOUT_MS))
+                    val refreshRpc = supervisor.rpc.asWalletRpc(SCAN_TIMEOUT_MS, autoLoad = false)
+                    val skip = org.elektronnet.mobile.wallet.CoinRefresh.nodeScansItself(refreshRpc)
+                    val refresh = org.elektronnet.mobile.wallet.CoinRefresh(refreshRpc)
                     pendingCoinRefresh.toList().forEach { name ->
-                        refresh.refresh(name)
+                        if (name in removing) return@forEach
+                        if (!skip) refresh.refresh(name)
                         pendingCoinRefresh.remove(name)
                     }
                 }
@@ -360,7 +412,7 @@ object NodeHost {
             rpc = supervisor.rpc.asWalletRpc(),
             bip39 = Bip39(words),
             testnet = ChainConfig.isTestnet,
-            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name")) },
+            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, name) },
             walletName = walletName,
         )
     }
@@ -420,7 +472,7 @@ object NodeHost {
             store = store.escrowStore(),
             testnet = ChainConfig.isTestnet,
             mainWallet = wallet,
-            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name")) },
+            removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, name) },
         )
     }
 
@@ -458,7 +510,7 @@ object NodeHost {
         val root = datadir ?: return null
         val chain = Chain.fromBuildName(ChainConfig.chain)
         return org.elektronnet.mobile.wallet.WalletRestore(supervisor.rpc.asWalletRpc()) { name ->
-            org.elektronnet.mobile.wallet.deleteWalletDir(File(root, "${chain.subdir}/wallets/$name"))
+            org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, name)
         }
     }
 
@@ -485,8 +537,15 @@ object NodeHost {
         return failure
     }
 
-    fun discardRestoredWallet(name: String) {
-        walletRestore()?.discard(name)
+    // true when the wallet is gone from the node and from the disk
+    fun discardRestoredWallet(name: String): Boolean {
+        val restore = walletRestore() ?: return false
+        removing.add(name)
+        try {
+            return restore.discard(name)
+        } finally {
+            removing.remove(name)
+        }
     }
 
     fun addressBook(): org.elektronnet.mobile.wallet.AddressBook? = appContext?.let { org.elektronnet.mobile.wallet.AddressBook(File(it.filesDir, "contacts.json"), addressCheck) }
@@ -643,7 +702,7 @@ object NodeHost {
     fun resetChainData(): Boolean {
         val dir = datadir ?: return false
         controller?.shutdown()
-        return runCatching { org.elektronnet.mobile.node.DatadirReset.perform(dir) }.isSuccess
+        return runCatching { org.elektronnet.mobile.node.DatadirReset.perform(dir, Chain.fromBuildName(ChainConfig.chain).subdir) }.isSuccess
     }
 
     // only the node restarts, Tor and I2P keep running, the next tick starts it again

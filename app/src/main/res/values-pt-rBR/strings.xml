@@ -35,6 +35,7 @@
     <string name="note_problem_running">Outra cópia do nó já está em execução.</string>
     <string name="note_problem_start">Não foi possível iniciar seu nó. Os detalhes técnicos abaixo ajudam a encontrar a causa.</string>
     <string name="note_problem_unknown">Seu nó parou inesperadamente.</string>
+    <string name="note_problem_chainstate">Os dados da cadeia do seu nó não podem ser recuperados sozinhos. Use Redefinir dados da cadeia na aba Nó.</string>
     <string name="send_needs_sync">Para enviar, o nó precisa estar sincronizado. Abra a aba Nó para ver o progresso.</string>
     <string name="history_empty">Nenhum pagamento ainda. Toque em Receber para obter seu primeiro endereço.</string>
     <string name="history_limit">Pagamentos com mais de cerca de 137 dias não ficam armazenados na rede.</string>
@@ -525,6 +526,7 @@
     <string name="wallets_remove_body">Isso apaga a carteira deste celular. As moedas nela não são perdidas, mas só podem ser recuperadas com a frase de recuperação. Sem a frase, elas se perdem para sempre.</string>
     <string name="wallets_remove_confirm">Tenho a frase de recuperação desta carteira</string>
     <string name="wallets_remove_failed">Não foi possível remover a carteira.</string>
+    <string name="wallets_remove_busy">O nó ainda está ocupado com esta carteira. Aguarde um momento e tente de novo.</string>
     <string name="wallets_title">Suas carteiras</string>
     <string name="wallets_add">Adicionar uma carteira</string>
     <string name="wallets_rename">Renomear</string>

@@ -35,6 +35,7 @@
     <string name="note_problem_running">Une autre copie du nœud est déjà en cours d\'exécution.</string>
     <string name="note_problem_start">Votre nœud n\'a pas pu démarrer. Les détails techniques ci-dessous aident à trouver la cause.</string>
     <string name="note_problem_unknown">Votre nœud s\'est arrêté de façon inattendue.</string>
+    <string name="note_problem_chainstate">Les données de chaîne de votre nœud ne peuvent pas être récupérées seules. Utilisez Réinitialiser les données de chaîne dans l\'onglet Nœud.</string>
     <string name="send_needs_sync">L\'envoi nécessite un nœud synchronisé. Ouvrez l\'onglet Nœud pour voir la progression.</string>
     <string name="history_empty">Aucun paiement pour l\'instant. Touchez Recevoir pour obtenir votre première adresse.</string>
     <string name="history_limit">Les paiements de plus d\'environ 137 jours ne sont pas conservés sur le réseau.</string>
@@ -525,6 +526,7 @@
     <string name="wallets_remove_body">Cela supprime le portefeuille de ce téléphone. Les pièces qu\'il contient ne sont pas perdues, mais vous ne pouvez les récupérer qu\'avec sa phrase de récupération. Sans la phrase, elles sont perdues définitivement.</string>
     <string name="wallets_remove_confirm">J\'ai la phrase de récupération de ce portefeuille</string>
     <string name="wallets_remove_failed">Le portefeuille n\'a pas pu être retiré.</string>
+    <string name="wallets_remove_busy">Le nœud est encore occupé avec ce portefeuille. Patientez un instant et réessayez.</string>
     <string name="wallets_title">Vos portefeuilles</string>
     <string name="wallets_add">Ajouter un portefeuille</string>
     <string name="wallets_rename">Renommer</string>

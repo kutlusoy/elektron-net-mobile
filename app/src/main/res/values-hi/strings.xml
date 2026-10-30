@@ -35,6 +35,7 @@
     <string name="note_problem_running">नोड की एक और प्रति पहले से चल रही है।</string>
     <string name="note_problem_start">आपका नोड शुरू नहीं हो सका। नीचे दिया गया तकनीकी विवरण कारण खोजने में मदद करता है।</string>
     <string name="note_problem_unknown">आपका नोड अचानक बंद हो गया।</string>
+    <string name="note_problem_chainstate">आपके नोड का चेन डेटा अपने आप ठीक नहीं हो सकता। नोड टैब में चेन डेटा रीसेट करें का उपयोग करें।</string>
     <string name="send_needs_sync">भेजने के लिए नोड का सिंक होना ज़रूरी है। प्रगति देखने के लिए नोड टैब खोलें।</string>
     <string name="history_empty">अभी कोई भुगतान नहीं। अपना पहला पता पाने के लिए प्राप्त करें पर टैप करें।</string>
     <string name="history_limit">लगभग 137 दिन से पुराने भुगतान नेटवर्क पर संग्रहीत नहीं होते।</string>
@@ -525,6 +526,7 @@
     <string name="wallets_remove_body">यह वॉलेट को इस फ़ोन से हटा देता है। उसमें मौजूद कॉइन खोते नहीं, लेकिन आप उन्हें केवल उसके रिकवरी फ़्रेज़ से वापस पा सकते हैं। फ़्रेज़ के बिना वे हमेशा के लिए चले जाते हैं।</string>
     <string name="wallets_remove_confirm">मेरे पास इस वॉलेट का रिकवरी फ़्रेज़ है</string>
     <string name="wallets_remove_failed">वॉलेट हटाया नहीं जा सका।</string>
+    <string name="wallets_remove_busy">नोड अभी इस वॉलेट में व्यस्त है। थोड़ा इंतज़ार करें और फिर से कोशिश करें।</string>
     <string name="wallets_title">आपके वॉलेट</string>
     <string name="wallets_add">वॉलेट जोड़ें</string>
     <string name="wallets_rename">नाम बदलें</string>

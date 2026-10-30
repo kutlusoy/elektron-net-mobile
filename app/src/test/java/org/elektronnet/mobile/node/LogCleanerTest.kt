@@ -97,4 +97,17 @@ class StorageScanTest {
         assertEquals(1000L + 300 + 500 + 200 + 40 + 30 + 70 + 10 + 5 + 6 + 90, report.total)
         files.deleteRecursively()
     }
+
+    @Test
+    fun theUtxoSetAfterASnapshotBootstrapIsCounted() {
+        val files = Files.createTempDirectory("storage-snapshot").toFile()
+        fun put(path: String, size: Int) = File(files, path).also { it.parentFile.mkdirs() }.writeBytes(ByteArray(size))
+        put("node/chainstate/CURRENT", 0)
+        put("node/chainstate_snapshot/000001.ldb", 700)
+        put("node/chainstate_snapshot/base_blockhash", 32)
+        val report = StorageScan.scan(files, "node", "")
+        assertEquals(732L, report.items.first { it.kind == StorageKind.Utxo }.bytes)
+        assertEquals(0L, report.items.first { it.kind == StorageKind.OtherNode }.bytes)
+        files.deleteRecursively()
+    }
 }

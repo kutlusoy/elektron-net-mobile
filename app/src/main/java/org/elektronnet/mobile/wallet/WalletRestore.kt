@@ -3,7 +3,7 @@ package org.elektronnet.mobile.wallet
 import java.io.File
 import org.elektronnet.mobile.node.RpcException
 
-enum class RestoreFailure { InvalidFile, NameTaken, WeakPassphrase, NodeNotReady, Unknown }
+enum class RestoreFailure { InvalidFile, NameTaken, WeakPassphrase, NodeNotReady, NotRemoved, Unknown }
 
 sealed interface RestoreResult {
     data class Restored(val walletName: String, val encrypted: Boolean) : RestoreResult
@@ -27,8 +27,7 @@ class WalletRestore(
             val info = rpc.call("getwalletinfo", emptyList<Any?>(), walletName) as Map<*, *>
             return RestoreResult.Restored(walletName, info.containsKey("unlocked_until"))
         } catch (e: RpcException) {
-            runCatching { rpc.call("unloadwallet", listOf(walletName), null) }
-            runCatching { removeWalletFiles(walletName) }
+            WalletRemover(rpc, removeWalletFiles).unloadAndDelete(walletName)
             val reason = if (e.inWarmup) RestoreFailure.NodeNotReady else RestoreFailure.InvalidFile
             return RestoreResult.Failed(reason, e.message ?: "")
         }
@@ -44,8 +43,6 @@ class WalletRestore(
         }
     }
 
-    fun discard(walletName: String) {
-        runCatching { rpc.call("unloadwallet", listOf(walletName), null) }
-        runCatching { removeWalletFiles(walletName) }
-    }
+    // true when the wallet is gone from the node and from the disk
+    fun discard(walletName: String): Boolean = WalletRemover(rpc, removeWalletFiles).unloadAndDelete(walletName)
 }

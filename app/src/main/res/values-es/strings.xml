@@ -35,6 +35,7 @@
     <string name="note_problem_running">Ya se está ejecutando otra copia del nodo.</string>
     <string name="note_problem_start">No se pudo iniciar tu nodo. Los detalles técnicos de abajo ayudan a encontrar la causa.</string>
     <string name="note_problem_unknown">Tu nodo se detuvo de forma inesperada.</string>
+    <string name="note_problem_chainstate">Los datos de la cadena de tu nodo no se pueden recuperar solos. Usa Restablecer datos de la cadena en la pestaña Nodo.</string>
     <string name="send_needs_sync">Para enviar se necesita un nodo sincronizado. Abre la pestaña Nodo para ver el progreso.</string>
     <string name="history_empty">Aún no hay pagos. Toca Recibir para obtener tu primera dirección.</string>
     <string name="history_limit">Los pagos con más de unos 137 días de antigüedad no se almacenan en la red.</string>
@@ -525,6 +526,7 @@
     <string name="wallets_remove_body">Esto borra el monedero de este teléfono. Las monedas que contiene no se pierden, pero solo puedes recuperarlas con su frase de recuperación. Sin la frase se pierden para siempre.</string>
     <string name="wallets_remove_confirm">Tengo la frase de recuperación de este monedero</string>
     <string name="wallets_remove_failed">No se pudo quitar el monedero.</string>
+    <string name="wallets_remove_busy">El nodo sigue ocupado con esta cartera. Espera un momento e inténtalo de nuevo.</string>
     <string name="wallets_title">Tus monederos</string>
     <string name="wallets_add">Añadir un monedero</string>
     <string name="wallets_rename">Renombrar</string>

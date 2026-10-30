@@ -35,6 +35,7 @@
     <string name="note_problem_running">Un\'altra copia del nodo è già in esecuzione.</string>
     <string name="note_problem_start">Impossibile avviare il nodo. I dettagli tecnici qui sotto aiutano a trovare la causa.</string>
     <string name="note_problem_unknown">Il nodo si è fermato in modo imprevisto.</string>
+    <string name="note_problem_chainstate">I dati della catena del nodo non possono essere ripristinati da soli. Usa Reimposta i dati della catena nella scheda Nodo.</string>
     <string name="send_needs_sync">Per inviare serve un nodo sincronizzato. Apri la scheda Nodo per vedere l\'avanzamento.</string>
     <string name="history_empty">Ancora nessun pagamento. Tocca Ricevi per ottenere il tuo primo indirizzo.</string>
     <string name="history_limit">I pagamenti più vecchi di circa 137 giorni non sono conservati sulla rete.</string>
@@ -525,6 +526,7 @@
     <string name="wallets_remove_body">Questo elimina il wallet da questo telefono. I coin al suo interno non vanno persi, ma puoi recuperarli solo con la sua recovery phrase. Senza la frase sono persi per sempre.</string>
     <string name="wallets_remove_confirm">Ho la recovery phrase di questo wallet</string>
     <string name="wallets_remove_failed">Impossibile rimuovere il wallet.</string>
+    <string name="wallets_remove_busy">Il nodo è ancora occupato con questo portafoglio. Attendi un momento e riprova.</string>
     <string name="wallets_title">I tuoi wallet</string>
     <string name="wallets_add">Aggiungi un wallet</string>
     <string name="wallets_rename">Rinomina</string>

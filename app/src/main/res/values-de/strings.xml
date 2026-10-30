@@ -35,6 +35,7 @@
     <string name="note_problem_running">Eine andere Instanz der Node läuft bereits.</string>
     <string name="note_problem_start">Deine Node konnte nicht gestartet werden. Die technischen Details unten helfen bei der Ursachensuche.</string>
     <string name="note_problem_unknown">Deine Node wurde unerwartet beendet.</string>
+    <string name="note_problem_chainstate">Die Chain-Daten deiner Node lassen sich nicht selbst wiederherstellen. Nutze Chain-Daten zurücksetzen im Tab Node.</string>
     <string name="send_needs_sync">Zum Senden muss die Node synchron sein. Öffne den Tab Node, um den Fortschritt zu sehen.</string>
     <string name="history_empty">Noch keine Zahlungen. Tippe auf Empfangen, um deine erste Adresse zu erhalten.</string>
     <string name="history_limit">Zahlungen, die älter als etwa 137 Tage sind, werden im Netzwerk nicht gespeichert.</string>
@@ -525,6 +526,7 @@
     <string name="wallets_remove_body">Dadurch wird die Wallet von diesem Telefon gelöscht. Die Coins darin gehen nicht verloren, du bekommst sie aber nur mit ihrer Recovery-Phrase zurück. Ohne die Phrase sind sie für immer weg.</string>
     <string name="wallets_remove_confirm">Ich habe die Recovery-Phrase dieser Wallet</string>
     <string name="wallets_remove_failed">Die Wallet konnte nicht entfernt werden.</string>
+    <string name="wallets_remove_busy">Die Node ist noch mit dieser Wallet beschäftigt. Warte einen Moment und versuche es erneut.</string>
     <string name="wallets_title">Deine Wallets</string>
     <string name="wallets_add">Wallet hinzufügen</string>
     <string name="wallets_rename">Umbenennen</string>

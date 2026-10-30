@@ -35,6 +35,7 @@
     <string name="note_problem_running">Düğümün başka bir kopyası zaten çalışıyor.</string>
     <string name="note_problem_start">Düğümünüz başlatılamadı. Aşağıdaki teknik ayrıntılar nedeni bulmaya yardımcı olur.</string>
     <string name="note_problem_unknown">Düğümünüz beklenmedik şekilde durdu.</string>
+    <string name="note_problem_chainstate">Düğümünüzün zincir verileri kendiliğinden kurtarılamıyor. Düğüm sekmesinde Zincir verilerini sıfırla seçeneğini kullanın.</string>
     <string name="send_needs_sync">Göndermek için senkronize bir düğüm gerekir. İlerlemeyi görmek için Düğüm sekmesini açın.</string>
     <string name="history_empty">Henüz ödeme yok. İlk adresinizi almak için Al\'a dokunun.</string>
     <string name="history_limit">Yaklaşık 137 günden eski ödemeler ağda saklanmaz.</string>
@@ -525,6 +526,7 @@
     <string name="wallets_remove_body">Bu işlem cüzdanı bu telefondan siler. İçindeki paralar kaybolmaz, ama onları yalnızca kurtarma ifadesiyle geri alabilirsiniz. İfade olmadan sonsuza dek kaybolurlar.</string>
     <string name="wallets_remove_confirm">Bu cüzdanın kurtarma ifadesi bende var</string>
     <string name="wallets_remove_failed">Cüzdan kaldırılamadı.</string>
+    <string name="wallets_remove_busy">Düğüm hâlâ bu cüzdanla meşgul. Biraz bekleyip tekrar deneyin.</string>
     <string name="wallets_title">Cüzdanlarınız</string>
     <string name="wallets_add">Cüzdan ekle</string>
     <string name="wallets_rename">Yeniden adlandır</string>
