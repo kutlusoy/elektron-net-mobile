@@ -196,12 +196,11 @@ class PolicyEngineTest {
     }
 
     @Test
-    fun listenFollowsNetworkTypeButIsRateLimitedToo() {
-        val engine = PolicyEngine(PolicyTuning(minDwellMs = 10 * 60 * 1000))
+    fun listenDoesNotDependOnTheNetworkType() {
         val settings = PolicySettings(allowMetered = true)
-        assertTrue(engine.evaluate(settings, device(), 0).listen)
-        assertTrue(engine.evaluate(settings, device(network = NetworkType.Metered), 60_000).listen)
-        assertFalse(engine.evaluate(settings, device(network = NetworkType.Metered), 11 * 60_000).listen)
+        listOf(NetworkType.Unmetered, NetworkType.Metered, NetworkType.Roaming).forEach {
+            assertTrue(it.name, PolicyEngine().evaluate(settings.copy(allowRoaming = true), device(network = it), 0).listen)
+        }
     }
 
     @Test

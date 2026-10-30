@@ -214,7 +214,7 @@
     <string name="profile_always_hint">Koneksi dan memori terbanyak. Terbaik untuk ponsel yang terus terhubung ke pengisi daya.</string>
     <string name="settings_sharing">Membantu jaringan</string>
     <string name="settings_inbound">Terima koneksi masuk</string>
-    <string name="settings_inbound_hint">Hanya lewat Wi-Fi. Node lain dapat terhubung ke node Anda jika router mengizinkan.</string>
+    <string name="settings_inbound_hint">Node lain dapat terhubung ke node Anda, juga tanpa Wi-Fi.</string>
     <string name="settings_serve">Bagikan snapshot</string>
     <string name="settings_serve_hint">Membantu node baru mulai lebih cepat. Hanya lewat Wi-Fi dan saat mengisi daya.</string>
     <string name="settings_storage">Penyimpanan</string>

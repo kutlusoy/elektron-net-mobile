@@ -214,7 +214,7 @@
     <string name="profile_always_hint">सबसे अधिक कनेक्शन और मेमोरी। चार्जर पर लगे रहने वाले फ़ोन के लिए सबसे अच्छा।</string>
     <string name="settings_sharing">नेटवर्क की मदद करना</string>
     <string name="settings_inbound">इनकमिंग कनेक्शन स्वीकार करें</string>
-    <string name="settings_inbound_hint">केवल Wi-Fi पर। आपका राउटर अनुमति दे तो दूसरे नोड आपके नोड से जुड़ सकते हैं।</string>
+    <string name="settings_inbound_hint">दूसरे नोड आपके नोड से जुड़ सकते हैं, Wi-Fi के बिना भी।</string>
     <string name="settings_serve">स्नैपशॉट साझा करें</string>
     <string name="settings_serve_hint">नए नोड को तेज़ी से शुरू करने में मदद करता है। केवल Wi-Fi पर और चार्जिंग के दौरान।</string>
     <string name="settings_storage">स्टोरेज</string>

@@ -214,7 +214,7 @@
     <string name="profile_always_hint">En çok bağlantı ve bellek. Şarjda duran bir telefon için en iyisi.</string>
     <string name="settings_sharing">Ağa yardım</string>
     <string name="settings_inbound">Gelen bağlantıları kabul et</string>
-    <string name="settings_inbound_hint">Yalnızca Wi-Fi ile. Yönlendiriciniz izin verdiğinde diğer düğümler sizinkine bağlanabilir.</string>
+    <string name="settings_inbound_hint">Diğer düğümler sizinkine Wi-Fi olmadan da bağlanabilir.</string>
     <string name="settings_serve">Anlık görüntüleri paylaş</string>
     <string name="settings_serve_hint">Yeni düğümlerin daha hızlı başlamasına yardımcı olur. Yalnızca Wi-Fi ile ve şarj olurken.</string>
     <string name="settings_storage">Depolama</string>

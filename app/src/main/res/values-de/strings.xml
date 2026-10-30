@@ -214,7 +214,7 @@
     <string name="profile_always_hint">Höchster Verbrauch. Ideal am Ladegerät.</string>
     <string name="settings_sharing">Dem Netzwerk helfen</string>
     <string name="settings_inbound">Eingehende Verbindungen annehmen</string>
-    <string name="settings_inbound_hint">Nur Wi-Fi. Andere Nodes können sich verbinden.</string>
+    <string name="settings_inbound_hint">Andere Nodes können sich verbinden, auch ohne Wi-Fi.</string>
     <string name="settings_serve">Snapshots teilen</string>
     <string name="settings_serve_hint">Hilft neuen Nodes beim Start. Nur Wi-Fi und beim Laden.</string>
     <string name="settings_storage">Speicher</string>

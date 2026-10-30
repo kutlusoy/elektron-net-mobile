@@ -214,7 +214,7 @@
     <string name="profile_always_hint">Most resources. Best on a charger.</string>
     <string name="settings_sharing">Helping the network</string>
     <string name="settings_inbound">Accept incoming connections</string>
-    <string name="settings_inbound_hint">Wi-Fi only. Lets other nodes connect to yours.</string>
+    <string name="settings_inbound_hint">Lets other nodes connect to yours, also without Wi-Fi.</string>
     <string name="settings_serve">Share snapshots</string>
     <string name="settings_serve_hint">Helps new nodes start faster. Wi-Fi and charging only.</string>
     <string name="settings_storage">Storage</string>
