@@ -44,7 +44,7 @@ class PolicyEngineTest {
     }
 
     @Test
-    fun meteredNeedsConsentAndNeverListens() {
+    fun meteredNeedsConsentAndListensWhenInboundIsOn() {
         val engine = PolicyEngine()
         val blocked = engine.evaluate(PolicySettings(), device(network = NetworkType.Metered), 0)
         assertTrue(blocked.run)
@@ -52,7 +52,8 @@ class PolicyEngineTest {
         assertTrue(blocked.reasons.contains(PolicyReason.MeteredNotAllowed))
         val allowed = engine.evaluate(PolicySettings(allowMetered = true), device(network = NetworkType.Metered), hour)
         assertTrue(allowed.networkActive)
-        assertFalse(allowed.listen)
+        assertTrue(allowed.listen)
+        assertFalse(engine.evaluate(PolicySettings(allowMetered = true, allowInbound = false), device(network = NetworkType.Metered), 2 * hour).listen)
     }
 
     @Test
