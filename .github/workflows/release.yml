@@ -140,7 +140,7 @@ jobs:
           : > "$RUNNER_TEMP/certs.txt"
           for apk in dist/*.apk; do
             "$apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/verify.txt"
-            cert=$(sed -n 's/^Signer.* certificate SHA-256 digest: *//p' "$RUNNER_TEMP/verify.txt" | head -1 | tr -d ':' | tr 'A-F' 'a-f')
+            cert=$(sed -n 's/^.*[Ss]igner.*certificate SHA-256 digest: *//p' "$RUNNER_TEMP/verify.txt" | head -1 | tr -d ':' | tr 'A-F' 'a-f')
             echo "$(basename "$apk"): $cert"
             [[ -n $cert ]] || { cat "$RUNNER_TEMP/verify.txt"; echo "::error::No signing certificate found in $apk"; exit 1; }
             [[ $cert != "$test_cert" ]] || { echo "::error::$apk is signed with the public test key"; exit 1; }
