@@ -115,9 +115,9 @@ android {
             matchingFallbacks += "release"
         }
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // the same code and resources as the test builds (nightly copies the release type before this block runs, so it has never been minified)
+            isMinifyEnabled = false
+            isShrinkResources = false
             signingConfigs.findByName("release")?.let { signingConfig = it }
         }
     }
