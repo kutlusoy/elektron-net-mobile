@@ -614,6 +614,8 @@
     <string name="fr_restore_title">Enter your recovery phrase</string>
     <string name="fr_restore_body">Enter your 12 or 24 words separated by spaces.</string>
     <string name="fr_restore_invalid">These words are not a valid recovery phrase. Check spelling and order.</string>
+    <string name="fr_seed_passphrase_label" translatable="false">Seed passphrase / extension (optional)</string>
+    <string name="fr_seed_passphrase_hint" translatable="false">If your wallet was created with a passphrase or seed extension (e.g. in Electrum or BIP39), enter it here.</string>
     <string name="fr_err_node">Your node is not ready yet. Wait a moment and try again.</string>
     <string name="fr_err_exists">A wallet already exists on this device.</string>
     <string name="fr_err_recovery">Restoring is not available yet with this version of the node.</string>
@@ -723,6 +725,11 @@
     <string name="restore_file_hint">Pick a wallet.dat backup made with this app or with the node. The wallet is added next to your others.</string>
     <string name="restore_file_done">Wallet restored. It scans for your coins in the background.</string>
     <string name="restore_file_err_file">This file could not be restored as a wallet.</string>
+    <string name="fr_restore_tab_phrase" translatable="false">Recovery phrase</string>
+    <string name="fr_restore_tab_privkey" translatable="false">Private key</string>
+    <string name="fr_restore_key_title" translatable="false">Restore from private key</string>
+    <string name="fr_restore_key_body" translatable="false">Enter a private key in WIF format. Your node will scan the network for associated coins.</string>
+    <string name="fr_restore_key_invalid" translatable="false">This is not a valid private key.</string>
     <string name="restore_pass_title">Protect the restored wallet</string>
     <string name="restore_pass_body">This backup has no passphrase. Choose one now. You need it to send coins.</string>
     <string name="restore_pass_cancel">Cancel and discard</string>

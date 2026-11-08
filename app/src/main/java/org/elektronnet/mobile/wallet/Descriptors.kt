@@ -21,5 +21,26 @@ object Descriptors {
         return specs
     }
 
+    fun forElectrumSeed(masterKey: String, type: ElectrumSeedType): List<DescriptorSpec> {
+        val specs = mutableListOf<DescriptorSpec>()
+        when (type) {
+            ElectrumSeedType.Segwit, ElectrumSeedType.TwoFactorSegwit -> {
+                // Electrum native SegWit derives from m/0'/0/* (receive) and m/0'/1/* (change)
+                specs += DescriptorSpec("wpkh($masterKey/0h/0/*)", active = true, internal = false, legacy = false)
+                specs += DescriptorSpec("wpkh($masterKey/0h/1/*)", active = true, internal = true, legacy = false)
+                // Scan legacy path as inactive fallback
+                specs += DescriptorSpec("pkh($masterKey/0h/0/*)", active = false, internal = false, legacy = true, signingOnly = true)
+            }
+            ElectrumSeedType.Standard, ElectrumSeedType.TwoFactor -> {
+                // Electrum standard legacy derives from m/0/* and m/1/*
+                specs += DescriptorSpec("pkh($masterKey/0/*)", active = true, internal = false, legacy = true)
+                specs += DescriptorSpec("pkh($masterKey/1/*)", active = true, internal = true, legacy = true)
+                // Scan segwit path as inactive fallback
+                specs += DescriptorSpec("wpkh($masterKey/0/*)", active = false, internal = false, legacy = false, signingOnly = true)
+            }
+        }
+        return specs
+    }
+
     private fun path(masterKey: String, coinType: Int, chain: Int) = "wpkh($masterKey/84h/${coinType}h/0h/$chain/*)"
 }

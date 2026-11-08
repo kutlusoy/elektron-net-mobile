@@ -34,6 +34,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,9 +53,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.service.NodeHost
+import org.elektronnet.mobile.wallet.ElectrumSeed
+import org.elektronnet.mobile.wallet.RestoreType
+import org.elektronnet.mobile.wallet.WifKey
 import org.elektronnet.mobile.ui.BrandBackground
 import org.elektronnet.mobile.ui.BrandHeader
 import org.elektronnet.mobile.ui.GlassCard
@@ -101,9 +106,19 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
     BackHandler(enabled = FirstRunFlow.back(state) != null || addWallet) { FirstRunFlow.back(state)?.let { state = it } ?: onCancel() }
 
     fun submit(recover: Boolean) {
-        NodeHost.beginSetup(SetupRequest(state.phrase, passphrase, recover, walletName), walletLabel)
+        NodeHost.beginSetup(
+            SetupRequest(
+                phrase = state.phrase,
+                passphrase = passphrase,
+                restore = recover,
+                walletName = walletName,
+                privateKey = state.privateKey,
+                seedPassphrase = state.seedPassphrase,
+            ),
+            walletLabel,
+        )
         passphrase = ""
-        state = state.copy(step = FirstRunStep.Done, phrase = emptyList())
+        state = state.copy(step = FirstRunStep.Done, phrase = emptyList(), privateKey = null, seedPassphrase = "")
         onFinished()
     }
 
@@ -398,27 +413,96 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
                 )
             }
             FirstRunStep.RestoreEnter -> {
+                var restoreType by remember { mutableStateOf(RestoreType.SeedPhrase) }
                 var text by remember { mutableStateOf("") }
+                var seedPassphraseText by remember { mutableStateOf("") }
+                var privKeyText by remember { mutableStateOf("") }
+                val isTestnet = ChainConfig.isTestnet
+                val cleanKey = WifKey.clean(privKeyText)
+                val keyValid = WifKey.isValid(cleanKey, isTestnet)
                 val words = Bip39.parse(text)
-                val valid = bip39.validate(words)
-                Text(stringResource(R.string.fr_restore_title), style = MaterialTheme.typography.headlineMedium)
-                Text(stringResource(R.string.fr_restore_body))
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    minLines = 3,
-                    isError = words.size >= 12 && !valid,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                if (words.size >= 12 && !valid) {
-                    Text(stringResource(R.string.fr_restore_invalid), color = MaterialTheme.colorScheme.error)
+                val phraseValid = bip39.validate(words) || ElectrumSeed.validate(words)
+
+                LaunchedEffect(text) {
+                    val candidate = WifKey.clean(text)
+                    if (candidate.isNotEmpty() && WifKey.isValid(candidate, isTestnet)) {
+                        privKeyText = text
+                        restoreType = RestoreType.PrivateKey
+                        text = ""
+                    }
                 }
-                Button(
-                    onClick = { state = FirstRunFlow.next(state.copy(phrase = words)) },
-                    enabled = valid,
-                    modifier = Modifier.fillMaxWidth(),
-                ) { Text(stringResource(R.string.fr_continue)) }
+
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(
+                        selected = restoreType == RestoreType.SeedPhrase,
+                        onClick = { restoreType = RestoreType.SeedPhrase },
+                        label = { Text(stringResource(R.string.fr_restore_tab_phrase)) },
+                    )
+                    FilterChip(
+                        selected = restoreType == RestoreType.PrivateKey,
+                        onClick = { restoreType = RestoreType.PrivateKey },
+                        label = { Text(stringResource(R.string.fr_restore_tab_privkey)) },
+                    )
+                }
+
+                if (restoreType == RestoreType.SeedPhrase) {
+                    Text(stringResource(R.string.fr_restore_title), style = MaterialTheme.typography.headlineMedium)
+                    Text(stringResource(R.string.fr_restore_body))
+                    OutlinedTextField(
+                        value = text,
+                        onValueChange = { text = it },
+                        minLines = 3,
+                        isError = words.size >= 12 && !phraseValid,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    if (words.size >= 12 && !phraseValid) {
+                        Text(stringResource(R.string.fr_restore_invalid), color = MaterialTheme.colorScheme.error)
+                    }
+                    SecretField(
+                        value = seedPassphraseText,
+                        onValueChange = { seedPassphraseText = it },
+                        label = { Text(stringResource(R.string.fr_seed_passphrase_label)) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Text(
+                        stringResource(R.string.fr_seed_passphrase_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Button(
+                        onClick = {
+                            state = FirstRunFlow.next(
+                                state.copy(
+                                    phrase = words,
+                                    privateKey = null,
+                                    seedPassphrase = seedPassphraseText.trim(),
+                                ),
+                            )
+                        },
+                        enabled = phraseValid,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text(stringResource(R.string.fr_continue)) }
+                } else {
+                    Text(stringResource(R.string.fr_restore_key_title), style = MaterialTheme.typography.headlineMedium)
+                    Text(stringResource(R.string.fr_restore_key_body))
+                    OutlinedTextField(
+                        value = privKeyText,
+                        onValueChange = { privKeyText = it },
+                        minLines = 2,
+                        isError = privKeyText.isNotBlank() && !keyValid,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    if (privKeyText.isNotBlank() && !keyValid) {
+                        Text(stringResource(R.string.fr_restore_key_invalid), color = MaterialTheme.colorScheme.error)
+                    }
+                    Button(
+                        onClick = { state = FirstRunFlow.next(state.copy(phrase = emptyList(), privateKey = cleanKey)) },
+                        enabled = keyValid,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text(stringResource(R.string.fr_continue)) }
+                }
             }
             FirstRunStep.Creating, FirstRunStep.Restoring -> {
                 val snapshot = NodeHost.latest

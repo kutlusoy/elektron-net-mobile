@@ -614,6 +614,8 @@
     <string name="fr_restore_title">Recovery-Phrase eingeben</string>
     <string name="fr_restore_body">Gib deine 12 oder 24 Wörter durch Leerzeichen getrennt ein.</string>
     <string name="fr_restore_invalid">Diese Wörter sind keine gültige Recovery-Phrase. Prüfe Schreibweise und Reihenfolge.</string>
+    <string name="fr_seed_passphrase_label">Seed-Passphrase / Erweiterung (optional)</string>
+    <string name="fr_seed_passphrase_hint">Falls deine Wallet mit einer Passphrase oder Seed-Erweiterung erstellt wurde (z. B. in Electrum oder BIP39), gib sie hier ein.</string>
     <string name="fr_err_node">Deine Node ist noch nicht bereit. Warte einen Moment und versuche es erneut.</string>
     <string name="fr_err_exists">Auf diesem Gerät existiert bereits eine Wallet.</string>
     <string name="fr_err_recovery">Die Wiederherstellung ist mit dieser Version der Node noch nicht verfügbar.</string>

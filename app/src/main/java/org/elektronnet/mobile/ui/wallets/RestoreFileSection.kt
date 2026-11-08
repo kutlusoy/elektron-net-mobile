@@ -46,32 +46,44 @@ fun RestoreFileSection() {
     var detail by remember { mutableStateOf("") }
     var done by remember { mutableStateOf(false) }
     var needsPassphrase by remember { mutableStateOf<String?>(null) }
+    var pendingEncryptedFile by remember { mutableStateOf<File?>(null) }
+
+    val handleResult: (RestoreResult) -> Unit = { result ->
+        when (result) {
+            is RestoreResult.Restored -> if (result.encrypted) done = true else needsPassphrase = result.walletName
+            is RestoreResult.NeedsPassphrase -> pendingEncryptedFile = result.file
+            is RestoreResult.Failed -> {
+                failure = result.reason
+                detail = result.detail
+            }
+        }
+    }
+
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
         busy = true
         failure = null
         done = false
+        pendingEncryptedFile?.delete()
+        pendingEncryptedFile = null
         scope.launch {
             val result = withContext(Dispatchers.IO) {
                 val staged = File(File(ConsoleStore.exportsDir(context), "restore"), "incoming-${System.currentTimeMillis()}.dat")
                 try {
                     staged.parentFile?.mkdirs()
                     context.contentResolver.openInputStream(uri)?.use { input -> staged.outputStream().use { input.copyTo(it) } }
-                    NodeHost.restoreWalletFile(staged)
+                    val res = NodeHost.restoreWalletFile(staged)
+                    if (res !is RestoreResult.NeedsPassphrase) {
+                        staged.delete()
+                    }
+                    res
                 } catch (e: java.io.IOException) {
-                    RestoreResult.Failed(RestoreFailure.InvalidFile)
-                } finally {
                     staged.delete()
+                    RestoreResult.Failed(RestoreFailure.InvalidFile)
                 }
             }
             busy = false
-            when (result) {
-                is RestoreResult.Restored -> if (result.encrypted) done = true else needsPassphrase = result.walletName
-                is RestoreResult.Failed -> {
-                    failure = result.reason
-                    detail = result.detail
-                }
-            }
+            handleResult(result)
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -84,6 +96,20 @@ fun RestoreFileSection() {
             ErrorText(stringResource(restoreError(it)))
             if (detail.isNotBlank()) Hint(detail.take(160))
         }
+    }
+    pendingEncryptedFile?.let { file ->
+        EnterPassphraseDialog(
+            file = file,
+            onDone = { res ->
+                file.delete()
+                pendingEncryptedFile = null
+                handleResult(res)
+            },
+            onCancel = {
+                file.delete()
+                pendingEncryptedFile = null
+            },
+        )
     }
     needsPassphrase?.let { name ->
         SetPassphraseDialog(
@@ -98,6 +124,49 @@ fun RestoreFileSection() {
             },
         )
     }
+}
+
+@Composable
+private fun EnterPassphraseDialog(file: File, onDone: (RestoreResult) -> Unit, onCancel: () -> Unit) {
+    val scope = rememberCoroutineScope()
+    var value by remember { mutableStateOf("") }
+    var failure by remember { mutableStateOf<RestoreFailure?>(null) }
+    var busy by remember { mutableStateOf(false) }
+    AlertDialog(
+        onDismissRequest = onCancel,
+        title = { Text(stringResource(R.string.fr_pass_label)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                SecretField(
+                    value = value,
+                    onValueChange = { value = it },
+                    label = { Text(stringResource(R.string.fr_pass_label)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                failure?.let { ErrorText(stringResource(restoreError(it))) }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                enabled = !busy && value.isNotEmpty(),
+                onClick = {
+                    busy = true
+                    failure = null
+                    scope.launch {
+                        val result = withContext(Dispatchers.IO) { NodeHost.restoreWalletFile(file, value) }
+                        busy = false
+                        if (result is RestoreResult.Failed) {
+                            failure = result.reason
+                        } else {
+                            onDone(result)
+                        }
+                    }
+                },
+            ) { Text(stringResource(R.string.action_ok)) }
+        },
+        dismissButton = { TextButton(enabled = !busy, onClick = onCancel) { Text(stringResource(R.string.action_cancel)) } },
+    )
 }
 
 @Composable
@@ -155,6 +224,7 @@ private fun restoreError(failure: RestoreFailure): Int = when (failure) {
     RestoreFailure.WeakPassphrase -> R.string.fr_pass_weak
     RestoreFailure.NodeNotReady -> R.string.fr_err_node
     RestoreFailure.Unknown -> R.string.fr_err_unknown
+    RestoreFailure.IncorrectPassphrase -> R.string.send_err_passphrase
 }
 
 @Composable

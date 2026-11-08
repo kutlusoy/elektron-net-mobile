@@ -72,9 +72,10 @@ fun ReceiveScreen(onClose: () -> Unit) {
         if (fiat == null && inFiat) { amount = ""; inFiat = false }
     }
     val synced = NodeHost.latest?.headline is Headline.Synchronized
+    val nodeRunning = NodeHost.isRunning
 
     BackHandler(onBack = onClose)
-    LaunchedEffect(attempt) {
+    LaunchedEffect(attempt, nodeRunning, NodeHost.activeWallet) {
         failed = false
         val result = withContext(Dispatchers.IO) { runCatching { NodeHost.receiveWallet()?.currentAddress() }.getOrNull() }
         if (result == null) failed = true else address = result

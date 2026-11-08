@@ -26,7 +26,70 @@ class WalletBootstrap(
     fun create(mnemonic: List<String>, passphrase: String): BootstrapResult =
         run(mnemonic, passphrase, recover = false)
 
-    fun recover(mnemonic: List<String>, passphrase: String): BootstrapResult = run(mnemonic, passphrase, recover = true)
+    fun recover(mnemonic: List<String>, passphrase: String, seedPassphrase: String = ""): BootstrapResult =
+        run(mnemonic, passphrase, recover = true, seedPassphrase = seedPassphrase)
+
+    fun recoverPrivateKey(wif: String, passphrase: String): BootstrapResult {
+        val cleaned = WifKey.clean(wif)
+        if (!WifKey.isValid(cleaned, testnet)) return BootstrapResult.Failed(BootstrapFailure.InvalidPhrase, "Invalid private key")
+        if (!PassphraseCheck.acceptable(passphrase)) return BootstrapResult.Failed(BootstrapFailure.WeakPassphrase, "")
+        var created = false
+        var unlocked = false
+        try {
+            rpc.call(
+                "createwallet",
+                linkedMapOf(
+                    "wallet_name" to walletName,
+                    "blank" to true,
+                    "passphrase" to passphrase,
+                    "descriptors" to true,
+                    "avoid_reuse" to true,
+                    "load_on_startup" to true,
+                ),
+                null,
+            )
+            created = true
+            rpc.call("walletpassphrase", listOf(passphrase, RECOVERY_UNLOCK_SECONDS), walletName)
+            unlocked = true
+
+            val isCompressed = Base58.decodeChecked(cleaned)?.size == 34
+            val specs = mutableListOf<DescriptorSpec>()
+            if (isCompressed) {
+                specs += DescriptorSpec("wpkh($cleaned)", active = false, internal = false, legacy = false)
+                specs += DescriptorSpec("pkh($cleaned)", active = false, internal = false, legacy = true, signingOnly = true)
+            } else {
+                specs += DescriptorSpec("pkh($cleaned)", active = false, internal = false, legacy = true)
+            }
+
+            val requests = specs.map { spec ->
+                val info = rpc.call("getdescriptorinfo", listOf(spec.descriptor), null) as Map<*, *>
+                linkedMapOf<String, Any?>(
+                    "desc" to spec.descriptor + "#" + info["checksum"],
+                    "timestamp" to 0,
+                )
+            }
+            val results = rpc.call("importdescriptors", listOf(requests), walletName) as List<*>
+            val failure = results.firstOrNull { (it as Map<*, *>)["success"] != true }
+            if (failure != null) {
+                val error = (failure as Map<*, *>)["error"] as? Map<*, *>
+                throw ImportException(error?.get("message")?.toString() ?: "import failed")
+            }
+            return BootstrapResult.Created(walletName)
+        } catch (e: ImportException) {
+            abort(created)
+            return BootstrapResult.Failed(BootstrapFailure.ImportFailed, e.message ?: "")
+        } catch (e: RpcException) {
+            abort(created && e.code != WALLET_EXISTS)
+            val reason = when {
+                e.inWarmup -> BootstrapFailure.NodeNotReady
+                e.code == WALLET_EXISTS -> BootstrapFailure.WalletExists
+                else -> BootstrapFailure.Unknown
+            }
+            return BootstrapResult.Failed(reason, e.message ?: "")
+        } finally {
+            if (unlocked) WalletLock.lock(rpc, walletName, passphrase)
+        }
+    }
 
     // an empty passphrase stands for a watch-only wallet, which has no keys to unlock
     fun rescan(passphrase: String): RescanOutcome {
@@ -110,8 +173,10 @@ class WalletBootstrap(
         return !help.contains("help: unknown command", ignoreCase = true)
     }
 
-    private fun run(mnemonic: List<String>, passphrase: String, recover: Boolean): BootstrapResult {
-        if (!bip39.validate(mnemonic)) return BootstrapResult.Failed(BootstrapFailure.InvalidPhrase, "")
+    private fun run(mnemonic: List<String>, passphrase: String, recover: Boolean, seedPassphrase: String = ""): BootstrapResult {
+        val isBip39 = bip39.validate(mnemonic)
+        val electrumType = if (!isBip39) ElectrumSeed.seedType(mnemonic) else null
+        if (!isBip39 && electrumType == null) return BootstrapResult.Failed(BootstrapFailure.InvalidPhrase, "")
         if (!PassphraseCheck.acceptable(passphrase)) return BootstrapResult.Failed(BootstrapFailure.WeakPassphrase, "")
         var created = false
         var unlocked = false
@@ -131,8 +196,18 @@ class WalletBootstrap(
             created = true
             rpc.call("walletpassphrase", listOf(passphrase, if (recover) RECOVERY_UNLOCK_SECONDS else CREATE_UNLOCK_SECONDS), walletName)
             unlocked = true
-            val master = Bip32.masterExtendedKey(Bip39.toSeed(mnemonic), testnet)
-            val requests = Descriptors.forWallet(master, testnet, legacy).map { spec ->
+            val seedBytes = if (electrumType != null) {
+                ElectrumSeed.toSeed(mnemonic, seedPassphrase)
+            } else {
+                Bip39.toSeed(mnemonic, seedPassphrase)
+            }
+            val master = Bip32.masterExtendedKey(seedBytes, testnet)
+            val specs = if (electrumType != null) {
+                Descriptors.forElectrumSeed(master, electrumType)
+            } else {
+                Descriptors.forWallet(master, testnet, legacy)
+            }
+            val requests = specs.map { spec ->
                 val info = rpc.call("getdescriptorinfo", listOf(spec.descriptor), null) as Map<*, *>
                 val request = linkedMapOf<String, Any?>(
                     "desc" to spec.descriptor + "#" + info["checksum"],
