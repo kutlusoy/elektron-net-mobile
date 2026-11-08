@@ -247,6 +247,7 @@ object NodeHost {
             settings = { store.load() },
             device = { device.read(appVisible) },
             budget = store.loadBudget(),
+            activeWallet = { activeWallet },
         )
         settings = store
         org.elektronnet.mobile.ui.theme.UnitState.current = store.amountUnit

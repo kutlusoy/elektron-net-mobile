@@ -18,4 +18,5 @@ data class NodeStatus(
     val pruneHeight: Long?,
     val connections: Long,
     val subversion: String,
+    val walletScanningProgress: Double? = null,
 )

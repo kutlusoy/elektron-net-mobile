@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,9 +31,17 @@ import org.elektronnet.mobile.ui.model.HistoryDay
 import org.elektronnet.mobile.ui.model.HistoryFilter
 import org.elektronnet.mobile.ui.model.HistoryModel
 import org.elektronnet.mobile.ui.model.HistoryRow
+import org.elektronnet.mobile.ui.model.SyncNote
 import org.elektronnet.mobile.ui.wallets.walletTitle
 import org.elektronnet.mobile.wallet.OwnWallet
 import org.elektronnet.mobile.wallet.TxItem
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import org.elektronnet.mobile.service.NodeNotification
 
 private sealed interface Entry {
     data class Header(val day: HistoryDay) : Entry
@@ -40,7 +49,13 @@ private sealed interface Entry {
 }
 
 @Composable
-fun HistoryScreen(wallet: OwnWallet?, items: List<TxItem>?, onOpenTx: (String) -> Unit, modifier: Modifier = Modifier) {
+fun HistoryScreen(
+    wallet: OwnWallet?,
+    items: List<TxItem>?,
+    onOpenTx: (String) -> Unit,
+    syncNote: SyncNote? = null,
+    modifier: Modifier = Modifier,
+) {
     var filter by rememberSaveable { mutableStateOf(HistoryFilter.All.name) }
     var query by rememberSaveable { mutableStateOf("") }
     val selected = HistoryFilter.valueOf(filter)
@@ -55,6 +70,9 @@ fun HistoryScreen(wallet: OwnWallet?, items: List<TxItem>?, onOpenTx: (String) -
     }
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(stringResource(R.string.history_title, walletTitle(wallet)), style = MaterialTheme.typography.titleLarge)
+        if (syncNote != null) {
+            HistoryProgressCard(syncNote)
+        }
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
@@ -73,7 +91,25 @@ fun HistoryScreen(wallet: OwnWallet?, items: List<TxItem>?, onOpenTx: (String) -
         }
         if (items != null) Text(stringResource(R.string.history_count, shown.size), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         when {
-            items == null -> Text(stringResource(R.string.history_loading), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            items == null -> {
+                if (syncNote == null) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        Text(stringResource(R.string.history_loading), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(6.dp)
+                                .clip(RoundedCornerShape(3.dp)),
+                        )
+                    }
+                }
+            }
             items.isEmpty() -> Text(stringResource(R.string.history_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
             shown.isEmpty() -> Text(stringResource(R.string.history_none_match), color = MaterialTheme.colorScheme.onSurfaceVariant)
             else -> LazyColumn(modifier = Modifier.weight(1f)) {
@@ -104,6 +140,76 @@ fun HistoryScreen(wallet: OwnWallet?, items: List<TxItem>?, onOpenTx: (String) -
                 Text(stringResource(R.string.history_page, current + 1, pages), style = MaterialTheme.typography.bodyMedium)
                 androidx.compose.material3.OutlinedButton(onClick = { page = current + 1 }, enabled = current < pages - 1) { Text(stringResource(R.string.history_next)) }
             }
+        }
+    }
+}
+
+@Composable
+private fun HistoryProgressCard(note: SyncNote) {
+    val muted = MaterialTheme.colorScheme.onSurfaceVariant
+    val percent = when (note) {
+        is SyncNote.ScanningWallet -> note.percent
+        is SyncNote.CatchingUp -> note.percent
+        else -> null
+    }
+    val title = when (note) {
+        is SyncNote.ScanningWallet -> stringResource(R.string.phase_scanning_wallet)
+        is SyncNote.CatchingUp -> stringResource(R.string.chip_syncing)
+        SyncNote.Starting -> stringResource(R.string.note_starting)
+        is SyncNote.Paused -> stringResource(R.string.note_paused, stringResource(NodeNotification.reasonRes(note.reason)))
+        SyncNote.Stopped -> stringResource(R.string.note_stopped)
+        is SyncNote.Problem -> null
+    } ?: return
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            if (percent != null) {
+                Text(
+                    "$percent%",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+        if (percent != null) {
+            LinearProgressIndicator(
+                progress = { percent / 100f },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(4.dp)),
+            )
+        } else {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp)),
+            )
+        }
+        val desc = when (note) {
+            is SyncNote.ScanningWallet -> stringResource(R.string.note_scanning_wallet, note.percent)
+            is SyncNote.CatchingUp -> stringResource(R.string.note_catching_up, note.percent)
+            else -> null
+        }
+        if (desc != null) {
+            Text(desc, style = MaterialTheme.typography.bodySmall, color = muted)
         }
     }
 }

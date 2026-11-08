@@ -122,19 +122,27 @@ fun WalletScreen(
 }
 
 @Composable
-private fun SyncNoteView(note: SyncNote) {
+internal fun SyncNoteView(note: SyncNote, modifier: Modifier = Modifier) {
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
     when (note) {
         is SyncNote.CatchingUp -> {
-            Text(stringResource(R.string.note_catching_up, note.percent), color = muted)
+            Text(stringResource(R.string.note_catching_up, note.percent), color = muted, modifier = modifier)
             LinearProgressIndicator(progress = { note.percent / 100f }, modifier = Modifier.fillMaxWidth())
         }
-        SyncNote.Starting -> Text(stringResource(R.string.note_starting), color = muted)
+        is SyncNote.ScanningWallet -> {
+            Text(stringResource(R.string.note_scanning_wallet, note.percent), color = muted, modifier = modifier)
+            LinearProgressIndicator(progress = { note.percent / 100f }, modifier = Modifier.fillMaxWidth())
+        }
+        SyncNote.Starting -> {
+            Text(stringResource(R.string.note_starting), color = muted, modifier = modifier)
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
         is SyncNote.Paused -> Text(
             stringResource(R.string.note_paused, stringResource(NodeNotification.reasonRes(note.reason))),
             color = muted,
+            modifier = modifier,
         )
-        SyncNote.Stopped -> Text(stringResource(R.string.note_stopped), color = muted)
+        SyncNote.Stopped -> Text(stringResource(R.string.note_stopped), color = muted, modifier = modifier)
         is SyncNote.Problem -> Text(
             stringResource(
                 when (note.failure) {
@@ -147,6 +155,7 @@ private fun SyncNoteView(note: SyncNote) {
                 },
             ),
             color = muted,
+            modifier = modifier,
         )
     }
 }

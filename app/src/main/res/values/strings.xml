@@ -723,6 +723,12 @@
     <string name="restore_file_hint">Pick a wallet.dat backup made with this app or with the node. The wallet is added next to your others.</string>
     <string name="restore_file_done">Wallet restored. It scans for your coins in the background.</string>
     <string name="restore_file_err_file">This file could not be restored as a wallet.</string>
+    <string name="node_title_scanning_wallet" translatable="false">Scanning wallet: %1$d%%</string>
+    <string name="phase_scanning_wallet" translatable="false">Scanning wallet</string>
+    <string name="phase_scanning_wallet_desc" translatable="false">Scanning wallet (%1$d%%). Searching blockchain for your transactions.</string>
+    <string name="note_scanning_wallet" translatable="false">Scanning wallet (%1$d%%). Searching blockchain for your transactions.</string>
+    <string name="setup_rescanning_percent" translatable="false">Restoring your balance: %1$d%%. Searching blockchain for transactions.</string>
+    <string name="headline_scanning_wallet" translatable="false">Scanning wallet: %1$d%%</string>
     <string name="restore_pass_title">Protect the restored wallet</string>
     <string name="restore_pass_body">This backup has no passphrase. Choose one now. You need it to send coins.</string>
     <string name="restore_pass_cancel">Cancel and discard</string>

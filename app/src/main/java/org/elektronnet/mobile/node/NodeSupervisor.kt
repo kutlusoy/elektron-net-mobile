@@ -91,9 +91,19 @@ class NodeSupervisor(
         return !target.isAlive
     }
 
-    fun status(): NodeStatus {
+    fun status(activeWallet: String? = null): NodeStatus {
         val chain = rpc.call("getblockchaininfo") as Map<*, *>
         val network = rpc.call("getnetworkinfo") as Map<*, *>
+        val scanningProgress = try {
+            val walletInfo = rpc.call("getwalletinfo", emptyList<Any?>(), activeWallet, timeoutMs = 1_500) as? Map<*, *>
+            val scanning = walletInfo?.get("scanning")
+            when (scanning) {
+                is Map<*, *> -> (scanning["progress"] as? Number)?.toDouble()
+                else -> null
+            }
+        } catch (e: Exception) {
+            null
+        }
         return NodeStatus(
             chain = chain["chain"] as String,
             blocks = chain["blocks"] as Long,
@@ -104,6 +114,7 @@ class NodeSupervisor(
             pruneHeight = chain["pruneheight"] as? Long,
             connections = network["connections"] as Long,
             subversion = network["subversion"] as String,
+            walletScanningProgress = scanningProgress,
         )
     }
 
