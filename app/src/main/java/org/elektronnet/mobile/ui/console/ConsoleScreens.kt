@@ -70,6 +70,7 @@ import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.ui.GlassCard
 import org.elektronnet.mobile.ui.SecureWindow
 import org.elektronnet.mobile.ui.security.Biometric
+import org.elektronnet.mobile.ui.security.findFragmentActivity
 import org.elektronnet.mobile.ui.theme.ElektronMono
 import org.elektronnet.mobile.ui.tools.ErrorText
 import org.elektronnet.mobile.ui.tools.Hint
@@ -88,10 +89,17 @@ fun ConsoleRoot(onClose: () -> Unit) {
 @Composable
 private fun ConsoleGate(onClose: () -> Unit) {
     BackHandler(onBack = onClose)
-    val activity = LocalActivity.current as? FragmentActivity
     val context = LocalContext.current
+    val activity = (LocalActivity.current as? FragmentActivity) ?: context.findFragmentActivity()
     var understood by remember { mutableStateOf(false) }
     var unavailable by remember { mutableStateOf(false) }
+
+    val credentialLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            ConsoleState.unlock()
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
@@ -115,14 +123,30 @@ private fun ConsoleGate(onClose: () -> Unit) {
             enabled = understood,
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                if (activity == null || !Biometric.available(context)) {
+                val fallbackToCredential = {
+                    val intent = Biometric.confirmDeviceCredentialIntent(
+                        context,
+                        title = context.getString(R.string.console_auth_title),
+                    )
+                    if (intent != null) {
+                        credentialLauncher.launch(intent)
+                    } else {
+                        unavailable = true
+                    }
+                }
+
+                if (!Biometric.available(context)) {
                     unavailable = true
+                } else if (activity == null) {
+                    fallbackToCredential()
                 } else {
                     Biometric.authenticate(
-                        activity,
+                        activity = activity,
                         title = context.getString(R.string.console_auth_title),
                         negative = context.getString(R.string.lock_cancel),
                         onSuccess = { ConsoleState.unlock() },
+                        onFailure = { },
+                        onFallbackToCredential = fallbackToCredential,
                     )
                 }
             },
