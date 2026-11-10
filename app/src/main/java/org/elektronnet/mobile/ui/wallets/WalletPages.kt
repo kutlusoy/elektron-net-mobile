@@ -70,9 +70,18 @@ fun WalletSwitcher(
 ) {
     var open by remember { mutableStateOf(false) }
     val active = NodeHost.wallets.firstOrNull { it.name == NodeHost.activeWallet }
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        TextButton(onClick = { open = true }) {
-            Text(walletTitle(active) + "  ▾", style = MaterialTheme.typography.titleMedium)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = { open = true }) {
+                Text(walletTitle(active) + "  ▾", style = MaterialTheme.typography.titleMedium)
+            }
+        }
+        active?.let {
+            org.elektronnet.mobile.ui.CoinBadge(it.coin)
         }
         DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
             @Composable fun item(label: Int, action: () -> Unit) = DropdownMenuItem(text = { Text(stringResource(label)) }, onClick = { open = false; action() })
@@ -112,6 +121,7 @@ fun WalletDetailsScreen(onBack: () -> Unit) {
                     Text(stringResource(R.string.action_save))
                 }
                 InfoRow(stringResource(R.string.details_id), NodeHost.activeWallet, mono = true)
+                InfoRow("Coin", wallet?.coin ?: "ELEK")
                 balances?.let {
                     InfoRow(stringResource(R.string.details_balance), Amount.display(it.trustedLep) + " " + Amount.unitSymbol())
                     InfoRow(stringResource(R.string.details_pending), Amount.display(it.pendingLep) + " " + Amount.unitSymbol())
@@ -121,7 +131,9 @@ fun WalletDetailsScreen(onBack: () -> Unit) {
                         Hint(stringResource(R.string.details_used_hint))
                     }
                 }
-                InfoRow(stringResource(R.string.details_derivation), stringResource(R.string.details_derivation_value, coinType))
+                val isBtc = wallet?.coin?.equals("BTC", ignoreCase = true) == true
+                val coinPath = if (isBtc) (if (ChainConfig.isTestnet) "1'" else "0'") else (if (ChainConfig.isTestnet) "${Descriptors.COIN_TYPE_TESTNET}'" else "${Descriptors.COIN_TYPE_ELEKTRON}'")
+                InfoRow(stringResource(R.string.details_derivation), "m/84'/$coinPath/0'")
             }
         }
         var rescanning by remember { mutableStateOf(false) }
@@ -259,7 +271,10 @@ fun WalletsScreen(onBack: () -> Unit, onAdd: () -> Unit) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                     RadioButton(selected = wallet.name == NodeHost.activeWallet, onClick = { NodeHost.switchWallet(wallet.name) })
                     Column(modifier = Modifier.weight(1f).clickable { NodeHost.switchWallet(wallet.name) }) {
-                        Text(walletTitle(wallet), style = MaterialTheme.typography.titleMedium)
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            org.elektronnet.mobile.ui.CoinBadge(wallet.coin)
+                            Text(walletTitle(wallet), style = MaterialTheme.typography.titleMedium, maxLines = 1)
+                        }
                         Hint(wallet.name)
                         if (wallet.watchOnly) Hint(stringResource(R.string.wallet_watch_badge))
                     }

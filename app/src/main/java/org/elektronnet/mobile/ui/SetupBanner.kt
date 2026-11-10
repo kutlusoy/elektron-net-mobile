@@ -37,18 +37,29 @@ fun SetupBanner(
     onPassphrase: (String) -> Unit,
 ) {
     var asking by remember { mutableStateOf(false) }
+    val rescanningProgress = (status as? SetupStatus.Rescanning)?.progress
     val text = when (status) {
         SetupStatus.None -> return
-        SetupStatus.Waiting -> R.string.setup_waiting
-        SetupStatus.Rescanning -> R.string.setup_rescanning
-        SetupStatus.NeedsRescan -> R.string.setup_needs_sync
-        is SetupStatus.Ready -> if (status.partialRestore) R.string.setup_partial else return
-        is SetupStatus.Failed -> failureText(status.failure)
+        SetupStatus.Waiting -> stringResource(R.string.setup_waiting)
+        is SetupStatus.Rescanning -> if (rescanningProgress != null) {
+            stringResource(R.string.setup_rescanning_percent, (rescanningProgress * 100).toInt().coerceIn(0, 100))
+        } else {
+            stringResource(R.string.setup_rescanning)
+        }
+        SetupStatus.NeedsRescan -> stringResource(R.string.setup_needs_sync)
+        is SetupStatus.Ready -> if (status.partialRestore) stringResource(R.string.setup_partial) else return
+        is SetupStatus.Failed -> stringResource(failureText(status.failure))
     }
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         val failed = status is SetupStatus.Failed
-        Text(stringResource(text), color = if (failed) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
-        if (status.inProgress) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        Text(text, color = if (failed) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
+        if (status.inProgress) {
+            if (rescanningProgress != null) {
+                LinearProgressIndicator(progress = { rescanningProgress.toFloat() }, modifier = Modifier.fillMaxWidth())
+            } else {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+        }
         if (failed) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedButton(onClick = onRetry) { Text(stringResource(R.string.action_retry)) }

@@ -8,6 +8,7 @@ enum class NodeChip { Synced, Syncing, Paused, Offline, Stopped, Problem }
 
 sealed interface SyncNote {
     data class CatchingUp(val percent: Int) : SyncNote
+    data class ScanningWallet(val percent: Int) : SyncNote
     data object Starting : SyncNote
     data class Paused(val reason: PolicyReason?) : SyncNote
     data object Stopped : SyncNote
@@ -29,11 +30,19 @@ data class HomeUiModel(
                 val chip = if (reason == PolicyReason.NoNetwork) NodeChip.Offline else NodeChip.Paused
                 HomeUiModel(chip, SyncNote.Paused(reason), false)
             }
-            is Headline.Syncing -> HomeUiModel(NodeChip.Syncing, SyncNote.CatchingUp(percent(headline.progress)), false)
+            is Headline.Syncing -> {
+                val p = if (headline.headers > 0) {
+                    kotlin.math.round(headline.blocks.toDouble() / headline.headers.toDouble() * 100).toInt().coerceIn(0, 99)
+                } else {
+                    percent(headline.progress)
+                }
+                HomeUiModel(NodeChip.Syncing, SyncNote.CatchingUp(p), false)
+            }
+            is Headline.ScanningWallet -> HomeUiModel(NodeChip.Syncing, SyncNote.ScanningWallet(kotlin.math.round(headline.progress * 100).toInt().coerceIn(0, 100)), false)
             is Headline.Synchronized -> HomeUiModel(NodeChip.Synced, null, true)
             is Headline.Crashed -> HomeUiModel(NodeChip.Problem, SyncNote.Problem(headline.failure), false)
         }
 
-        fun percent(progress: Double): Int = (progress * 100).toInt().coerceIn(0, 99)
+        fun percent(progress: Double): Int = kotlin.math.round(progress * 100).toInt().coerceIn(0, 99)
     }
 }

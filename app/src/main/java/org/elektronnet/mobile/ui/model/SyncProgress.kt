@@ -1,9 +1,12 @@
 package org.elektronnet.mobile.ui.model
 
-enum class NodePhase { LoadingIndex, VerifyingBlocks, LoadingWallet, StartingNetwork, SyncingHeaders, Other }
+enum class NodePhase { LoadingIndex, VerifyingBlocks, LoadingWallet, StartingNetwork, SyncingHeaders, ScanningWallet, Other }
 
 object NodeLogPhase {
     private val rules = listOf(
+        "Still rescanning" to NodePhase.ScanningWallet,
+        "Rescanning" to NodePhase.ScanningWallet,
+        "rescan" to NodePhase.ScanningWallet,
         "Verifying blocks" to NodePhase.VerifyingBlocks,
         "Loading block index" to NodePhase.LoadingIndex,
         "Opening LevelDB" to NodePhase.LoadingIndex,
@@ -14,11 +17,27 @@ object NodeLogPhase {
         "headers" to NodePhase.SyncingHeaders,
     )
 
+    private val progressRegex = Regex("""(?:Progress=\s*([0-9.]+)|(?:rescanning|rescan)[^\d%]*([0-9]{1,3}(?:\.[0-9]+)?)\s*%)""", RegexOption.IGNORE_CASE)
+
     fun of(lines: List<String>): NodePhase {
-        for (line in lines.asReversed().take(40)) {
+        for (line in lines.asReversed().take(60)) {
             rules.firstOrNull { line.contains(it.first, ignoreCase = true) }?.let { return it.second }
         }
         return NodePhase.Other
+    }
+
+    fun parseRescanProgress(lines: List<String>): Double? {
+        for (line in lines.asReversed().take(60)) {
+            if (line.contains("rescan", ignoreCase = true) || line.contains("rescanning", ignoreCase = true)) {
+                val match = progressRegex.find(line)
+                val rawStr = match?.let { it.groupValues[1].ifEmpty { it.groupValues.getOrNull(2) ?: "" } }
+                val rawVal = rawStr?.toDoubleOrNull()
+                if (rawVal != null) {
+                    return if (rawVal <= 1.0) rawVal else (rawVal / 100.0).coerceIn(0.0, 1.0)
+                }
+            }
+        }
+        return null
     }
 }
 

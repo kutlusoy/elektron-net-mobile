@@ -125,9 +125,16 @@ fun TxDetailsScreen(item: TxItem, onClose: () -> Unit, onBumped: (String) -> Uni
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = onClose) { Text(stringResource(R.string.action_back)) }
-            Text(stringResource(kindLabel(item.kind)), style = MaterialTheme.typography.titleLarge)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onClose) { Text(stringResource(R.string.action_back)) }
+                Text(stringResource(kindLabel(item.kind)), style = MaterialTheme.typography.titleLarge)
+            }
+            org.elektronnet.mobile.ui.CoinBadge(NodeHost.activeCoinTicker)
         }
         val status = when (item.status) {
             TxStatus.Pending -> stringResource(R.string.tx_status_pending)

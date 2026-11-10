@@ -14,6 +14,20 @@ class SyncProgressTest {
     }
 
     @Test
+    fun detectsRescanningPhaseAndProgress() {
+        val lines = listOf(
+            "2026-11-08 Rescan started from block 0...",
+            "2026-11-08 Still rescanning. At block 12345. Progress=0.570000",
+        )
+        assertEquals(NodePhase.ScanningWallet, NodeLogPhase.of(lines))
+        assertEquals(0.57, NodeLogPhase.parseRescanProgress(lines)!!, 0.001)
+
+        val percentageLines = listOf("Rescanning… 57%")
+        assertEquals(NodePhase.ScanningWallet, NodeLogPhase.of(percentageLines))
+        assertEquals(0.57, NodeLogPhase.parseRescanProgress(percentageLines)!!, 0.001)
+    }
+
+    @Test
     fun estimatesFromTheObservedRate() {
         val eta = SyncEta()
         eta.add(0, 0)

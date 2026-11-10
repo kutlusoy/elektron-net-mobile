@@ -100,6 +100,7 @@ fun NodeScreen(
         noPeersForMs = noPeersSince?.let { now - it } ?: 0,
     )
     val phase = NodeLogPhase.of(log)
+    val rescanProgress = NodeLogPhase.parseRescanProgress(log)
     val eta = remember { SyncEta() }
     val details = model.details
     LaunchedEffect(details?.blocks) { details?.let { eta.add(System.currentTimeMillis(), it.blocks) } }
@@ -113,10 +114,10 @@ fun NodeScreen(
     ) {
         HeroCard {
             NodeChipRow(chipFor(model.state))
-            Text(title(model), style = MaterialTheme.typography.titleLarge)
+            Text(title(model, phase, rescanProgress), style = MaterialTheme.typography.titleLarge)
             hint(model)?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             model.detail?.let { Text(it, style = MaterialTheme.typography.bodySmall.copy(fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)) }
-            ProgressBlock(model, phase, etaText)
+            ProgressBlock(model, phase, rescanProgress, etaText)
             if (starting || running) {
                 DiagnosticsBlock(
                     starting = starting,
@@ -208,16 +209,26 @@ private fun DiagnosticsBlock(starting: Boolean, peers: Long?, elapsed: Long?, si
 }
 
 @Composable
-private fun ProgressBlock(model: NodeTabModel, phase: NodePhase, etaText: String?) {
+private fun ProgressBlock(model: NodeTabModel, phase: NodePhase, rescanProgress: Double?, etaText: String?) {
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
     when (model.state) {
         NodeTabState.Starting -> {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             Text(stringResource(phaseText(phase)), color = muted, style = MaterialTheme.typography.bodySmall)
         }
+        NodeTabState.ScanningWallet -> {
+            val p = (model.percent ?: 0) / 100f
+            LinearProgressIndicator(progress = { p }, modifier = Modifier.fillMaxWidth())
+            Text(stringResource(R.string.phase_scanning_wallet_desc, model.percent ?: 0), color = muted, style = MaterialTheme.typography.bodySmall)
+            etaText?.let { Text(it, color = muted, style = MaterialTheme.typography.bodySmall) }
+        }
         NodeTabState.CatchingUp -> {
             val details = model.details
-            if (model.percent != null && details != null && details.headers > 0) {
+            if (phase == NodePhase.ScanningWallet && rescanProgress != null) {
+                val p = (rescanProgress * 100).toInt().coerceIn(0, 100)
+                LinearProgressIndicator(progress = { rescanProgress.toFloat() }, modifier = Modifier.fillMaxWidth())
+                Text(stringResource(R.string.phase_scanning_wallet_desc, p), color = muted, style = MaterialTheme.typography.bodySmall)
+            } else if (model.percent != null && details != null && details.headers > 0) {
                 LinearProgressIndicator(progress = { model.percent / 100f }, modifier = Modifier.fillMaxWidth())
                 Text(stringResource(R.string.sync_blocks_of, details.blocks, details.headers), color = muted, style = MaterialTheme.typography.bodySmall)
             } else {
@@ -236,6 +247,7 @@ private fun phaseText(phase: NodePhase): Int = when (phase) {
     NodePhase.LoadingWallet -> R.string.phase_wallet
     NodePhase.StartingNetwork -> R.string.phase_network
     NodePhase.SyncingHeaders -> R.string.phase_headers
+    NodePhase.ScanningWallet -> R.string.phase_scanning_wallet
     NodePhase.Other -> R.string.phase_starting
 }
 
@@ -446,16 +458,21 @@ private fun DetailRow(label: String, value: String) = InfoRow(label, value)
 
 private fun chipFor(state: NodeTabState): NodeChip = when (state) {
     NodeTabState.UpToDate -> NodeChip.Synced
-    NodeTabState.CatchingUp, NodeTabState.Starting -> NodeChip.Syncing
+    NodeTabState.CatchingUp, NodeTabState.ScanningWallet, NodeTabState.Starting -> NodeChip.Syncing
     NodeTabState.Paused -> NodeChip.Paused
     NodeTabState.Stopping, NodeTabState.Stopped -> NodeChip.Stopped
     NodeTabState.Problem -> NodeChip.Problem
 }
 
 @Composable
-private fun title(model: NodeTabModel): String = when (model.state) {
+private fun title(model: NodeTabModel, phase: NodePhase = NodePhase.Other, rescanProgress: Double? = null): String = when (model.state) {
     NodeTabState.UpToDate -> stringResource(R.string.node_title_up_to_date)
-    NodeTabState.CatchingUp -> stringResource(R.string.node_title_catching_up, model.percent ?: 0)
+    NodeTabState.ScanningWallet -> stringResource(R.string.node_title_scanning_wallet, model.percent ?: 0)
+    NodeTabState.CatchingUp -> if (phase == NodePhase.ScanningWallet && rescanProgress != null) {
+        stringResource(R.string.node_title_scanning_wallet, (rescanProgress * 100).toInt().coerceIn(0, 100))
+    } else {
+        stringResource(R.string.node_title_catching_up, model.percent ?: 0)
+    }
     NodeTabState.Paused -> stringResource(R.string.node_title_paused)
     NodeTabState.Starting -> stringResource(R.string.node_title_starting)
     NodeTabState.Stopping -> stringResource(R.string.node_title_stopping)

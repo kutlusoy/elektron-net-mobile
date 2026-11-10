@@ -28,6 +28,7 @@ class NodeRuntime(
     private val device: () -> DeviceState,
     private val clock: () -> Long = System::currentTimeMillis,
     val budget: MonthlyDataBudget = MonthlyDataBudget(),
+    private val activeWallet: () -> String? = { null },
 ) {
     private val totals = NetTotalsTracker()
 
@@ -42,7 +43,7 @@ class NodeRuntime(
         var peerNetworks: Map<String, Int> = emptyMap()
         if (state == NodeState.Running && supervisor != null) {
             try {
-                status = supervisor.status()
+                status = supervisor.status(activeWallet())
                 peerNetworks = runCatching { supervisor.peers() }.getOrDefault(emptyList()).groupingBy { it.network }.eachCount().filterKeys { it.isNotEmpty() }
                 val counters = supervisor.rpc.call("getnettotals") as Map<*, *>
                 recordTotals((counters["totalbytesrecv"] as Long) + (counters["totalbytessent"] as Long), observed.network, now)

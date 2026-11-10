@@ -109,6 +109,28 @@ fun GlassCard(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
 }
 
 @Composable
+fun CoinBadge(coin: String, modifier: Modifier = Modifier) {
+    val isBtc = coin.contains("btc", ignoreCase = true)
+    val bg = if (isBtc) Color(0xFFF7931A).copy(alpha = 0.2f) else MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+    val fg = if (isBtc) Color(0xFFFFAB40) else MaterialTheme.colorScheme.primary
+    val shape = RoundedCornerShape(6.dp)
+    Box(
+        modifier = modifier
+            .clip(shape)
+            .background(bg)
+            .border(1.dp, fg.copy(alpha = 0.6f), shape)
+            .padding(horizontal = 8.dp, vertical = 2.dp),
+    ) {
+        Text(
+            coin.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            color = fg,
+        )
+    }
+}
+
+@Composable
 fun ElektronLogo(size: Dp, modifier: Modifier = Modifier) {
     val tokens = LocalTokens.current
     val level = LocalEffectLevel.current

@@ -72,9 +72,10 @@ fun ReceiveScreen(onClose: () -> Unit) {
         if (fiat == null && inFiat) { amount = ""; inFiat = false }
     }
     val synced = NodeHost.latest?.headline is Headline.Synchronized
+    val nodeRunning = NodeHost.isRunning
 
     BackHandler(onBack = onClose)
-    LaunchedEffect(attempt) {
+    LaunchedEffect(attempt, nodeRunning, NodeHost.activeWallet) {
         failed = false
         val result = withContext(Dispatchers.IO) { runCatching { NodeHost.receiveWallet()?.currentAddress() }.getOrNull() }
         if (result == null) failed = true else address = result
@@ -88,9 +89,16 @@ fun ReceiveScreen(onClose: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = onClose) { Text(stringResource(R.string.action_back)) }
-            Text(stringResource(R.string.receive_title), style = MaterialTheme.typography.titleLarge)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onClose) { Text(stringResource(R.string.action_back)) }
+                Text(stringResource(R.string.receive_title), style = MaterialTheme.typography.titleLarge)
+            }
+            org.elektronnet.mobile.ui.CoinBadge(NodeHost.activeCoinTicker)
         }
         val current = address
         if (current == null) {

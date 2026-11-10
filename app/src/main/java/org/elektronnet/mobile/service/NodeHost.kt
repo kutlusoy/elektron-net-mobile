@@ -5,6 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import java.io.File
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.elektronnet.mobile.ChainConfig
 import org.elektronnet.mobile.node.Chain
 import org.elektronnet.mobile.node.NodeConfig
@@ -53,6 +55,9 @@ object NodeHost {
     var networkServices: NetworkServices? = null
         private set
 
+    var kdfSupervisor: org.elektronnet.mobile.kdf.KdfSupervisor? by mutableStateOf(null)
+        private set
+
     var networkPorts: org.elektronnet.mobile.node.NetworkPorts = ChainConfig.networkPorts
         private set
     private var datadir: File? = null
@@ -75,6 +80,14 @@ object NodeHost {
 
     var wallets: List<OwnWallet> by mutableStateOf(emptyList())
         private set
+
+    val activeOwnWallet: OwnWallet? get() = wallets.firstOrNull { it.name == activeWallet }
+    val activeCoin: String get() = activeOwnWallet?.coin ?: "ELEK"
+    val activeCoinTicker: String get() = if (activeCoin.equals("BTC", ignoreCase = true)) {
+        if (ChainConfig.isTestnet) "tBTC" else "BTC"
+    } else {
+        if (ChainConfig.isTestnet) "tELEK" else "ELEK"
+    }
 
     // a watch-only wallet has no keys on this phone, a signing device signs for it
     fun isWatchOnly(name: String = activeWallet): Boolean = wallets.firstOrNull { it.name == name }?.watchOnly == true
@@ -101,11 +114,20 @@ object NodeHost {
         val supervisor = runningSupervisor() ?: return null
         val reg = registry ?: return null
         val rpc = supervisor.rpc.asWalletRpc()
-        val busy = if (setupStatus != SetupStatus.None) setOf(walletSetup.walletName) else emptySet()
+        val onDisk = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg).namesOnDisk().orEmpty().toSet()
+        if (setupStatus == SetupStatus.NeedsRescan && walletSetup.walletName !in onDisk) {
+            walletSetup.cancel()
+            setupStatus = SetupStatus.None
+            settings?.rescanPending = false
+        }
+        val busy = if (setupStatus == SetupStatus.Waiting) setOf(walletSetup.walletName) else emptySet()
         val reconciler = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy + removing }
         val result = reconciler.reconcile(adopt = true) ?: return null
-        walletNamesOnDisk = reconciler.namesOnDisk().orEmpty().toSet()
+        walletNamesOnDisk = onDisk
         if (reg.wallets().isNotEmpty()) markWalletReady(true)
+        if (activeWallet !in onDisk && onDisk.isNotEmpty()) {
+            reg.setActive(onDisk.first())
+        }
         refreshWallets()
         return result
     }
@@ -210,15 +232,21 @@ object NodeHost {
         registry = reg
         refreshWallets()
         if (store.walletReady() && store.rescanPending) {
-            walletSetup.markRescanPending(store.rescanWallet)
-            // a watch-only wallet has no passphrase to ask for
-            if (isWatchOnly(store.rescanWallet)) walletSetup.resumeRescan("")
-            setupStatus = walletSetup.status
+            val valid = reg.wallets().any { it.name == store.rescanWallet }
+            if (valid) {
+                walletSetup.markRescanPending(store.rescanWallet)
+                // a watch-only wallet has no passphrase to ask for
+                if (isWatchOnly(store.rescanWallet)) walletSetup.resumeRescan("")
+                setupStatus = walletSetup.status
+            } else {
+                store.rescanPending = false
+            }
         }
         networkPorts = ChainConfig.networkPorts.resolved()
         val datadir = File(app.filesDir, ChainConfig.datadirName)
         datadir.mkdirs()
         this.datadir = datadir
+        val extraArgs = if (ChainConfig.isTestnet) listOf("-addnode=127.0.0.1:18333") else emptyList()
         val config = NodeConfig(
             binary = File(app.applicationInfo.nativeLibraryDir, "libelektrond.so"),
             datadir = datadir,
@@ -229,6 +257,7 @@ object NodeHost {
             homeDir = app.filesDir,
             network = store.loadNetwork(),
             ports = networkPorts,
+            extraArgs = extraArgs,
         )
         val device = AndroidDeviceState(app, datadir)
         val services = NetworkServices(
@@ -247,17 +276,23 @@ object NodeHost {
             settings = { store.load() },
             device = { device.read(appVisible) },
             budget = store.loadBudget(),
+            activeWallet = { activeWallet },
         )
         settings = store
         org.elektronnet.mobile.ui.theme.UnitState.current = store.amountUnit
         org.elektronnet.mobile.ui.theme.FiatState.load(store.fiat)
         org.elektronnet.mobile.wallet.Amount.unitProvider = { org.elektronnet.mobile.ui.theme.UnitState.current }
+        org.elektronnet.mobile.wallet.Amount.coinProvider = { activeCoin }
+        org.elektronnet.mobile.wallet.Amount.testnetProvider = { ChainConfig.isTestnet }
         org.elektronnet.mobile.ui.theme.NumberState.grouping = store.numberGrouping
         org.elektronnet.mobile.ui.theme.NumberState.groupChoice = org.elektronnet.mobile.wallet.SeparatorChoice.of(store.numberGroupChar)
         org.elektronnet.mobile.ui.theme.NumberState.decimalChoice = org.elektronnet.mobile.wallet.SeparatorChoice.of(store.numberDecimalChar)
         org.elektronnet.mobile.wallet.Amount.styleProvider = { org.elektronnet.mobile.ui.theme.NumberState.style() }
         org.elektronnet.mobile.ui.theme.UpdateState.load()
         org.elektronnet.mobile.ui.theme.UiState.settings = store.loadUi(org.elektronnet.mobile.ui.theme.Palettes.all.map { it.key }.toSet())
+        kdfSupervisor = org.elektronnet.mobile.kdf.KdfSupervisor(
+            context = app,
+        )
         return store
     }
 
@@ -320,13 +355,22 @@ object NodeHost {
                 val reg = registry
                 val rpc = supervisor.rpc.asWalletRpc()
                 if (reconcileNeeded && reg != null) {
-                    val busy = if (setupStatus != SetupStatus.None) setOf(walletSetup.walletName) else emptySet()
-                    val result = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy + removing }.reconcile(adopt = false)
+                    val onDisk = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg).namesOnDisk().orEmpty().toSet()
+                    if (setupStatus == SetupStatus.NeedsRescan && walletSetup.walletName !in onDisk) {
+                        walletSetup.cancel()
+                        setupStatus = SetupStatus.None
+                        settings?.rescanPending = false
+                    }
+                    val busy = if (setupStatus == SetupStatus.Waiting) setOf(walletSetup.walletName) else emptySet()
+                    val result = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg) { busy + removing }.reconcile(adopt = true)
                     if (result != null) {
-                        walletNamesOnDisk = org.elektronnet.mobile.wallet.WalletReconciler(rpc, reg).namesOnDisk().orEmpty().toSet()
+                        walletNamesOnDisk = onDisk
                         reconciledFor = supervisor.startedAt
                         pendingCoinRefresh.addAll(reg.wallets().map { it.name })
                         if (reg.wallets().isNotEmpty()) markWalletReady(true)
+                        if (activeWallet !in onDisk && onDisk.isNotEmpty()) {
+                            reg.setActive(onDisk.first())
+                        }
                         refreshWallets()
                     }
                 }
@@ -391,7 +435,7 @@ object NodeHost {
                 registry?.setActive(walletSetup.walletName)
                 refreshWallets()
             }
-            SetupStatus.NeedsRescan, SetupStatus.Rescanning -> {
+            SetupStatus.NeedsRescan, is SetupStatus.Rescanning -> {
                 markWalletReady(true)
                 store?.rescanPending = true
                 store?.rescanWallet = walletSetup.walletName
@@ -409,7 +453,7 @@ object NodeHost {
         val chain = Chain.fromBuildName(ChainConfig.chain)
         val words = context.applicationContext.assets.open("bip39/english.txt").bufferedReader().readLines().filter { it.isNotBlank() }
         return WalletBootstrap(
-            rpc = supervisor.rpc.asWalletRpc(),
+            rpc = supervisor.rpc.asWalletRpc(timeoutMs = SCAN_TIMEOUT_MS),
             bip39 = Bip39(words),
             testnet = ChainConfig.isTestnet,
             removeWalletFiles = { name -> org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, name) },
@@ -417,21 +461,41 @@ object NodeHost {
         )
     }
 
-    fun receiveWallet(): ReceiveWallet? {
+    fun receiveWallet(walletName: String = activeWallet): ReceiveWallet? {
         val supervisor = controller?.current?.takeIf { it.state == NodeState.Running } ?: return null
         val store = settings ?: return null
-        val wallet = activeWallet
         return ReceiveWallet(
             rpc = supervisor.rpc.asWalletRpc(),
             store = object : AddressStore {
                 override var current: String?
-                    get() = store.receiveAddressFor(wallet)
+                    get() = store.receiveAddressFor(walletName)
                     set(value) {
-                        store.setReceiveAddressFor(wallet, value)
+                        store.setReceiveAddressFor(walletName, value)
                     }
             },
-            walletName = wallet,
+            walletName = walletName,
         )
+    }
+
+    suspend fun withdrawFromKdfToWallet(
+        coin: String,
+        targetWallet: String = activeWallet,
+        amount: String? = null,
+        max: Boolean = false,
+    ): Result<String> = withContext(Dispatchers.IO) {
+        runCatching {
+            val supervisor = kdfSupervisor ?: throw IllegalStateException("KDF supervisor not available")
+            val client = supervisor.client
+            val rw = receiveWallet(targetWallet) ?: throw IllegalStateException("Wallet not ready")
+            val targetAddress = rw.newAddress()
+            val draft = client.withdraw(
+                coin = coin,
+                toAddress = targetAddress,
+                amount = amount,
+                max = max,
+            )
+            client.sendRawTransaction(coin, draft.txHex)
+        }
     }
 
     fun walletReader(): WalletReader? {
@@ -440,6 +504,8 @@ object NodeHost {
     }
 
     var incomingUri: String? by mutableStateOf(null)
+
+    val isRunning: Boolean get() = runningSupervisor() != null
 
     private fun runningSupervisor() = controller?.current?.takeIf { it.state == NodeState.Running }
 
@@ -509,7 +575,10 @@ object NodeHost {
         val supervisor = runningSupervisor() ?: return null
         val root = datadir ?: return null
         val chain = Chain.fromBuildName(ChainConfig.chain)
-        return org.elektronnet.mobile.wallet.WalletRestore(supervisor.rpc.asWalletRpc()) { name ->
+        return org.elektronnet.mobile.wallet.WalletRestore(
+            supervisor.rpc.asWalletRpc(),
+            testnet = chain == Chain.Testnet,
+        ) { name ->
             org.elektronnet.mobile.wallet.deleteWalletEverywhere(root, chain.subdir, name)
         }
     }
@@ -523,10 +592,15 @@ object NodeHost {
         refreshWallets()
     }
 
-    fun restoreWalletFile(file: File): org.elektronnet.mobile.wallet.RestoreResult {
+    fun restoreWalletFile(file: File, passphrase: String? = null): org.elektronnet.mobile.wallet.RestoreResult {
         val restore = walletRestore() ?: return org.elektronnet.mobile.wallet.RestoreResult.Failed(org.elektronnet.mobile.wallet.RestoreFailure.NodeNotReady)
-        val result = restore.restore(file, liveWalletName())
-        if (result is org.elektronnet.mobile.wallet.RestoreResult.Restored && result.encrypted) registerRestored(result.walletName)
+        val name = liveWalletName()
+        val result = restore.restore(file, name, passphrase)
+        if (result is org.elektronnet.mobile.wallet.RestoreResult.Restored) {
+            registry?.add(result.walletName, "")
+            switchWallet(result.walletName)
+            if (result.encrypted) registerRestored(result.walletName)
+        }
         return result
     }
 
@@ -561,7 +635,13 @@ object NodeHost {
     private const val FEE_CACHE_MS = 60_000L
     private const val LOG_CLEAN_EVERY_MS = 60 * 60 * 1000L
 
-    val paymentUri: PaymentUri = PaymentUri(ChainConfig.uriScheme, AddressCheck(ChainConfig.isTestnet))
+    fun paymentUriFor(coin: String = activeCoin): PaymentUri {
+        val isBtc = coin.equals("BTC", ignoreCase = true)
+        val scheme = if (isBtc) "bitcoin" else ChainConfig.uriScheme
+        return PaymentUri(scheme, AddressCheck(ChainConfig.isTestnet), isBtc = isBtc)
+    }
+
+    val paymentUri: PaymentUri get() = paymentUriFor(activeCoin)
 
     data class PeerRow(val peer: org.elektronnet.mobile.node.PeerInfo, val country: org.elektronnet.mobile.geo.Country?)
 

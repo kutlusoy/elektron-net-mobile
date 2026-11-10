@@ -16,13 +16,20 @@ import org.elektronnet.mobile.ui.GlassCard
 import org.elektronnet.mobile.ui.wallets.RestoreFileSection
 
 @Composable
-fun NoWalletCard(onCreate: () -> Unit, modifier: Modifier = Modifier) {
+fun NoWalletCard(
+    onCreate: () -> Unit,
+    onTools: () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
     Column(modifier = modifier.fillMaxWidth().padding(16.dp)) {
         GlassCard {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(stringResource(R.string.nowallet_title), style = MaterialTheme.typography.titleLarge)
                 Text(stringResource(R.string.nowallet_body), color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Button(onClick = onCreate, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.nowallet_create)) }
+                androidx.compose.material3.OutlinedButton(onClick = onTools, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.tools_title) + " / " + stringResource(R.string.swap_title))
+                }
                 RestoreFileSection()
             }
         }

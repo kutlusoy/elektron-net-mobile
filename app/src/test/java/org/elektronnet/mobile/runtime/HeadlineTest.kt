@@ -47,6 +47,12 @@ class HeadlineTest {
     }
 
     @Test
+    fun scanningWalletWinsOverSyncingAndSynchronized() {
+        val scanningStatus = status(499, 500).copy(walletScanningProgress = 0.57)
+        assertEquals(Headline.ScanningWallet(0.57, 499, 500, 7), Headline.from(decision(), NodeState.Running, scanningStatus))
+    }
+
+    @Test
     fun connectingWhileStatusIsMissing() {
         assertEquals(Headline.Connecting(emptySet()), Headline.from(decision(), NodeState.Running, null))
     }

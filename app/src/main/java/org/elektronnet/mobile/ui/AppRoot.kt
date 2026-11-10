@@ -133,8 +133,8 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
     }
 
     LaunchedEffect(setup) {
-        if (setup is SetupStatus.Ready || setup == SetupStatus.NeedsRescan || setup == SetupStatus.Rescanning) storeReady = true
-        while (setup == SetupStatus.Waiting || setup == SetupStatus.Rescanning || (setup == SetupStatus.NeedsRescan && !NodeHost.needsRescanPassphrase)) {
+        if (setup is SetupStatus.Ready || setup == SetupStatus.NeedsRescan || setup is SetupStatus.Rescanning) storeReady = true
+        while (setup == SetupStatus.Waiting || setup is SetupStatus.Rescanning || (setup == SetupStatus.NeedsRescan && !NodeHost.needsRescanPassphrase)) {
             withContext(Dispatchers.IO) { NodeHost.setupTick() }
             delay(1_000)
         }
@@ -312,7 +312,7 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
             })
             Box(modifier = Modifier.weight(1f)) {
             when (Tab.entries[tab]) {
-                Tab.Wallet -> if (!walletReady) NoWalletCard(onCreate = { show(Overlay.AddWallet) }) else Column {
+                Tab.Wallet -> if (!walletReady) NoWalletCard(onCreate = { show(Overlay.AddWallet) }, onTools = { show(Overlay.Tools) }) else Column {
                     WalletSwitcher(
                         onDetails = { show(Overlay.Details) },
                         onCoins = { show(Overlay.Coins) },
@@ -349,10 +349,13 @@ fun AppRoot(onStart: () -> Unit, onStop: () -> Unit, onPause: () -> Unit, onResu
                     onSend = { show(Overlay.Send) },
                 )
                 }
-                Tab.History -> if (!walletReady) NoWalletCard(onCreate = { show(Overlay.AddWallet) }) else HistoryScreen(
+                Tab.History -> if (!walletReady) NoWalletCard(onCreate = { show(Overlay.AddWallet) }, onTools = { show(Overlay.Tools) }) else HistoryScreen(
                     wallet = NodeHost.wallets.firstOrNull { it.name == NodeHost.activeWallet },
                     items = histories[NodeHost.activeWallet],
                     onOpenTx = { openTx = it },
+                    syncNote = HomeUiModel.from(snapshot?.headline).syncNote ?: (setup as? org.elektronnet.mobile.wallet.SetupStatus.Rescanning)?.let {
+                        org.elektronnet.mobile.ui.model.SyncNote.ScanningWallet(((it.progress ?: 0.0) * 100).toInt().coerceIn(0, 100))
+                    },
                 )
                 Tab.Node -> androidx.compose.runtime.CompositionLocalProvider(org.elektronnet.mobile.ui.node.LocalPeerScan provides { show(Overlay.PeerScan) }) { NodeScreen(
                     model = NodeTabModel.from(snapshot, settings.userPaused),

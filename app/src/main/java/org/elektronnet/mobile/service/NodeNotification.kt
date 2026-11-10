@@ -60,6 +60,7 @@ object NodeNotification {
         is Headline.Connecting -> context.getString(R.string.headline_connecting)
         is Headline.Paused -> context.getString(R.string.headline_paused, reason(context, headline.reasons))
         is Headline.Syncing -> context.getString(R.string.headline_syncing, headline.blocks, headline.headers, headline.peers.toInt())
+        is Headline.ScanningWallet -> context.getString(R.string.headline_scanning_wallet, (headline.progress * 100).toInt())
         is Headline.Synchronized -> context.getString(R.string.headline_synchronized, headline.blocks, headline.peers.toInt())
         is Headline.Crashed -> context.getString(R.string.headline_crashed)
     }

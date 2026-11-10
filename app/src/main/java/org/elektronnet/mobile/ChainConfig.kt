@@ -8,7 +8,8 @@ object ChainConfig {
     const val p2pPort: Int = BuildConfig.P2P_PORT
     const val rpcPort: Int = BuildConfig.RPC_PORT
     const val isTestnet: Boolean = BuildConfig.IS_TESTNET
-    const val ticker: String = "ELEK"
+    val defaultWallet: String = BuildConfig.DEFAULT_WALLET
+    val ticker: String = if (isTestnet) "tELEK" else "ELEK"
     val networkPorts: org.elektronnet.mobile.node.NetworkPorts = if (isTestnet) org.elektronnet.mobile.node.NetworkPorts.Testnet else org.elektronnet.mobile.node.NetworkPorts()
     val uriScheme: String = if (isTestnet) "elektest" else "elek"
 }

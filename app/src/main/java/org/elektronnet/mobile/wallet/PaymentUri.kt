@@ -11,7 +11,11 @@ sealed interface UriParse {
 
 enum class UriProblem { Scheme, Address, Amount, Duplicate, RequiredParameter, Encoding }
 
-class PaymentUri(private val scheme: String, private val addresses: AddressCheck) {
+class PaymentUri(
+    private val scheme: String,
+    private val addresses: AddressCheck,
+    private val isBtc: Boolean = scheme.equals("bitcoin", ignoreCase = true),
+) {
     fun build(request: PaymentRequest): String {
         val params = mutableListOf<String>()
         request.amountLep?.let { params += "amount=" + Amount.format(it) }
@@ -25,8 +29,15 @@ class PaymentUri(private val scheme: String, private val addresses: AddressCheck
 
     fun parse(input: String): UriParse {
         val text = input.trim()
-        if (!text.startsWith("$scheme:", ignoreCase = true)) return UriParse.Invalid(UriProblem.Scheme)
-        val rest = text.substring(scheme.length + 1)
+        val matchingScheme = when {
+            text.startsWith("$scheme:", ignoreCase = true) -> scheme
+            isBtc && text.startsWith("bitcoin:", ignoreCase = true) -> "bitcoin"
+            !isBtc && text.startsWith("elektest:", ignoreCase = true) -> "elektest"
+            !isBtc && text.startsWith("elek:", ignoreCase = true) -> "elek"
+            else -> null
+        } ?: return UriParse.Invalid(UriProblem.Scheme)
+
+        val rest = text.substring(matchingScheme.length + 1)
         val query = rest.substringAfter('?', "")
         val address = addresses.normalized(rest.substringBefore('?'))
         val kind = addresses.classify(address)

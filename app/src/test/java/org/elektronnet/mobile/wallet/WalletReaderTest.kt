@@ -7,9 +7,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class WalletReaderTest {
+    @Before
+    fun setUp() {
+        java.util.Locale.setDefault(java.util.Locale.US)
+    }
     private fun entries(json: String): List<TxItem> =
         WalletReader.group((Json.parse(json) as List<*>).map { it as Map<*, *> })
 
@@ -80,7 +85,7 @@ class WalletReaderTest {
         val reader = WalletReader(rpc)
         assertEquals(Balances(250_000_000L, 10_000_000L, 0L), reader.balances())
         assertEquals(listOf("b", "a"), reader.transactions().map { it.txid })
-        assertEquals(listOf("getbalances@elektron", "listtransactions@elektron"), calls)
+        assertEquals(listOf("getbalances@${WalletBootstrap.DEFAULT_WALLET}", "listtransactions@${WalletBootstrap.DEFAULT_WALLET}"), calls)
     }
 
     @Test

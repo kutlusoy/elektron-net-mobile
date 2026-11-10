@@ -54,7 +54,21 @@ class UiModelTest {
         assertEquals(62, HomeUiModel.percent(0.62))
         assertEquals(99, HomeUiModel.percent(1.0))
         assertEquals(0, HomeUiModel.percent(-1.0))
-        assertEquals(SyncNote.CatchingUp(62), HomeUiModel.from(Headline.Syncing(1, 2, 0.62, 3)).syncNote)
+        assertEquals(SyncNote.CatchingUp(62), HomeUiModel.from(Headline.Syncing(0, 0, 0.62, 3)).syncNote)
+        assertEquals(SyncNote.CatchingUp(50), HomeUiModel.from(Headline.Syncing(1, 2, 0.62, 3)).syncNote)
+    }
+
+    @Test
+    fun scanningWalletProducesProperHomeAndTabModel() {
+        val home = HomeUiModel.from(Headline.ScanningWallet(0.57, 100, 500, 3))
+        assertEquals(NodeChip.Syncing, home.chip)
+        assertEquals(SyncNote.ScanningWallet(57), home.syncNote)
+        assertFalse(home.canSend)
+
+        val tabModel = NodeTabModel.from(snapshot(Headline.ScanningWallet(0.57, 120, 500, 6), NodeState.Running, status), userPaused = false)
+        assertEquals(NodeTabState.ScanningWallet, tabModel.state)
+        assertEquals(57, tabModel.percent)
+        assertTrue(tabModel.isScanningWallet)
     }
 
     @Test

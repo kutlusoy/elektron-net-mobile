@@ -80,6 +80,18 @@ class PaymentTest {
     }
 
     @Test
+    fun bitcoinUriBuildAndParse() {
+        val btcUris = PaymentUri("bitcoin", test, isBtc = true)
+        val tbAddress = Bech32.encode("tb", 0, program)
+        val request = PaymentRequest(tbAddress, 50_000_000L, label = "Sats for swap")
+        val text = btcUris.build(request)
+        assertEquals("bitcoin:$tbAddress?amount=0.5&label=Sats%20for%20swap", text)
+        val parsed = btcUris.parse(text) as UriParse.Ok
+        assertEquals(request, parsed.request)
+        assertEquals(AddressKind.Native, parsed.kind)
+    }
+
+    @Test
     fun parserRejectsBadInput() {
         fun problem(text: String) = (uris.parse(text) as UriParse.Invalid).reason
         assertEquals(UriProblem.Scheme, problem("bitcoin:$address"))

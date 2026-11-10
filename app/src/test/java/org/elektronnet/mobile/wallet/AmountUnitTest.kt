@@ -60,4 +60,54 @@ class AmountUnitTest {
         }
         assertEquals("1 ELEK", Amount.displayWithUnit(oneElek))
     }
+
+    @Test
+    fun multiCoinSymbolsFollowActiveCoinAndTestnet() {
+        val origCoin = Amount.coinProvider
+        val origTestnet = Amount.testnetProvider
+        val origUnit = Amount.unitProvider
+        val origStyle = Amount.styleProvider
+        Amount.styleProvider = { NumberStyle.forLocale(java.util.Locale.US) }
+        try {
+            // Mainnet ELEK
+            Amount.coinProvider = { "ELEK" }
+            Amount.testnetProvider = { false }
+            Amount.unitProvider = { AmountUnit.Elek }
+            assertEquals("ELEK", Amount.unitSymbol())
+            assertEquals("1 ELEK", Amount.displayWithUnit(oneElek))
+
+            Amount.unitProvider = { AmountUnit.Lepton }
+            assertEquals("lep", Amount.unitSymbol())
+            assertEquals("100,000,000 lep", Amount.displayWithUnit(oneElek))
+
+            // Mainnet BTC
+            Amount.coinProvider = { "BTC" }
+            Amount.unitProvider = { AmountUnit.Elek }
+            assertEquals("BTC", Amount.unitSymbol())
+            assertEquals("1 BTC", Amount.displayWithUnit(oneElek))
+
+            Amount.unitProvider = { AmountUnit.MilliElek }
+            assertEquals("mBTC", Amount.unitSymbol())
+
+            Amount.unitProvider = { AmountUnit.Lepton }
+            assertEquals("sat", Amount.unitSymbol())
+            assertEquals("100,000,000 sat", Amount.displayWithUnit(oneElek))
+
+            // Testnet BTC
+            Amount.testnetProvider = { true }
+            Amount.unitProvider = { AmountUnit.Elek }
+            assertEquals("tBTC", Amount.unitSymbol())
+            assertEquals("1 tBTC", Amount.displayWithUnit(oneElek))
+
+            // Testnet ELEK
+            Amount.coinProvider = { "ELEK" }
+            assertEquals("tELEK", Amount.unitSymbol())
+            assertEquals("1 tELEK", Amount.displayWithUnit(oneElek))
+        } finally {
+            Amount.coinProvider = origCoin
+            Amount.testnetProvider = origTestnet
+            Amount.unitProvider = origUnit
+            Amount.styleProvider = origStyle
+        }
+    }
 }

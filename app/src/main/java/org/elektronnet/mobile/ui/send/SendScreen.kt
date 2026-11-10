@@ -109,7 +109,8 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
     var appliedMessage by remember { mutableStateOf<String?>(null) }
     val walletName = escrow?.walletName ?: NodeHost.activeWallet
 
-    val resolved = SendInput.recipient(recipientText, NodeHost.paymentUri, org.elektronnet.mobile.wallet.AddressCheck(ChainConfig.isTestnet), ChainConfig.uriScheme)
+    val activeScheme = if (NodeHost.activeCoin.equals("BTC", ignoreCase = true)) "bitcoin" else ChainConfig.uriScheme
+    val resolved = SendInput.recipient(recipientText, NodeHost.paymentUri, org.elektronnet.mobile.wallet.AddressCheck(ChainConfig.isTestnet), activeScheme)
     val spendable = if (selectedCoins.isNotEmpty()) selectedCoins.sumOf { it.amountLep } else available ?: 0L
     val fiat = org.elektronnet.mobile.ui.theme.FiatState.current
     var inFiat by remember { mutableStateOf(false) }
@@ -137,7 +138,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
         reused = withContext(Dispatchers.IO) { runCatching { NodeHost.sendEngine(walletName)?.reusedLep() }.getOrNull() } ?: 0L
     }
     LaunchedEffect(recipientText, resolved.address) {
-        val isLink = recipientText.trim().startsWith(ChainConfig.uriScheme + ":", ignoreCase = true)
+        val isLink = recipientText.trim().let { it.startsWith(activeScheme + ":", ignoreCase = true) || it.startsWith("bitcoin:", ignoreCase = true) || it.startsWith(ChainConfig.uriScheme + ":", ignoreCase = true) }
         if (isLink && resolved.usable && step == Step.Recipient) {
             resolved.amountLep?.let { amountText = Amount.plain(it); max = false; inFiat = false }
             noteFromLink = resolved.note
@@ -230,13 +231,20 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if (step != Step.Working && step != Step.Done) {
-                TextButton(onClick = { if (step == Step.Recipient) onClose() else { passphrase = ""; step = Step.entries[step.ordinal - 1] } }) {
-                    Text(stringResource(R.string.action_back))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (step != Step.Working && step != Step.Done) {
+                    TextButton(onClick = { if (step == Step.Recipient) onClose() else { passphrase = ""; step = Step.entries[step.ordinal - 1] } }) {
+                        Text(stringResource(R.string.action_back))
+                    }
                 }
+                Text(if (escrow != null) escrow.name else stringResource(R.string.send_title), style = MaterialTheme.typography.titleLarge)
             }
-            Text(if (escrow != null) escrow.name else stringResource(R.string.send_title), style = MaterialTheme.typography.titleLarge)
+            org.elektronnet.mobile.ui.CoinBadge(NodeHost.activeCoinTicker)
         }
         if (escrow != null && step != Step.Done) Hint(stringResource(R.string.escrow_send_from))
         failure?.let { Text(stringResource(failureText(it)), color = MaterialTheme.colorScheme.error) }
@@ -340,7 +348,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
                     }
                 }
                 (amountState as? AmountState.Ok)?.takeIf { !max && !inFiat && Amount.unit != AmountUnit.Elek }?.let {
-                    Text("= " + Amount.formatIn(AmountUnit.Elek, it.lep) + " " + AmountUnit.Elek.symbol, color = MaterialTheme.colorScheme.primary)
+                    Text("= " + Amount.formatIn(AmountUnit.Elek, it.lep) + " " + Amount.symbolFor(AmountUnit.Elek, NodeHost.activeCoin), color = MaterialTheme.colorScheme.primary)
                 }
                 (if (max) spendable else (amountState as? AmountState.Ok)?.lep)?.let { lep ->
                     if (inFiat) {
@@ -573,7 +581,7 @@ fun SendScreen(initialUri: String?, onClose: () -> Unit, onDone: (String?) -> Un
 
 @Composable
 private fun elek(lep: Long): String =
-    Amount.displayWithUnit(lep) + if (Amount.unit != AmountUnit.Elek) " (= " + Amount.formatIn(AmountUnit.Elek, lep) + " " + AmountUnit.Elek.symbol + ")" else ""
+    Amount.displayWithUnit(lep) + if (Amount.unit != AmountUnit.Elek) " (= " + Amount.formatIn(AmountUnit.Elek, lep) + " " + Amount.symbolFor(AmountUnit.Elek, NodeHost.activeCoin) + ")" else ""
 
 @Composable
 private fun FiatLine(lep: Long) {

@@ -6,7 +6,7 @@ import org.elektronnet.mobile.policy.PolicyReason
 import org.elektronnet.mobile.runtime.Headline
 import org.elektronnet.mobile.runtime.RuntimeSnapshot
 
-enum class NodeTabState { UpToDate, CatchingUp, Paused, Starting, Stopping, Stopped, Problem }
+enum class NodeTabState { UpToDate, CatchingUp, ScanningWallet, Paused, Starting, Stopping, Stopped, Problem }
 
 data class NodeDetails(
     val chain: String,
@@ -29,6 +29,8 @@ data class NodeTabModel(
     val details: NodeDetails?,
     val detail: String? = null,
 ) {
+    val isScanningWallet: Boolean get() = state == NodeTabState.ScanningWallet
+
     companion object {
         fun from(snapshot: RuntimeSnapshot?, userPaused: Boolean): NodeTabModel {
             val headline = snapshot?.headline
@@ -48,9 +50,23 @@ data class NodeTabModel(
                     canStop = true,
                     details = details,
                 )
-                is Headline.Syncing -> model(
-                    NodeTabState.CatchingUp,
-                    percent = HomeUiModel.percent(headline.progress),
+                is Headline.Syncing -> {
+                    val p = if (details != null && details.headers > 0) {
+                        kotlin.math.round(details.blocks.toDouble() / details.headers.toDouble() * 100).toInt().coerceIn(0, 99)
+                    } else {
+                        HomeUiModel.percent(headline.progress)
+                    }
+                    model(
+                        NodeTabState.CatchingUp,
+                        percent = p,
+                        canPause = !userPaused,
+                        canStop = true,
+                        details = details,
+                    )
+                }
+                is Headline.ScanningWallet -> model(
+                    NodeTabState.ScanningWallet,
+                    percent = kotlin.math.round(headline.progress * 100).toInt().coerceIn(0, 100),
                     canPause = !userPaused,
                     canStop = true,
                     details = details,

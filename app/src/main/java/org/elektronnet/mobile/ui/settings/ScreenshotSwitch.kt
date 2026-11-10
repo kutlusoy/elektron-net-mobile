@@ -16,12 +16,13 @@ import androidx.fragment.app.FragmentActivity
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.ui.ScreenshotMode
 import org.elektronnet.mobile.ui.security.Biometric
+import org.elektronnet.mobile.ui.security.findFragmentActivity
 
 // turning screenshots on takes a warning and a fingerprint, face or device lock check, so it cannot happen by accident
 @Composable
 internal fun ScreenshotSwitch() {
     val context = LocalContext.current
-    val activity = LocalActivity.current as? FragmentActivity
+    val activity = (LocalActivity.current as? FragmentActivity) ?: context.findFragmentActivity()
     var asking by remember { mutableStateOf(false) }
     var unavailable by remember { mutableStateOf(false) }
     ToggleRow(R.string.settings_screenshots, R.string.settings_screenshots_hint, ScreenshotMode.allowed) { on ->

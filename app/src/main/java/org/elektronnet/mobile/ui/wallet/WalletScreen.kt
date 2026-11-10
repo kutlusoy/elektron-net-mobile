@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.elektronnet.mobile.R
 import org.elektronnet.mobile.node.NodeFailure
+import org.elektronnet.mobile.service.NodeHost
 import org.elektronnet.mobile.service.NodeNotification
+import org.elektronnet.mobile.ui.CoinBadge
 import org.elektronnet.mobile.ui.HeroCard
 import org.elektronnet.mobile.ui.NodeChipRow
 import org.elektronnet.mobile.ui.model.BalanceUi
@@ -54,21 +56,28 @@ fun WalletScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         HeroCard {
-            Text(
-                stringResource(R.string.wallet_title).uppercase(),
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                letterSpacing = 3.sp,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            ) {
+                Text(
+                    stringResource(R.string.wallet_title).uppercase(),
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    letterSpacing = 3.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                CoinBadge(NodeHost.activeCoinTicker)
+            }
             androidx.compose.material3.HorizontalDivider(modifier = Modifier.fillMaxWidth(0.25f), thickness = 2.dp, color = MaterialTheme.colorScheme.primary)
             Text(stringResource(R.string.balance_label), color = MaterialTheme.colorScheme.onSurfaceVariant)
             when {
                 balance?.amountText != null -> {
-                    val elek = "${balance.amountText} ${Amount.unitSymbol()}"
+                    val coinText = "${balance.amountText} ${Amount.unitSymbol()}"
                     val fiat = org.elektronnet.mobile.ui.theme.FiatState.text(balance.trustedLep)
-                    val main = if (fiat != null && org.elektronnet.mobile.ui.theme.FiatState.fiatIsMain) fiat else elek
+                    val main = if (fiat != null && org.elektronnet.mobile.ui.theme.FiatState.fiatIsMain) fiat else coinText
                     Text(main, style = MaterialTheme.typography.displaySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-                    val other = if (main == elek) fiat else elek
+                    val other = if (main == coinText) fiat else coinText
                     other?.let { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                     if (balance.reusedLep > 0) {
                         Text(stringResource(R.string.balance_reused, Amount.display(balance.reusedLep), Amount.unitSymbol()), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -92,11 +101,11 @@ fun WalletScreen(
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
             Button(onClick = onReceive, modifier = Modifier.weight(1f)) {
-                Text(stringResource(R.string.action_receive))
+                Text("${stringResource(R.string.action_receive)} ${NodeHost.activeCoinTicker}")
             }
             OutlinedButton(onClick = onSend, enabled = model.canSend, modifier = Modifier.weight(1f)) {
                 Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)
-                Text(stringResource(R.string.action_send), modifier = Modifier.padding(start = 8.dp))
+                Text("${stringResource(R.string.action_send)} ${NodeHost.activeCoinTicker}", modifier = Modifier.padding(start = 8.dp))
             }
         }
         androidx.compose.material3.TextButton(onClick = onOpenTools) { Text(stringResource(R.string.tools_open)) }
@@ -122,19 +131,27 @@ fun WalletScreen(
 }
 
 @Composable
-private fun SyncNoteView(note: SyncNote) {
+internal fun SyncNoteView(note: SyncNote, modifier: Modifier = Modifier) {
     val muted = MaterialTheme.colorScheme.onSurfaceVariant
     when (note) {
         is SyncNote.CatchingUp -> {
-            Text(stringResource(R.string.note_catching_up, note.percent), color = muted)
+            Text(stringResource(R.string.note_catching_up, note.percent), color = muted, modifier = modifier)
             LinearProgressIndicator(progress = { note.percent / 100f }, modifier = Modifier.fillMaxWidth())
         }
-        SyncNote.Starting -> Text(stringResource(R.string.note_starting), color = muted)
+        is SyncNote.ScanningWallet -> {
+            Text(stringResource(R.string.note_scanning_wallet, note.percent), color = muted, modifier = modifier)
+            LinearProgressIndicator(progress = { note.percent / 100f }, modifier = Modifier.fillMaxWidth())
+        }
+        SyncNote.Starting -> {
+            Text(stringResource(R.string.note_starting), color = muted, modifier = modifier)
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
         is SyncNote.Paused -> Text(
             stringResource(R.string.note_paused, stringResource(NodeNotification.reasonRes(note.reason))),
             color = muted,
+            modifier = modifier,
         )
-        SyncNote.Stopped -> Text(stringResource(R.string.note_stopped), color = muted)
+        SyncNote.Stopped -> Text(stringResource(R.string.note_stopped), color = muted, modifier = modifier)
         is SyncNote.Problem -> Text(
             stringResource(
                 when (note.failure) {
@@ -147,6 +164,7 @@ private fun SyncNoteView(note: SyncNote) {
                 },
             ),
             color = muted,
+            modifier = modifier,
         )
     }
 }

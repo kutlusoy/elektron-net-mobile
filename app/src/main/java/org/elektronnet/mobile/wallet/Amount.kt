@@ -16,10 +16,29 @@ object Amount {
     var unitProvider: () -> AmountUnit = { AmountUnit.Elek }
     val unit: AmountUnit get() = unitProvider()
 
+    var coinProvider: () -> String = { "ELEK" }
+    val currentCoin: String get() = coinProvider()
+
+    var testnetProvider: () -> Boolean = { false }
+
     var styleProvider: () -> NumberStyle = { NumberStyle.forLocale(java.util.Locale.getDefault()) }
     val numberStyle: NumberStyle get() = styleProvider()
 
-    fun unitSymbol(): String = unit.symbol
+    fun symbolFor(unit: AmountUnit, coin: String = currentCoin, isTestnet: Boolean = testnetProvider()): String {
+        val isBtc = coin.equals("BTC", ignoreCase = true)
+        return when (unit) {
+            AmountUnit.Elek -> if (isBtc) {
+                if (isTestnet) "tBTC" else "BTC"
+            } else {
+                if (isTestnet) "tELEK" else "ELEK"
+            }
+            AmountUnit.MilliElek -> if (isBtc) "mBTC" else "mELEK"
+            AmountUnit.Bit -> "bit"
+            AmountUnit.Lepton -> if (isBtc) "sat" else "lep"
+        }
+    }
+
+    fun unitSymbol(coin: String = currentCoin): String = symbolFor(unit, coin)
 
     fun parse(text: String, allowComma: Boolean = false): Long? = parseIn(AmountUnit.Elek, text, allowComma)
 
@@ -46,5 +65,5 @@ object Amount {
     // for text fields, the number is read back by parse
     fun plain(lep: Long): String = formatIn(unit, lep)
 
-    fun displayWithUnit(lep: Long): String = display(lep) + " " + unit.symbol
+    fun displayWithUnit(lep: Long, coin: String = currentCoin): String = display(lep) + " " + unitSymbol(coin)
 }

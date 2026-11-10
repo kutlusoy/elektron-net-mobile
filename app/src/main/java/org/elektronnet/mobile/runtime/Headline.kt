@@ -12,6 +12,7 @@ sealed interface Headline {
     data object Stopping : Headline
     data class Paused(val reasons: Set<PolicyReason>) : Headline
     data class Syncing(val blocks: Long, val headers: Long, val progress: Double, val peers: Long) : Headline
+    data class ScanningWallet(val progress: Double, val blocks: Long, val headers: Long, val peers: Long) : Headline
     data class Synchronized(val blocks: Long, val peers: Long) : Headline
     data class Connecting(val reasons: Set<PolicyReason>) : Headline
     data class Crashed(val failure: NodeFailure) : Headline
@@ -24,6 +25,7 @@ sealed interface Headline {
             state == NodeState.Starting -> Starting
             !decision.networkActive -> Paused(decision.reasons)
             status == null -> Connecting(decision.reasons)
+            status.walletScanningProgress != null -> ScanningWallet(status.walletScanningProgress, status.blocks, status.headers, status.connections)
             !status.initialBlockDownload && status.blocks >= status.headers - 1 -> Synchronized(status.blocks, status.connections)
             else -> Syncing(status.blocks, status.headers, status.verificationProgress, status.connections)
         }
