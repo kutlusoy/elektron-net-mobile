@@ -602,6 +602,11 @@
     <string name="fr_pass_body">Anda membutuhkan passphrase ini untuk mengirim koin. Ini bukan frasa pemulihan Anda dan tidak dapat memulihkan dompet Anda.</string>
     <string name="fr_pass_label">Passphrase</string>
     <string name="fr_pass_confirm">Ulangi passphrase</string>
+    <string name="fr_extra_switch">Gunakan kata seed tambahan, lanjutan</string>
+    <string name="fr_extra_warn_new">Opsional. Kata seed tambahan Anda ditambahkan ke frasa pemulihan. Tanpa kata itu tak seorang pun dapat membuka dompet ini, juga dengan kata-kata Anda. Untuk memulihkan diperlukan kata-kata dan kata seed tambahan. Tidak ada yang dapat memulihkannya untuk Anda. Bisa berupa teks apa pun, huruf besar dan kecil dibedakan. Tulis terpisah dari kata-kata.</string>
+    <string name="fr_extra_warn_restore">Masukkan kata seed tambahan yang Anda pakai saat membuat dompet ini. Kata seed tambahan yang salah membuka dompet lain yang kosong dan tidak menampilkan kesalahan.</string>
+    <string name="fr_extra_label">Kata seed tambahan Anda</string>
+    <string name="fr_extra_confirm">Ulangi kata seed tambahan Anda</string>
     <string name="fr_pass_short">Gunakan minimal %1$d karakter.</string>
     <string name="fr_pass_weak">Lemah. Lebih panjang lebih baik.</string>
     <string name="fr_pass_fair">Cukup.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Masukkan frasa pemulihan Anda</string>
     <string name="fr_restore_body">Masukkan 12 atau 24 kata Anda dipisahkan spasi.</string>
     <string name="fr_restore_invalid">Kata-kata ini bukan frasa pemulihan yang valid. Periksa ejaan dan urutan.</string>
+    <string name="fr_restore_count">%1$d kata</string>
+    <string name="fr_restore_unknown">"%1$s" tidak ada dalam daftar kata. Periksa ejaannya.</string>
     <string name="fr_err_node">Node Anda belum siap. Tunggu sebentar lalu coba lagi.</string>
     <string name="fr_err_exists">Dompet sudah ada di perangkat ini.</string>
     <string name="fr_err_recovery">Pemulihan belum tersedia dengan versi node ini.</string>

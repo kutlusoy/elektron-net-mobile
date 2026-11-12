@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,6 +67,7 @@ import org.elektronnet.mobile.wallet.DiceCheck
 import org.elektronnet.mobile.wallet.DiceIssue
 import org.elektronnet.mobile.wallet.EntropyGenerator
 import org.elektronnet.mobile.wallet.PhraseStrength
+import org.elektronnet.mobile.wallet.PhraseInput
 import org.elektronnet.mobile.wallet.SetupRequest
 import org.elektronnet.mobile.wallet.TouchEntropy
 import org.elektronnet.mobile.wallet.BootstrapFailure
@@ -85,6 +87,9 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
     var walletLabel by remember { mutableStateOf("") }
     val walletName = remember { if (addWallet) NodeHost.nextWalletName() else org.elektronnet.mobile.wallet.WalletBootstrap.DEFAULT_WALLET }
     var passphrase by remember { mutableStateOf("") }
+    var useExtra by remember { mutableStateOf(false) }
+    var extraWord by remember { mutableStateOf("") }
+    var extraConfirm by remember { mutableStateOf("") }
     var strength by remember { mutableStateOf(PhraseStrength.Words12) }
     var entropyError by remember { mutableStateOf(false) }
     val entropyGenerator = remember { EntropyGenerator() }
@@ -101,8 +106,11 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
     BackHandler(enabled = FirstRunFlow.back(state) != null || addWallet) { FirstRunFlow.back(state)?.let { state = it } ?: onCancel() }
 
     fun submit(recover: Boolean) {
-        NodeHost.beginSetup(SetupRequest(state.phrase, passphrase, recover, walletName), walletLabel)
+        NodeHost.beginSetup(SetupRequest(state.phrase, passphrase, recover, walletName, seedPassphrase = if (useExtra) extraWord else ""), walletLabel)
         passphrase = ""
+        extraWord = ""
+        extraConfirm = ""
+        useExtra = false
         state = state.copy(step = FirstRunStep.Done, phrase = emptyList())
         onFinished()
     }
@@ -223,6 +231,10 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
                         } else {
                             val words = bip39.fromEntropy(entropy)
                             entropy.fill(0)
+                            // new words, so an extra seed word typed for the earlier words is dropped
+                            useExtra = false
+                            extraWord = ""
+                            extraConfirm = ""
                             state = FirstRunFlow.next(state.copy(phrase = words))
                         }
                     },
@@ -283,6 +295,10 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
                         } else {
                             val words = bip39.fromEntropy(entropy)
                             entropy.fill(0)
+                            // new words, so an extra seed word typed for the earlier words is dropped
+                            useExtra = false
+                            extraWord = ""
+                            extraConfirm = ""
                             state = FirstRunFlow.next(state.copy(phrase = words))
                         }
                     },
@@ -336,6 +352,10 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
                         } else {
                             val words = bip39.fromEntropy(entropy)
                             entropy.fill(0)
+                            // new words, so an extra seed word typed for the earlier words is dropped
+                            useExtra = false
+                            extraWord = ""
+                            extraConfirm = ""
                             state = FirstRunFlow.next(state.copy(phrase = words))
                         }
                     },
@@ -359,7 +379,20 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
                         }
                     }
                 }
-                Button(onClick = { state = FirstRunFlow.next(state) }, modifier = Modifier.fillMaxWidth()) {
+                ExtraSeedWord(
+                    useExtra = useExtra,
+                    onUseExtra = { useExtra = it; if (!it) { extraWord = ""; extraConfirm = "" } },
+                    extra = extraWord,
+                    onExtra = { extraWord = it },
+                    confirm = extraConfirm,
+                    onConfirm = { extraConfirm = it },
+                    restore = false,
+                )
+                Button(
+                    onClick = { state = FirstRunFlow.next(state) },
+                    enabled = !useExtra || (extraWord.isNotEmpty() && extraWord == extraConfirm),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
                     Text(stringResource(R.string.fr_phrase_written))
                 }
             }
@@ -403,20 +436,45 @@ fun FirstRunScreen(onAllowMetered: (Boolean) -> Unit, onFinished: () -> Unit, ad
                 val valid = bip39.validate(words)
                 Text(stringResource(R.string.fr_restore_title), style = MaterialTheme.typography.headlineMedium)
                 Text(stringResource(R.string.fr_restore_body))
+                val unknown = PhraseInput.unknown(text, bip39)
+                val typing = PhraseInput.partial(text)
+                // like Electrum: the matching words of the list stand above the field, a fixed height keeps the field from jumping
+                val hints = bip39.suggestions(typing, 8)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().height(40.dp).horizontalScroll(rememberScrollState()),
+                ) {
+                    hints.forEach { word ->
+                        FilterChip(selected = false, onClick = { text = PhraseInput.complete(text, word) }, label = { Text(word) })
+                    }
+                }
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
                     minLines = 3,
-                    isError = words.size >= 12 && !valid,
+                    isError = unknown.isNotEmpty() || (words.size >= 12 && !valid),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     modifier = Modifier.fillMaxWidth(),
                 )
-                if (words.size >= 12 && !valid) {
+                Text(stringResource(R.string.fr_restore_count, words.size), style = MaterialTheme.typography.bodySmall)
+                if (unknown.isNotEmpty()) {
+                    Text(stringResource(R.string.fr_restore_unknown, unknown.first()), color = MaterialTheme.colorScheme.error)
+                } else if (words.size >= 12 && !valid) {
                     Text(stringResource(R.string.fr_restore_invalid), color = MaterialTheme.colorScheme.error)
                 }
+                ExtraSeedWord(
+                    useExtra = useExtra,
+                    onUseExtra = { useExtra = it; if (!it) { extraWord = ""; extraConfirm = "" } },
+                    extra = extraWord,
+                    onExtra = { extraWord = it },
+                    confirm = extraConfirm,
+                    onConfirm = { extraConfirm = it },
+                    restore = true,
+                )
                 Button(
                     onClick = { state = FirstRunFlow.next(state.copy(phrase = words)) },
-                    enabled = valid,
+                    enabled = valid && (!useExtra || extraWord.isNotEmpty()),
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.fr_continue)) }
             }
@@ -496,4 +554,41 @@ private fun failureText(failure: BootstrapFailure): Int = when (failure) {
     BootstrapFailure.WeakPassphrase -> R.string.fr_pass_weak
     BootstrapFailure.WrongPassphrase -> R.string.send_err_passphrase
     BootstrapFailure.ImportFailed, BootstrapFailure.Unknown -> R.string.fr_err_unknown
+}
+
+// the optional extra seed word (BIP 39 passphrase), asked next to the recovery words like in Electrum
+@Composable
+private fun ExtraSeedWord(
+    useExtra: Boolean,
+    onUseExtra: (Boolean) -> Unit,
+    extra: String,
+    onExtra: (String) -> Unit,
+    confirm: String,
+    onConfirm: (String) -> Unit,
+    restore: Boolean,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+        Text(stringResource(R.string.fr_extra_switch), modifier = Modifier.weight(1f))
+        Switch(checked = useExtra, onCheckedChange = onUseExtra)
+    }
+    if (useExtra) {
+        Text(stringResource(if (restore) R.string.fr_extra_warn_restore else R.string.fr_extra_warn_new), color = MaterialTheme.colorScheme.primary)
+        SecretField(
+            value = extra,
+            onValueChange = onExtra,
+            label = { Text(stringResource(R.string.fr_extra_label)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        if (!restore) SecretField(
+            value = confirm,
+            onValueChange = onConfirm,
+            label = { Text(stringResource(R.string.fr_extra_confirm)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            isError = confirm.isNotEmpty() && confirm != extra,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
 }

@@ -602,6 +602,11 @@
     <string name="fr_pass_body">تحتاج إلى عبارة المرور هذه لإرسال العملات. ليست عبارة الاسترداد ولا يمكنها استعادة محفظتك.</string>
     <string name="fr_pass_label">عبارة المرور</string>
     <string name="fr_pass_confirm">أعد كتابة عبارة المرور</string>
+    <string name="fr_extra_switch">استخدام كلمة بذرة إضافية، متقدم</string>
+    <string name="fr_extra_warn_new">اختياري. تُضاف كلمة البذرة الإضافية إلى عبارة الاسترداد. بدونها لا يمكن لأحد فتح هذه المحفظة حتى مع كلماتك. للاستعادة تحتاج الكلمات وكلمة البذرة الإضافية. لا يمكن لأحد استرجاعها لك. يمكن أن تكون أي نص، ويُفرَّق بين الأحرف الكبيرة والصغيرة. اكتبها بشكل منفصل عن الكلمات.</string>
+    <string name="fr_extra_warn_restore">أدخل كلمة البذرة الإضافية التي استخدمتها عند إنشاء هذه المحفظة. كلمة بذرة إضافية خاطئة تفتح محفظة مختلفة وفارغة دون أي خطأ.</string>
+    <string name="fr_extra_label">كلمة البذرة الإضافية الخاصة بك</string>
+    <string name="fr_extra_confirm">أعد كتابة كلمة البذرة الإضافية</string>
     <string name="fr_pass_short">استخدم %1$d أحرف على الأقل.</string>
     <string name="fr_pass_weak">ضعيفة. الأطول أفضل.</string>
     <string name="fr_pass_fair">مقبولة.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">أدخل عبارة الاسترداد</string>
     <string name="fr_restore_body">أدخل كلماتك الـ 12 أو الـ 24 مفصولة بمسافات.</string>
     <string name="fr_restore_invalid">هذه الكلمات ليست عبارة استرداد صالحة. تحقق من الإملاء والترتيب.</string>
+    <string name="fr_restore_count">%1$d كلمة</string>
+    <string name="fr_restore_unknown">"%1$s" ليست في قائمة الكلمات. تحقق من الإملاء.</string>
     <string name="fr_err_node">عقدتك ليست جاهزة بعد. انتظر قليلًا وحاول مرة أخرى.</string>
     <string name="fr_err_exists">توجد محفظة بالفعل على هذا الجهاز.</string>
     <string name="fr_err_recovery">الاستعادة غير متاحة بعد بهذا الإصدار من العقدة.</string>

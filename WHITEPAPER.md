@@ -101,6 +101,8 @@ Elektron Net keeps the last 197,280 blocks (about 137 days at one block a minute
 
 **Wallet**
 - **Create and restore:** BIP-39 phrase with true entropy, backup quiz, restore from phrase, and restore from a `wallet.dat` backup file. A backup without a passphrase gets one right away.
+- **Extra seed word:** an optional BIP 39 passphrase for a new or restored wallet. It is part of the keys, entered twice when creating and never stored, so the recovery phrase alone cannot open the wallet and the coins cannot be restored without it.
+- **Word help on restore:** matching words of the BIP 39 list are offered while the phrase is typed, unknown words are named and the checksum is checked before the restore can continue.
 - **Several wallets:** quick switch, rename, and removal after a confirmation (no passphrase, the files are overwritten and deleted). The wallet list follows what the node really holds.
 - **Send:** review-before-sign flow, fee presets from the node with a mempool explorer fallback, fee re-check before signing and payment links. A switch "Advanced payment" adds choosing coins, subtracting the fee from the amount, a custom fee rate and "Only create a PSBT" (signed or unsigned, as text, animated QR code, copy or share).
 - **Text in a block:** a text of up to 1,000 bytes can be written into the block with the payment as one `OP_RETURN` output. It is public, cleaned before signing and checked again after signing. Received texts show in the transaction details.

@@ -602,6 +602,11 @@
     <string name="fr_pass_body">코인을 보내려면 이 암호가 필요합니다. 복구 문구가 아니며 지갑을 복원할 수 없습니다.</string>
     <string name="fr_pass_label">암호</string>
     <string name="fr_pass_confirm">암호 다시 입력</string>
+    <string name="fr_extra_switch">추가 시드 단어 사용, 고급</string>
+    <string name="fr_extra_warn_new">선택 사항입니다. 추가 시드 단어는 복구 문구에 더해집니다. 이 단어가 없으면 단어가 있어도 아무도 이 지갑을 열 수 없습니다. 복원하려면 단어와 추가 시드 단어가 모두 필요하며, 아무도 대신 복구해 줄 수 없습니다. 어떤 텍스트든 가능하며 대소문자를 구분합니다. 단어와 따로 적어 두세요.</string>
+    <string name="fr_extra_warn_restore">이 지갑을 만들 때 사용한 추가 시드 단어를 입력하세요. 잘못된 추가 시드 단어는 다른 빈 지갑을 열며 오류가 표시되지 않습니다.</string>
+    <string name="fr_extra_label">내 추가 시드 단어</string>
+    <string name="fr_extra_confirm">추가 시드 단어 다시 입력</string>
     <string name="fr_pass_short">%1$d자 이상 사용하세요.</string>
     <string name="fr_pass_weak">약함. 더 길수록 좋습니다.</string>
     <string name="fr_pass_fair">보통.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">복구 문구 입력</string>
     <string name="fr_restore_body">12개 또는 24개의 단어를 공백으로 구분해 입력하세요.</string>
     <string name="fr_restore_invalid">올바른 복구 문구가 아닙니다. 철자와 순서를 확인하세요.</string>
+    <string name="fr_restore_count">%1$d개 단어</string>
+    <string name="fr_restore_unknown">"%1$s"은(는) 단어 목록에 없습니다. 철자를 확인하세요.</string>
     <string name="fr_err_node">노드가 아직 준비되지 않았습니다. 잠시 기다린 후 다시 시도하세요.</string>
     <string name="fr_err_exists">이 기기에 이미 지갑이 있습니다.</string>
     <string name="fr_err_recovery">이 버전의 노드에서는 아직 복원을 사용할 수 없습니다.</string>

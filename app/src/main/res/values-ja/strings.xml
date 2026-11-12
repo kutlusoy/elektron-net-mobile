@@ -602,6 +602,11 @@
     <string name="fr_pass_body">コインを送るにはこのパスフレーズが必要です。これはリカバリーフレーズではなく、ウォレットの復元には使えません。</string>
     <string name="fr_pass_label">パスフレーズ</string>
     <string name="fr_pass_confirm">パスフレーズを再入力</string>
+    <string name="fr_extra_switch">追加のシード単語を使う（上級者向け）</string>
+    <string name="fr_extra_warn_new">任意です。追加シード単語はリカバリーフレーズに加わります。これがないと、単語があっても誰もこのウォレットを開けません。復元には単語と追加シード単語の両方が必要で、誰も代わりに復元できません。任意の文字列で、大文字と小文字は区別されます。単語とは別に書き留めてください。</string>
+    <string name="fr_extra_warn_restore">このウォレットの作成時に使った追加シード単語を入力してください。間違えると、別の空のウォレットが開き、エラーは表示されません。</string>
+    <string name="fr_extra_label">あなたの追加シード単語</string>
+    <string name="fr_extra_confirm">追加シード単語を再入力</string>
     <string name="fr_pass_short">%1$d文字以上にしてください。</string>
     <string name="fr_pass_weak">弱い。長いほど安全です。</string>
     <string name="fr_pass_fair">普通。</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">リカバリーフレーズを入力</string>
     <string name="fr_restore_body">12個または24個の単語をスペースで区切って入力してください。</string>
     <string name="fr_restore_invalid">これらの単語は有効なリカバリーフレーズではありません。スペルと順序を確認してください。</string>
+    <string name="fr_restore_count">%1$d 単語</string>
+    <string name="fr_restore_unknown">"%1$s" は単語リストにありません。綴りを確認してください。</string>
     <string name="fr_err_node">ノードがまだ準備できていません。しばらく待ってからもう一度お試しください。</string>
     <string name="fr_err_exists">この端末にはすでにウォレットがあります。</string>
     <string name="fr_err_recovery">このバージョンのノードでは、復元はまだ利用できません。</string>

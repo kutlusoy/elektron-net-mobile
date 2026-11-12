@@ -602,6 +602,11 @@
     <string name="fr_pass_body">Vous avez besoin de cette phrase secrète pour envoyer des pièces. Ce n\'est pas votre phrase de récupération et elle ne peut pas restaurer votre portefeuille.</string>
     <string name="fr_pass_label">Phrase secrète</string>
     <string name="fr_pass_confirm">Répétez la phrase secrète</string>
+    <string name="fr_extra_switch">Utiliser un mot de graine supplémentaire, avancé</string>
+    <string name="fr_extra_warn_new">Facultatif. Votre mot de graine supplémentaire s\'ajoute à votre phrase de récupération. Sans lui, personne ne peut ouvrir ce portefeuille, même avec vos mots. Pour restaurer, il faut les mots et le mot de graine supplémentaire. Personne ne peut le récupérer pour vous. Ce peut être n\'importe quel texte, majuscules et minuscules comptent. Notez-le séparément des mots.</string>
+    <string name="fr_extra_warn_restore">Saisissez le mot de graine supplémentaire utilisé lors de la création de ce portefeuille. Un mauvais mot de graine ouvre un autre portefeuille vide et n\'affiche aucune erreur.</string>
+    <string name="fr_extra_label">Votre mot de graine supplémentaire</string>
+    <string name="fr_extra_confirm">Répétez votre mot de graine supplémentaire</string>
     <string name="fr_pass_short">Utilisez au moins %1$d caractères.</string>
     <string name="fr_pass_weak">Faible. Plus long, c\'est mieux.</string>
     <string name="fr_pass_fair">Correcte.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Saisissez votre phrase de récupération</string>
     <string name="fr_restore_body">Saisissez vos 12 ou 24 mots séparés par des espaces.</string>
     <string name="fr_restore_invalid">Ces mots ne forment pas une phrase de récupération valide. Vérifiez l\'orthographe et l\'ordre.</string>
+    <string name="fr_restore_count">%1$d mots</string>
+    <string name="fr_restore_unknown">"%1$s" n\'est pas dans la liste de mots. Vérifiez l\'orthographe.</string>
     <string name="fr_err_node">Votre nœud n\'est pas encore prêt. Patientez un instant et réessayez.</string>
     <string name="fr_err_exists">Un portefeuille existe déjà sur cet appareil.</string>
     <string name="fr_err_recovery">La restauration n\'est pas encore disponible avec cette version du nœud.</string>

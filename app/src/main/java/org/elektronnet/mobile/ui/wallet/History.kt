@@ -82,7 +82,7 @@ internal fun HistoryRowView(row: HistoryRow, onClick: () -> Unit) {
         Text(if (row.incoming) "↓" else "↑", style = MaterialTheme.typography.titleLarge)
         Column(modifier = Modifier.weight(1f)) {
             Text(stringResource(kindLabel(row.kind)))
-            val detail = listOfNotNull(row.subtitle, statusWord(row.status, row.confirmations)).joinToString("  ")
+            val detail = listOfNotNull(row.subtitle, statusWord(row.status, row.confirmations, row.confirmationsNeeded)).joinToString("  ")
             if (detail.isNotEmpty()) {
                 Text(detail, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
@@ -99,9 +99,9 @@ internal fun HistoryRowView(row: HistoryRow, onClick: () -> Unit) {
 }
 
 @Composable
-private fun statusWord(status: TxStatus, confirmations: Int): String? = when (status) {
+private fun statusWord(status: TxStatus, confirmations: Int, needed: Int): String? = when (status) {
     TxStatus.Pending -> stringResource(R.string.tx_pending)
-    TxStatus.Confirming -> stringResource(R.string.tx_confirming, confirmations, TxItem.CONFIRMED_AT)
+    TxStatus.Confirming -> stringResource(R.string.tx_confirming, minOf(confirmations, needed), needed)
     TxStatus.Confirmed -> null
     TxStatus.Conflicted -> stringResource(R.string.tx_conflicted)
     TxStatus.Abandoned -> stringResource(R.string.tx_abandoned)
@@ -131,7 +131,8 @@ fun TxDetailsScreen(item: TxItem, onClose: () -> Unit, onBumped: (String) -> Uni
         }
         val status = when (item.status) {
             TxStatus.Pending -> stringResource(R.string.tx_status_pending)
-            TxStatus.Confirming, TxStatus.Confirmed -> stringResource(R.string.tx_status_confirmed, item.confirmations)
+            TxStatus.Confirming -> if (item.immature) stringResource(R.string.tx_confirming, minOf(item.confirmations, item.confirmationsNeeded), item.confirmationsNeeded) else stringResource(R.string.tx_status_confirmed, item.confirmations)
+            TxStatus.Confirmed -> stringResource(R.string.tx_status_confirmed, item.confirmations)
             TxStatus.Conflicted -> stringResource(R.string.tx_conflicted)
             TxStatus.Abandoned -> stringResource(R.string.tx_abandoned)
         }

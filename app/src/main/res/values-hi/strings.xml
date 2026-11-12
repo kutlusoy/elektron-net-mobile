@@ -602,6 +602,11 @@
     <string name="fr_pass_body">कॉइन भेजने के लिए आपको इस पासफ़्रेज़ की ज़रूरत होगी। यह आपका रिकवरी फ़्रेज़ नहीं है और इससे आपका वॉलेट रिस्टोर नहीं हो सकता।</string>
     <string name="fr_pass_label">पासफ़्रेज़</string>
     <string name="fr_pass_confirm">पासफ़्रेज़ दोहराएँ</string>
+    <string name="fr_extra_switch">अतिरिक्त सीड शब्द उपयोग करें, उन्नत</string>
+    <string name="fr_extra_warn_new">वैकल्पिक। आपका अतिरिक्त सीड शब्द आपके रिकवरी वाक्यांश में जुड़ता है। इसके बिना कोई भी, आपके शब्दों के साथ भी, यह वॉलेट नहीं खोल सकता। बहाल करने के लिए शब्द और अतिरिक्त सीड शब्द दोनों चाहिए। कोई इसे आपके लिए वापस नहीं ला सकता। यह कोई भी टेक्स्ट हो सकता है, बड़े और छोटे अक्षर मायने रखते हैं। इसे शब्दों से अलग लिखें।</string>
+    <string name="fr_extra_warn_restore">वह अतिरिक्त सीड शब्द दर्ज करें जो इस वॉलेट को बनाते समय उपयोग किया था। गलत अतिरिक्त सीड शब्द एक अलग, खाली वॉलेट खोलता है और कोई त्रुटि नहीं दिखाता।</string>
+    <string name="fr_extra_label">आपका अतिरिक्त सीड शब्द</string>
+    <string name="fr_extra_confirm">अपना अतिरिक्त सीड शब्द दोहराएँ</string>
     <string name="fr_pass_short">कम से कम %1$d अक्षर इस्तेमाल करें।</string>
     <string name="fr_pass_weak">कमज़ोर। लंबा बेहतर है।</string>
     <string name="fr_pass_fair">ठीक-ठाक।</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">अपना रिकवरी फ़्रेज़ दर्ज करें</string>
     <string name="fr_restore_body">अपने 12 या 24 शब्द स्पेस से अलग करके दर्ज करें।</string>
     <string name="fr_restore_invalid">ये शब्द मान्य रिकवरी फ़्रेज़ नहीं हैं। वर्तनी और क्रम जाँचें।</string>
+    <string name="fr_restore_count">%1$d शब्द</string>
+    <string name="fr_restore_unknown">"%1$s" शब्द सूची में नहीं है। वर्तनी जाँचें।</string>
     <string name="fr_err_node">आपका नोड अभी तैयार नहीं है। थोड़ा रुकें और फिर कोशिश करें।</string>
     <string name="fr_err_exists">इस डिवाइस पर वॉलेट पहले से मौजूद है।</string>
     <string name="fr_err_recovery">नोड के इस संस्करण से रिस्टोर अभी उपलब्ध नहीं है।</string>

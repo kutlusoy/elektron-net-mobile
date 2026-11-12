@@ -602,6 +602,11 @@
     <string name="fr_pass_body">You need this passphrase to send coins. It is not your recovery phrase and cannot restore your wallet.</string>
     <string name="fr_pass_label">Passphrase</string>
     <string name="fr_pass_confirm">Repeat passphrase</string>
+    <string name="fr_extra_switch">Use an extra seed word, advanced</string>
+    <string name="fr_extra_warn_new">Optional. Your extra seed word is added to your recovery phrase. Without it nobody can open this wallet, even with your words. To restore you need the words and the extra seed word. Nobody can recover it for you. It can be any text, and upper and lower case count. Write it down separately from the words.</string>
+    <string name="fr_extra_warn_restore">Enter the extra seed word you used when you created this wallet. A wrong extra seed word opens a different, empty wallet and shows no error.</string>
+    <string name="fr_extra_label">Your extra seed word</string>
+    <string name="fr_extra_confirm">Repeat your extra seed word</string>
     <string name="fr_pass_short">Use at least %1$d characters.</string>
     <string name="fr_pass_weak">Weak. Longer is better.</string>
     <string name="fr_pass_fair">Fair.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Enter your recovery phrase</string>
     <string name="fr_restore_body">Enter your 12 or 24 words separated by spaces.</string>
     <string name="fr_restore_invalid">These words are not a valid recovery phrase. Check spelling and order.</string>
+    <string name="fr_restore_count">%1$d words</string>
+    <string name="fr_restore_unknown">"%1$s" is not in the word list. Check the spelling.</string>
     <string name="fr_err_node">Your node is not ready yet. Wait a moment and try again.</string>
     <string name="fr_err_exists">A wallet already exists on this device.</string>
     <string name="fr_err_recovery">Restoring is not available yet with this version of the node.</string>
@@ -707,7 +714,7 @@
     <string name="unit_lep" translatable="false">lepton (lep)</string>
     <string name="units_rates" translatable="false">1 ELEK = 1,000 mELEK\n1 ELEK = 1,000,000 bit\n1 ELEK = 100,000,000 lepton</string>
     <string name="about_license" translatable="false">MIT License</string>
-    <string name="about_developers" translatable="false">Elektron Net Developers\nAli Kutlusoy (X: @kutlusoy)\nMilio aka 1000mio (X: @spiroflex)</string>
+    <string name="about_developers" translatable="false">Elektron Net Developers\nAli Kutlusoy (X: @kutlusoy)\nMilio aka 1000io (X: @spiroflex)</string>
     <string name="history_page">Page %1$d of %2$d</string>
     <string name="history_prev">Newer</string>
     <string name="history_next">Older</string>

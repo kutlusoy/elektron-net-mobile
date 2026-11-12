@@ -3,7 +3,7 @@
 - **Version:** 0.1 (draft)
 - **Date:** October 20, 2026
 - **Audience:** Node developers, Android/Kotlin developers, security reviewers, wallet vendors that restore seeds on pruned nodes
-- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000io ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp` (`CWallet::ScanUTXOSet()`, `CWallet::CreditUTXOFromChain()`, `CWallet::AddToWallet()`), `native-build/patches/rescanutxoset.py` in this repository, `app/src/test/java/org/elektronnet/mobile/wallet/UtxoRecoveryIntegrationTest.kt`
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) §8.3 and open item X1, [`WHITEPAPER.md`](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 

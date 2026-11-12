@@ -3,7 +3,7 @@
 - **Version:** 0.1 (draft)
 - **Date:** October 21, 2026
 - **Audience:** Android and node developers, release engineers, testers who run the app as a relay
-- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000io ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/torcontrol.cpp`, `src/i2p.cpp`, `src/init.cpp` (arguments `-onion`, `-proxy`, `-torcontrol`, `-listenonion`, `-i2psam`, `-i2pacceptincoming`) and this repository: `app/src/main/java/org/elektronnet/mobile/node/` (`NetworkSettings.kt`, `NetworkArgs.kt`, `TorConfig.kt`, `I2pConfig.kt`, `ChildService.kt`, `NetworkServices.kt`), `native-build/fetch-helpers.sh`, `native-build/helpers/`
 - **Fork base:** [`tpo/core/tor`](https://gitlab.torproject.org/tpo/core/tor), [`PurpleI2P/i2pd`](https://github.com/PurpleI2P/i2pd)
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md) §4.1, §11.4, [`guideline-ux-and-screens.md`](./guideline-ux-and-screens.md) §6.5 and §6.6, [`guideline-distribution-and-signing.md`](./guideline-distribution-and-signing.md)

@@ -602,6 +602,11 @@
     <string name="fr_pass_body">Du brauchst diese Passphrase, um Coins zu senden. Sie ist nicht deine Recovery-Phrase und kann deine Wallet nicht wiederherstellen.</string>
     <string name="fr_pass_label">Passphrase</string>
     <string name="fr_pass_confirm">Passphrase wiederholen</string>
+    <string name="fr_extra_switch">Zusätzliches Seed-Wort verwenden, für Fortgeschrittene</string>
+    <string name="fr_extra_warn_new">Optional. Dein zusätzliches Seed-Wort wird zu deiner Recovery-Phrase hinzugefügt. Ohne es kann niemand diese Wallet öffnen, auch nicht mit deinen Wörtern. Zum Wiederherstellen brauchst du die Wörter und das zusätzliche Seed-Wort. Niemand kann es für dich wiederherstellen. Es kann ein beliebiger Text sein, Groß- und Kleinschreibung zählen. Schreibe es getrennt von den Wörtern auf.</string>
+    <string name="fr_extra_warn_restore">Gib das zusätzliche Seed-Wort ein, das du beim Erstellen dieser Wallet benutzt hast. Ein falsches zusätzliches Seed-Wort öffnet eine andere, leere Wallet und zeigt keinen Fehler.</string>
+    <string name="fr_extra_label">Dein zusätzliches Seed-Wort</string>
+    <string name="fr_extra_confirm">Zusätzliches Seed-Wort wiederholen</string>
     <string name="fr_pass_short">Verwende mindestens %1$d Zeichen.</string>
     <string name="fr_pass_weak">Schwach. Länger ist besser.</string>
     <string name="fr_pass_fair">Ordentlich.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Recovery-Phrase eingeben</string>
     <string name="fr_restore_body">Gib deine 12 oder 24 Wörter durch Leerzeichen getrennt ein.</string>
     <string name="fr_restore_invalid">Diese Wörter sind keine gültige Recovery-Phrase. Prüfe Schreibweise und Reihenfolge.</string>
+    <string name="fr_restore_count">%1$d Wörter</string>
+    <string name="fr_restore_unknown">"%1$s" steht nicht in der Wortliste. Prüfe die Schreibweise.</string>
     <string name="fr_err_node">Deine Node ist noch nicht bereit. Warte einen Moment und versuche es erneut.</string>
     <string name="fr_err_exists">Auf diesem Gerät existiert bereits eine Wallet.</string>
     <string name="fr_err_recovery">Die Wiederherstellung ist mit dieser Version der Node noch nicht verfügbar.</string>

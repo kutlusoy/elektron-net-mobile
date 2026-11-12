@@ -129,4 +129,33 @@ class WalletReaderTest {
         assertNull(HistoryModel.balance(null, true, false).amountText)
         assertNull(HistoryModel.balance(Balances(5, 0, 0), true, true).pendingText)
     }
+
+    @Test
+    fun anImmatureMiningRewardIsCountedAgainstTheCoinbaseMaturity() {
+        val tx = item("m", """[{"txid":"m","category":"immature","amount":5,"generated":true,"confirmations":4,"time":1}]""")
+        assertEquals(TxKind.Mined, tx.kind)
+        assertEquals(TxStatus.Confirming, tx.status)
+        assertEquals(100, tx.confirmationsNeeded)
+        assertEquals(100, HistoryModel.row(tx).confirmationsNeeded)
+    }
+
+    @Test
+    fun anImmatureRewardStaysConfirmingPastSixConfirmations() {
+        val tx = item("m", """[{"txid":"m","category":"immature","amount":5,"generated":true,"confirmations":60,"time":1}]""")
+        assertEquals(TxStatus.Confirming, tx.status)
+    }
+
+    @Test
+    fun aMatureMiningRewardIsConfirmed() {
+        val tx = item("m", """[{"txid":"m","category":"generate","amount":5,"generated":true,"confirmations":150,"time":1}]""")
+        assertEquals(TxStatus.Confirmed, tx.status)
+    }
+
+    @Test
+    fun anOrdinaryPaymentStillNeedsSix() {
+        val tx = item("p", """[{"txid":"p","category":"receive","amount":1,"confirmations":3,"time":1}]""")
+        assertEquals(TxStatus.Confirming, tx.status)
+        assertEquals(6, tx.confirmationsNeeded)
+    }
 }
+

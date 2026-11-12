@@ -602,6 +602,11 @@
     <string name="fr_pass_body">Necesitas esta frase de contraseña para enviar monedas. No es tu frase de recuperación y no puede restaurar tu monedero.</string>
     <string name="fr_pass_label">Frase de contraseña</string>
     <string name="fr_pass_confirm">Repite la frase de contraseña</string>
+    <string name="fr_extra_switch">Usar una palabra semilla extra, avanzado</string>
+    <string name="fr_extra_warn_new">Opcional. Tu palabra semilla extra se añade a tu frase de recuperación. Sin ella nadie puede abrir esta cartera, ni siquiera con tus palabras. Para restaurar necesitas las palabras y la palabra semilla extra. Nadie puede recuperarla por ti. Puede ser cualquier texto y se distingue entre mayúsculas y minúsculas. Anótala por separado de las palabras.</string>
+    <string name="fr_extra_warn_restore">Introduce la palabra semilla extra que usaste al crear esta cartera. Una palabra semilla extra incorrecta abre otra cartera vacía y no muestra ningún error.</string>
+    <string name="fr_extra_label">Tu palabra semilla extra</string>
+    <string name="fr_extra_confirm">Repite tu palabra semilla extra</string>
     <string name="fr_pass_short">Usa al menos %1$d caracteres.</string>
     <string name="fr_pass_weak">Débil. Mejor si es más larga.</string>
     <string name="fr_pass_fair">Aceptable.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Introduce tu frase de recuperación</string>
     <string name="fr_restore_body">Introduce tus 12 o 24 palabras separadas por espacios.</string>
     <string name="fr_restore_invalid">Estas palabras no son una frase de recuperación válida. Revisa la ortografía y el orden.</string>
+    <string name="fr_restore_count">%1$d palabras</string>
+    <string name="fr_restore_unknown">"%1$s" no está en la lista de palabras. Revisa la ortografía.</string>
     <string name="fr_err_node">Tu nodo aún no está listo. Espera un momento e inténtalo de nuevo.</string>
     <string name="fr_err_exists">Ya existe un monedero en este dispositivo.</string>
     <string name="fr_err_recovery">Con esta versión del nodo aún no se puede restaurar.</string>

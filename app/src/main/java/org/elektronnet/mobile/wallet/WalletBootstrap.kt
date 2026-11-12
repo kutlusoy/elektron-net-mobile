@@ -23,10 +23,12 @@ class WalletBootstrap(
     private val removeWalletFiles: (String) -> Unit,
     private val walletName: String = DEFAULT_WALLET,
 ) {
-    fun create(mnemonic: List<String>, passphrase: String): BootstrapResult =
-        run(mnemonic, passphrase, recover = false)
+    // seedPassphrase is the optional BIP 39 extra word (25th word), empty gives the seed of the plain recovery phrase
+    fun create(mnemonic: List<String>, passphrase: String, seedPassphrase: String = ""): BootstrapResult =
+        run(mnemonic, passphrase, recover = false, seedPassphrase)
 
-    fun recover(mnemonic: List<String>, passphrase: String): BootstrapResult = run(mnemonic, passphrase, recover = true)
+    fun recover(mnemonic: List<String>, passphrase: String, seedPassphrase: String = ""): BootstrapResult =
+        run(mnemonic, passphrase, recover = true, seedPassphrase)
 
     // an empty passphrase stands for a watch-only wallet, which has no keys to unlock
     fun rescan(passphrase: String): RescanOutcome {
@@ -110,7 +112,7 @@ class WalletBootstrap(
         return !help.contains("help: unknown command", ignoreCase = true)
     }
 
-    private fun run(mnemonic: List<String>, passphrase: String, recover: Boolean): BootstrapResult {
+    private fun run(mnemonic: List<String>, passphrase: String, recover: Boolean, seedPassphrase: String): BootstrapResult {
         if (!bip39.validate(mnemonic)) return BootstrapResult.Failed(BootstrapFailure.InvalidPhrase, "")
         if (!PassphraseCheck.acceptable(passphrase)) return BootstrapResult.Failed(BootstrapFailure.WeakPassphrase, "")
         var created = false
@@ -131,7 +133,7 @@ class WalletBootstrap(
             created = true
             rpc.call("walletpassphrase", listOf(passphrase, if (recover) RECOVERY_UNLOCK_SECONDS else CREATE_UNLOCK_SECONDS), walletName)
             unlocked = true
-            val master = Bip32.masterExtendedKey(Bip39.toSeed(mnemonic), testnet)
+            val master = Bip32.masterExtendedKey(Bip39.toSeed(mnemonic, seedPassphrase), testnet)
             val requests = Descriptors.forWallet(master, testnet, legacy).map { spec ->
                 val info = rpc.call("getdescriptorinfo", listOf(spec.descriptor), null) as Map<*, *>
                 val request = linkedMapOf<String, Any?>(

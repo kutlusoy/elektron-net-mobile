@@ -3,7 +3,7 @@
 - **Version:** 0.29 (draft)
 - **Date:** October 30, 2026
 - **Audience:** Users, testers and developers of the Elektron Net Android wallet
-- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000io ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) `src/wallet/wallet.cpp`, `src/validation.cpp`, `src/kernel/chainparams.cpp` (treat as ground truth for node behavior)
 - **See also:** [`doc-elektron/guideline-mobile-fullnode-wallet-plan.md`](./doc-elektron/guideline-mobile-fullnode-wallet-plan.md), [`doc-elektron/guideline-ui-design-system.md`](./doc-elektron/guideline-ui-design-system.md), [`doc-elektron/guideline-distribution-and-signing.md`](./doc-elektron/guideline-distribution-and-signing.md), [`doc-elektron/guideline-tor-and-i2p.md`](./doc-elektron/guideline-tor-and-i2p.md), [`doc-elektron/CHANGELOG-Release-m0.2.0.md`](./doc-elektron/CHANGELOG-Release-m0.2.0.md), [`WHITEPAPER.md`](./WHITEPAPER.md), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum), [`WHITEPAPER.md` of the node](https://github.com/kutlusoy/elektron-net/blob/main/WHITEPAPER.md)
 
@@ -26,6 +26,7 @@
 - Escrow wallets (M of N multisig, for example 2 of 3 with an arbiter), PSBT tools to check, sign, combine and send payment files, key sweep like in Electrum, and message signing and verification.
 - Several wallets with a quick switch. Removing a wallet asks for a confirmation that you have its recovery phrase and needs no passphrase: the node unloads the wallet, its files are overwritten and deleted from the phone, and the removal only counts as done when the node no longer lists it. Review-before-sign transaction flow (PSBT), fee policy re-check before signing, optional "subtract fee from amount", coin control (choose and freeze coins), address labels, QR receive and scan.
 - No address reuse by default: fresh receive and change addresses, and coins that arrive on an already spent address are kept out of automatic spending (shown separately, spendable on purpose).
+- Optional extra seed word (a BIP 39 passphrase) when a wallet is created or restored, entered twice when creating and never stored. It is part of the keys, so the recovery phrase alone cannot open the wallet, and without it the coins cannot be restored. Wallets without an extra seed word are unchanged. While a phrase is typed for a restore, matching words of the word list are offered above the field, like in Electrum.
 - A new passphrase needs at least 10 characters and a fair or strong rating, very common passwords and plain runs are refused. Existing passphrases keep working.
 - Complete transaction history per wallet, 10 per page newest first, with search across everything, filters and CSV export; speed up a waiting payment with fee bump (RBF) when you sent it, or with CPFP when it is incoming.
 - Address book (local, shared by all wallets), public descriptor export, an encrypted wallet file export and a restore from a `wallet.dat` backup through the system file picker. A restored file without a passphrase gets one right away, and is discarded if you cancel.
@@ -189,7 +190,7 @@ The full requirement list is in plan section 9.
 
 - **Elektron Net Developers:** development of the app and the node integration.
 - **Ali Kutlusoy, X [@kutlusoy](https://x.com/kutlusoy):** founder of Elektron Net and lead of this app.
-- **Milio aka 1000mio, X [@spiroflex](https://x.com/spiroflex) 🇪🇸 (Spain):** co-author and the originator of the idea for this successor app.
+- **Milio aka 1000io, X [@spiroflex](https://x.com/spiroflex) 🇪🇸 (Spain):** co-author and the originator of the idea for this successor app.
 
 ## 11. Links
 
@@ -200,4 +201,4 @@ The full requirement list is in plan section 9.
 
 ## 12. License
 
-Released under the [MIT License](./LICENSE). Copyright (c) 2026 Elektron Net Developers, Ali Kutlusoy (@kutlusoy) and Milio aka 1000mio (@spiroflex). The app is called "Elektron" (mainnet) and "Elektron (T)" (testnet). This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries, each under its own license. Review the upstream licenses before redistribution.
+Released under the [MIT License](./LICENSE). Copyright (c) 2026 Elektron Net Developers, Ali Kutlusoy (@kutlusoy) and Milio aka 1000io (@spiroflex). The app is called "Elektron" (mainnet) and "Elektron (T)" (testnet). This project builds and bundles software from Elektron Net and uses third-party Android and Kotlin libraries, each under its own license. Review the upstream licenses before redistribution.

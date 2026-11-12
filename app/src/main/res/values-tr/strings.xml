@@ -602,6 +602,11 @@
     <string name="fr_pass_body">Para göndermek için bu parolaya ihtiyacınız var. Kurtarma ifadeniz değildir ve cüzdanınızı geri yükleyemez.</string>
     <string name="fr_pass_label">Parola</string>
     <string name="fr_pass_confirm">Parolayı tekrarlayın</string>
+    <string name="fr_extra_switch">Ek seed kelimesi kullan, gelişmiş</string>
+    <string name="fr_extra_warn_new">İsteğe bağlı. Ek seed kelimeniz kurtarma ifadenize eklenir. O olmadan kimse, kelimelerinizle bile bu cüzdanı açamaz. Geri yüklemek için kelimeler ve ek seed kelimesi gerekir. Kimse onu sizin için kurtaramaz. Herhangi bir metin olabilir, büyük ve küçük harf fark eder. Kelimelerden ayrı yazın.</string>
+    <string name="fr_extra_warn_restore">Bu cüzdanı oluştururken kullandığınız ek seed kelimesini girin. Yanlış ek seed kelimesi başka, boş bir cüzdan açar ve hata göstermez.</string>
+    <string name="fr_extra_label">Ek seed kelimeniz</string>
+    <string name="fr_extra_confirm">Ek seed kelimenizi tekrarlayın</string>
     <string name="fr_pass_short">En az %1$d karakter kullanın.</string>
     <string name="fr_pass_weak">Zayıf. Daha uzunu daha iyi.</string>
     <string name="fr_pass_fair">Orta.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Kurtarma ifadenizi girin</string>
     <string name="fr_restore_body">12 veya 24 kelimenizi boşlukla ayırarak girin.</string>
     <string name="fr_restore_invalid">Bu kelimeler geçerli bir kurtarma ifadesi değil. Yazımı ve sırayı kontrol edin.</string>
+    <string name="fr_restore_count">%1$d kelime</string>
+    <string name="fr_restore_unknown">"%1$s" kelime listesinde yok. Yazımı kontrol edin.</string>
     <string name="fr_err_node">Düğümünüz henüz hazır değil. Biraz bekleyip tekrar deneyin.</string>
     <string name="fr_err_exists">Bu cihazda zaten bir cüzdan var.</string>
     <string name="fr_err_recovery">Düğümün bu sürümüyle geri yükleme henüz kullanılamıyor.</string>

@@ -602,6 +602,11 @@
     <string name="fr_pass_body">Você precisa desta passphrase para enviar moedas. Ela não é sua frase de recuperação e não restaura sua carteira.</string>
     <string name="fr_pass_label">Passphrase</string>
     <string name="fr_pass_confirm">Repita a passphrase</string>
+    <string name="fr_extra_switch">Usar uma palavra seed extra, avançado</string>
+    <string name="fr_extra_warn_new">Opcional. Sua palavra seed extra é somada à frase de recuperação. Sem ela ninguém abre esta carteira, nem com as suas palavras. Para restaurar você precisa das palavras e da palavra seed extra. Ninguém pode recuperá-la por você. Pode ser qualquer texto, e maiúsculas e minúsculas contam. Anote-a separada das palavras.</string>
+    <string name="fr_extra_warn_restore">Digite a palavra seed extra usada ao criar esta carteira. Uma palavra seed extra errada abre outra carteira vazia e não mostra nenhum erro.</string>
+    <string name="fr_extra_label">Sua palavra seed extra</string>
+    <string name="fr_extra_confirm">Repita sua palavra seed extra</string>
     <string name="fr_pass_short">Use pelo menos %1$d caracteres.</string>
     <string name="fr_pass_weak">Fraca. Quanto mais longa, melhor.</string>
     <string name="fr_pass_fair">Razoável.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Digite sua frase de recuperação</string>
     <string name="fr_restore_body">Digite suas 12 ou 24 palavras separadas por espaços.</string>
     <string name="fr_restore_invalid">Estas palavras não formam uma frase de recuperação válida. Verifique a grafia e a ordem.</string>
+    <string name="fr_restore_count">%1$d palavras</string>
+    <string name="fr_restore_unknown">"%1$s" não está na lista de palavras. Verifique a ortografia.</string>
     <string name="fr_err_node">Seu nó ainda não está pronto. Aguarde um momento e tente novamente.</string>
     <string name="fr_err_exists">Já existe uma carteira neste dispositivo.</string>
     <string name="fr_err_recovery">A restauração ainda não está disponível com esta versão do nó.</string>

@@ -3,7 +3,7 @@
 - **Version:** 0.7 (draft)
 - **Date:** October 19, 2026
 - **Audience:** Release engineers, Android developers, maintainers who operate store accounts and signing keys
-- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000mio ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
+- **Authors:** Elektron Net Developers, Ali Kutlusoy ([@kutlusoy](https://x.com/kutlusoy)), Milio aka 1000io ([@spiroflex](https://x.com/spiroflex)) 🇪🇸
 - **Reference implementation:** `app/build.gradle.kts` product flavors and `native-build/` in this repository (to be created), [F-Droid Build Metadata Reference](https://f-droid.org/docs/Build_Metadata_Reference/), [Reproducible Builds](https://f-droid.org/docs/Reproducible_Builds/)
 - **Related repositories:** [`elektron-net`](https://github.com/kutlusoy/elektron-net) (node source), [`elektron-net-electrum`](https://github.com/kutlusoy/elektron-net-electrum)
 - **See also:** [`guideline-mobile-fullnode-wallet-plan.md`](./guideline-mobile-fullnode-wallet-plan.md), [`guideline-ui-design-system.md`](./guideline-ui-design-system.md)
@@ -130,6 +130,7 @@ Any channel that accepts a signed APK (alternative stores, Obtainium style updat
 Google has announced that apps installed on certified Android devices must come from verified developers, including apps outside Play. Reported timeline: regional enforcement from September 2026 (Brazil, Indonesia, Singapore, Thailand), wider rollout from 2027, and the registration of package name and signing key.
 
 - **MUST (release engineering):** register the developer identity and the package names (`org.elektronnet.mobile`, `org.elektronnet.mobiletestnet`, plus nightly if needed) and the signing key as soon as the program is available to the maintainers, and re-check the rules before every release. Reported dates come from third-party coverage and can change, so confirm against the official Android developer documentation.
+- The registration steps, the fingerprint format and the proof of ownership (the file `app/src/main/assets/adi-registration.properties` in the release APK) are described in `guideline-release-signing.md` section 5.
 - Install through `adb` stays available for developers and testers.
 - This applies to every channel, so it does not change the build, only the release checklist.
 

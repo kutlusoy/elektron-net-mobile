@@ -602,6 +602,11 @@
     <string name="fr_pass_body">Эта парольная фраза нужна для отправки монет. Это не фраза восстановления, и она не может восстановить ваш кошелёк.</string>
     <string name="fr_pass_label">Парольная фраза</string>
     <string name="fr_pass_confirm">Повторите парольную фразу</string>
+    <string name="fr_extra_switch">Использовать дополнительное слово seed, для опытных</string>
+    <string name="fr_extra_warn_new">Необязательно. Ваше дополнительное слово seed добавляется к фразе восстановления. Без него никто не сможет открыть этот кошелёк, даже со словами. Для восстановления нужны слова и дополнительное слово seed. Никто не сможет вернуть его за вас. Это может быть любой текст, регистр учитывается. Запишите его отдельно от слов.</string>
+    <string name="fr_extra_warn_restore">Введите дополнительное слово seed, использованное при создании этого кошелька. Неверное слово откроет другой, пустой кошелёк и не покажет ошибку.</string>
+    <string name="fr_extra_label">Ваше дополнительное слово seed</string>
+    <string name="fr_extra_confirm">Повторите дополнительное слово seed</string>
     <string name="fr_pass_short">Используйте не менее %1$d символов.</string>
     <string name="fr_pass_weak">Слабая. Чем длиннее, тем лучше.</string>
     <string name="fr_pass_fair">Средняя.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Введите фразу восстановления</string>
     <string name="fr_restore_body">Введите 12 или 24 слова через пробел.</string>
     <string name="fr_restore_invalid">Эти слова не образуют допустимую фразу восстановления. Проверьте написание и порядок.</string>
+    <string name="fr_restore_count">Слов: %1$d</string>
+    <string name="fr_restore_unknown">«%1$s» нет в списке слов. Проверьте написание.</string>
     <string name="fr_err_node">Нода ещё не готова. Подождите немного и повторите.</string>
     <string name="fr_err_exists">На этом устройстве уже есть кошелёк.</string>
     <string name="fr_err_recovery">Восстановление пока недоступно в этой версии ноды.</string>

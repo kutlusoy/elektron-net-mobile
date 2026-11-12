@@ -107,4 +107,22 @@ class Bip39Test {
         assertTrue(PassphraseCheck.acceptable("Tr0ub4dor&3x"))
         assertTrue(PassphraseCheck.acceptable("blue-kettle-moves-slowly"))
     }
+
+    @Test
+    fun anEmptyExtraWordGivesTheSeedOfThePlainPhrase() {
+        val phrase = Bip39.parse("legal winner thank year wave sausage worth useful legal winner thank yellow")
+        assertEquals(Bip39.toSeed(phrase).toHex(), Bip39.toSeed(phrase, "").toHex())
+    }
+
+    @Test
+    fun anExtraWordChangesTheSeedAndTheMasterKey() {
+        val phrase = Bip39.parse("legal winner thank year wave sausage worth useful legal winner thank yellow")
+        val plain = Bip39.toSeed(phrase)
+        val extra = Bip39.toSeed(phrase, "my extra word")
+        assertFalse(plain.toHex() == extra.toHex())
+        assertFalse(Bip32.masterExtendedKey(plain, testnet = false) == Bip32.masterExtendedKey(extra, testnet = false))
+        assertEquals(extra.toHex(), Bip39.toSeed(phrase, "my extra word").toHex())
+        assertFalse(extra.toHex() == Bip39.toSeed(phrase, "My extra word").toHex())
+    }
 }
+

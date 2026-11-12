@@ -602,6 +602,11 @@
     <string name="fr_pass_body">Ti serve questa passphrase per inviare coin. Non è la tua recovery phrase e non può ripristinare il tuo wallet.</string>
     <string name="fr_pass_label">Passphrase</string>
     <string name="fr_pass_confirm">Ripeti la passphrase</string>
+    <string name="fr_extra_switch">Usa una parola seed extra, avanzato</string>
+    <string name="fr_extra_warn_new">Facoltativo. La tua parola seed extra si aggiunge alla frase di recupero. Senza di essa nessuno può aprire questo portafoglio, nemmeno con le tue parole. Per ripristinare servono le parole e la parola seed extra. Nessuno può recuperarla per te. Può essere un testo qualsiasi, maiuscole e minuscole contano. Scrivila separata dalle parole.</string>
+    <string name="fr_extra_warn_restore">Inserisci la parola seed extra usata quando hai creato questo portafoglio. Una parola seed extra sbagliata apre un altro portafoglio vuoto e non mostra alcun errore.</string>
+    <string name="fr_extra_label">La tua parola seed extra</string>
+    <string name="fr_extra_confirm">Ripeti la tua parola seed extra</string>
     <string name="fr_pass_short">Usa almeno %1$d caratteri.</string>
     <string name="fr_pass_weak">Debole. Meglio più lunga.</string>
     <string name="fr_pass_fair">Discreta.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Inserisci la tua recovery phrase</string>
     <string name="fr_restore_body">Inserisci le tue 12 o 24 parole separate da spazi.</string>
     <string name="fr_restore_invalid">Queste parole non sono una recovery phrase valida. Controlla ortografia e ordine.</string>
+    <string name="fr_restore_count">%1$d parole</string>
+    <string name="fr_restore_unknown">"%1$s" non è nella lista delle parole. Controlla l\'ortografia.</string>
     <string name="fr_err_node">Il tuo nodo non è ancora pronto. Attendi un attimo e riprova.</string>
     <string name="fr_err_exists">Su questo dispositivo esiste già un wallet.</string>
     <string name="fr_err_recovery">Il ripristino non è ancora disponibile con questa versione del nodo.</string>

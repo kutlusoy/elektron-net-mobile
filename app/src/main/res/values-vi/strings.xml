@@ -602,6 +602,11 @@
     <string name="fr_pass_body">Bạn cần passphrase này để gửi coin. Nó không phải là cụm từ khôi phục và không thể khôi phục ví của bạn.</string>
     <string name="fr_pass_label">Passphrase</string>
     <string name="fr_pass_confirm">Nhập lại passphrase</string>
+    <string name="fr_extra_switch">Dùng từ seed bổ sung, nâng cao</string>
+    <string name="fr_extra_warn_new">Tùy chọn. Từ seed bổ sung của bạn được thêm vào cụm từ khôi phục. Không có nó, không ai mở được ví này, kể cả khi có các từ của bạn. Để khôi phục cần cả các từ và từ seed bổ sung. Không ai khôi phục nó giúp bạn. Có thể là văn bản bất kỳ, phân biệt chữ hoa và chữ thường. Hãy ghi riêng, tách khỏi các từ.</string>
+    <string name="fr_extra_warn_restore">Nhập từ seed bổ sung bạn đã dùng khi tạo ví này. Từ seed bổ sung sai sẽ mở một ví khác, trống, và không báo lỗi.</string>
+    <string name="fr_extra_label">Từ seed bổ sung của bạn</string>
+    <string name="fr_extra_confirm">Nhập lại từ seed bổ sung</string>
     <string name="fr_pass_short">Dùng ít nhất %1$d ký tự.</string>
     <string name="fr_pass_weak">Yếu. Dài hơn thì tốt hơn.</string>
     <string name="fr_pass_fair">Trung bình.</string>
@@ -614,6 +619,8 @@
     <string name="fr_restore_title">Nhập cụm từ khôi phục của bạn</string>
     <string name="fr_restore_body">Nhập 12 hoặc 24 từ của bạn, cách nhau bằng dấu cách.</string>
     <string name="fr_restore_invalid">Các từ này không phải là cụm từ khôi phục hợp lệ. Hãy kiểm tra chính tả và thứ tự.</string>
+    <string name="fr_restore_count">%1$d từ</string>
+    <string name="fr_restore_unknown">"%1$s" không có trong danh sách từ. Kiểm tra chính tả.</string>
     <string name="fr_err_node">Node của bạn chưa sẵn sàng. Hãy đợi một lát rồi thử lại.</string>
     <string name="fr_err_exists">Đã có một ví trên thiết bị này.</string>
     <string name="fr_err_recovery">Chưa thể khôi phục với phiên bản node này.</string>

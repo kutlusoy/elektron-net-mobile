@@ -25,12 +25,19 @@ data class TxItem(
             abandoned -> TxStatus.Abandoned
             confirmations < 0 -> TxStatus.Conflicted
             confirmations == 0 -> TxStatus.Pending
+            // a mining reward is spendable only after COINBASE_MATURITY blocks, the node says when with its immature category
+            immature -> TxStatus.Confirming
             confirmations < CONFIRMED_AT -> TxStatus.Confirming
             else -> TxStatus.Confirmed
         }
 
+    // the number of confirmations the status is counted against
+    val confirmationsNeeded: Int get() = if (immature || kind == TxKind.Mined) COINBASE_MATURITY else CONFIRMED_AT
+
     companion object {
         const val CONFIRMED_AT = 6
+        // consensus: a mining reward cannot be spent before 100 blocks are on top of it
+        const val COINBASE_MATURITY = 100
     }
 }
 
