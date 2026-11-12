@@ -107,19 +107,34 @@ Switching a device from a test build to a release build is a fresh install, beca
 
 ## 5. Android Developer Verification
 
-Google is introducing a verification of developers for apps installed on certified Android devices, also for apps outside Google Play. Check the current rules and dates in the Android Developer Console documentation before you register, they change.
+Google is introducing a verification of developers for apps installed on certified Android devices, also for apps outside Google Play. Check the current rules and dates in the Android Developer Console documentation before you register, they change. The registration is described on [Register Android package names](https://support.google.com/googleplay/android-developer/answer/16761053) (the German page is machine translated, read the English one when in doubt).
 
 - A personal account is enough. Distribution through Google Play is not required, so the restriction of Play on wallet apps for organizations does not apply.
-- Register the package names `org.elektronnet.mobile` (mainnet) and the testnet variant, each with the SHA-256 fingerprint of the release certificate from §2.
-- Do not register the public test key and do not register the `.nightly` application ID of the pre-releases.
+- Register the package names `org.elektronnet.mobile` (mainnet) and `org.elektronnet.mobiletestnet`, one after the other, each with the SHA-256 fingerprint of the release certificate from §2. The console accepts the fingerprint with colons, as `keytool` prints it.
+- Do not register the public test key and do not register the `.nightly` or `.debug` application IDs.
 - Keep the release key unchanged for the lifetime of the app. A key change requires Android key rotation and a new registration.
 - Keep the account and its identity documents up to date. A lapsed verification can block installs on certified devices.
+
+### 5.1 Steps in the Play Console
+
+1. Open "Identity verification for Android developers", tab "Packages", and choose "Register package name".
+2. Enter the package name and a friendly name, then continue.
+3. A package name that was never used on Android needs only the public certificate: choose "Add key", enter the SHA-256 fingerprint and confirm.
+4. A package name that already has installations shows a list of permitted fingerprints. Choose the release fingerprint, or ask Google for an exception with a reason if it is not listed.
+5. The console then asks for a proof of ownership: an APK signed with the private release key that contains the identifier of the account (the snippet). The uploaded APK is only used to check the key, it is not published.
+
+### 5.2 Proof of ownership with the release APK
+
+- The snippet is stored in `app/src/main/assets/adi-registration.properties` of this repository. The file name is fixed, and the content is the snippet that the console shows. Both flavors share the `assets` folder, so one file covers both package names when the console shows the same snippet for both. If the snippets differ, keep the mainnet snippet in `app/src/main/assets/` and put the testnet snippet in `app/src/tnet/assets/adi-registration.properties`, which replaces it for the testnet build.
+- Any release APK built by the `release` workflow contains the file and is signed with the release key, so the APK of a normal release can be uploaded in the console under "Upload". Android checks the signature and registers the ownership.
+- The snippet identifies the account and is not a secret. Whether the file may be removed again after the registration is not stated on the Google page, so it stays in the repository.
+- When the console shows an upload dialog for the second package name, upload the testnet APK of the same release.
 
 ## 6. Checklist
 
 - [ ] Release keystore created offline (§2), two backups stored
 - [ ] Certificate fingerprint noted and added to README and website
 - [ ] Repository secrets set (§3)
-- [ ] Package names registered with the fingerprint (§5)
+- [ ] Package names registered with the fingerprint (§5.1), proof of ownership uploaded when the console asks for it (§5.2)
 - [ ] First release run green, fingerprint in the notes matches
 - [ ] Update from the first release to the next one tested on a device

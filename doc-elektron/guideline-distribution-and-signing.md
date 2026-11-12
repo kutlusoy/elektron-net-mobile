@@ -130,6 +130,7 @@ Any channel that accepts a signed APK (alternative stores, Obtainium style updat
 Google has announced that apps installed on certified Android devices must come from verified developers, including apps outside Play. Reported timeline: regional enforcement from September 2026 (Brazil, Indonesia, Singapore, Thailand), wider rollout from 2027, and the registration of package name and signing key.
 
 - **MUST (release engineering):** register the developer identity and the package names (`org.elektronnet.mobile`, `org.elektronnet.mobiletestnet`, plus nightly if needed) and the signing key as soon as the program is available to the maintainers, and re-check the rules before every release. Reported dates come from third-party coverage and can change, so confirm against the official Android developer documentation.
+- The registration steps, the fingerprint format and the proof of ownership (the file `app/src/main/assets/adi-registration.properties` in the release APK) are described in `guideline-release-signing.md` section 5.
 - Install through `adb` stays available for developers and testers.
 - This applies to every channel, so it does not change the build, only the release checklist.
 
