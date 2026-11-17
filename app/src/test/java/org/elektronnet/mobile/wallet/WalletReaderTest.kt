@@ -3,13 +3,30 @@ package org.elektronnet.mobile.wallet
 import java.time.ZoneId
 import org.elektronnet.mobile.node.Json
 import org.elektronnet.mobile.ui.model.HistoryModel
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class WalletReaderTest {
+    // The assertions spell decimals with a dot, so the test must not depend on
+    // the machine's locale (a German JVM would format 0,50000001).
+    private var style: (() -> NumberStyle)? = null
+
+    @Before
+    fun usePointDecimals() {
+        style = Amount.styleProvider
+        val us = NumberStyle.forLocale(java.util.Locale.US)
+        Amount.styleProvider = { us }
+    }
+
+    @After
+    fun restoreNumberStyle() {
+        style?.let { Amount.styleProvider = it }
+    }
     private fun entries(json: String): List<TxItem> =
         WalletReader.group((Json.parse(json) as List<*>).map { it as Map<*, *> })
 
