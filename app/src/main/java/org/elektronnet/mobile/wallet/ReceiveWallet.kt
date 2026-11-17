@@ -29,13 +29,25 @@ class ReceiveWallet(
     }
 
     private fun fixedAddress(): String? = runCatching {
-        ((rpc.call("listdescriptors", emptyList<Any?>(), walletName) as Map<*, *>)["descriptors"] as List<*>)
-            .firstNotNullOfOrNull { Regex("""^addr\(([^)]+)\)""").find((it as Map<*, *>)["desc"].toString())?.groupValues?.get(1) }
+        val descriptors = ((rpc.call("listdescriptors", emptyList<Any?>(), walletName) as Map<*, *>)["descriptors"] as List<*>)
+            .mapNotNull { (it as? Map<*, *>)?.get("desc")?.toString() }
+
+        // 1. Check if there's an explicit addr(...) descriptor (watch-only address)
+        descriptors.firstNotNullOfOrNull { desc ->
+            Regex("""^addr\(([^)]+)\)""").find(desc)?.groupValues?.get(1)
+        } ?: run {
+            // 2. Check for single-key non-ranged descriptors (e.g. wpkh, pkh, sh without "/*")
+            val nonRanged = descriptors.filter { !it.contains("/*") }
+            val targetDesc = nonRanged.firstOrNull { it.startsWith("wpkh(") } ?: nonRanged.firstOrNull()
+            targetDesc?.let { desc ->
+                (rpc.call("deriveaddresses", listOf(desc), walletName) as? List<*>)?.firstOrNull()?.toString()
+            }
+        }
     }.getOrNull()
 
     private fun hasReceived(address: String): Boolean = try {
-        (rpc.call("getreceivedbyaddress", listOf(address, 0), walletName) as? Number)?.toDouble()?.let { it > 0.0 } ?: true
+        (rpc.call("getreceivedbyaddress", listOf(address, 0), walletName) as? Number)?.toDouble()?.let { it > 0.0 } ?: false
     } catch (e: RpcException) {
-        true
+        false
     }
 }

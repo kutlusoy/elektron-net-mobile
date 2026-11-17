@@ -35,7 +35,11 @@ class WalletRegistry(private val store: WalletRegistryStore) {
     @Synchronized
     fun active(): OwnWallet {
         val all = wallets()
-        return all.firstOrNull { it.name == store.active } ?: all.firstOrNull() ?: OwnWallet(WalletBootstrap.DEFAULT_WALLET, "")
+        val found = all.firstOrNull { it.name == store.active }
+        if (found != null) return found
+        val fallback = all.firstOrNull() ?: OwnWallet(WalletBootstrap.DEFAULT_WALLET, "")
+        store.active = fallback.name
+        return fallback
     }
 
     @Synchronized

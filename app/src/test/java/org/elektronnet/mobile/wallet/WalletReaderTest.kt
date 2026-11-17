@@ -7,9 +7,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class WalletReaderTest {
+    @Before
+    fun setUp() {
+        java.util.Locale.setDefault(java.util.Locale.US)
+    }
     private fun entries(json: String): List<TxItem> =
         WalletReader.group((Json.parse(json) as List<*>).map { it as Map<*, *> })
 
