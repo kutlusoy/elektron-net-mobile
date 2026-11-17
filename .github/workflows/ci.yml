@@ -2,8 +2,9 @@ name: ci
 
 on:
   push:
-    branches: [mobilenode, main, "m[0-9]*"]
+    branches: [mobilenode, main, dex, "m[0-9]*", "feat/**", "fix/**", "split/**"]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   checks:
@@ -40,8 +41,44 @@ jobs:
         run: bash tools/fetch-geoip.sh
       - name: Build both flavors
         run: gradle --no-daemon :app:assembleMainnetDebug :app:assembleTnetDebug
+      - name: Node binaries for the integration tests
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/bartman081523/elektron-net/releases?per_page=30"
+          urls=$(curl -fsSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "$api" \
+            | jq -r '[.[] | .assets[] | .name + " " + .browser_download_url
+                      | select(test("^elektron-net-linux-v[0-9.]+-x86_64-static[.]tar[.]gz "))]
+                     | sort | reverse | .[]' || true)
+          # newest static asset is the node under test, v4.0.5 is the old one the upgrade tests compare against
+          new_url=$(echo "$urls" | head -1 | cut -d" " -f2)
+          old_url=$(echo "$urls" | grep -F -m1 "elektron-net-linux-v4.0.5-" | cut -d" " -f2 || true)
+          if [ -z "$new_url" ]; then
+            echo "no static Linux node asset yet, the integration tests stay skipped"
+            exit 0
+          fi
+          fetch() {
+            rm -rf "$2"; mkdir -p "$2"
+            curl -fsSL "$1" | tar -xz -C "$2" --strip-components=1
+            chmod +x "$2/elektrond" "$2/elektron-cli"
+          }
+          # tor for the four tests that drive the bundled Tor through its control port
+          if sudo apt-get install -y --no-install-recommends tor >/dev/null 2>&1; then
+            echo "TOR_BIN=$(command -v tor)" >> "$GITHUB_ENV"
+          fi
+          fetch "$new_url" "$RUNNER_TEMP/node"
+          "$RUNNER_TEMP/node/elektrond" --version
+          echo "ELEKTROND_BIN=$RUNNER_TEMP/node/elektrond" >> "$GITHUB_ENV"
+          if [ -n "${old_url:-}" ]; then
+            fetch "$old_url" "$RUNNER_TEMP/node-old"
+            "$RUNNER_TEMP/node-old/elektrond" --version
+            echo "ELEKTROND_BIN_OLD=$RUNNER_TEMP/node-old/elektrond" >> "$GITHUB_ENV"
+          fi
+
       - name: Unit tests and lint for both flavors
-        run: gradle --no-daemon :app:testMainnetDebugUnitTest :app:testTnetDebugUnitTest :app:lintMainnetDebug :app:lintTnetDebug
+        # --rerun-tasks: the build cache would otherwise replay test results that
+        # were recorded without ELEKTROND_BIN, i.e. with the integration tests skipped
+        run: gradle --no-daemon --rerun-tasks :app:testMainnetDebugUnitTest :app:testTnetDebugUnitTest :app:lintMainnetDebug :app:lintTnetDebug
       - name: Lint details
         if: failure()
         run: grep -h -A3 "Error:" app/build/reports/lint-results-*.txt app/build/intermediates/lint_intermediate_text_report/*/*/lint-results-*.txt 2>/dev/null | head -150 || true
