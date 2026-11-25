@@ -186,7 +186,12 @@ val copyConsoleTiers by tasks.registering(Copy::class) {
 
 android.sourceSets.getByName("main").assets.srcDir(layout.buildDirectory.dir("generated/consoleAssets"))
 
-tasks.named("preBuild") { dependsOn(checkContrast, checkLocales, checkRng, checkSplash, copyConsoleTiers) }
+val installGitHooks by tasks.registering(Exec::class) {
+    onlyIf { rootProject.file(".git").exists() && rootProject.file("tools/install-hooks.sh").exists() }
+    commandLine("bash", rootProject.file("tools/install-hooks.sh").path)
+}
+
+tasks.named("preBuild") { dependsOn(checkContrast, checkLocales, checkRng, checkSplash, copyConsoleTiers, installGitHooks) }
 
 dependencies {
     implementation(platform(libs.compose.bom))

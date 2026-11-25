@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# .githooks/pre-push
+exec "$(dirname "$0")/../tools/pre-pr-test.sh"
